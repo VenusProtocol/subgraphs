@@ -17,7 +17,7 @@ const comptrollerAddress = Address.fromString(
   '0xfd36e2c2a6789db23113685031d7f16329158384',
 )
 
-export function exponentToBigDecimal(decimals: i32): BigDecimal {
+export const exponentToBigDecimal = (decimals: i32): BigDecimal => {
   let bd = BigDecimal.fromString('1')
   for (let i = 0; i < decimals; i++) {
     bd = bd.times(BigDecimal.fromString('10'))
@@ -31,12 +31,12 @@ export let mantissaFactorBD: BigDecimal = exponentToBigDecimal(18)
 export let vTokenDecimalsBD: BigDecimal = exponentToBigDecimal(8)
 export let zeroBD = BigDecimal.fromString('0')
 
-export function createAccountVToken(
+export const createAccountVToken = (
   vTokenStatsID: string,
   symbol: string,
   account: string,
   marketID: string,
-): AccountVToken {
+): AccountVToken => {
   let vTokenStats = new AccountVToken(vTokenStatsID)
   vTokenStats.symbol = symbol
   vTokenStats.market = marketID
@@ -60,7 +60,7 @@ export function createAccountVToken(
   return vTokenStats
 }
 
-export function createAccount(accountID: string): Account {
+export const createAccount = (accountID: string): Account => {
   let account = new Account(accountID)
   account.countLiquidated = 0
   account.countLiquidator = 0
@@ -69,13 +69,13 @@ export function createAccount(accountID: string): Account {
   return account
 }
 
-export function getOrCreateAccountVTokenTransaction (
+export const getOrCreateAccountVTokenTransaction = (
   accountID: string,
   txHash: Bytes,
   timestamp: BigInt,
   block: BigInt,
   logIndex: BigInt,
-): AccountVTokenTransaction {
+): AccountVTokenTransaction => {
   let id = accountID
     .concat('-')
     .concat(txHash.toHexString())

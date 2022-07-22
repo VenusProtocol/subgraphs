@@ -43,7 +43,7 @@ import {
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export function handleMint(event: Mint): void {
+export const handleMint = (event: Mint): void => {
   let market = Market.load(event.address.toHexString())
   if (!market) {
     market = createMarket(event.address.toHexString())
@@ -85,7 +85,7 @@ export function handleMint(event: Mint): void {
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export function handleRedeem(event: Redeem): void {
+export const handleRedeem = (event: Redeem): void => {
   let market = Market.load(event.address.toHexString())
   if (!market) {
     market = createMarket(event.address.toHexString())
@@ -124,7 +124,7 @@ export function handleRedeem(event: Redeem): void {
  * Notes
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
  */
-export function handleBorrow(event: Borrow): void {
+export const handleBorrow = (event: Borrow): void => {
   let market = Market.load(event.address.toHexString())
   if (!market) {
     market = createMarket(event.address.toHexString())
@@ -203,7 +203,7 @@ export function handleBorrow(event: Borrow): void {
  *    markets value. We keep this, even though you might think it would reset to 0 upon full
  *    repay.
  */
-export function handleRepayBorrow(event: RepayBorrow): void {
+export const handleRepayBorrow = (event: RepayBorrow): void => {
   let market = Market.load(event.address.toHexString())
   if (!market) {
     market = createMarket(event.address.toHexString())
@@ -278,12 +278,12 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  *
  * Notes
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this.
- *    When calling this function, event RepayBorrow, and event Transfer will be called every
+ *    When calling this const, event RepayBorrow, and event Transfer will be called every
  *    time. This means we can ignore repayAmount. Seize tokens only changes state
  *    of the vTokens, which is covered by transfer. Therefore we only
  *    add liquidation counts in this handler.
  */
-export function handleLiquidateBorrow(event: LiquidateBorrow): void {
+export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   let liquidatorID = event.params.liquidator.toHex()
   let liquidator = Account.load(liquidatorID)
   if (liquidator == null) {
@@ -350,10 +350,10 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
  *      redeemFresh() - i.e. redeeming your vTokens for underlying asset
  *      mintFresh() - i.e. you are lending underlying assets to create vtokens
  *      transfer() - i.e. a basic transfer
- *    This function handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
+ *    This const handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
  *    events. So for those events, we do not update vToken balances.
  */
-export function handleTransfer(event: Transfer): void {
+export const handleTransfer = (event: Transfer): void => {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   let marketID = event.address.toHexString()
@@ -459,11 +459,11 @@ export function handleTransfer(event: Transfer): void {
   transfer.save()
 }
 
-export function handleAccrueInterest(event: AccrueInterest): void {
+export const handleAccrueInterest = (event: AccrueInterest): void => {
   updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32())
 }
 
-export function handleNewReserveFactor(event: NewReserveFactor): void {
+export const handleNewReserveFactor = (event: NewReserveFactor): void => {
   let marketID = event.address.toHex()
   let market = Market.load(marketID)
   if (!market) {
@@ -473,9 +473,9 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
   market.save()
 }
 
-export function handleNewMarketInterestRateModel(
+export const handleNewMarketInterestRateModel = (
   event: NewMarketInterestRateModel,
-): void {
+): void => {
   let marketID = event.address.toHex()
   let market = Market.load(marketID)
   if (market == null) {
