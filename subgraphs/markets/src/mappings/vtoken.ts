@@ -1,5 +1,4 @@
 /* eslint-disable prefer-const */ // to satisfy AS compiler
-import { Address } from '@graphprotocol/graph-ts'
 import {
   Mint,
   Redeem,

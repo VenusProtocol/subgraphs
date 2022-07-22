@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */ // to satisfy AS compiler
 
 // For each division by 10, add one to exponent to truncate one significant figure
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts'
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts'
 import { Market, Comptroller } from '../types/schema'
 import { PriceOracle2 } from '../types/templates/VToken/PriceOracle2'
 import { BEP20 } from '../types/templates/VToken/BEP20'

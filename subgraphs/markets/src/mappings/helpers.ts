@@ -7,7 +7,6 @@ import {
   Account,
   AccountVTokenTransaction,
   Comptroller,
-  Market,
 } from '../types/schema'
 import { Comptroller as ComptrollerContract } from '../types/Comptroller/Comptroller'
 import { updateMarket } from './markets'
@@ -70,41 +69,16 @@ export function createAccount(accountID: string): Account {
   return account
 }
 
-export function updateCommonVTokenStats(
-  marketID: string,
-  marketSymbol: string,
+export function getOrCreateAccountVTokenTransaction (
   accountID: string,
-  tx_hash: Bytes,
-  timestamp: BigInt,
-  blockNumber: BigInt,
-  logIndex: BigInt,
-): AccountVToken {
-  let vTokenStatsID = marketID.concat('-').concat(accountID)
-  let vTokenStats = AccountVToken.load(vTokenStatsID)
-  if (vTokenStats == null) {
-    vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID)
-  }
-  getOrCreateAccountVTokenTransaction(
-    vTokenStatsID,
-    tx_hash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  )
-  vTokenStats.accrualBlockNumber = blockNumber
-  return vTokenStats as AccountVToken
-}
-
-export function getOrCreateAccountVTokenTransaction(
-  accountID: string,
-  tx_hash: Bytes,
+  txHash: Bytes,
   timestamp: BigInt,
   block: BigInt,
   logIndex: BigInt,
 ): AccountVTokenTransaction {
   let id = accountID
     .concat('-')
-    .concat(tx_hash.toHexString())
+    .concat(txHash.toHexString())
     .concat('-')
     .concat(logIndex.toString())
   let transaction = AccountVTokenTransaction.load(id)
@@ -112,7 +86,7 @@ export function getOrCreateAccountVTokenTransaction(
   if (transaction == null) {
     transaction = new AccountVTokenTransaction(id)
     transaction.account = accountID
-    transaction.tx_hash = tx_hash
+    transaction.tx_hash = txHash // eslint-disable-line @typescript-eslint/camelcase
     transaction.timestamp = timestamp
     transaction.block = block
     transaction.logIndex = logIndex
@@ -120,6 +94,31 @@ export function getOrCreateAccountVTokenTransaction(
   }
 
   return transaction as AccountVTokenTransaction
+}
+
+export const updateCommonVTokenStats = (
+  marketID: string,
+  marketSymbol: string,
+  accountID: string,
+  txHash: Bytes,
+  timestamp: BigInt,
+  blockNumber: BigInt,
+  logIndex: BigInt,
+): AccountVToken => {
+  let vTokenStatsID = marketID.concat('-').concat(accountID)
+  let vTokenStats = AccountVToken.load(vTokenStatsID)
+  if (vTokenStats == null) {
+    vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID)
+  }
+  getOrCreateAccountVTokenTransaction(
+    vTokenStatsID,
+    txHash,
+    timestamp,
+    blockNumber,
+    logIndex,
+  )
+  vTokenStats.accrualBlockNumber = blockNumber
+  return vTokenStats as AccountVToken
 }
 
 export function ensureComptrollerSynced(
