@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
 // For each division by 10, add one to exponent to truncate one significant figure
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Comptroller, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
@@ -23,7 +23,7 @@ function getTokenPrice(
   blockNumber: i32,
   eventAddress: Address,
   underlyingAddress: Address,
-  underlyingDecimals: i32,
+  underlyingDecimals: i32
 ): BigDecimal {
   let comptroller = Comptroller.load('1');
   if (!comptroller) {
@@ -108,7 +108,7 @@ export function createMarket(marketAddress: string): Market {
   return market;
 }
 
-function getBNBinUSD(blockNumber: i32): BigDecimal {
+function getBNBinUSD(): BigDecimal {
   let comptroller = Comptroller.load('1');
   if (!comptroller) {
     comptroller = new Comptroller('1');
@@ -126,7 +126,7 @@ function getBNBinUSD(blockNumber: i32): BigDecimal {
 export function updateMarket(
   marketAddress: Address,
   blockNumber: i32,
-  blockTimestamp: i32,
+  blockTimestamp: i32
 ): Market {
   let marketID = marketAddress.toHexString();
   let market = Market.load(marketID);
@@ -140,7 +140,7 @@ export function updateMarket(
     let contractAddress = Address.fromString(market.id);
     let contract = VToken.bind(contractAddress);
 
-    let bnbPriceInUSD = getBNBinUSD(blockNumber);
+    let bnbPriceInUSD = getBNBinUSD();
 
     // if vBNB, we only update USD price
     if (market.id == vBNBAddress) {

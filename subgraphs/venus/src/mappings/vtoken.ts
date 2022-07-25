@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { Address } from '@graphprotocol/graph-ts';
 
 import {
   Account,
@@ -73,7 +72,7 @@ export function handleMint(event: Mint): void {
   mint.vTokenSymbol = market.symbol;
   mint.underlyingAmount = underlyingAmount;
   mint.save();
-}
+};
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
  *
@@ -115,7 +114,7 @@ export function handleRedeem(event: Redeem): void {
   redeem.vTokenSymbol = market.symbol;
   redeem.underlyingAmount = underlyingAmount;
   redeem.save();
-}
+};
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
  *
@@ -187,7 +186,7 @@ export function handleBorrow(event: Borrow): void {
   borrow.blockTime = event.block.timestamp.toI32();
   borrow.underlyingSymbol = market.underlyingSymbol;
   borrow.save();
-}
+};
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
  *
@@ -263,7 +262,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   repay.underlyingSymbol = market.underlyingSymbol;
   repay.payer = event.params.payer;
   repay.save();
-}
+};
 
 /*
  * Liquidate an account who has fell below the collateral factor.
@@ -334,7 +333,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   liquidation.underlyingRepayAmount = underlyingRepayAmount;
   liquidation.vTokenSymbol = marketVTokenLiquidated.symbol;
   liquidation.save();
-}
+};
 
 /* Transferring of vTokens
  *
@@ -443,7 +442,7 @@ export function handleTransfer(event: Transfer): void {
   transfer.blockTime = event.block.timestamp.toI32();
   transfer.vTokenSymbol = market.symbol;
   transfer.save();
-}
+};
 
 export function handleAccrueInterest(event: AccrueInterest): void {
   updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
@@ -457,7 +456,7 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
   }
   market.reserveFactor = event.params.newReserveFactorMantissa;
   market.save();
-}
+};
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   let marketID = event.address.toHex();

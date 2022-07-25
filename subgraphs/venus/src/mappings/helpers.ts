@@ -9,7 +9,6 @@ import {
   AccountVToken,
   AccountVTokenTransaction,
   Comptroller,
-  Market,
 } from '../../generated/schema';
 import { VToken } from '../../generated/templates';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
@@ -67,11 +66,38 @@ export function createAccount(accountID: string): Account {
   return account;
 }
 
+export function getOrCreateAccountVTokenTransaction(
+  accountID: string,
+  txHash: Bytes,
+  timestamp: BigInt,
+  block: BigInt,
+  logIndex: BigInt,
+): AccountVTokenTransaction {
+  let id = accountID
+    .concat('-')
+    .concat(txHash.toHexString())
+    .concat('-')
+    .concat(logIndex.toString());
+  let transaction = AccountVTokenTransaction.load(id);
+
+  if (transaction == null) {
+    transaction = new AccountVTokenTransaction(id);
+    transaction.account = accountID;
+    transaction.tx_hash = txHash; // eslint-disable-line @typescript-eslint/camelcase
+    transaction.timestamp = timestamp;
+    transaction.block = block;
+    transaction.logIndex = logIndex;
+    transaction.save();
+  }
+
+  return transaction as AccountVTokenTransaction;
+}
+
 export function updateCommonVTokenStats(
   marketID: string,
   marketSymbol: string,
   accountID: string,
-  tx_hash: Bytes,
+  txHash: Bytes,
   timestamp: BigInt,
   blockNumber: BigInt,
   logIndex: BigInt,
@@ -81,36 +107,9 @@ export function updateCommonVTokenStats(
   if (vTokenStats == null) {
     vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID);
   }
-  getOrCreateAccountVTokenTransaction(vTokenStatsID, tx_hash, timestamp, blockNumber, logIndex);
+  getOrCreateAccountVTokenTransaction(vTokenStatsID, txHash, timestamp, blockNumber, logIndex);
   vTokenStats.accrualBlockNumber = blockNumber;
   return vTokenStats as AccountVToken;
-}
-
-export function getOrCreateAccountVTokenTransaction(
-  accountID: string,
-  tx_hash: Bytes,
-  timestamp: BigInt,
-  block: BigInt,
-  logIndex: BigInt,
-): AccountVTokenTransaction {
-  let id = accountID
-    .concat('-')
-    .concat(tx_hash.toHexString())
-    .concat('-')
-    .concat(logIndex.toString());
-  let transaction = AccountVTokenTransaction.load(id);
-
-  if (transaction == null) {
-    transaction = new AccountVTokenTransaction(id);
-    transaction.account = accountID;
-    transaction.tx_hash = tx_hash;
-    transaction.timestamp = timestamp;
-    transaction.block = block;
-    transaction.logIndex = logIndex;
-    transaction.save();
-  }
-
-  return transaction as AccountVTokenTransaction;
 }
 
 export function ensureComptrollerSynced(blockNumber: i32, blockTimestamp: i32): Comptroller {

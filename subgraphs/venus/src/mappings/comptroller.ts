@@ -27,7 +27,7 @@ export function handleMarketListed(event: MarketListed): void {
   // Create the market for this token, since it's now been listed.
   let market = createMarket(event.params.vToken.toHexString());
   market.save();
-}
+};
 
 export function handleMarketEntered(event: MarketEntered): void {
   let market = Market.load(event.params.vToken.toHexString());
@@ -62,7 +62,7 @@ export function handleMarketEntered(event: MarketEntered): void {
   );
   vTokenStats.enteredMarket = true;
   vTokenStats.save();
-}
+};
 
 export function handleMarketExited(event: MarketExited): void {
   let market = Market.load(event.params.vToken.toHexString());
@@ -97,7 +97,7 @@ export function handleMarketExited(event: MarketExited): void {
   );
   vTokenStats.enteredMarket = false;
   vTokenStats.save();
-}
+};
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
   let comptroller = Comptroller.load('1');
@@ -119,7 +119,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
       .div(mantissaFactorBD);
     market.save();
   }
-}
+};
 
 // This should be the first event acccording to bscscan but it isn't.... price oracle is. weird
 export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
