@@ -1,0 +1,34 @@
+{
+  "name": "venus",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/VenusProtocol/subgraphs",
+    "directory": "subgraphs/venus"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen:local": "yarn prepare:local && graph codegen --output-dir src/types/",
+    "codegen:testnet": "yarn prepare:testnet && graph codegen --output-dir src/types/",
+    "codegen:mainnet": "yarn prepare:mainnet && graph codegen --output-dir src/types/",
+    "create:local": "yarn prepare:local && graph create venusprotocol/venus-subgraph --node http://127.0.0.1:8020",
+    "create:testnet": "yarn prepare:testnet && graph create venusprotocol/venus-subgraph --node https://api.staging.thegraph.com/deploy/",
+    "create:mainnet": "yarn prepare:mainnet && graph create venusprotocol/venus-subgraph --node https://api.thegraph.com/deploy/",
+    "build:local": "yarn prepare:local && graph build --ipfs http://localhost:5001",
+    "build:testnet": "yarn prepare:testnet && graph build --ipfs https://api.staging.thegraph.com/ipfs/ ",
+    "build:mainnet": "yarn prepare:mainnet && graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:local": "yarn prepare:local && graph deploy venusprotocol/venus-subgraph --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:testnet": "yarn prepare:testnet && graph deploy venusprotocol/venus-subgraph --debug --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
+    "deploy:mainnet": "yarn prepare:mainnet && graph deploy venusprotocol/venus-subgraph --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:local": "mustache config/local.json template.yaml > subgraph.yaml",
+    "prepare:testnet": "mustache config/testnet.json template.yaml > subgraph.yaml",
+    "prepare:mainnet": "mustache config/mainnet.json template.yaml > subgraph.yaml",
+    "pretty": "prettier —-write '**/*.ts'"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "0.27.0",
+    "@graphprotocol/graph-ts": "0.27.0"
+  }
+}
