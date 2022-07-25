@@ -49,5 +49,6 @@
       "prettier --write --config ./.prettierrc",
       "git add"
     ]
-  }
+  },
+  "packageManager": "yarn@3.2.2"
 }
