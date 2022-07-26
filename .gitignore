@@ -14,4 +14,4 @@ node_modules/
 
 subgraph.yaml
 subgraphs/**/packages
-subgraphs/**/types
+generated

@@ -10,7 +10,7 @@ import {
   AccrueInterest,
   NewReserveFactor,
   NewMarketInterestRateModel,
-} from '../types/templates/VToken/VToken'
+} from '../../generated/templates/VToken/VToken'
 import {
   Market,
   Account,
@@ -20,7 +20,7 @@ import {
   TransferEvent,
   BorrowEvent,
   RepayEvent,
-} from '../types/schema'
+} from '../../generated/schema'
 
 import { createMarket, updateMarket } from './markets'
 import {

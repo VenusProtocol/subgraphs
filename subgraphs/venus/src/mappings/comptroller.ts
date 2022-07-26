@@ -8,12 +8,12 @@ import {
   NewLiquidationIncentive,
   NewPriceOracle,
   MarketListed,
-} from '../types/Comptroller/Comptroller'
+} from '../../generated/Comptroller/Comptroller'
 import { log } from '@graphprotocol/graph-ts'
 
 
-import { VToken } from '../types/templates'
-import { Market, Comptroller, Account } from '../types/schema'
+import { VToken } from '../../generated/templates'
+import { Market, Comptroller, Account } from '../../generated/schema'
 import { mantissaFactorBD, updateCommonVTokenStats, createAccount, ensureComptrollerSynced } from './helpers'
 import { createMarket } from './markets'
 

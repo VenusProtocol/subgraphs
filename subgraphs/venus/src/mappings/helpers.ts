@@ -8,11 +8,11 @@ import {
   AccountVTokenTransaction,
   Comptroller,
   Market,
-} from '../types/schema'
-import { Comptroller as ComptrollerContract } from '../types/Comptroller/Comptroller'
+} from '../../generated/schema'
+import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller'
 import { updateMarket } from './markets'
-import { VToken } from '../types/templates'
-import { BEP20 } from '../types/templates/VToken/BEP20'
+import { VToken } from '../../generated/templates'
+import { BEP20 } from '../../generated/templates/VToken/BEP20'
 
 const comptrollerAddress = Address.fromString(
   '0xfd36e2c2a6789db23113685031d7f16329158384',
