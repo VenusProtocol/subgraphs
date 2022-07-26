@@ -18,6 +18,7 @@
     "prepare:local": "true",
     "prepare:testnet": "true",
     "prepare:mainnet": "true",
-    "pretty": "prettier —-write '**/*.json'"
+    "pretty": "prettier —-write '**/*.json'",
+    "test": "true"
   }
 }

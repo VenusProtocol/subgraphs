@@ -15,3 +15,7 @@ node_modules/
 subgraph.yaml
 subgraphs/**/packages
 generated
+
+# Matchstick
+.latest.json
+**/tests/.bin

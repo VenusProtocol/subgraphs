@@ -4,6 +4,9 @@
   "version": "0.0.0",
   "repository": "https://github.com/VenusProtocol/subgraphs",
   "license": "MIT",
+  "engines": {
+    "node": ">=16.x.x"
+  },
   "workspaces": [
     "packages/*",
     "subgraphs/*"
@@ -26,9 +29,11 @@
     "prepare:mainnet": "yarn workspaces run prepare:mainnet",
     "lint": "eslint '**/*.{ts,tsx}'",
     "lint:fix": "yarn lint --fix",
-    "pretty": "prettier '**/*.ts' --write"
+    "pretty": "prettier '**/*.ts' --write",
+    "test": "yarn workspaces foreach run test"
   },
   "devDependencies": {
+    "@graphprotocol/graph-ts": "0.27.0",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
