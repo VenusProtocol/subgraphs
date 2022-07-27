@@ -1,23 +1,24 @@
 {
-    "name": "abi",
-    "version": "0.0.0",
-    "license": "MIT",
-    "scripts": {
-      "codegen:local": "true",
-      "codegen:testnet": "true",
-      "codegen:mainnet": "true",
-      "create:local": "true",
-      "create:testnet": "true",
-      "create:mainnet": "true",
-      "build:local": "true",
-      "build:testnet": "true",
-      "build:mainnet": "true",
-      "deploy:local": "true",
-      "deploy:testnet": "true",
-      "deploy:mainnet": "true",
-      "prepare:local": "true",
-      "prepare:testnet": "true",
-      "prepare:mainnet": "true",
-      "pretty": "prettier —-write '**/*.json'"
-    }
+  "name": "abi",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "codegen:local": "true",
+    "codegen:testnet": "true",
+    "codegen:mainnet": "true",
+    "create:local": "true",
+    "create:testnet": "true",
+    "create:mainnet": "true",
+    "build:local": "true",
+    "build:testnet": "true",
+    "build:mainnet": "true",
+    "deploy:local": "true",
+    "deploy:testnet": "true",
+    "deploy:mainnet": "true",
+    "prepare:local": "true",
+    "prepare:testnet": "true",
+    "prepare:mainnet": "true",
+    "pretty": "prettier —-write '**/*.json'",
+    "test": "true"
   }
+}
