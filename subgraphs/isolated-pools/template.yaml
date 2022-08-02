@@ -5,31 +5,55 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Comptroller
+    name: PoolRegistry
     network: {{ network }}
     source:
       address: "{{ address }}"
-      abi: Comptroller
+      abi: PoolRegistry
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/comptroller.ts
+      file: ./src/mappings/poolRegistry.ts
       entities:
+        - PoolRegistry
         - Comptroller
-        - Market
       abis:
+        - name: PoolRegistry
+          file: ../../packages/abi/isolated-pools/PoolRegistry.json
         - name: Comptroller
-          file: ../../packages/abi/comptroller.json
+          file: ../../packages/abi/isolated-pools/Comptroller.json
         - name: VToken
           file: ../../packages/abi/vtoken.json
         - name: PriceOracle
-          file: ../../packages/abi/priceOracle.json
-        - name: PriceOracle2
-          file: ../../packages/abi/priceOracle2.json
+          file: ../../packages/abi/isolated-pools/PriceOracle.json
         - name: BEP20
           file: ../../packages/abi/bep20.json
+      eventHandlers:
+        - event: PoolRegistered(uint256,(uint256,string,address,address,uint256,uint256))
+          handler: handlePoolRegistered
+        - event: PoolNameSet(uint256,string)
+          handler: handlePoolNameSet
+
+templates:
+  - name: Pool
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: Comptroller
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/pool.ts
+      entities:
+        - User
+        - Market
+        - VTokenInfo
+      abis:
+        - name: Comptroller
+          file: ../../packages/abi/isolated-pools/Comptroller.json
       eventHandlers:
         - event: MarketListed(address)
           handler: handleMarketListed
@@ -45,7 +69,18 @@ dataSources:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
-templates:
+        - event: NewPauseGuardian(address,address)
+          handler: handleNewPauseGuardian
+        - event: ActionPaused(address,string,bool)
+          handler: handleGlobalActionPaused
+        - event: ActionPaused(address,string,bool)
+          handler: handleMarketActionPaused
+        - event: NewBorrowCap(indexed address,uint256)
+          handler: handleNewBorrowCap
+        - event: NewBorrowCapGuardian(address,address)
+          handler: handleNewBorrowCapGuardian
+        - event: NewMinLiquidatableAmount(indexed address,uint256)
+          handler: handleNewMinLiquidatableAmount
   - name: VToken
     kind: ethereum/contract
     network: {{ network }}

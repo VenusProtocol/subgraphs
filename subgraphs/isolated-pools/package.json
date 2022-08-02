@@ -10,7 +10,7 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "yarn prepare:local && graph codegen --output-dir src/types/",
+    "codegen": "yarn prepare:local && graph codegen",
     "create:local": "yarn prepare:local && graph create venusprotocol/venus-isolated-pools --node http://127.0.0.1:8020",
     "create:testnet": "yarn prepare:testnet && graph create venusprotocol/venus-isolated-pools --node https://api.staging.thegraph.com/deploy/",
     "create:mainnet": "yarn prepare:mainnet && graph create venusprotocol/venus-isolated-pools --node https://api.thegraph.com/deploy/",

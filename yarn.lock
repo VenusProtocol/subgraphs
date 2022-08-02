@@ -3781,9 +3781,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isolated-pools@workspace:subgraphs/isolated-lending":
+"isolated-pools@workspace:subgraphs/isolated-pools":
   version: 0.0.0-use.local
-  resolution: "isolated-pools@workspace:subgraphs/isolated-lending"
+  resolution: "isolated-pools@workspace:subgraphs/isolated-pools"
   dependencies:
     "@graphprotocol/graph-cli": 0.27.0
     "@graphprotocol/graph-ts": 0.27.0
