@@ -12,9 +12,7 @@
     "subgraphs/*"
   ],
   "scripts": {
-    "codegen:local": "yarn workspaces run codegen:local",
-    "codegen:testnet": "yarn workspaces run codegen:testnet",
-    "codegen:mainnet": "yarn workspaces run codegen:mainnet",
+    "codegen": "yarn workspaces run codegen",
     "create:local": "yarn workspaces run create:local",
     "create:testnet": "yarn workspaces run create:testnet",
     "create:mainnet": "yarn workspaces run create:mainnet",
