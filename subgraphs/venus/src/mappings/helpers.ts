@@ -9,7 +9,6 @@ import {
   AccountVToken,
   AccountVTokenTransaction,
   Comptroller,
-  Market,
 } from '../../generated/schema';
 import { VToken } from '../../generated/templates';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
@@ -17,13 +16,13 @@ import { updateMarket } from './markets';
 
 const comptrollerAddress = Address.fromString('0xfd36e2c2a6789db23113685031d7f16329158384');
 
-export function exponentToBigDecimal(decimals: i32): BigDecimal {
+export const exponentToBigDecimal = (decimals: i32): BigDecimal => {
   let bd = BigDecimal.fromString('1');
   for (let i = 0; i < decimals; i++) {
     bd = bd.times(BigDecimal.fromString('10'));
   }
   return bd;
-}
+};
 
 export let mantissaFactor = 18;
 export let vTokenDecimals = 8;
@@ -31,12 +30,12 @@ export let mantissaFactorBD: BigDecimal = exponentToBigDecimal(18);
 export let vTokenDecimalsBD: BigDecimal = exponentToBigDecimal(8);
 export let zeroBD = BigDecimal.fromString('0');
 
-export function createAccountVToken(
+export const createAccountVToken = (
   vTokenStatsID: string,
   symbol: string,
   account: string,
   marketID: string,
-): AccountVToken {
+): AccountVToken => {
   let vTokenStats = new AccountVToken(vTokenStatsID);
   vTokenStats.symbol = symbol;
   vTokenStats.market = marketID;
@@ -56,46 +55,27 @@ export function createAccountVToken(
   vTokenStats.storedBorrowBalance = zeroBD;
   vTokenStats.enteredMarket = false;
   return vTokenStats;
-}
+};
 
-export function createAccount(accountID: string): Account {
+export const createAccount = (accountID: string): Account => {
   let account = new Account(accountID);
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
   account.save();
   return account;
-}
+};
 
-export function updateCommonVTokenStats(
-  marketID: string,
-  marketSymbol: string,
+export const getOrCreateAccountVTokenTransaction = (
   accountID: string,
-  tx_hash: Bytes,
-  timestamp: BigInt,
-  blockNumber: BigInt,
-  logIndex: BigInt,
-): AccountVToken {
-  let vTokenStatsID = marketID.concat('-').concat(accountID);
-  let vTokenStats = AccountVToken.load(vTokenStatsID);
-  if (vTokenStats == null) {
-    vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID);
-  }
-  getOrCreateAccountVTokenTransaction(vTokenStatsID, tx_hash, timestamp, blockNumber, logIndex);
-  vTokenStats.accrualBlockNumber = blockNumber;
-  return vTokenStats as AccountVToken;
-}
-
-export function getOrCreateAccountVTokenTransaction(
-  accountID: string,
-  tx_hash: Bytes,
+  txHash: Bytes,
   timestamp: BigInt,
   block: BigInt,
   logIndex: BigInt,
-): AccountVTokenTransaction {
+): AccountVTokenTransaction => {
   let id = accountID
     .concat('-')
-    .concat(tx_hash.toHexString())
+    .concat(txHash.toHexString())
     .concat('-')
     .concat(logIndex.toString());
   let transaction = AccountVTokenTransaction.load(id);
@@ -103,7 +83,7 @@ export function getOrCreateAccountVTokenTransaction(
   if (transaction == null) {
     transaction = new AccountVTokenTransaction(id);
     transaction.account = accountID;
-    transaction.tx_hash = tx_hash;
+    transaction.tx_hash = txHash; // eslint-disable-line @typescript-eslint/camelcase
     transaction.timestamp = timestamp;
     transaction.block = block;
     transaction.logIndex = logIndex;
@@ -111,9 +91,28 @@ export function getOrCreateAccountVTokenTransaction(
   }
 
   return transaction as AccountVTokenTransaction;
-}
+};
 
-export function ensureComptrollerSynced(blockNumber: i32, blockTimestamp: i32): Comptroller {
+export const updateCommonVTokenStats = (
+  marketID: string,
+  marketSymbol: string,
+  accountID: string,
+  txHash: Bytes,
+  timestamp: BigInt,
+  blockNumber: BigInt,
+  logIndex: BigInt,
+): AccountVToken => {
+  let vTokenStatsID = marketID.concat('-').concat(accountID);
+  let vTokenStats = AccountVToken.load(vTokenStatsID);
+  if (vTokenStats == null) {
+    vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID);
+  }
+  getOrCreateAccountVTokenTransaction(vTokenStatsID, txHash, timestamp, blockNumber, logIndex);
+  vTokenStats.accrualBlockNumber = blockNumber;
+  return vTokenStats as AccountVToken;
+};
+
+export const ensureComptrollerSynced = (blockNumber: i32, blockTimestamp: i32): Comptroller => {
   let comptroller = Comptroller.load('1');
   if (comptroller) {
     return comptroller;
@@ -153,4 +152,4 @@ export function ensureComptrollerSynced(blockNumber: i32, blockTimestamp: i32): 
   }
 
   return comptroller;
-}
+};

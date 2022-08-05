@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
 // For each division by 10, add one to exponent to truncate one significant figure
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Comptroller, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
@@ -19,12 +19,12 @@ let vUSDCAddress = '0xeca88125a5adbe82614ffc12d0db554e2e2867c8';
 let vBNBAddress = '0xa07c5b74c9b40447a954e1466938b865b6bbea36';
 
 // Used for all vBEP20 contracts
-function getTokenPrice(
+const getTokenPrice = (
   blockNumber: i32,
   eventAddress: Address,
   underlyingAddress: Address,
   underlyingDecimals: i32,
-): BigDecimal {
+): BigDecimal => {
   let comptroller = Comptroller.load('1');
   if (!comptroller) {
     comptroller = new Comptroller('1');
@@ -48,9 +48,9 @@ function getTokenPrice(
   underlyingPrice = oracle2.getUnderlyingPrice(eventAddress).toBigDecimal().div(bdFactor);
 
   return underlyingPrice;
-}
+};
 
-export function createMarket(marketAddress: string): Market {
+export const createMarket = (marketAddress: string): Market => {
   let market: Market;
   let contract = VToken.bind(Address.fromString(marketAddress));
 
@@ -106,9 +106,9 @@ export function createMarket(marketAddress: string): Market {
   market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
 
   return market;
-}
+};
 
-function getBNBinUSD(blockNumber: i32): BigDecimal {
+const getBNBinUSD = (): BigDecimal => {
   let comptroller = Comptroller.load('1');
   if (!comptroller) {
     comptroller = new Comptroller('1');
@@ -121,13 +121,13 @@ function getBNBinUSD(blockNumber: i32): BigDecimal {
     .toBigDecimal()
     .div(mantissaFactorBD);
   return bnbPriceInUSD;
-}
+};
 
-export function updateMarket(
+export const updateMarket = (
   marketAddress: Address,
   blockNumber: i32,
   blockTimestamp: i32,
-): Market {
+): Market => {
   let marketID = marketAddress.toHexString();
   let market = Market.load(marketID);
   if (market == null) {
@@ -140,7 +140,7 @@ export function updateMarket(
     let contractAddress = Address.fromString(market.id);
     let contract = VToken.bind(contractAddress);
 
-    let bnbPriceInUSD = getBNBinUSD(blockNumber);
+    let bnbPriceInUSD = getBNBinUSD();
 
     // if vBNB, we only update USD price
     if (market.id == vBNBAddress) {
@@ -230,4 +230,4 @@ export function updateMarket(
     market.save();
   }
   return market as Market;
-}
+};
