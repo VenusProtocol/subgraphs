@@ -21,15 +21,15 @@ dataSources:
         - Market
       abis:
         - name: Comptroller
-          file: ../../packages/abi/comptroller.json
+          file: ../../packages/venus-abis/comptroller.json
         - name: VToken
-          file: ../../packages/abi/vtoken.json
+          file: ../../packages/venus-abis/vtoken.json
         - name: PriceOracle
-          file: ../../packages/abi/priceOracle.json
+          file: ../../packages/venus-abis/priceOracle.json
         - name: PriceOracle2
-          file: ../../packages/abi/priceOracle2.json
+          file: ../../packages/venus-abis/priceOracle2.json
         - name: BEP20
-          file: ../../packages/abi/bep20.json
+          file: ../../packages/venus-abis/bep20.json
       eventHandlers:
         - event: MarketListed(address)
           handler: handleMarketListed
@@ -62,15 +62,15 @@ templates:
         - VTokenInfo
       abis:
         - name: VToken
-          file: ../../packages/abi/vtoken.json
+          file: ../../packages/venus-abis/vtoken.json
         - name: PriceOracle
-          file: ../../packages/abi/priceOracle.json
+          file: ../../packages/venus-abis/priceOracle.json
         - name: PriceOracle2
-          file: ../../packages/abi/priceOracle2.json
+          file: ../../packages/venus-abis/priceOracle2.json
         - name: BEP20
-          file: ../../packages/abi/bep20.json
+          file: ../../packages/venus-abis/bep20.json
         - name: Comptroller
-          file: ../../packages/abi/comptroller.json
+          file: ../../packages/venus-abis/comptroller.json
       eventHandlers:
         - event: Mint(address,uint256,uint256)
           handler: handleMint

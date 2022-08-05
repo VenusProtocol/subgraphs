@@ -949,12 +949,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"abi@workspace:packages/abi":
-  version: 0.0.0-use.local
-  resolution: "abi@workspace:packages/abi"
-  languageName: unknown
-  linkType: soft
-
 "abort-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "abort-controller@npm:3.0.0"
@@ -3799,6 +3793,12 @@ __metadata:
   checksum: c42ae615b462fec55ea7b480548fc76ef69af26103fcbb12a305dd929a4c18c6b22e29c666b0601280e552f56b0f144eab0b28b9a6fbb12ec58dc7c8ae053124
   languageName: node
   linkType: hard
+
+"isolated-pools-abis@workspace:packages/isolated-pools-abis":
+  version: 0.0.0-use.local
+  resolution: "isolated-pools-abis@workspace:packages/isolated-pools-abis"
+  languageName: unknown
+  linkType: soft
 
 "isolated-pools@workspace:subgraphs/isolated-pools":
   version: 0.0.0-use.local
@@ -6802,6 +6802,12 @@ __metadata:
   checksum: e1a66bf9a6cea96d1f13259170d4d41b845833acf3a9df990ea1e760d279bd70d5b1f4c002a50197efd2168a2fd43eb0b808444600fd4d23651e8d42fe90eb05
   languageName: node
   linkType: hard
+
+"venus-abis@workspace:packages/venus-abis":
+  version: 0.0.0-use.local
+  resolution: "venus-abis@workspace:packages/venus-abis"
+  languageName: unknown
+  linkType: soft
 
 "venus@workspace:subgraphs/venus":
   version: 0.0.0-use.local
