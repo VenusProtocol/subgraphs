@@ -3,8 +3,10 @@ import {
   MarketExited,
   MarketListed,
   NewCloseFactor,
+  NewCollateralFactor,
 } from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
+import { defaultMantissaFactorBigDecimal } from '../constants';
 import { createMarket } from '../operations/create';
 import {
   getOrCreateAccount,
@@ -75,7 +77,15 @@ export const handleNewCloseFactor = (event: NewCloseFactor): void => {
   pool.save();
 };
 
-export const handleNewCollateralFactor = (): void => {}; // eslint-disable-line
+export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
+  const cTokenAddress = event.params.cToken;
+  const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
+  const market = getOrCreateMarket(cTokenAddress);
+  market.collateralFactor = newCollateralFactorMantissa
+    .toBigDecimal()
+    .div(defaultMantissaFactorBigDecimal);
+  market.save();
+};
 
 export const handleNewLiquidationIncentive = (): void => {}; // eslint-disable-line
 

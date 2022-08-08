@@ -7,6 +7,7 @@ import {
   MarketExited as MarketExitedEvent,
   MarketListed as MarketListedEvent,
   NewCloseFactor as NewCloseFactorEvent,
+  NewCollateralFactor as NewCollateralFactorEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
   PoolNameSet as PoolNameSetEvent,
@@ -118,6 +119,33 @@ export const createNewCloseFactorEvent = (
     ethereum.Value.fromSignedBigInt(newCloseFactor),
   );
   event.parameters.push(newCloseFactorMantissa);
+
+  return event;
+};
+
+export const createNewCollateralFactorEvent = (
+  cTokenAddress: Address,
+  oldCollateralFactorMantissa: BigInt,
+  newCollateralFactorMantissa: BigInt,
+): NewCollateralFactorEvent => {
+  const event = changetype<NewCollateralFactorEvent>(newMockEvent());
+
+  event.parameters = [];
+
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
+
+  const oldCollateralFactorMantissaParam = new ethereum.EventParam(
+    'oldCollateralFactorMantissa',
+    ethereum.Value.fromSignedBigInt(oldCollateralFactorMantissa),
+  );
+  event.parameters.push(oldCollateralFactorMantissaParam);
+
+  const newCollateralFactorMantissaParam = new ethereum.EventParam(
+    'newCollateralFactorMantissa',
+    ethereum.Value.fromSignedBigInt(newCollateralFactorMantissa),
+  );
+  event.parameters.push(newCollateralFactorMantissaParam);
 
   return event;
 };

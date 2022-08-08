@@ -14,6 +14,7 @@ import {
   handleMarketExited,
   handleMarketListed,
   handleNewCloseFactor,
+  handleNewCollateralFactor,
 } from '../src/mappings/pool';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
 import {
@@ -21,6 +22,7 @@ import {
   createMarketExitedEvent,
   createMarketListedEvent,
   createNewCloseFactorEvent,
+  createNewCollateralFactorEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -156,5 +158,31 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('closeFactor', newCloseFactorMantissa.toString());
+  });
+
+  test('indexes NewCollateralFactor event', () => {
+    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+
+    handleMarketListed(marketListedEvent);
+
+    const oldCollateralFactorMantissa = BigInt.fromI64(900000000000000);
+    const newCollateralFactorMantissa = BigInt.fromI64(540000000000000);
+    const newCollateralFactorEvent = createNewCollateralFactorEvent(
+      cTokenAddress,
+      oldCollateralFactorMantissa,
+      newCollateralFactorMantissa,
+    );
+
+    handleNewCollateralFactor(newCollateralFactorEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', cTokenAddress.toHex(), key, value);
+    };
+
+    assertMarketDocument('id', cTokenAddress.toHexString());
+    assertMarketDocument(
+      'collateralFactor',
+      newCollateralFactorMantissa.toBigDecimal().div(defaultMantissaFactorBigDecimal).toString(),
+    );
   });
 });
