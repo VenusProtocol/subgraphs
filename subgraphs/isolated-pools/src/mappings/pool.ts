@@ -2,6 +2,7 @@ import {
   MarketEntered,
   MarketExited,
   MarketListed,
+  NewCloseFactor,
 } from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
 import { createMarket } from '../operations/create';
@@ -11,6 +12,7 @@ import {
   getOrCreateMarket,
 } from '../operations/getOrCreate';
 import { updateOrCreateAccountVToken } from '../operations/updateOrCreate';
+import { readPool } from '../operations/read';
 import Box from '../utilities/box';
 
 export const handleMarketListed = (event: MarketListed): void => {
@@ -66,7 +68,12 @@ export const handleMarketExited = (event: MarketExited): void => {
   );
 };
 
-export const handleNewCloseFactor = (): void => {}; // eslint-disable-line
+export const handleNewCloseFactor = (event: NewCloseFactor): void => {
+  const poolAddress = event.address;
+  const pool = readPool(poolAddress);
+  pool.closeFactor = event.params.newCloseFactorMantissa;
+  pool.save();
+};
 
 export const handleNewCollateralFactor = (): void => {}; // eslint-disable-line
 

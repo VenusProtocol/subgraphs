@@ -9,12 +9,18 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { handleMarketEntered, handleMarketExited, handleMarketListed } from '../src/mappings/pool';
+import {
+  handleMarketEntered,
+  handleMarketExited,
+  handleMarketListed,
+  handleNewCloseFactor,
+} from '../src/mappings/pool';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
 import {
   createMarketEnteredEvent,
   createMarketExitedEvent,
   createMarketListedEvent,
+  createNewCloseFactorEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -128,5 +134,27 @@ describe('Pool Events', () => {
       'accrualBlockNumber',
       marketExitedEvent.block.number.toString(),
     );
+  });
+
+  test('indexes NewCloseFactor event', () => {
+    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+
+    handleMarketListed(marketListedEvent);
+
+    const oldCloseFactorMantissa = BigInt.fromI64(900000000);
+    const newCloseFactorMantissa = BigInt.fromI64(540000000);
+    const newCloseFactorEvent = createNewCloseFactorEvent(
+      comptrollerAddress,
+      oldCloseFactorMantissa,
+      newCloseFactorMantissa,
+    );
+
+    handleNewCloseFactor(newCloseFactorEvent);
+    const assertPoolDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
+    };
+
+    assertPoolDocument('id', comptrollerAddress.toHexString());
+    assertPoolDocument('closeFactor', newCloseFactorMantissa.toString());
   });
 });

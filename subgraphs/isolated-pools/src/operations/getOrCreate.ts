@@ -1,24 +1,10 @@
 import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { BEP20 } from '../../generated/PoolRegistry/BEP20';
-import {
-  Account,
-  AccountVToken,
-  AccountVTokenTransaction,
-  Market,
-  Pool,
-} from '../../generated/schema';
+import { Account, AccountVToken, AccountVTokenTransaction, Market } from '../../generated/schema';
 import { zeroBigDecimal } from '../constants';
 import { getAccountVTokenTransactionId } from '../utilities/ids';
-import { createAccount, createMarket, createPool } from './create';
-
-export const getOrCreatePool = (poolAddress: Address): Pool => {
-  let pool = Pool.load(poolAddress.toHexString());
-  if (!pool) {
-    pool = createPool(poolAddress);
-  }
-  return pool;
-};
+import { createAccount, createMarket } from './create';
 
 export const getOrCreateMarket = (cTokenAddress: Address): Market => {
   let market = Market.load(cTokenAddress.toHexString());
