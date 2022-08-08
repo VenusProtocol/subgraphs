@@ -10,9 +10,7 @@
     "generated"
   ],
   "scripts": {
-    "codegen:local": "yarn prepare:local && graph codegen",
-    "codegen:testnet": "yarn prepare:testnet && graph codegen",
-    "codegen:mainnet": "yarn prepare:mainnet && graph codegen",
+    "codegen": "yarn prepare:local && graph codegen",
     "create:local": "yarn prepare:local && graph create venusprotocol/venus-subgraph --node http://127.0.0.1:8020",
     "create:testnet": "yarn prepare:testnet && graph create venusprotocol/venus-subgraph --node https://api.staging.thegraph.com/deploy/",
     "create:mainnet": "yarn prepare:mainnet && graph create venusprotocol/venus-subgraph --node https://api.thegraph.com/deploy/",
@@ -26,11 +24,5 @@
     "prepare:testnet": "mustache config/testnet.json template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache config/mainnet.json template.yaml > subgraph.yaml",
     "test": "graph test"
-  },
-  "devDependencies": {
-    "@graphprotocol/graph-cli": "0.27.0",
-    "@graphprotocol/graph-ts": "0.27.0",
-    "assemblyscript": "0.19.23",
-    "matchstick-as": "^0.5.0"
   }
 }

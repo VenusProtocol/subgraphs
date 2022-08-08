@@ -1,0 +1,60 @@
+"""
+The Pool Registry entity has protocol level variables stored
+"""
+type PoolRegistry @entity {
+    "ID is set to 1"
+    id: ID!
+}
+
+"""
+Market stores all high level variables for a vToken market
+"""
+type Market @entity {
+    #Fields that match Venus API
+    "Borrow rate per block"
+    borrowRate: BigDecimal!
+    "The vToken contract balance of BEP20 or BNB"
+    cash: BigDecimal!
+    "Collateral factor determining how much one can borrow"
+    collateralFactor: BigDecimal!
+    "Exchange rate of tokens / vTokens"
+    exchangeRate:  BigDecimal!
+    "Address of the interest rate model"
+    interestRateModelAddress: Bytes!
+    "Name of the vToken"
+    name: String!
+    "Reserves stored in the contract"
+    reserves: BigDecimal!
+    "Supply rate per block"
+    supplyRate: BigDecimal!
+    "VToken symbol"
+    symbol: String!
+    "VToken address"
+    id: ID!
+    "Borrows in the market"
+    totalBorrows: BigDecimal!
+    "VToken supply. VTokens have 8 decimals"
+    totalSupply: BigDecimal!
+    "Underlying token address"
+    underlyingAddress: Bytes!
+    "Underlying token name"
+    underlyingName: String!
+    "Underlying price of token in BNB (ex. 0.007 DAI)"
+    underlyingPrice: BigDecimal!
+    "Underlying token symbol"
+    underlyingSymbol: String!
+
+    # Fields that are not in Venus api
+    "Block the market is updated to"
+    accrualBlockNumber: Int!
+    "Timestamp the market was most recently updated"
+    blockTimestamp: Int!
+    "The history of the markets borrow index return (Think S&P 500)"
+    borrowIndex: BigDecimal!
+    "The factor determining interest that goes to reserves"
+    reserveFactor: BigInt!
+    "Underlying token price in USD"
+    underlyingPriceUSD: BigDecimal!
+    "Underlying token decimal length"
+    underlyingDecimals: Int!
+}
