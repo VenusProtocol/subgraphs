@@ -15,6 +15,7 @@ import {
   handleMarketListed,
   handleNewCloseFactor,
   handleNewCollateralFactor,
+  handleNewLiquidationIncentive,
 } from '../src/mappings/pool';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
 import {
@@ -23,6 +24,7 @@ import {
   createMarketListedEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
+  createNewLiquidationIncentiveEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -184,5 +186,28 @@ describe('Pool Events', () => {
       'collateralFactor',
       newCollateralFactorMantissa.toBigDecimal().div(defaultMantissaFactorBigDecimal).toString(),
     );
+  });
+
+  test('indexes NewLiquidationIncentive event', () => {
+    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+
+    handleMarketListed(marketListedEvent);
+
+    const oldLiquidationIncentiveMantissa = BigInt.fromI64(900000000);
+    const newLiquidationIncentiveMantissa = BigInt.fromI64(540000000);
+    const newLiquidationIncentiveEvent = createNewLiquidationIncentiveEvent(
+      comptrollerAddress,
+      oldLiquidationIncentiveMantissa,
+      newLiquidationIncentiveMantissa,
+    );
+
+    handleNewLiquidationIncentive(newLiquidationIncentiveEvent);
+
+    const assertPoolDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
+    };
+
+    assertPoolDocument('id', comptrollerAddress.toHexString());
+    assertPoolDocument('liquidationIncentive', newLiquidationIncentiveMantissa.toString());
   });
 });

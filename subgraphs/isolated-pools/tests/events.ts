@@ -8,6 +8,7 @@ import {
   MarketListed as MarketListedEvent,
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
+  NewLiquidationIncentive as NewLiquidationIncentiveEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
   PoolNameSet as PoolNameSetEvent,
@@ -146,6 +147,30 @@ export const createNewCollateralFactorEvent = (
     ethereum.Value.fromSignedBigInt(newCollateralFactorMantissa),
   );
   event.parameters.push(newCollateralFactorMantissaParam);
+
+  return event;
+};
+
+export const createNewLiquidationIncentiveEvent = (
+  poolAddress: Address,
+  oldLiquidationIncentiveMantissa: BigInt,
+  newLiquidationIncentiveMantissa: BigInt,
+): NewLiquidationIncentiveEvent => {
+  const event = changetype<NewLiquidationIncentiveEvent>(newMockEvent());
+  event.address = poolAddress;
+  event.parameters = [];
+
+  const oldLiquidationIncentiveMantissaParam = new ethereum.EventParam(
+    'oldLiquidationIncentiveMantissa',
+    ethereum.Value.fromSignedBigInt(oldLiquidationIncentiveMantissa),
+  );
+  event.parameters.push(oldLiquidationIncentiveMantissaParam);
+
+  const newLiquidationIncentiveMantissaParam = new ethereum.EventParam(
+    'newLiquidationIncentiveMantissa',
+    ethereum.Value.fromSignedBigInt(newLiquidationIncentiveMantissa),
+  );
+  event.parameters.push(newLiquidationIncentiveMantissaParam);
 
   return event;
 };
