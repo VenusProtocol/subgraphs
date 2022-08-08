@@ -16,13 +16,14 @@ import { updateMarket } from './markets';
 
 const comptrollerAddress = Address.fromString('0xfd36e2c2a6789db23113685031d7f16329158384');
 
-export const exponentToBigDecimal = (decimals: i32): BigDecimal => {
+// Writting this as an arrow function, produces a type signature compile error
+export function exponentToBigDecimal(decimals: i32): BigDecimal {
   let bd = BigDecimal.fromString('1');
   for (let i = 0; i < decimals; i++) {
     bd = bd.times(BigDecimal.fromString('10'));
   }
   return bd;
-};
+}
 
 export let mantissaFactor = 18;
 export let vTokenDecimals = 8;
