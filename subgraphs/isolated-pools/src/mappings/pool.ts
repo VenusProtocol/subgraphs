@@ -1,27 +1,34 @@
-/* eslint-disable */
-/* renable when implementing*/
-export const handleMarketListed = () => {};
+import { MarketListed } from '../../generated/PoolRegistry/Comptroller';
+import { CToken } from '../../generated/templates';
+import { createMarket } from '../operations/create';
 
-export const handleMarketEntered = () => {};
+export const handleMarketListed = (event: MarketListed): void => {
+  // Dynamically index all new listed tokens
+  const cTokenAddress = event.params.cToken;
+  CToken.create(cTokenAddress);
+  createMarket(cTokenAddress);
+};
 
-export const handleMarketExited = () => {};
+export const handleMarketEntered = (): void => {}; // eslint-disable-line
 
-export const handleNewCloseFactor = () => {};
+export const handleMarketExited = (): void => {}; // eslint-disable-line
 
-export const handleNewCollateralFactor = () => {};
+export const handleNewCloseFactor = (): void => {}; // eslint-disable-line
 
-export const handleNewLiquidationIncentive = () => {};
+export const handleNewCollateralFactor = (): void => {}; // eslint-disable-line
 
-export const handleNewPriceOracle = () => {};
+export const handleNewLiquidationIncentive = (): void => {}; // eslint-disable-line
 
-export const handleNewPauseGuardian = () => {};
+export const handleNewPriceOracle = (): void => {}; // eslint-disable-line
 
-export const handleGlobalActionPaused = () => {};
+export const handleNewPauseGuardian = (): void => {}; // eslint-disable-line
 
-export const handleMarketActionPaused = () => {};
+export const handleGlobalActionPaused = (): void => {}; // eslint-disable-line
 
-export const handleNewBorrowCap = () => {};
+export const handleMarketActionPaused = (): void => {}; // eslint-disable-line
 
-export const handleNewBorrowCapGuardian = () => {};
+export const handleNewBorrowCap = (): void => {}; // eslint-disable-line
 
-export const handleNewMinLiquidatableAmount = () => {};
+export const handleNewBorrowCapGuardian = (): void => {}; // eslint-disable-line
+
+export const handleNewMinLiquidatableAmount = (): void => {}; // eslint-disable-line

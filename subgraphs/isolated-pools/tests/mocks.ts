@@ -1,9 +1,7 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
 import { poolRegistryAddress } from '../src/constants';
-
-// type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
 
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
@@ -26,4 +24,55 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx))])
       .returns([tupleValue]);
   });
+}
+
+export const createVBep20AndUnderlyingMock = (
+  contractAddress: Address,
+  underlyingAddress: Address,
+  comptrollerAddress: Address,
+  name: string,
+  symbol: string,
+  decimals: BigInt,
+  reserveFactorMantissa: BigInt,
+  interestRateModelAddress: Address,
+): void => {
+  // vBep20
+  createMockedFunction(contractAddress, 'underlying', 'underlying():(address)').returns([
+    ethereum.Value.fromAddress(underlyingAddress),
+  ]);
+
+  createMockedFunction(contractAddress, 'name', 'name():(string)').returns([
+    ethereum.Value.fromString(`Venus ${name}`),
+  ]);
+
+  createMockedFunction(contractAddress, 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(`v${symbol}`),
+  ]);
+
+  createMockedFunction(
+    contractAddress,
+    'interestRateModel',
+    'interestRateModel():(address)',
+  ).returns([ethereum.Value.fromAddress(interestRateModelAddress)]);
+
+  createMockedFunction(
+    contractAddress,
+    'reserveFactorMantissa',
+    'reserveFactorMantissa():(uint256)',
+  ).returns([ethereum.Value.fromUnsignedBigInt(reserveFactorMantissa)]);
+
+  createMockedFunction(contractAddress, 'comptroller', 'comptroller():(address)').returns([
+    ethereum.Value.fromAddress(comptrollerAddress),
+  ]);
+
+  // Underlying
+  createMockedFunction(underlyingAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromUnsignedBigInt(decimals),
+  ]);
+  createMockedFunction(underlyingAddress, 'name', 'name():(string)').returns([
+    ethereum.Value.fromString(name),
+  ]);
+  createMockedFunction(underlyingAddress, 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(symbol),
+  ]);
 };

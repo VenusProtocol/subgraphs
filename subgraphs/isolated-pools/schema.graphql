@@ -49,6 +49,10 @@ type Pool @entity {
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
+    "VToken address"
+    id: ID!
+    "Comptroller address"
+    comptroller: Bytes!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRate: BigDecimal!
@@ -68,8 +72,6 @@ type Market @entity {
     supplyRate: BigDecimal!
     "VToken symbol"
     symbol: String!
-    "VToken address"
-    id: ID!
     "Borrows in the market"
     totalBorrows: BigDecimal!
     "VToken supply. VTokens have 8 decimals"

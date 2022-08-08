@@ -2,6 +2,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 import { log } from 'matchstick-as/assembly/log';
 
+import { MarketListed as MarketListedEvent } from '../generated/PoolRegistry/Comptroller';
 import {
   PoolNameSet as PoolNameSetEvent,
   PoolRegistered as PoolRegisteredEvent,
@@ -43,6 +44,15 @@ export const createPoolNameSetEvent = (index: BigInt, name: string): PoolNameSet
   event.parameters.push(indexParam);
   const nameParam = new ethereum.EventParam('name', ethereum.Value.fromString(name));
   event.parameters.push(nameParam);
+  return event;
+}
+
+export const createMarketListedEvent = (cTokenAddress: Address): MarketListedEvent => {
+  const event = changetype<MarketListedEvent>(newMockEvent());
+
+  event.parameters = [];
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
 
   return event;
 };
