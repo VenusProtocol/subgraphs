@@ -18,7 +18,6 @@ const vBnbAddress = Address.fromString('0xA07c5b74C9B40447a954e1466938b865b6BBea
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 const nullAddress = Address.fromString('0x0000000000000000000000000000000000000000');
-// vBNBAddress
 
 const cleanup = (): void => {
   clearStore();
@@ -27,7 +26,7 @@ const cleanup = (): void => {
 afterEach(() => {
   cleanup();
 });
-// reserveFactorMantissa: new BigInt(1e18), interestRateModelAddress
+
 beforeAll(() => {
   // Mock USDC
   createVBep20AndUnderlyingMock(
@@ -50,12 +49,13 @@ beforeAll(() => {
     interestRateModelAddress,
   );
 });
-// Created vBnBMarket creates other market
+
 describe('handleMarketListing', () => {
   test('lists vUSDC market correctly with underlyingPriceUSD === 1', () => {
     const marketListedEvent = createMarketListedEvent(vUsdcAddress);
 
     handleMarketListed(marketListedEvent);
+
     const assertMarketDocument = (key: string, value: string): void => {
       assert.fieldEquals('Market', vUsdcAddress.toHex(), key, value);
     };
