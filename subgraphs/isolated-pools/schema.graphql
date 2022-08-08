@@ -29,8 +29,6 @@ type Pool @entity {
     name: String!
     "Creator of the pool"
     creator: Bytes!
-    "Comptroller contract that manages the pool's markets"
-    comptroller: Bytes!
     "Block where the market was created"
     blockPosted: Int!
     "Timestamp of market creation"
@@ -43,6 +41,14 @@ type Pool @entity {
     logoURL: String!
     "Description of the pool"
     description: String!
+    "Address of price oracle the comptroller uses"
+    priceOracle: Bytes!
+    "Factor used to determine repayAmount for liquidating"
+    closeFactor: BigInt!
+    "The percent bonus liquidators get for liquidating"
+    liquidationIncentive: BigInt!
+    "Max assets a single user can enter"
+    maxAssets: BigInt!
 }
 
 """
@@ -51,8 +57,8 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     "VToken address"
     id: ID!
-    "Comptroller address"
-    comptroller: Bytes!
+    "Pool address"
+    pool: Bytes!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRate: BigDecimal!
@@ -98,4 +104,74 @@ type Market @entity {
     underlyingPriceUSD: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
+}
+
+"""
+Account is an BNB address, with a list of all vToken markets the account has
+participated in, along with liquidation information.
+"""
+type Account @entity {
+    "User BNB address"
+    id: ID!
+    "Array of VTokens user is in"
+    tokens: [AccountVToken!]! @derivedFrom(field: "account")
+    "Count user has been liquidated"
+    countLiquidated: Int!
+    "Count user has liquidated others"
+    countLiquidator: Int!
+    "True if user has ever borrowed"
+    hasBorrowed: Boolean!
+}
+
+"""
+AccountVToken is a single account within a single vToken market, with data such
+as interest earned or paid
+"""
+type AccountVToken @entity {
+    "Concatenation of VToken address and user address"
+    id: ID!
+    "Relation to market"
+    market: Market!
+    "Symbol of the vToken"
+    symbol: String!
+    "Relation to user"
+    account: Account!
+    "Transactions data"
+    transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"account")
+    "Block number this asset was updated at in the contract"
+    accrualBlockNumber: BigInt!
+    "True if user is entered, false if they are exited"
+    enteredMarket: Boolean!
+
+    "VToken balance of the user"
+    vTokenBalance: BigDecimal!
+    "Total amount of underlying supplied"
+    totalUnderlyingSupplied: BigDecimal!
+    "Total amount of underling redeemed"
+    totalUnderlyingRedeemed: BigDecimal!
+    "The value of the borrow index upon users last interaction"
+    accountBorrowIndex: BigDecimal!
+    "Total amount underlying borrowed, exclusive of interest"
+    totalUnderlyingBorrowed: BigDecimal!
+    "Total amount underlying repaid"
+    totalUnderlyingRepaid: BigDecimal!
+    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+    storedBorrowBalance: BigDecimal!
+}
+
+"""
+Auxiliary entity for AccountVToken
+"""
+type AccountVTokenTransaction @entity {
+  id: ID!
+
+  account: AccountVToken!
+
+  tx_hash: Bytes!
+
+  timestamp: BigInt!
+
+  block: BigInt!
+
+  logIndex: BigInt!
 }

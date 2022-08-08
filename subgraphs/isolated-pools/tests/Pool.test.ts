@@ -1,4 +1,5 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { createMockedFunction } from 'matchstick-as';
 import {
   afterEach,
   assert,
@@ -8,13 +9,16 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { handleMarketListed } from '../src/mappings/pool';
-import { createMarketListedEvent } from './events';
+import { handleMarketEntered, handleMarketListed } from '../src/mappings/pool';
+import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
+import { createMarketEnteredEvent, createMarketListedEvent } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
 const cTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
+
+const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
@@ -23,7 +27,6 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
-  // Mock USDC
   createVBep20AndUnderlyingMock(
     cTokenAddress,
     tokenAddress,
@@ -51,5 +54,41 @@ describe('Pool Events', () => {
     };
 
     assertMarketDocument('id', cTokenAddress.toHexString());
+  });
+
+  test('indexes Market Entered event', () => {
+    createMockedFunction(cTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(accountAddress)])
+      .returns([ethereum.Value.fromI32(100)]);
+    const marketEnteredEvent = createMarketEnteredEvent(cTokenAddress, accountAddress);
+
+    handleMarketEntered(marketEnteredEvent);
+
+    const assertAccountDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Account', accountAddress.toHex(), key, value);
+    };
+
+    const accountVTokenTransactionId = getAccountVTokenTransactionId(
+      accountAddress,
+      marketEnteredEvent.transaction.hash,
+      marketEnteredEvent.logIndex,
+    );
+    const accountVTokenId = getAccountVTokenId(cTokenAddress, accountAddress);
+
+    assertAccountDocument('id', accountAddress.toHexString());
+    assert.fieldEquals(
+      'AccountVTokenTransaction',
+      accountVTokenTransactionId,
+      'id',
+      accountVTokenTransactionId,
+    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      marketEnteredEvent.block.number.toString(),
+    );
   });
 });
