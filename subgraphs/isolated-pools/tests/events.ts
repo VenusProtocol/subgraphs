@@ -4,6 +4,7 @@ import { log } from 'matchstick-as/assembly/log';
 
 import {
   MarketEntered as MarketEnteredEvent,
+  MarketExited as MarketExitedEvent,
   MarketListed as MarketListedEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
@@ -65,6 +66,24 @@ export const createMarketEnteredEvent = (
   accountAddress: Address,
 ): MarketEnteredEvent => {
   const event = changetype<MarketEnteredEvent>(newMockEvent());
+
+  event.parameters = [];
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
+  const accountAddressParam = new ethereum.EventParam(
+    'account',
+    ethereum.Value.fromAddress(accountAddress),
+  );
+  event.parameters.push(accountAddressParam);
+
+  return event;
+};
+
+export const createMarketExitedEvent = (
+  cTokenAddress: Address,
+  accountAddress: Address,
+): MarketExitedEvent => {
+  const event = changetype<MarketExitedEvent>(newMockEvent());
 
   event.parameters = [];
   const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));

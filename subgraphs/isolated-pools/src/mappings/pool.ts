@@ -1,4 +1,8 @@
-import { MarketEntered, MarketListed } from '../../generated/PoolRegistry/Comptroller';
+import {
+  MarketEntered,
+  MarketExited,
+  MarketListed,
+} from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
 import { createMarket } from '../operations/create';
 import {
@@ -39,7 +43,28 @@ export const handleMarketEntered = (event: MarketEntered): void => {
   );
 };
 
-export const handleMarketExited = (): void => {}; // eslint-disable-line
+export const handleMarketExited = (event: MarketExited): void => {
+  const cTokenAddress = event.params.cToken;
+  const accountAddress = event.params.account;
+
+  const market = getOrCreateMarket(cTokenAddress);
+  getOrCreateAccount(accountAddress);
+
+  updateOrCreateAccountVToken(
+    accountAddress,
+    cTokenAddress,
+    market.symbol,
+    event.block.number,
+    new Box(false),
+  );
+  getOrCreateAccountVTokenTransaction(
+    accountAddress,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.block.number,
+    event.logIndex,
+  );
+};
 
 export const handleNewCloseFactor = (): void => {}; // eslint-disable-line
 

@@ -12,6 +12,7 @@ import {
 
 export function createPool(poolAddress: Address): Pool {
   const pool = new Pool(poolAddress.toHexString());
+  // Fill in pool from pool lens
   pool.save();
   return pool;
 }
