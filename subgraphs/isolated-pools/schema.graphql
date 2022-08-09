@@ -1,9 +1,48 @@
 """
-The Pool Registry entity has protocol level variables stored
+The Pool Registry entity manages pools and markets
 """
 type PoolRegistry @entity {
     "ID is set to 1"
     id: ID!
+}
+
+"""
+enum RiskRating {
+    VERY_HIGH_RISK,
+    HIGH_RISK,
+    MEDIUM_RISK,
+    LOW_RISK,
+    MINIMAL_RISK
+}
+"""
+type RiskRating @entity {
+    id: ID!
+}
+
+"""
+The Pool entity
+"""
+type Pool @entity {
+    "Pool Registry index of the pool"
+    id: ID!
+    "Name of the pool"
+    name: String!
+    "Creator of the pool"
+    creator: Bytes!
+    "Comptroller contract that manages the pool's markets"
+    comptroller: Bytes!
+    "Block where the market was created"
+    blockPosted: Int!
+    "Timestamp of market creation"
+    timestampPosted: Int!
+    "Rating of the pools risk level"
+    riskRating: RiskRating!
+    "Category that the pool belongs too"
+    category: String!
+    "Url for pool logo"
+    logoURL: String!
+    "Description of the pool"
+    description: String!
 }
 
 """
