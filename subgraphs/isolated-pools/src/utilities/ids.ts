@@ -13,3 +13,6 @@ export const getAccountVTokenTransactionId = (
   [accountAddress.toHexString(), transactionHash.toHexString(), logIndex.toString()].join(
     SEPERATOR,
   );
+
+export const getPoolActionId = (poolAddress: Address, action: string): string =>
+  [poolAddress.toHexString(), action].join(SEPERATOR);

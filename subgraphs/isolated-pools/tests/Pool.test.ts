@@ -18,8 +18,13 @@ import {
   handleNewLiquidationIncentive,
   handleNewPauseGuardian,
   handleNewPriceOracle,
+  handlePoolActionPaused,
 } from '../src/mappings/pool';
-import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
+import {
+  getAccountVTokenId,
+  getAccountVTokenTransactionId,
+  getPoolActionId,
+} from '../src/utilities/ids';
 import {
   createMarketEnteredEvent,
   createMarketExitedEvent,
@@ -29,6 +34,7 @@ import {
   createNewLiquidationIncentiveEvent,
   createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
+  createPoolActionPausedEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -37,6 +43,7 @@ const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const oldAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 const newAddress = Address.fromString('0x0000000000000000000000000000000000000e0e');
+const poolAddress = Address.fromString('0x0000000000000000000000000000000000000f0f');
 
 const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
@@ -253,5 +260,20 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('pauseGuardian', newPauseGuardian.toHexString());
+  });
+
+  test('indexes PoolPauseAction event', () => {
+    const action = 'Transfer';
+    const pauseState = true;
+    const poolActionPausedEvent = createPoolActionPausedEvent(poolAddress, action, pauseState);
+
+    handlePoolActionPaused(poolActionPausedEvent);
+
+    const id = getPoolActionId(poolAddress, action);
+
+    assert.fieldEquals('PoolAction', id, 'id', id);
+    assert.fieldEquals('PoolAction', id, 'pool', poolAddress.toHexString());
+    assert.fieldEquals('PoolAction', id, 'action', action);
+    assert.fieldEquals('PoolAction', id, 'pauseState', pauseState.toString());
   });
 });

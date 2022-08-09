@@ -11,6 +11,7 @@ import {
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
   NewPauseGuardian as NewPauseGuardianEvent,
   NewPriceOracle as NewPriceOracleEvent,
+  ActionPaused as PoolActionPausedEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
   PoolNameSet as PoolNameSetEvent,
@@ -221,6 +222,27 @@ export const createNewPauseGuardianEvent = (
     ethereum.Value.fromAddress(newPauseGuardian),
   );
   event.parameters.push(newPauseGuardianParam);
+
+  return event;
+};
+
+export const createPoolActionPausedEvent = (
+  poolAddress: Address,
+  action: string,
+  pauseState: boolean,
+): PoolActionPausedEvent => {
+  const event = changetype<PoolActionPausedEvent>(newMockEvent());
+  event.address = poolAddress;
+  event.parameters = [];
+
+  const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
+  event.parameters.push(actionParam);
+
+  const pauseStateParam = new ethereum.EventParam(
+    'pauseState',
+    ethereum.Value.fromBoolean(pauseState),
+  );
+  event.parameters.push(pauseStateParam);
 
   return event;
 };

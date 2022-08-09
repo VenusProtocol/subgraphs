@@ -15,8 +15,22 @@ enum RiskRating {
     MINIMAL_RISK
 }
 """
+
 type RiskRating @entity {
     id: ID!
+}
+
+"""
+enum PoolActionPauseState {
+  Transfer = "Transfer",
+  Seize = "Seize",
+}
+"""
+type PoolAction @entity {
+    id: ID!
+    action: String!
+    pauseState: Boolean!
+    pool: Bytes!
 }
 
 """
@@ -51,6 +65,17 @@ type Pool @entity {
     liquidationIncentive: BigInt!
     "Max assets a single user can enter"
     maxAssets: BigInt!
+}
+
+"""
+enum MarketPauseGuardianAction {
+}
+"""
+type MarketPauseGuardian @entity {
+    id: ID!
+    action: String!
+    state: Boolean!
+    cToken: Bytes!
 }
 
 """

@@ -7,6 +7,7 @@ import {
   NewLiquidationIncentive,
   NewPauseGuardian,
   NewPriceOracle,
+  ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
@@ -16,8 +17,11 @@ import {
   getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
-import { updateOrCreateAccountVToken } from '../operations/updateOrCreate';
 import { readPool } from '../operations/read';
+import {
+  updateOrCreateAccountVToken,
+  updateOrCreatePoolAction,
+} from '../operations/updateOrCreate';
 import Box from '../utilities/box';
 
 export const handleMarketListed = (event: MarketListed): void => {
@@ -111,7 +115,12 @@ export const handleNewPauseGuardian = (event: NewPauseGuardian): void => {
   pool.save();
 };
 
-export const handleGlobalActionPaused = (): void => {}; // eslint-disable-line
+export const handlePoolActionPaused = (event: PoolActionPaused): void => {
+  const poolAddress = event.address;
+  const action = event.params.action as string;
+  const pauseState = event.params.pauseState;
+  updateOrCreatePoolAction(poolAddress, action, pauseState);
+};
 
 export const handleMarketActionPaused = (): void => {}; // eslint-disable-line
 

@@ -51,6 +51,7 @@ templates:
         - User
         - Market
         - CTokenInfo
+        - PoolAction
       abis:
         - name: Comptroller
           file: ../../packages/isolated-pools-abis/Comptroller.json
@@ -72,7 +73,7 @@ templates:
         - event: NewPauseGuardian(address,address)
           handler: handleNewPauseGuardian
         - event: ActionPaused(address,string,bool)
-          handler: handleGlobalActionPaused
+          handler: handlePoolActionPaused
         - event: ActionPaused(address,string,bool)
           handler: handleMarketActionPaused
         - event: NewBorrowCap(indexed address,uint256)
