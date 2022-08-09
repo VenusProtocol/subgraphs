@@ -16,6 +16,7 @@ import {
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
+  handleNewPauseGuardian,
   handleNewPriceOracle,
 } from '../src/mappings/pool';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
@@ -26,6 +27,7 @@ import {
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
+  createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
@@ -232,5 +234,24 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('priceOracle', newPriceOracle.toHexString());
+  });
+
+  test('indexes NewPauseGuardian event', () => {
+    const oldPauseGuardian = oldAddress;
+    const newPauseGuardian = newAddress;
+    const newPauseGuardianEvent = createNewPauseGuardianEvent(
+      comptrollerAddress,
+      oldPauseGuardian,
+      newPauseGuardian,
+    );
+
+    handleNewPauseGuardian(newPauseGuardianEvent);
+
+    const assertPoolDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
+    };
+
+    assertPoolDocument('id', comptrollerAddress.toHexString());
+    assertPoolDocument('pauseGuardian', newPauseGuardian.toHexString());
   });
 });

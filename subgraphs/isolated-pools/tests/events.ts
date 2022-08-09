@@ -9,6 +9,7 @@ import {
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
+  NewPauseGuardian as NewPauseGuardianEvent,
   NewPriceOracle as NewPriceOracleEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
@@ -196,6 +197,30 @@ export const createNewPriceOracleEvent = (
     ethereum.Value.fromAddress(newPriceOracle),
   );
   event.parameters.push(newPriceOracleParam);
+
+  return event;
+};
+
+export const createNewPauseGuardianEvent = (
+  comptrollerAddress: Address,
+  oldPauseGuardian: Address,
+  newPauseGuardian: Address,
+): NewPauseGuardianEvent => {
+  const event = changetype<NewPauseGuardianEvent>(newMockEvent());
+  event.address = comptrollerAddress;
+  event.parameters = [];
+
+  const oldPauseGuardianParam = new ethereum.EventParam(
+    'oldPauseGuardian',
+    ethereum.Value.fromAddress(oldPauseGuardian),
+  );
+  event.parameters.push(oldPauseGuardianParam);
+
+  const newPauseGuardianParam = new ethereum.EventParam(
+    'newPauseGuardian',
+    ethereum.Value.fromAddress(newPauseGuardian),
+  );
+  event.parameters.push(newPauseGuardianParam);
 
   return event;
 };

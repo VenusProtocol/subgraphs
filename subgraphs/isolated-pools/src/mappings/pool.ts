@@ -5,6 +5,7 @@ import {
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
+  NewPauseGuardian,
   NewPriceOracle,
 } from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
@@ -103,7 +104,12 @@ export const handleNewPriceOracle = (event: NewPriceOracle): void => {
   pool.save();
 };
 
-export const handleNewPauseGuardian = (): void => {}; // eslint-disable-line
+export const handleNewPauseGuardian = (event: NewPauseGuardian): void => {
+  const poolAddress = event.address;
+  const pool = readPool(poolAddress);
+  pool.pauseGuardian = event.params.newPauseGuardian;
+  pool.save();
+};
 
 export const handleGlobalActionPaused = (): void => {}; // eslint-disable-line
 

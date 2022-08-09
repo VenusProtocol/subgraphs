@@ -43,6 +43,8 @@ type Pool @entity {
     description: String!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
+    "Address of pause guardian the comptroller uses"
+    pauseGuardian: Bytes!
     "Factor used to determine repayAmount for liquidating"
     closeFactor: BigInt!
     "The percent bonus liquidators get for liquidating"
