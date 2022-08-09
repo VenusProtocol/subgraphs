@@ -1,4 +1,5 @@
 import {
+  ActionPaused1 as MarketActionPaused,
   MarketEntered,
   MarketExited,
   MarketListed,
@@ -20,6 +21,7 @@ import {
 import { readPool } from '../operations/read';
 import {
   updateOrCreateAccountVToken,
+  updateOrCreateMarketAction,
   updateOrCreatePoolAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
@@ -122,7 +124,12 @@ export const handlePoolActionPaused = (event: PoolActionPaused): void => {
   updateOrCreatePoolAction(poolAddress, action, pauseState);
 };
 
-export const handleMarketActionPaused = (): void => {}; // eslint-disable-line
+export const handleMarketActionPaused = (event: MarketActionPaused): void => {
+  const cTokenAddress = event.params.cToken;
+  const action = event.params.action as string;
+  const pauseState = event.params.pauseState;
+  updateOrCreateMarketAction(cTokenAddress, action, pauseState);
+};
 
 export const handleNewBorrowCap = (): void => {}; // eslint-disable-line
 

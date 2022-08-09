@@ -1,8 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { AccountVToken, PoolAction } from '../../generated/schema';
+import { AccountVToken, MarketAction, PoolAction } from '../../generated/schema';
 import Box from '../utilities/box';
-import { getAccountVTokenId, getPoolActionId } from '../utilities/ids';
+import { getAccountVTokenId, getMarketActionId, getPoolActionId } from '../utilities/ids';
 import { getOrCreateAccountVToken } from './getOrCreate';
 
 export const updateOrCreateAccountVToken = (
@@ -44,4 +44,18 @@ export const updateOrCreatePoolAction = (
   poolAction.pauseState = pauseState;
   poolAction.save();
   return poolAction;
+};
+
+export const updateOrCreateMarketAction = (
+  cTokenAddress: Address,
+  action: string,
+  pauseState: boolean,
+): MarketAction => {
+  const id = getMarketActionId(cTokenAddress, action);
+  const marketAction = new MarketAction(id);
+  marketAction.cToken = cTokenAddress;
+  marketAction.action = action;
+  marketAction.pauseState = pauseState;
+  marketAction.save();
+  return marketAction;
 };

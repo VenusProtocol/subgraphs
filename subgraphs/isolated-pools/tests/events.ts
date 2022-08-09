@@ -3,6 +3,7 @@ import { newMockEvent } from 'matchstick-as';
 import { log } from 'matchstick-as/assembly/log';
 
 import {
+  ActionPaused1 as MarketActionPausedEvent,
   MarketEntered as MarketEnteredEvent,
   MarketExited as MarketExitedEvent,
   MarketListed as MarketListedEvent,
@@ -234,6 +235,29 @@ export const createPoolActionPausedEvent = (
   const event = changetype<PoolActionPausedEvent>(newMockEvent());
   event.address = poolAddress;
   event.parameters = [];
+
+  const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
+  event.parameters.push(actionParam);
+
+  const pauseStateParam = new ethereum.EventParam(
+    'pauseState',
+    ethereum.Value.fromBoolean(pauseState),
+  );
+  event.parameters.push(pauseStateParam);
+
+  return event;
+};
+
+export const createMarketActionPausedEvent = (
+  cTokenAddress: Address,
+  action: string,
+  pauseState: boolean,
+): MarketActionPausedEvent => {
+  const event = changetype<MarketActionPausedEvent>(newMockEvent());
+  event.parameters = [];
+
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
 
   const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
   event.parameters.push(actionParam);

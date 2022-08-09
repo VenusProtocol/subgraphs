@@ -69,13 +69,15 @@ type Pool @entity {
 
 """
 enum MarketPauseGuardianAction {
+  Mint = "Mint",
+  Borrow = "Borrow",
 }
 """
-type MarketPauseGuardian @entity {
+type MarketAction @entity {
     id: ID!
-    action: String!
-    state: Boolean!
     cToken: Bytes!
+    action: String!
+    pauseState: Boolean!
 }
 
 """

@@ -866,13 +866,36 @@
               "widthDefault": 60
             },
             "id": "1ddf8186-0342-4ce6-828b-9faadaea5934"
+          },
+          {
+            "name": "",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c1cbe677-1291-43c6-bb66-2967b84db2c7"
           }
         ],
         "ui": {
           "active": false,
           "left": 1147,
           "top": 435.3099,
-          "zIndex": 2,
+          "zIndex": 50,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1019,12 +1042,120 @@
           "active": false,
           "left": 304,
           "top": 701,
-          "zIndex": 40,
+          "zIndex": 42,
           "widthName": 106.7998046875,
           "widthComment": 60
         },
         "visible": true,
         "id": "0c7a54a1-94c0-4ddb-8308-e50cf2d026a5"
+      },
+      {
+        "name": "marketActionPaused",
+        "comment": "",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "79309dfd-1995-46a4-bdbe-1657dc8c098d"
+          },
+          {
+            "name": "market",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "8f35dfcb-be6c-4c8f-a186-dcff69ad313b"
+          },
+          {
+            "name": "pauseState",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.7744140625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "48cae71e-1f26-47d7-8a9a-f7b434d52c01"
+          },
+          {
+            "name": "action",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "60543d80-07bb-4527-8010-e440a41be749"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 1163.25,
+          "top": 112,
+          "zIndex": 71,
+          "widthName": 121.95166015625,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "a39ca2b8-b03e-4523-b2df-4d1583494a3f"
       }
     ],
     "indexes": []
@@ -1071,7 +1202,7 @@
           "tableId": "d8cd18a6-8d0c-491f-b383-d3290f11387d",
           "columnIds": ["0865ed3f-2014-4e4c-860b-bc8f65e78960"],
           "x": 1147,
-          "y": 777.3099,
+          "y": 787.5599,
           "direction": "left"
         },
         "constraintName": "fk_pool_to_market",
@@ -1099,6 +1230,28 @@
         "constraintName": "fk_pool_to_poolactionpaused",
         "visible": true,
         "id": "5957903d-c383-4590-aa5d-5f73d4294447"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "d8cd18a6-8d0c-491f-b383-d3290f11387d",
+          "columnIds": ["c1cbe677-1291-43c6-bb66-2967b84db2c7"],
+          "x": 1237.72900390625,
+          "y": 435.3099,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "a39ca2b8-b03e-4523-b2df-4d1583494a3f",
+          "columnIds": ["8f35dfcb-be6c-4c8f-a186-dcff69ad313b"],
+          "x": 1237.725830078125,
+          "y": 263,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_market_to_marketactionpaused",
+        "visible": true,
+        "id": "8413f0c7-1246-4468-9176-941ded13bbf7"
       }
     ]
   }

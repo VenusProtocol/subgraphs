@@ -12,6 +12,7 @@ import {
 
 import { defaultMantissaFactorBigDecimal } from '../src/constants';
 import {
+  handleMarketActionPaused,
   handleMarketEntered,
   handleMarketExited,
   handleMarketListed,
@@ -26,9 +27,11 @@ import { handlePoolRegistered } from '../src/mappings/poolRegistry';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
+  getMarketActionId,
   getPoolActionId,
 } from '../src/utilities/ids';
 import {
+  createMarketActionPausedEvent,
   createMarketEnteredEvent,
   createMarketExitedEvent,
   createMarketListedEvent,
@@ -286,5 +289,24 @@ describe('Pool Events', () => {
     assert.fieldEquals('PoolAction', id, 'pool', poolAddress.toHexString());
     assert.fieldEquals('PoolAction', id, 'action', action);
     assert.fieldEquals('PoolAction', id, 'pauseState', pauseState.toString());
+  });
+
+  test('indexes MarketPauseAction event', () => {
+    const action = 'Mint';
+    const pauseState = true;
+    const marketActionPausedEvent = createMarketActionPausedEvent(
+      cTokenAddress,
+      action,
+      pauseState,
+    );
+
+    handleMarketActionPaused(marketActionPausedEvent);
+
+    const id = getMarketActionId(cTokenAddress, action);
+
+    assert.fieldEquals('MarketAction', id, 'id', id);
+    assert.fieldEquals('MarketAction', id, 'cToken', cTokenAddress.toHexString());
+    assert.fieldEquals('MarketAction', id, 'action', action);
+    assert.fieldEquals('MarketAction', id, 'pauseState', pauseState.toString());
   });
 });
