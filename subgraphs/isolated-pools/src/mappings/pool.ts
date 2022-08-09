@@ -140,6 +140,4 @@ export const handleNewBorrowCap = (event: NewBorrowCap): void => {
   market.save();
 };
 
-export const handleNewBorrowCapGuardian = (): void => {}; // eslint-disable-line
-
 export const handleNewMinLiquidatableAmount = (): void => {}; // eslint-disable-line
