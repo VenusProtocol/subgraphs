@@ -1,5 +1,6 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
+import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import { Account, Market, Pool } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/CToken/BEP20';
 import { CToken as CTokenContract } from '../../generated/templates/CToken/CToken';
@@ -10,10 +11,24 @@ import {
   getUnderlyingAddress,
 } from '../utilities';
 
-export function createPool(poolAddress: Address): Pool {
-  const pool = new Pool(poolAddress.toHexString());
+export function createPool(event: PoolRegistered): Pool {
+  const pool = new Pool(event.params.pool.comptroller.toHexString());
   // Fill in pool from pool lens
+  pool.name = '';
+  pool.creator = event.address;
+  pool.blockPosted = event.block.number;
+  pool.timestampPosted = event.block.timestamp;
+  pool.riskRating = '';
+  pool.category = '';
+  pool.logoURL = '';
+  pool.description = '';
+  pool.priceOracle = Address.fromString('0x0000000000000000000000000000000000000000');
+  pool.pauseGuardian = Address.fromString('0x0000000000000000000000000000000000000000');
+  pool.closeFactor = new BigInt(0);
+  pool.liquidationIncentive = new BigInt(0);
+  pool.maxAssets = new BigInt(0);
   pool.save();
+
   return pool;
 }
 

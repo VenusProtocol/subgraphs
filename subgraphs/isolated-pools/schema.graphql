@@ -44,9 +44,9 @@ type Pool @entity {
     "Creator of the pool"
     creator: Bytes!
     "Block where the market was created"
-    blockPosted: Int!
+    blockPosted: BigInt!
     "Timestamp of market creation"
-    timestampPosted: Int!
+    timestampPosted: BigInt!
     "Rating of the pools risk level"
     riskRating: RiskRating!
     "Category that the pool belongs too"

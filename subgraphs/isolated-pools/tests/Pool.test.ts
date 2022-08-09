@@ -4,11 +4,13 @@ import {
   afterEach,
   assert,
   beforeAll,
+  beforeEach,
   clearStore,
   describe,
   test,
 } from 'matchstick-as/assembly/index';
 
+import { defaultMantissaFactorBigDecimal } from '../src/constants';
 import {
   handleMarketEntered,
   handleMarketExited,
@@ -20,6 +22,7 @@ import {
   handleNewPriceOracle,
   handlePoolActionPaused,
 } from '../src/mappings/pool';
+import { handlePoolRegistered } from '../src/mappings/poolRegistry';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
@@ -35,6 +38,7 @@ import {
   createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
+  createPoolRegisteredEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -68,6 +72,13 @@ beforeAll(() => {
   createMockedFunction(cTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromI32(100)]);
+});
+
+beforeEach(() => {
+  const index = new BigInt(0);
+  const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+
+  handlePoolRegistered(poolRegisteredEvent);
 });
 
 afterEach(() => {
