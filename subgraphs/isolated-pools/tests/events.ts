@@ -9,6 +9,7 @@ import {
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
+  NewPriceOracle as NewPriceOracleEvent,
 } from '../generated/PoolRegistry/Comptroller';
 import {
   PoolNameSet as PoolNameSetEvent,
@@ -171,6 +172,30 @@ export const createNewLiquidationIncentiveEvent = (
     ethereum.Value.fromSignedBigInt(newLiquidationIncentiveMantissa),
   );
   event.parameters.push(newLiquidationIncentiveMantissaParam);
+
+  return event;
+};
+
+export const createNewPriceOracleEvent = (
+  comptrollerAddress: Address,
+  oldPriceOracle: Address,
+  newPriceOracle: Address,
+): NewPriceOracleEvent => {
+  const event = changetype<NewPriceOracleEvent>(newMockEvent());
+  event.address = comptrollerAddress;
+  event.parameters = [];
+
+  const oldPriceOracleParam = new ethereum.EventParam(
+    'oldPriceOracle',
+    ethereum.Value.fromAddress(oldPriceOracle),
+  );
+  event.parameters.push(oldPriceOracleParam);
+
+  const newPriceOracleParam = new ethereum.EventParam(
+    'newPriceOracle',
+    ethereum.Value.fromAddress(newPriceOracle),
+  );
+  event.parameters.push(newPriceOracleParam);
 
   return event;
 };

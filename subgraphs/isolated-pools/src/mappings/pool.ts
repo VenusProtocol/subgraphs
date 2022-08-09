@@ -5,6 +5,7 @@ import {
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
+  NewPriceOracle,
 } from '../../generated/PoolRegistry/Comptroller';
 import { CToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
@@ -95,7 +96,12 @@ export const handleNewLiquidationIncentive = (event: NewLiquidationIncentive): v
   pool.save();
 };
 
-export const handleNewPriceOracle = (): void => {}; // eslint-disable-line
+export const handleNewPriceOracle = (event: NewPriceOracle): void => {
+  const poolAddress = event.address;
+  const pool = readPool(poolAddress);
+  pool.priceOracle = event.params.newPriceOracle;
+  pool.save();
+};
 
 export const handleNewPauseGuardian = (): void => {}; // eslint-disable-line
 

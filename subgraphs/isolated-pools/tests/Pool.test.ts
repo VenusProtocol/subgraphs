@@ -16,6 +16,7 @@ import {
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
+  handleNewPriceOracle,
 } from '../src/mappings/pool';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../src/utilities/ids';
 import {
@@ -25,12 +26,15 @@ import {
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
+  createNewPriceOracleEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
 const cTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
+const oldAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
+const newAddress = Address.fromString('0x0000000000000000000000000000000000000e0e');
 
 const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
@@ -209,5 +213,24 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('liquidationIncentive', newLiquidationIncentiveMantissa.toString());
+  });
+
+  test('indexes NewPriceOracle event', () => {
+    const oldPriceOracle = oldAddress;
+    const newPriceOracle = newAddress;
+    const newPriceOracleEvent = createNewPriceOracleEvent(
+      comptrollerAddress,
+      oldPriceOracle,
+      newPriceOracle,
+    );
+
+    handleNewPriceOracle(newPriceOracleEvent);
+
+    const assertPoolDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
+    };
+
+    assertPoolDocument('id', comptrollerAddress.toHexString());
+    assertPoolDocument('priceOracle', newPriceOracle.toHexString());
   });
 });
