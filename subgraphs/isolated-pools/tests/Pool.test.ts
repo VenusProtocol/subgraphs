@@ -20,6 +20,7 @@ import {
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
+  handleNewMinLiquidatableAmount,
   handleNewPauseGuardian,
   handleNewPriceOracle,
   handlePoolActionPaused,
@@ -40,6 +41,7 @@ import {
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
+  createNewMinLiquidatableAmountEvent,
   createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
@@ -320,5 +322,23 @@ describe('Pool Events', () => {
 
     assert.fieldEquals('Market', cTokenAddress.toHex(), 'id', cTokenAddress.toHexString());
     assert.fieldEquals('Market', cTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
+  });
+
+  test('indexes NewMinLiquidatableAmount event', () => {
+    const newMinLiquidatableAmount = BigInt.fromI64(200000000000000000);
+    const newMinLiquidatableAmountEvent = createNewMinLiquidatableAmountEvent(
+      cTokenAddress,
+      newMinLiquidatableAmount,
+    );
+
+    handleNewMinLiquidatableAmount(newMinLiquidatableAmountEvent);
+
+    assert.fieldEquals('Market', cTokenAddress.toHex(), 'id', cTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      cTokenAddress.toHex(),
+      'minLiquidatableAmount',
+      newMinLiquidatableAmount.toString(),
+    );
   });
 });

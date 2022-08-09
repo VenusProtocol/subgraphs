@@ -11,6 +11,7 @@ import {
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
+  NewMinLiquidatableAmount as NewMinLiquidatableAmountEvent,
   NewPauseGuardian as NewPauseGuardianEvent,
   NewPriceOracle as NewPriceOracleEvent,
   ActionPaused as PoolActionPausedEvent,
@@ -287,6 +288,25 @@ export const createNewBorrowCapEvent = (
     ethereum.Value.fromUnsignedBigInt(newBorrowCap),
   );
   event.parameters.push(newBorrowCapParam);
+
+  return event;
+};
+
+export const createNewMinLiquidatableAmountEvent = (
+  cTokenAddress: Address,
+  newMinLiquidatableAmount: BigInt,
+): NewMinLiquidatableAmountEvent => {
+  const event = changetype<NewMinLiquidatableAmountEvent>(newMockEvent());
+  event.parameters = [];
+
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
+
+  const newMinLiquidatableAmountParam = new ethereum.EventParam(
+    'newMinLiquidatableAmount',
+    ethereum.Value.fromUnsignedBigInt(newMinLiquidatableAmount),
+  );
+  event.parameters.push(newMinLiquidatableAmountParam);
 
   return event;
 };

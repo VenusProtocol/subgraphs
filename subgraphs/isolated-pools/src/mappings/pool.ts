@@ -7,6 +7,7 @@ import {
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
+  NewMinLiquidatableAmount,
   NewPauseGuardian,
   NewPriceOracle,
   ActionPaused as PoolActionPaused,
@@ -140,4 +141,10 @@ export const handleNewBorrowCap = (event: NewBorrowCap): void => {
   market.save();
 };
 
-export const handleNewMinLiquidatableAmount = (): void => {}; // eslint-disable-line
+export const handleNewMinLiquidatableAmount = (event: NewMinLiquidatableAmount): void => {
+  const cTokenAddress = event.params.cToken;
+  const newMinLiquidatableAmount = event.params.newMinLiquidatableAmount;
+  const market = getOrCreateMarket(cTokenAddress);
+  market.minLiquidatableAmount = newMinLiquidatableAmount;
+  market.save();
+};
