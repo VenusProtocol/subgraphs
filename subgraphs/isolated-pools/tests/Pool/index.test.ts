@@ -10,7 +10,7 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { defaultMantissaFactorBigDecimal } from '../src/constants';
+import { defaultMantissaFactorBigDecimal } from '../../src/constants';
 import {
   handleMarketActionPaused,
   handleMarketEntered,
@@ -24,14 +24,16 @@ import {
   handleNewPauseGuardian,
   handleNewPriceOracle,
   handlePoolActionPaused,
-} from '../src/mappings/pool';
-import { handlePoolRegistered } from '../src/mappings/poolRegistry';
+} from '../../src/mappings/pool';
+import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
   getMarketActionId,
   getPoolActionId,
-} from '../src/utilities/ids';
+} from '../../src/utilities/ids';
+import { createPoolRegisteredEvent } from '../PoolRegistry/events';
+import { createVBep20AndUnderlyingMock } from '../PoolRegistry/mocks';
 import {
   createMarketActionPausedEvent,
   createMarketEnteredEvent,
@@ -45,9 +47,7 @@ import {
   createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
-  createPoolRegisteredEvent,
 } from './events';
-import { createVBep20AndUnderlyingMock } from './mocks';
 
 const cTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');

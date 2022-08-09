@@ -1,7 +1,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { poolRegistryAddress } from '../src/constants';
+import { poolRegistryAddress } from '../../src/constants';
 
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
@@ -24,7 +24,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx))])
       .returns([tupleValue]);
   });
-}
+};
 
 export const createVBep20AndUnderlyingMock = (
   contractAddress: Address,
