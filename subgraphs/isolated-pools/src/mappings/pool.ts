@@ -3,6 +3,7 @@ import {
   MarketEntered,
   MarketExited,
   MarketListed,
+  NewBorrowCap,
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
@@ -131,7 +132,13 @@ export const handleMarketActionPaused = (event: MarketActionPaused): void => {
   updateOrCreateMarketAction(cTokenAddress, action, pauseState);
 };
 
-export const handleNewBorrowCap = (): void => {}; // eslint-disable-line
+export const handleNewBorrowCap = (event: NewBorrowCap): void => {
+  const cTokenAddress = event.params.cToken;
+  const borrowCap = event.params.newBorrowCap;
+  const market = getOrCreateMarket(cTokenAddress);
+  market.borrowCap = borrowCap;
+  market.save();
+};
 
 export const handleNewBorrowCapGuardian = (): void => {}; // eslint-disable-line
 

@@ -7,6 +7,7 @@ import {
   MarketEntered as MarketEnteredEvent,
   MarketExited as MarketExitedEvent,
   MarketListed as MarketListedEvent,
+  NewBorrowCap as NewBorrowCapEvent,
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
@@ -267,6 +268,25 @@ export const createMarketActionPausedEvent = (
     ethereum.Value.fromBoolean(pauseState),
   );
   event.parameters.push(pauseStateParam);
+
+  return event;
+};
+
+export const createNewBorrowCapEvent = (
+  cTokenAddress: Address,
+  newBorrowCap: BigInt,
+): NewBorrowCapEvent => {
+  const event = changetype<NewBorrowCapEvent>(newMockEvent());
+  event.parameters = [];
+
+  const cTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(cTokenAddress));
+  event.parameters.push(cTokenParam);
+
+  const newBorrowCapParam = new ethereum.EventParam(
+    'newBorrowCap',
+    ethereum.Value.fromUnsignedBigInt(newBorrowCap),
+  );
+  event.parameters.push(newBorrowCapParam);
 
   return event;
 };

@@ -16,6 +16,7 @@ import {
   handleMarketEntered,
   handleMarketExited,
   handleMarketListed,
+  handleNewBorrowCap,
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
@@ -35,6 +36,7 @@ import {
   createMarketEnteredEvent,
   createMarketExitedEvent,
   createMarketListedEvent,
+  createNewBorrowCapEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
@@ -308,5 +310,15 @@ describe('Pool Events', () => {
     assert.fieldEquals('MarketAction', id, 'cToken', cTokenAddress.toHexString());
     assert.fieldEquals('MarketAction', id, 'action', action);
     assert.fieldEquals('MarketAction', id, 'pauseState', pauseState.toString());
+  });
+
+  test('indexes NewBorrowCap event', () => {
+    const newBorrowCap = BigInt.fromI64(5000000000000000000);
+    const newBorrowCapEvent = createNewBorrowCapEvent(cTokenAddress, newBorrowCap);
+
+    handleNewBorrowCap(newBorrowCapEvent);
+
+    assert.fieldEquals('Market', cTokenAddress.toHex(), 'id', cTokenAddress.toHexString());
+    assert.fieldEquals('Market', cTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
   });
 });

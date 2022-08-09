@@ -71,6 +71,7 @@ export function createMarket(cTokenAddress: Address): Market {
   market.blockTimestamp = 0;
   market.borrowIndex = zeroBigDecimal;
   market.reserveFactor = getReserveFactorMantissa(cTokenContract);
+  market.borrowCap = BigInt.fromI32(0);
   market.save();
   return market;
 }

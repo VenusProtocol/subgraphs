@@ -119,6 +119,8 @@ type Market @entity {
     underlyingPrice: BigDecimal!
     "Underlying token symbol"
     underlyingSymbol: String!
+    "Max token borrow amount allowed"
+    borrowCap: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"
