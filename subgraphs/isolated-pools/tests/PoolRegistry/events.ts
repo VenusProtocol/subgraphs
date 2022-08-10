@@ -1,11 +1,10 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
-import { log } from 'matchstick-as/assembly/log';
 
 import {
   PoolNameSet as PoolNameSetEvent,
   PoolRegistered as PoolRegisteredEvent,
-} from '../generated/PoolRegistry/PoolRegistry';
+} from '../../generated/PoolRegistry/PoolRegistry';
 
 export const createPoolRegisteredEvent = (
   index: BigInt,
@@ -30,7 +29,6 @@ export const createPoolRegisteredEvent = (
 
   const poolParam = new ethereum.EventParam('pool', tupleValue);
   event.parameters.push(poolParam);
-  log.debug(event.parameters[1].name, []);
   return event;
 };
 
@@ -43,6 +41,5 @@ export const createPoolNameSetEvent = (index: BigInt, name: string): PoolNameSet
   event.parameters.push(indexParam);
   const nameParam = new ethereum.EventParam('name', ethereum.Value.fromString(name));
   event.parameters.push(nameParam);
-
   return event;
 };

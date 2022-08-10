@@ -8,7 +8,7 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { handlePoolNameSet, handlePoolRegistered } from '../src/mappings/poolRegistry';
+import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import { createPoolNameSetEvent, createPoolRegisteredEvent } from './events';
 import { createPoolRegistryMock } from './mocks';
 

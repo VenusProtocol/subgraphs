@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -265,
-    "scrollLeft": -271,
+    "scrollTop": 0,
+    "scrollLeft": 0,
     "zoomLevel": 1,
     "show": {
       "tableComment": false,
@@ -166,7 +166,7 @@
           "active": false,
           "left": 671.5562,
           "top": 691.1139,
-          "zIndex": 291,
+          "zIndex": 33,
           "widthName": 60,
           "widthComment": 60
         },
@@ -866,13 +866,36 @@
               "widthDefault": 60
             },
             "id": "1ddf8186-0342-4ce6-828b-9faadaea5934"
+          },
+          {
+            "name": "",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "c1cbe677-1291-43c6-bb66-2967b84db2c7"
           }
         ],
         "ui": {
           "active": false,
           "left": 1147,
           "top": 435.3099,
-          "zIndex": 286,
+          "zIndex": 50,
           "widthName": 60,
           "widthComment": 60
         },
@@ -911,12 +934,228 @@
           "active": false,
           "left": 698,
           "top": 389,
-          "zIndex": 280,
+          "zIndex": 1,
           "widthName": 72.80810546875,
           "widthComment": 60
         },
         "visible": true,
         "id": "133d3cee-e1e5-405b-a1ed-c3bab765664a"
+      },
+      {
+        "name": "poolActionPaused",
+        "comment": "",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "b83d68d5-14a5-456b-9a1e-99bde6b84a67"
+          },
+          {
+            "name": "pool",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "8010b64d-98bf-4903-b2df-3c8f89454cc5"
+          },
+          {
+            "name": "pauseState",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.7744140625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "fab4c759-7158-4064-974c-4c1d2f76b16d"
+          },
+          {
+            "name": "action",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "e389110a-6cd3-4823-a552-a7faf13e0636"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 304,
+          "top": 701,
+          "zIndex": 42,
+          "widthName": 106.7998046875,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "0c7a54a1-94c0-4ddb-8308-e50cf2d026a5"
+      },
+      {
+        "name": "marketActionPaused",
+        "comment": "",
+        "columns": [
+          {
+            "name": "id",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "79309dfd-1995-46a4-bdbe-1657dc8c098d"
+          },
+          {
+            "name": "market",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "8f35dfcb-be6c-4c8f-a186-dcff69ad313b"
+          },
+          {
+            "name": "pauseState",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 67.7744140625,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "48cae71e-1f26-47d7-8a9a-f7b434d52c01"
+          },
+          {
+            "name": "action",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            },
+            "id": "60543d80-07bb-4527-8010-e440a41be749"
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 1163.25,
+          "top": 112,
+          "zIndex": 71,
+          "widthName": 121.95166015625,
+          "widthComment": 60
+        },
+        "visible": true,
+        "id": "a39ca2b8-b03e-4523-b2df-4d1583494a3f"
       }
     ],
     "indexes": []
@@ -932,18 +1171,14 @@
         "startRelationshipType": "Dash",
         "start": {
           "tableId": "133d3cee-e1e5-405b-a1ed-c3bab765664a",
-          "columnIds": [
-            "31cb71a4-c713-4e76-b960-9644f80c503a"
-          ],
+          "columnIds": ["31cb71a4-c713-4e76-b960-9644f80c503a"],
           "x": 754.5,
           "y": 478.5,
           "direction": "bottom"
         },
         "end": {
           "tableId": "dffa53f0-4c7e-4fce-a0d2-6182030b3979",
-          "columnIds": [
-            "001678d0-7720-4745-b977-5e1bae5ccc49"
-          ],
+          "columnIds": ["001678d0-7720-4745-b977-5e1bae5ccc49"],
           "x": 756.134325,
           "y": 691.1139,
           "direction": "top"
@@ -958,25 +1193,65 @@
         "startRelationshipType": "Dash",
         "start": {
           "tableId": "dffa53f0-4c7e-4fce-a0d2-6182030b3979",
-          "columnIds": [
-            "dbdb72f8-3545-4ce7-8f39-d55ab54f55dc"
-          ],
+          "columnIds": ["dbdb72f8-3545-4ce7-8f39-d55ab54f55dc"],
           "x": 840.71245,
           "y": 776.8639,
           "direction": "right"
         },
         "end": {
           "tableId": "d8cd18a6-8d0c-491f-b383-d3290f11387d",
-          "columnIds": [
-            "0865ed3f-2014-4e4c-860b-bc8f65e78960"
-          ],
+          "columnIds": ["0865ed3f-2014-4e4c-860b-bc8f65e78960"],
           "x": 1147,
-          "y": 777.3099,
+          "y": 787.5599,
           "direction": "left"
         },
         "constraintName": "fk_pool_to_market",
         "visible": true,
         "id": "4e7bce52-c884-422e-9e94-90fec522eaa1"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "dffa53f0-4c7e-4fce-a0d2-6182030b3979",
+          "columnIds": ["dbdb72f8-3545-4ce7-8f39-d55ab54f55dc"],
+          "x": 671.5562,
+          "y": 776.8639,
+          "direction": "left"
+        },
+        "end": {
+          "tableId": "0c7a54a1-94c0-4ddb-8308-e50cf2d026a5",
+          "columnIds": ["8010b64d-98bf-4903-b2df-3c8f89454cc5"],
+          "x": 437.7998046875,
+          "y": 776.5,
+          "direction": "right"
+        },
+        "constraintName": "fk_pool_to_poolactionpaused",
+        "visible": true,
+        "id": "5957903d-c383-4590-aa5d-5f73d4294447"
+      },
+      {
+        "identification": false,
+        "relationshipType": "OneN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "d8cd18a6-8d0c-491f-b383-d3290f11387d",
+          "columnIds": ["c1cbe677-1291-43c6-bb66-2967b84db2c7"],
+          "x": 1237.72900390625,
+          "y": 435.3099,
+          "direction": "top"
+        },
+        "end": {
+          "tableId": "a39ca2b8-b03e-4523-b2df-4d1583494a3f",
+          "columnIds": ["8f35dfcb-be6c-4c8f-a186-dcff69ad313b"],
+          "x": 1237.725830078125,
+          "y": 263,
+          "direction": "bottom"
+        },
+        "constraintName": "fk_market_to_marketactionpaused",
+        "visible": true,
+        "id": "8413f0c7-1246-4468-9176-941ded13bbf7"
       }
     ]
   }
