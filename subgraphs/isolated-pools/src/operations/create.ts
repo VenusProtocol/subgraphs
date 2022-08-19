@@ -1,15 +1,18 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
-import { Account, Market, Pool } from '../../generated/schema';
+import { Mint } from '../../generated/PoolRegistry/VToken';
+import { Account, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
-import { zeroBigDecimal } from '../constants';
+import { vTokenDecimals, vTokenDecimalsBigDecimal, zeroBigDecimal, MINT } from '../constants';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
   getUnderlyingAddress,
 } from '../utilities';
+import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
+import { getTransactionEventId } from '../utilities/ids';
 
 export function createPool(event: PoolRegistered): Pool {
   const pool = new Pool(event.params.pool.comptroller.toHexString());
@@ -76,3 +79,26 @@ export function createMarket(vTokenAddress: Address): Market {
   market.save();
   return market;
 }
+
+export const createMintTransaction = (event: Mint, underlyingDecimals: i32): void => {
+  const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
+  const underlyingAmount = event.params.mintAmount
+    .toBigDecimal()
+    .div(exponentToBigDecimal(underlyingDecimals))
+    .truncate(underlyingDecimals);
+
+  const vTokenAmount = event.params.mintTokens
+    .toBigDecimal()
+    .div(vTokenDecimalsBigDecimal)
+    .truncate(vTokenDecimals);
+
+  const transaction = new Transaction(id);
+  transaction.type = MINT;
+  transaction.amount = vTokenAmount;
+  transaction.to = event.params.minter;
+  transaction.from = event.address;
+  transaction.blockNumber = event.block.number.toI32();
+  transaction.blockTime = event.block.timestamp.toI32();
+  transaction.underlyingAmount = underlyingAmount;
+  transaction.save();
+};
