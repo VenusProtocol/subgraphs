@@ -10,7 +10,7 @@ import {
 
 import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import { createPoolNameSetEvent, createPoolRegisteredEvent } from './events';
-import { createPoolRegistryMock } from './mocks';
+import { createPoolRegistryMock } from '../VToken/mocks';
 
 const cleanup = (): void => {
   clearStore();

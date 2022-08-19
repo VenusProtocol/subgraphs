@@ -2,8 +2,8 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import { Account, Market, Pool } from '../../generated/schema';
-import { BEP20 as BEP20Contract } from '../../generated/templates/CToken/BEP20';
-import { CToken as CTokenContract } from '../../generated/templates/CToken/CToken';
+import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
+import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { zeroBigDecimal } from '../constants';
 import {
   getInterestRateModelAddress,
@@ -42,16 +42,16 @@ export function createAccount(accountAddress: Address): Account {
   return account;
 }
 
-export function createMarket(cTokenAddress: Address): Market {
-  const cTokenContract = CTokenContract.bind(cTokenAddress);
-  const underlyingAddress = getUnderlyingAddress(cTokenContract);
+export function createMarket(vTokenAddress: Address): Market {
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
+  const underlyingAddress = getUnderlyingAddress(vTokenContract);
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
 
-  const market = new Market(cTokenAddress.toHexString());
-  market.pool = cTokenContract.comptroller();
-  market.name = cTokenContract.name();
-  market.interestRateModelAddress = getInterestRateModelAddress(cTokenContract);
-  market.symbol = cTokenContract.symbol();
+  const market = new Market(vTokenAddress.toHexString());
+  market.pool = vTokenContract.comptroller();
+  market.name = vTokenContract.name();
+  market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
+  market.symbol = vTokenContract.symbol();
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
@@ -70,7 +70,7 @@ export function createMarket(cTokenAddress: Address): Market {
   market.accrualBlockNumber = 0;
   market.blockTimestamp = 0;
   market.borrowIndex = zeroBigDecimal;
-  market.reserveFactor = getReserveFactorMantissa(cTokenContract);
+  market.reserveFactor = getReserveFactorMantissa(vTokenContract);
   market.borrowCap = BigInt.fromI32(0);
   market.minLiquidatableAmount = BigInt.fromI32(0);
   market.save();

@@ -24,7 +24,7 @@ dataSources:
           file: ../../packages/isolated-pools-abis/PoolRegistry.json
         - name: Comptroller
           file: ../../packages/isolated-pools-abis/Comptroller.json
-        - name: CToken
+        - name: VToken
           file: ../../packages/isolated-pools-abis/Ctoken.json
         - name: PriceOracle
           file: ../../packages/isolated-pools-abis/PriceOracle.json
@@ -50,7 +50,7 @@ templates:
       entities:
         - User
         - Market
-        - CTokenInfo
+        - VTokenInfo
         - PoolAction
       abis:
         - name: Comptroller
@@ -82,22 +82,22 @@ templates:
           handler: handleNewBorrowCapGuardian
         - event: NewMinLiquidatableAmount(indexed address,uint256)
           handler: handleNewMinLiquidatableAmount
-  - name: CToken
+  - name: VToken
     kind: ethereum/contract
     network: {{ network }}
     source:
-      abi: CToken
+      abi: VToken
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/cToken.ts
+      file: ./src/mappings/vToken.ts
       entities:
         - User
         - Market
-        - CTokenInfo
+        - VTokenInfo
       abis:
-        - name: CToken
+        - name: VToken
           file: ../../packages/isolated-pools-abis/CToken.json
         - name: PriceOracle
           file: ../../packages/isolated-pools-abis/PriceOracle.json
