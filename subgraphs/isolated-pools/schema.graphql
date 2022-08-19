@@ -75,7 +75,7 @@ enum MarketPauseGuardianAction {
 """
 type MarketAction @entity {
     id: ID!
-    cToken: Bytes!
+    vToken: Bytes!
     action: String!
     pauseState: Boolean!
 }

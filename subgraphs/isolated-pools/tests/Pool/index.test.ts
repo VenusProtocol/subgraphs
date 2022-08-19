@@ -33,7 +33,7 @@ import {
   getPoolActionId,
 } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
-import { createVBep20AndUnderlyingMock } from '../PoolRegistry/mocks';
+import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import {
   createMarketActionPausedEvent,
   createMarketEnteredEvent,
@@ -49,7 +49,7 @@ import {
   createPoolActionPausedEvent,
 } from './events';
 
-const cTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
+const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const oldAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
@@ -66,7 +66,7 @@ const cleanup = (): void => {
 
 beforeAll(() => {
   createVBep20AndUnderlyingMock(
-    cTokenAddress,
+    vTokenAddress,
     tokenAddress,
     comptrollerAddress,
     'B0B Coin',
@@ -76,7 +76,7 @@ beforeAll(() => {
     interestRateModelAddress,
   );
 
-  createMockedFunction(cTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+  createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromI32(100)]);
 });
@@ -94,19 +94,19 @@ afterEach(() => {
 
 describe('Pool Events', () => {
   test('creates Market correctly', () => {
-    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+    const marketListedEvent = createMarketListedEvent(vTokenAddress);
 
     handleMarketListed(marketListedEvent);
 
     const assertMarketDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Market', cTokenAddress.toHex(), key, value);
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
     };
 
-    assertMarketDocument('id', cTokenAddress.toHexString());
+    assertMarketDocument('id', vTokenAddress.toHexString());
   });
 
   test('indexes Market Entered event', () => {
-    const marketEnteredEvent = createMarketEnteredEvent(cTokenAddress, accountAddress);
+    const marketEnteredEvent = createMarketEnteredEvent(vTokenAddress, accountAddress);
 
     handleMarketEntered(marketEnteredEvent);
 
@@ -119,7 +119,7 @@ describe('Pool Events', () => {
       marketEnteredEvent.transaction.hash,
       marketEnteredEvent.logIndex,
     );
-    const accountVTokenId = getAccountVTokenId(cTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
@@ -139,7 +139,7 @@ describe('Pool Events', () => {
   });
 
   test('indexes Market Exited event', () => {
-    const marketExitedEvent = createMarketExitedEvent(cTokenAddress, accountAddress);
+    const marketExitedEvent = createMarketExitedEvent(vTokenAddress, accountAddress);
 
     handleMarketExited(marketExitedEvent);
 
@@ -152,7 +152,7 @@ describe('Pool Events', () => {
       marketExitedEvent.transaction.hash,
       marketExitedEvent.logIndex,
     );
-    const accountVTokenId = getAccountVTokenId(cTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
@@ -172,7 +172,7 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCloseFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+    const marketListedEvent = createMarketListedEvent(vTokenAddress);
 
     handleMarketListed(marketListedEvent);
 
@@ -194,14 +194,14 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCollateralFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+    const marketListedEvent = createMarketListedEvent(vTokenAddress);
 
     handleMarketListed(marketListedEvent);
 
     const oldCollateralFactorMantissa = BigInt.fromI64(900000000000000);
     const newCollateralFactorMantissa = BigInt.fromI64(540000000000000);
     const newCollateralFactorEvent = createNewCollateralFactorEvent(
-      cTokenAddress,
+      vTokenAddress,
       oldCollateralFactorMantissa,
       newCollateralFactorMantissa,
     );
@@ -209,10 +209,10 @@ describe('Pool Events', () => {
     handleNewCollateralFactor(newCollateralFactorEvent);
 
     const assertMarketDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Market', cTokenAddress.toHex(), key, value);
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
     };
 
-    assertMarketDocument('id', cTokenAddress.toHexString());
+    assertMarketDocument('id', vTokenAddress.toHexString());
     assertMarketDocument(
       'collateralFactor',
       newCollateralFactorMantissa.toBigDecimal().div(defaultMantissaFactorBigDecimal).toString(),
@@ -220,7 +220,7 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewLiquidationIncentive event', () => {
-    const marketListedEvent = createMarketListedEvent(cTokenAddress);
+    const marketListedEvent = createMarketListedEvent(vTokenAddress);
 
     handleMarketListed(marketListedEvent);
 
@@ -299,44 +299,44 @@ describe('Pool Events', () => {
     const action = 'Mint';
     const pauseState = true;
     const marketActionPausedEvent = createMarketActionPausedEvent(
-      cTokenAddress,
+      vTokenAddress,
       action,
       pauseState,
     );
 
     handleMarketActionPaused(marketActionPausedEvent);
 
-    const id = getMarketActionId(cTokenAddress, action);
+    const id = getMarketActionId(vTokenAddress, action);
 
     assert.fieldEquals('MarketAction', id, 'id', id);
-    assert.fieldEquals('MarketAction', id, 'cToken', cTokenAddress.toHexString());
+    assert.fieldEquals('MarketAction', id, 'vToken', vTokenAddress.toHexString());
     assert.fieldEquals('MarketAction', id, 'action', action);
     assert.fieldEquals('MarketAction', id, 'pauseState', pauseState.toString());
   });
 
   test('indexes NewBorrowCap event', () => {
     const newBorrowCap = BigInt.fromI64(5000000000000000000);
-    const newBorrowCapEvent = createNewBorrowCapEvent(cTokenAddress, newBorrowCap);
+    const newBorrowCapEvent = createNewBorrowCapEvent(vTokenAddress, newBorrowCap);
 
     handleNewBorrowCap(newBorrowCapEvent);
 
-    assert.fieldEquals('Market', cTokenAddress.toHex(), 'id', cTokenAddress.toHexString());
-    assert.fieldEquals('Market', cTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
   });
 
   test('indexes NewMinLiquidatableAmount event', () => {
     const newMinLiquidatableAmount = BigInt.fromI64(200000000000000000);
     const newMinLiquidatableAmountEvent = createNewMinLiquidatableAmountEvent(
-      cTokenAddress,
+      vTokenAddress,
       newMinLiquidatableAmount,
     );
 
     handleNewMinLiquidatableAmount(newMinLiquidatableAmountEvent);
 
-    assert.fieldEquals('Market', cTokenAddress.toHex(), 'id', cTokenAddress.toHexString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
     assert.fieldEquals(
       'Market',
-      cTokenAddress.toHex(),
+      vTokenAddress.toHex(),
       'minLiquidatableAmount',
       newMinLiquidatableAmount.toString(),
     );

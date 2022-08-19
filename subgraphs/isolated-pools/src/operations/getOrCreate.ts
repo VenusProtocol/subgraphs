@@ -6,10 +6,10 @@ import { zeroBigDecimal } from '../constants';
 import { getAccountVTokenTransactionId } from '../utilities/ids';
 import { createAccount, createMarket } from './create';
 
-export const getOrCreateMarket = (cTokenAddress: Address): Market => {
-  let market = Market.load(cTokenAddress.toHexString());
+export const getOrCreateMarket = (vTokenAddress: Address): Market => {
+  let market = Market.load(vTokenAddress.toHexString());
   if (!market) {
-    market = createMarket(cTokenAddress);
+    market = createMarket(vTokenAddress);
   }
   return market;
 };

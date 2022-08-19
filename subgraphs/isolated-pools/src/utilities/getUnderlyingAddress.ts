@@ -1,9 +1,9 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-import { CToken as CTokenContract } from '../../generated/templates/CToken/CToken';
+import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 
-const getUnderlyingAddress = (cTokenContract: CTokenContract): Address => {
-  const underlyingAddress = cTokenContract.try_underlying();
+const getUnderlyingAddress = (vTokenContract: VTokenContract): Address => {
+  const underlyingAddress = vTokenContract.try_underlying();
   return underlyingAddress.reverted
     ? Address.fromString('0x0000000000000000000000000000000000000000')
     : underlyingAddress.value;

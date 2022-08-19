@@ -47,13 +47,13 @@ export const updateOrCreatePoolAction = (
 };
 
 export const updateOrCreateMarketAction = (
-  cTokenAddress: Address,
+  vTokenAddress: Address,
   action: string,
   pauseState: boolean,
 ): MarketAction => {
-  const id = getMarketActionId(cTokenAddress, action);
+  const id = getMarketActionId(vTokenAddress, action);
   const marketAction = new MarketAction(id);
-  marketAction.cToken = cTokenAddress;
+  marketAction.vToken = vTokenAddress;
   marketAction.action = action;
   marketAction.pauseState = pauseState;
   marketAction.save();

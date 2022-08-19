@@ -12,7 +12,7 @@ import {
   NewPriceOracle,
   ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
-import { CToken } from '../../generated/templates';
+import { VToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { createMarket } from '../operations/create';
 import {
@@ -30,21 +30,21 @@ import Box from '../utilities/box';
 
 export const handleMarketListed = (event: MarketListed): void => {
   // Dynamically index all new listed tokens
-  const cTokenAddress = event.params.cToken;
-  CToken.create(cTokenAddress);
-  createMarket(cTokenAddress);
+  const vTokenAddress = event.params.cToken;
+  VToken.create(vTokenAddress);
+  createMarket(vTokenAddress);
 };
 
 export const handleMarketEntered = (event: MarketEntered): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(cTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
     accountAddress,
-    cTokenAddress,
+    vTokenAddress,
     market.symbol,
     event.block.number,
     new Box(true),
@@ -59,15 +59,15 @@ export const handleMarketEntered = (event: MarketEntered): void => {
 };
 
 export const handleMarketExited = (event: MarketExited): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(cTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
     accountAddress,
-    cTokenAddress,
+    vTokenAddress,
     market.symbol,
     event.block.number,
     new Box(false),
@@ -89,9 +89,9 @@ export const handleNewCloseFactor = (event: NewCloseFactor): void => {
 };
 
 export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getOrCreateMarket(cTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
@@ -127,24 +127,24 @@ export const handlePoolActionPaused = (event: PoolActionPaused): void => {
 };
 
 export const handleMarketActionPaused = (event: MarketActionPaused): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const action = event.params.action as string;
   const pauseState = event.params.pauseState;
-  updateOrCreateMarketAction(cTokenAddress, action, pauseState);
+  updateOrCreateMarketAction(vTokenAddress, action, pauseState);
 };
 
 export const handleNewBorrowCap = (event: NewBorrowCap): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const borrowCap = event.params.newBorrowCap;
-  const market = getOrCreateMarket(cTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.borrowCap = borrowCap;
   market.save();
 };
 
 export const handleNewMinLiquidatableAmount = (event: NewMinLiquidatableAmount): void => {
-  const cTokenAddress = event.params.cToken;
+  const vTokenAddress = event.params.cToken;
   const newMinLiquidatableAmount = event.params.newMinLiquidatableAmount;
-  const market = getOrCreateMarket(cTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.minLiquidatableAmount = newMinLiquidatableAmount;
   market.save();
 };
