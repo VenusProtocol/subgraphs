@@ -6,6 +6,7 @@ import {
   Borrow as BorrowEvent,
   LiquidateBorrow as LiquidateBorrowEvent,
   Mint as MintEvent,
+  NewMarketInterestRateModel as NewMarketInterestRateModelEvent,
   NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEvent,
   RepayBorrow as RepayBorrowEvent,
@@ -276,6 +277,30 @@ export const createTransferEvent = (
 
   const amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount));
   event.parameters.push(amountParam);
+
+  return event;
+};
+
+export const createNewMarketInterestRateModelEvent = (
+  vTokenAddress: Address,
+  oldInterestRateModel: Address,
+  newInterestRateModel: Address,
+): NewMarketInterestRateModelEvent => {
+  const event = changetype<NewMarketInterestRateModelEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const oldInterestRateModelParam = new ethereum.EventParam(
+    'oldInterestRateModel',
+    ethereum.Value.fromAddress(oldInterestRateModel),
+  );
+  event.parameters.push(oldInterestRateModelParam);
+
+  const newInterestRateModelParam = new ethereum.EventParam(
+    'newInterestRateModel',
+    ethereum.Value.fromAddress(newInterestRateModel),
+  );
+  event.parameters.push(newInterestRateModelParam);
 
   return event;
 };

@@ -26,6 +26,8 @@ import {
   handleBorrow,
   handleLiquidateBorrow,
   handleMint,
+  handleNewMarketInterestRateModel,
+  handleNewReserveFactor,
   handleRedeem,
   handleRepayBorrow,
   handleTransfer,
@@ -40,6 +42,8 @@ import {
   createBorrowEvent,
   createLiquidateBorrowEvent,
   createMintEvent,
+  createNewMarketInterestRateModelEvent,
+  createNewReserveFactorEvent,
   createRedeemEvent,
   createRepayBorrowEvent,
   createTransferEvent,
@@ -588,6 +592,25 @@ describe('VToken', () => {
       accountVTokenId,
       'totalUnderlyingSupplied',
       '0.016814221346686847',
+    );
+  });
+
+  test('registers new interest rate model', () => {
+    const oldInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000e0e');
+    const newInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000f0f');
+    const newMarketInterestRateModelEvent = createNewMarketInterestRateModelEvent(
+      vTokenAddress,
+      oldInterestRateModel,
+      newInterestRateModel,
+    );
+
+    handleNewMarketInterestRateModel(newMarketInterestRateModelEvent);
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'interestRateModelAddress',
+      newInterestRateModel.toHexString(),
     );
   });
 });

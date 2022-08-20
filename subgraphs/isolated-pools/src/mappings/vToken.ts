@@ -233,4 +233,9 @@ export const handleTransfer = (event: Transfer): void => {
   createTransferTransaction(event);
 };
 
-export const handleNewMarketInterestRateModel = (event: NewMarketInterestRateModel): void => {}; // eslint-disable-line
+export const handleNewMarketInterestRateModel = (event: NewMarketInterestRateModel): void => {
+  const marketAddress = event.address;
+  const market = getOrCreateMarket(marketAddress);
+  market.interestRateModelAddress = event.params.newInterestRateModel;
+  market.save();
+};
