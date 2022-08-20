@@ -15,3 +15,5 @@ export const vTokenDecimalsBigDecimal: BigDecimal = exponentToBigDecimal(vTokenD
 export const BORROW = 'BORROW';
 export const MINT = 'MINT';
 export const REDEEM = 'REDEEM';
+export const REPAY_BORROW = 'REPAY_BORROW';
+export const LIQUIDATE = 'LIQUIDATE';

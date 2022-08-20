@@ -64,3 +64,39 @@ export const updateAccountVTokenBorrow = (
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
+
+export const updateAccountVTokenRepayBorrow = (
+  marketAddress: Address,
+  marketSymbol: string,
+  accountAddress: Address,
+  txHash: Bytes,
+  timestamp: BigInt,
+  blockNumber: BigInt,
+  logIndex: BigInt,
+  repayAmount: BigInt,
+  accountBorrows: BigInt,
+  borrowIndex: BigDecimal,
+  underlyingDecimals: i32,
+): AccountVToken => {
+  const accountVToken = updateAccountVToken(
+    marketAddress,
+    marketSymbol,
+    accountAddress,
+    txHash,
+    timestamp,
+    blockNumber,
+    logIndex,
+  );
+  const totalUnderlyingBorrowed = accountVToken.totalUnderlyingBorrowed.plus(
+    repayAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
+  );
+  const storedBorrowBalance = accountBorrows
+    .toBigDecimal()
+    .div(exponentToBigDecimal(underlyingDecimals))
+    .truncate(underlyingDecimals);
+  accountVToken.storedBorrowBalance = storedBorrowBalance;
+  accountVToken.accountBorrowIndex = borrowIndex;
+  accountVToken.totalUnderlyingBorrowed = totalUnderlyingBorrowed;
+  accountVToken.save();
+  return accountVToken as AccountVToken;
+};

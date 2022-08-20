@@ -1,11 +1,22 @@
-import { Borrow, Mint, Redeem } from '../../generated/PoolRegistry/VToken';
+import {
+  AccrueInterest,
+  Borrow,
+  LiquidateBorrow,
+  Mint,
+  NewMarketInterestRateModel,
+  NewReserveFactor,
+  Redeem,
+  RepayBorrow,
+  Transfer,
+} from '../../generated/PoolRegistry/VToken';
 import {
   createBorrowTransaction,
   createMintTransaction,
   createRedeemTransaction,
+  createRepayBorrowTransaction,
 } from '../operations/create';
 import { getOrCreateMarket } from '../operations/getOrCreate';
-import { updateAccountVTokenBorrow } from '../operations/update';
+import { updateAccountVTokenBorrow, updateAccountVTokenRepayBorrow } from '../operations/update';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -75,14 +86,47 @@ export const handleBorrow = (event: Borrow): void => {
   createBorrowTransaction(event, market.underlyingDecimals);
 };
 
-export const handleRepayBorrow = (): void => {}; // eslint-disable-line
+/* Repay some amount borrowed. Anyone can repay anyones balance
+ *
+ * event.params.totalBorrows = of the whole market (not used right now)
+ * event.params.accountBorrows = total of the account (not used right now)
+ * event.params.repayAmount = that was added in this event
+ * event.params.borrower = the borrower
+ * event.params.payer = the payer
+ *
+ * Notes
+ *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
+ *    Once a account totally repays a borrow, it still has its account interest index set to the
+ *    markets value. We keep this, even though you might think it would reset to 0 upon full
+ *    repay.
+ */
+export const handleRepayBorrow = (event: RepayBorrow): void => {
+  const vTokenAddress = event.address;
+  const market = getOrCreateMarket(vTokenAddress);
 
-export const handleLiquidateBorrow = (): void => {}; // eslint-disable-line
+  updateAccountVTokenRepayBorrow(
+    vTokenAddress,
+    market.symbol,
+    event.params.borrower,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.block.number,
+    event.logIndex,
+    event.params.repayAmount,
+    event.params.accountBorrows,
+    market.borrowIndex,
+    market.underlyingDecimals,
+  );
 
-export const handleAccrueInterest = (): void => {}; // eslint-disable-line
+  createRepayBorrowTransaction(event, market.underlyingDecimals);
+};
 
-export const handleNewReserveFactor = (): void => {}; // eslint-disable-line
+export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {}; // eslint-disable-line
 
-export const handleTransfer = (): void => {}; // eslint-disable-line
+export const handleAccrueInterest = (event: AccrueInterest): void => {}; // eslint-disable-line
 
-export const handleNewMarketInterestRateModel = (): void => {}; // eslint-disable-line
+export const handleNewReserveFactor = (event: NewReserveFactor): void => {}; // eslint-disable-line
+
+export const handleTransfer = (event: Transfer): void => {}; // eslint-disable-line
+
+export const handleNewMarketInterestRateModel = (event: NewMarketInterestRateModel): void => {}; // eslint-disable-line

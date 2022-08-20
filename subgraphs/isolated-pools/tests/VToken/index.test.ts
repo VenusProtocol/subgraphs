@@ -14,19 +14,30 @@ import {
   BORROW,
   MINT,
   REDEEM,
+  REPAY_BORROW,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
 import { handleMarketListed } from '../../src/mappings/pool';
 import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import { handleBorrow, handleMint, handleRedeem } from '../../src/mappings/vToken';
+import {
+  handleBorrow,
+  handleMint,
+  handleRedeem,
+  handleRepayBorrow,
+} from '../../src/mappings/vToken';
 import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import { readMarket } from '../../src/operations/read';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketListedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
-import { createBorrowEvent, createMintEvent, createRedeemEvent } from './events';
+import {
+  createBorrowEvent,
+  createMintEvent,
+  createRedeemEvent,
+  createRepayBorrowEvent,
+} from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
@@ -214,6 +225,100 @@ describe('VToken', () => {
       accountVTokenId,
       'totalUnderlyingBorrowed',
       totalUnderlyingBorrowed.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'storedBorrowBalance',
+      storedBorrowBalance.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowIndex',
+      market.borrowIndex.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingBorrowed',
+      totalUnderlyingBorrowed.toString(),
+    );
+  });
+
+  test('registers repay borrow event', () => {
+    /** Constants */
+    const borrower = user1Address;
+    const payer = user1Address;
+    const repayAmount = BigInt.fromI64(1246205398726345);
+    const accountBorrows = BigInt.fromI64(35970026454);
+    const totalBorrows = BigInt.fromI64(37035970026454);
+    const balanceOf = BigInt.fromI64(9937035970026454);
+
+    /** Setup test */
+    const repayBorrowEvent = createRepayBorrowEvent(
+      vTokenAddress,
+      payer,
+      borrower,
+      repayAmount,
+      accountBorrows,
+      totalBorrows,
+    );
+
+    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(borrower)])
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+
+    /** Fire Event */
+    handleRepayBorrow(repayBorrowEvent);
+
+    const transactionId = getTransactionEventId(
+      repayBorrowEvent.transaction.hash,
+      repayBorrowEvent.transactionLogIndex,
+    );
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
+    const market = readMarket(vTokenAddress);
+    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
+    // Clone the value to remove the reference
+    const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
+      new BigDecimal(new BigInt(1)),
+    );
+    const underlyingDecimals = market.underlyingDecimals;
+    const totalUnderlyingBorrowed = totalUnderlyingBorrowedOriginal.plus(
+      repayAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
+    );
+    const storedBorrowBalance = accountBorrows
+      .toBigDecimal()
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .truncate(underlyingDecimals);
+
+    assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
+    assert.fieldEquals('Transaction', transactionId, 'type', REPAY_BORROW);
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'from',
+      repayBorrowEvent.address.toHexString(),
+    );
+    assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockNumber',
+      repayBorrowEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockTime',
+      repayBorrowEvent.block.timestamp.toString(),
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      repayBorrowEvent.block.number.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
