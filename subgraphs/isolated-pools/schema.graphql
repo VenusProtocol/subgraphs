@@ -233,4 +233,6 @@ type Transaction @entity {
     underlyingAmount: BigDecimal
     "Total borrows of this asset the account has"
     accountBorrows: BigDecimal
+    "LIQUIATION: Underlying vToken amount that was repaid by liquidator"
+    underlyingRepayAmount: BigDecimal
 }

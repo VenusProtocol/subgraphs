@@ -11,11 +11,12 @@ import {
 } from '../../generated/PoolRegistry/VToken';
 import {
   createBorrowTransaction,
+  createLiquidateBorrowTransaction,
   createMintTransaction,
   createRedeemTransaction,
   createRepayBorrowTransaction,
 } from '../operations/create';
-import { getOrCreateMarket } from '../operations/getOrCreate';
+import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate';
 import { updateAccountVTokenBorrow, updateAccountVTokenRepayBorrow } from '../operations/update';
 
 /* Account supplies assets into market and receives vTokens in exchange
@@ -121,7 +122,35 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
   createRepayBorrowTransaction(event, market.underlyingDecimals);
 };
 
-export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {}; // eslint-disable-line
+/*
+ * Liquidate an account who has fell below the collateral factor.
+ *
+ * event.params.borrower - the borrower who is getting liquidated of their vTokens
+ * event.params.vTokenCollateral - the market ADDRESS of the vtoken being liquidated
+ * event.params.liquidator - the liquidator
+ * event.params.repayAmount - the amount of underlying to be repaid
+ * event.params.seizeTokens - vTokens seized (transfer event should handle this)
+ *
+ * Notes
+ *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this.
+ *    When calling this const, event RepayBorrow, and event Transfer will be called every
+ *    time. This means we can ignore repayAmount. Seize tokens only changes state
+ *    of the vTokens, which is covered by transfer. Therefore we only
+ *    add liquidation counts in this handler.
+ */
+export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
+  const vTokenAddress = event.address;
+  const market = getOrCreateMarket(vTokenAddress);
+  const liquidator = getOrCreateAccount(event.params.liquidator);
+  liquidator.countLiquidator = liquidator.countLiquidator + 1;
+  liquidator.save();
+
+  const borrower = getOrCreateAccount(event.params.borrower);
+  borrower.countLiquidated = borrower.countLiquidated + 1;
+  borrower.save();
+
+  createLiquidateBorrowTransaction(event, market.underlyingDecimals);
+};
 
 export const handleAccrueInterest = (event: AccrueInterest): void => {}; // eslint-disable-line
 

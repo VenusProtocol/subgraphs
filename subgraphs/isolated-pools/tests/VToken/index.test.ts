@@ -12,6 +12,7 @@ import {
 
 import {
   BORROW,
+  LIQUIDATE_BORROW,
   MINT,
   REDEEM,
   REPAY_BORROW,
@@ -22,6 +23,7 @@ import { handleMarketListed } from '../../src/mappings/pool';
 import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleBorrow,
+  handleLiquidateBorrow,
   handleMint,
   handleRedeem,
   handleRepayBorrow,
@@ -34,6 +36,7 @@ import { createMarketListedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import {
   createBorrowEvent,
+  createLiquidateBorrowEvent,
   createMintEvent,
   createRedeemEvent,
   createRepayBorrowEvent,
@@ -337,6 +340,69 @@ describe('VToken', () => {
       accountVTokenId,
       'totalUnderlyingBorrowed',
       totalUnderlyingBorrowed.toString(),
+    );
+  });
+
+  test('registers liquidate borrow event', () => {
+    /** Constants */
+    const borrower = user1Address;
+    const liquidator = user1Address;
+    const repayAmount = BigInt.fromI64(1246205398726345);
+    const seizeTokens = BigInt.fromI64(37035970026454);
+    const vTokenCollateral = tokenAddress;
+
+    /** Setup test */
+    const liquidateBorrowEvent = createLiquidateBorrowEvent(
+      vTokenAddress,
+      liquidator,
+      borrower,
+      repayAmount,
+      vTokenCollateral,
+      seizeTokens,
+    );
+
+    /** Fire Event */
+    handleLiquidateBorrow(liquidateBorrowEvent);
+
+    const transactionId = getTransactionEventId(
+      liquidateBorrowEvent.transaction.hash,
+      liquidateBorrowEvent.transactionLogIndex,
+    );
+    const market = readMarket(vTokenAddress);
+
+    const underlyingDecimals = market.underlyingDecimals;
+    const underlyingRepayAmount = liquidateBorrowEvent.params.repayAmount
+      .toBigDecimal()
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .truncate(underlyingDecimals);
+
+    assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
+    assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE_BORROW);
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'from',
+      liquidateBorrowEvent.address.toHexString(),
+    );
+    assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockNumber',
+      liquidateBorrowEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockTime',
+      liquidateBorrowEvent.block.timestamp.toString(),
+    );
+
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'underlyingRepayAmount',
+      underlyingRepayAmount.toString(),
     );
   });
 });

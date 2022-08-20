@@ -1,12 +1,19 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
-import { Borrow, Mint, Redeem, RepayBorrow } from '../../generated/PoolRegistry/VToken';
+import {
+  Borrow,
+  Liquidation,
+  Mint,
+  Redeem,
+  RepayBorrow,
+} from '../../generated/PoolRegistry/VToken';
 import { Account, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
   BORROW,
+  LIQUIDATE_BORROW,
   MINT,
   REDEEM,
   REPAY_BORROW,
@@ -175,6 +182,32 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
   transaction.to = event.params.borrower;
   transaction.accountBorrows = accountBorrows;
   transaction.from = event.address;
+  transaction.blockNumber = event.block.number.toI32();
+  transaction.blockTime = event.block.timestamp.toI32();
+  transaction.save();
+};
+
+export const createLiquidateBorrowTransaction = (
+  event: Liquidation,
+  underlyingDecimals: i32,
+): void => {
+  const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
+  const amount = event.params.seizeTokens
+    .toBigDecimal()
+    .div(exponentToBigDecimal(vTokenDecimalsBigDecimal))
+    .truncate(vTokenDecimals);
+
+  const underlyingRepayAmount = event.params.repayAmount
+    .toBigDecimal()
+    .div(exponentToBigDecimal(underlyingDecimals))
+    .truncate(underlyingDecimals);
+
+  const transaction = new Transaction(id);
+  transaction.type = LIQUIDATE_BORROW;
+  transaction.amount = amount;
+  transaction.to = event.params.borrower;
+  transaction.underlyingRepayAmount = underlyingRepayAmount;
+  transaction.vToken = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
   transaction.save();

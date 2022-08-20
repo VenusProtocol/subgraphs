@@ -2,8 +2,11 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
+  AccrueInterest as AccrueInterestEvent,
   Borrow as BorrowEvent,
+  LiquidateBorrow as LiquidateBorrowEvent,
   Mint as MintEvent,
+  NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEvent,
   RepayBorrow as RepayBorrowEvent,
 } from '../../generated/PoolRegistry/VToken';
@@ -143,6 +146,113 @@ export const createRepayBorrowEvent = (
     ethereum.Value.fromUnsignedBigInt(totalBorrows),
   );
   event.parameters.push(totalBorrowsParam);
+
+  return event;
+};
+
+export const createLiquidateBorrowEvent = (
+  vTokenAddress: Address,
+  liquidatorAddress: Address,
+  borrowerAddress: Address,
+  repayAmount: BigInt,
+  vTokenCollateral: Address,
+  seizeTokens: BigInt,
+): LiquidateBorrowEvent => {
+  const event = changetype<LiquidateBorrowEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const liquidatorParam = new ethereum.EventParam(
+    'liquidator',
+    ethereum.Value.fromAddress(liquidatorAddress),
+  );
+  event.parameters.push(liquidatorParam);
+
+  const borrowerParam = new ethereum.EventParam(
+    'borrower',
+    ethereum.Value.fromAddress(borrowerAddress),
+  );
+  event.parameters.push(borrowerParam);
+
+  const repayAmountParam = new ethereum.EventParam(
+    'repayAmount',
+    ethereum.Value.fromUnsignedBigInt(repayAmount),
+  );
+  event.parameters.push(repayAmountParam);
+
+  const vTokenCollateralParam = new ethereum.EventParam(
+    'cTokenCollateral',
+    ethereum.Value.fromAddress(vTokenCollateral),
+  );
+  event.parameters.push(vTokenCollateralParam);
+
+  const seizeTokensParam = new ethereum.EventParam(
+    'seizeTokens',
+    ethereum.Value.fromUnsignedBigInt(seizeTokens),
+  );
+  event.parameters.push(seizeTokensParam);
+
+  return event;
+};
+
+export const createAccrueInterestEvent = (
+  vTokenAddress: Address,
+  cashPrior: BigInt,
+  interestAccumulated: BigInt,
+  borrowIndex: BigInt,
+  totalBorrows: BigInt,
+): AccrueInterestEvent => {
+  const event = changetype<AccrueInterestEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const cashPriorParam = new ethereum.EventParam(
+    'cashPrior',
+    ethereum.Value.fromUnsignedBigInt(cashPrior),
+  );
+  event.parameters.push(cashPriorParam);
+
+  const interestAccumulatedParam = new ethereum.EventParam(
+    'interestAccumulated',
+    ethereum.Value.fromUnsignedBigInt(interestAccumulated),
+  );
+  event.parameters.push(interestAccumulatedParam);
+
+  const borrowIndexParam = new ethereum.EventParam(
+    'borrowIndex',
+    ethereum.Value.fromUnsignedBigInt(borrowIndex),
+  );
+  event.parameters.push(borrowIndexParam);
+
+  const totalBorrowsParam = new ethereum.EventParam(
+    'totalBorrows',
+    ethereum.Value.fromUnsignedBigInt(totalBorrows),
+  );
+  event.parameters.push(totalBorrowsParam);
+
+  return event;
+};
+
+export const createNewReserveFactorEvent = (
+  vTokenAddress: Address,
+  oldReserveFactorMantissa: BigInt,
+  newReserveFactorMantissa: BigInt,
+): NewReserveFactorEvent => {
+  const event = changetype<NewReserveFactorEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const oldReserveFactorMantissaParam = new ethereum.EventParam(
+    'oldReserveFactorMantissa',
+    ethereum.Value.fromUnsignedBigInt(oldReserveFactorMantissa),
+  );
+  event.parameters.push(oldReserveFactorMantissaParam);
+
+  const newReserveFactorMantissaParam = new ethereum.EventParam(
+    'newReserveFactorMantissa',
+    ethereum.Value.fromUnsignedBigInt(newReserveFactorMantissa),
+  );
+  event.parameters.push(newReserveFactorMantissaParam);
 
   return event;
 };
