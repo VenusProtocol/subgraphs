@@ -16,6 +16,7 @@ import {
   MINT,
   REDEEM,
   REPAY_BORROW,
+  TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
@@ -27,6 +28,7 @@ import {
   handleMint,
   handleRedeem,
   handleRepayBorrow,
+  handleTransfer,
 } from '../../src/mappings/vToken';
 import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import { readMarket } from '../../src/operations/read';
@@ -40,6 +42,7 @@ import {
   createMintEvent,
   createRedeemEvent,
   createRepayBorrowEvent,
+  createTransferEvent,
 } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
@@ -403,6 +406,188 @@ describe('VToken', () => {
       transactionId,
       'underlyingRepayAmount',
       underlyingRepayAmount.toString(),
+    );
+  });
+
+  test('registers accrue interest event', () => {
+    /** Constants */
+    const cashPrior = BigInt.fromI64(1246205398726345);
+    const interestAccumulated = BigInt.fromI64(26454);
+    const borrowIndex = BigInt.fromI32(1);
+    const totalBorrows = BigInt.fromI64(62197468301);
+
+    /** Setup test */
+    const accrueInterestEvent = createAccrueInterestEvent(
+      vTokenAddress,
+      cashPrior,
+      interestAccumulated,
+      borrowIndex,
+      totalBorrows,
+    );
+
+    /** Fire Event */
+    handleAccrueInterest(accrueInterestEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vTokenAddress.toHexString(), key, value);
+    };
+
+    assertMarketDocument('accrualBlockNumber', '999');
+    assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
+    assertMarketDocument('totalSupply', '365045.67163409');
+    assertMarketDocument('exchangeRate', '0.000000000320502536');
+    assertMarketDocument('borrowIndex', '4.852094820647174144');
+    assertMarketDocument('reserves', '5.128924555022289393');
+    assertMarketDocument('totalBorrows', '2.641234234636158123');
+    assertMarketDocument('cash', '1.418171344423412457');
+    assertMarketDocument('borrowRate', '0.000000000012678493');
+    assertMarketDocument('supplyRate', '0.000000000012678493');
+  });
+
+  test('registers new reserve factor', () => {
+    const oldReserveFactor = BigInt.fromI64(12462053079875);
+    const newReserveFactor = BigInt.fromI64(37035970026454);
+    const reserveFactorEvent = createNewReserveFactorEvent(
+      vTokenAddress,
+      oldReserveFactor,
+      newReserveFactor,
+    );
+
+    handleNewReserveFactor(reserveFactorEvent);
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'reserveFactor',
+      newReserveFactor.toString(),
+    );
+  });
+
+  test('registers transfer from event', () => {
+    /** Constants */
+    const from = user1Address; // 101
+    const to = vTokenAddress;
+    const amount = BigInt.fromI64(1246205398726345);
+    const balanceOf = BigInt.fromI64(262059874253345);
+
+    /** Setup test */
+    const transferEvent = createTransferEvent(vTokenAddress, from, to, amount);
+    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(from)])
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+
+    /** Fire Event */
+    handleTransfer(transferEvent);
+
+    const transactionId = getTransactionEventId(
+      transferEvent.transaction.hash,
+      transferEvent.transactionLogIndex,
+    );
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, from);
+
+    /** Transaction */
+    assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
+    assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER);
+    assert.fieldEquals('Transaction', transactionId, 'from', from.toHexString());
+    assert.fieldEquals('Transaction', transactionId, 'to', to.toHexString());
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockNumber',
+      transferEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockTime',
+      transferEvent.block.timestamp.toString(),
+    );
+    /** AccountVToken */
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      transferEvent.block.number.toString(),
+    );
+
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndex', '0');
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalance',
+      '262059861791291.01273655',
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingRedeemed',
+      '0.003994119906686847',
+    );
+  });
+
+  test('registers transfer to event', () => {
+    /** Constants */
+    const amount = BigInt.fromI64(5246205398726345);
+    const from = vTokenAddress;
+    const to = user2Address;
+    const balanceOf = BigInt.fromI64(262059874253345);
+
+    /** Setup test */
+    const transferEvent = createTransferEvent(vTokenAddress, from, to, amount);
+    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(to)])
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+
+    /** Fire Event */
+    handleTransfer(transferEvent);
+
+    const transactionId = getTransactionEventId(
+      transferEvent.transaction.hash,
+      transferEvent.transactionLogIndex,
+    );
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, to);
+
+    /** Transaction */
+    assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
+    assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER);
+    assert.fieldEquals('Transaction', transactionId, 'to', to.toHexString());
+    assert.fieldEquals('Transaction', transactionId, 'from', from.toHexString());
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockNumber',
+      transferEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockTime',
+      transferEvent.block.timestamp.toString(),
+    );
+    /** AccountVToken */
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      transferEvent.block.number.toString(),
+    );
+
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndex', '0');
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalance',
+      '262059926715398.98726345',
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingSupplied',
+      '0.016814221346686847',
     );
   });
 });

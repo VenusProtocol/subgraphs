@@ -15,9 +15,16 @@ import {
   createMintTransaction,
   createRedeemTransaction,
   createRepayBorrowTransaction,
+  createTransferTransaction,
 } from '../operations/create';
 import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate';
-import { updateAccountVTokenBorrow, updateAccountVTokenRepayBorrow } from '../operations/update';
+import {
+  updateAccountVTokenBorrow,
+  updateAccountVTokenRepayBorrow,
+  updateAccountVTokenTransferFrom,
+  updateAccountVTokenTransferTo,
+  updateMarket,
+} from '../operations/update';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -156,6 +163,74 @@ export const handleAccrueInterest = (event: AccrueInterest): void => {}; // esli
 
 export const handleNewReserveFactor = (event: NewReserveFactor): void => {}; // eslint-disable-line
 
-export const handleTransfer = (event: Transfer): void => {}; // eslint-disable-line
+/* Transferring of vTokens
+ *
+ * event.params.from = sender of vTokens
+ * event.params.to = receiver of vTokens
+ * event.params.amount = amount sent
+ *
+ * Notes
+ *    Possible ways to emit Transfer:
+ *      seize() - i.e. a Liquidation Transfer (does not emit anything else)
+ *      redeemFresh() - i.e. redeeming your vTokens for underlying asset
+ *      mintFresh() - i.e. you are lending underlying assets to create vtokens
+ *      transfer() - i.e. a basic transfer
+ *    This const handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
+ *    events. So for those events, we do not update vToken balances.
+ */
+export const handleTransfer = (event: Transfer): void => {
+  const marketAddress = event.address;
+  const accountFromAddress = event.params.from;
+  const accountToAddress = event.params.to;
+
+  let market = getOrCreateMarket(marketAddress);
+  // We only updateMarket() if accrual block number is not up to date. This will only happen
+  // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
+  if (market.accrualBlockNumber != event.block.number.toI32()) {
+    market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
+  }
+
+  // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
+  // If so, it is a mint, and we don't need to run these calculations
+  if (accountFromAddress.toHex() != marketAddress.toHex()) {
+    getOrCreateAccount(accountFromAddress);
+
+    updateAccountVTokenTransferFrom(
+      marketAddress,
+      market.symbol,
+      accountFromAddress,
+      event.transaction.hash,
+      event.block.timestamp,
+      event.block.number,
+      event.logIndex,
+      event.params.amount,
+      market.exchangeRate,
+      market.underlyingDecimals,
+    );
+  }
+
+  // Checking if the tx is TO the vToken contract (i.e. this will not run when redeeming)
+  // If so, we ignore it. this leaves an edge case, where someone who accidentally sends
+  // vTokens to a vToken contract, where it will not get recorded. Right now it would
+  // be messy to include, so we are leaving it out for now TODO fix this in future
+  if (accountToAddress.toHex() != marketAddress.toHex()) {
+    getOrCreateAccount(accountToAddress);
+
+    updateAccountVTokenTransferTo(
+      marketAddress,
+      market.symbol,
+      accountToAddress,
+      event.transaction.hash,
+      event.block.timestamp,
+      event.block.number,
+      event.logIndex,
+      event.params.amount,
+      market.exchangeRate,
+      market.underlyingDecimals,
+    );
+  }
+
+  createTransferTransaction(event);
+};
 
 export const handleNewMarketInterestRateModel = (event: NewMarketInterestRateModel): void => {}; // eslint-disable-line

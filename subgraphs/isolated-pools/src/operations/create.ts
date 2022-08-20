@@ -7,6 +7,7 @@ import {
   Mint,
   Redeem,
   RepayBorrow,
+  Transfer,
 } from '../../generated/PoolRegistry/VToken';
 import { Account, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
@@ -17,6 +18,7 @@ import {
   MINT,
   REDEEM,
   REPAY_BORROW,
+  TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
@@ -207,7 +209,21 @@ export const createLiquidateBorrowTransaction = (
   transaction.amount = amount;
   transaction.to = event.params.borrower;
   transaction.underlyingRepayAmount = underlyingRepayAmount;
-  transaction.vToken = event.address;
+  transaction.from = event.address;
+  transaction.blockNumber = event.block.number.toI32();
+  transaction.blockTime = event.block.timestamp.toI32();
+  transaction.save();
+};
+
+export const createTransferTransaction = (event: Transfer): void => {
+  const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
+  const amount = event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals));
+
+  const transaction = new Transaction(id);
+  transaction.type = TRANSFER;
+  transaction.amount = amount;
+  transaction.to = event.params.to;
+  transaction.from = event.params.from;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
   transaction.save();

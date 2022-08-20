@@ -17,3 +17,4 @@ export const MINT = 'MINT';
 export const REDEEM = 'REDEEM';
 export const REPAY_BORROW = 'REPAY_BORROW';
 export const LIQUIDATE_BORROW = 'LIQUIDATE_BORROW';
+export const TRANSFER = 'TRANSFER';

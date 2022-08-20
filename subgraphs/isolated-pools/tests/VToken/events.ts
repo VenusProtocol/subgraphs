@@ -9,6 +9,7 @@ import {
   NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEvent,
   RepayBorrow as RepayBorrowEvent,
+  Transfer as TransferEvent,
 } from '../../generated/PoolRegistry/VToken';
 
 export const createMintEvent = (
@@ -253,6 +254,28 @@ export const createNewReserveFactorEvent = (
     ethereum.Value.fromUnsignedBigInt(newReserveFactorMantissa),
   );
   event.parameters.push(newReserveFactorMantissaParam);
+
+  return event;
+};
+
+export const createTransferEvent = (
+  vTokenAddress: Address,
+  from: Address,
+  to: Address,
+  amount: BigInt,
+): TransferEvent => {
+  const event = changetype<TransferEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const fromParam = new ethereum.EventParam('from', ethereum.Value.fromAddress(from));
+  event.parameters.push(fromParam);
+
+  const toParam = new ethereum.EventParam('to', ethereum.Value.fromAddress(to));
+  event.parameters.push(toParam);
+
+  const amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount));
+  event.parameters.push(amountParam);
 
   return event;
 };
