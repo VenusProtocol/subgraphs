@@ -1,5 +1,5 @@
-import { Mint } from '../../generated/PoolRegistry/VToken';
-import { createMintTransaction } from '../operations/create';
+import { Mint, Redeem } from '../../generated/PoolRegistry/VToken';
+import { createMintTransaction, createRedeemTransaction } from '../operations/create';
 import { getOrCreateMarket } from '../operations/getOrCreate';
 
 /* Account supplies assets into market and receives vTokens in exchange
@@ -22,7 +22,23 @@ export const handleMint = (event: Mint): void => {
   createMintTransaction(event, market.underlyingDecimals);
 };
 
-export const handleRedeem = (): void => {}; // eslint-disable-line
+/*  Account supplies vTokens into market and receives underlying asset in exchange
+ *
+ *  event.redeemAmount is the underlying asset
+ *  event.redeemTokens is the vTokens
+ *  event.redeemer is the account
+ *
+ *  Notes
+ *    Transfer event will always get emitted with this
+ *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
+ *    No need to updateCommonVTokenStats, handleTransfer() will
+ *    No need to update vTokenBalance, handleTransfer() will
+ */
+export const handleRedeem = (event: Redeem): void => {
+  const vTokenAddress = event.address;
+  const market = getOrCreateMarket(vTokenAddress);
+  createRedeemTransaction(event, market.underlyingDecimals);
+};
 
 export const handleBorrow = (): void => {}; // eslint-disable-line
 
