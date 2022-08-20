@@ -1,11 +1,12 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
-import { Mint, Redeem } from '../../generated/PoolRegistry/VToken';
+import { Borrow, Mint, Redeem } from '../../generated/PoolRegistry/VToken';
 import { Account, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
+  BORROW,
   MINT,
   REDEEM,
   vTokenDecimals,
@@ -129,5 +130,28 @@ export const createRedeemTransaction = (event: Redeem, underlyingDecimals: i32):
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
   transaction.underlyingAmount = underlyingAmount;
+  transaction.save();
+};
+
+export const createBorrowTransaction = (event: Borrow, underlyingDecimals: i32): void => {
+  const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
+  const borrowAmount = event.params.borrowAmount
+    .toBigDecimal()
+    .div(exponentToBigDecimal(underlyingDecimals))
+    .truncate(underlyingDecimals);
+
+  const accountBorrows = event.params.accountBorrows
+    .toBigDecimal()
+    .div(exponentToBigDecimal(underlyingDecimals))
+    .truncate(underlyingDecimals);
+
+  const transaction = new Transaction(id);
+  transaction.type = BORROW;
+  transaction.amount = borrowAmount;
+  transaction.to = event.params.borrower;
+  transaction.accountBorrows = accountBorrows;
+  transaction.from = event.address;
+  transaction.blockNumber = event.block.number.toI32();
+  transaction.blockTime = event.block.timestamp.toI32();
   transaction.save();
 };

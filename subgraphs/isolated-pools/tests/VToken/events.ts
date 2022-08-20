@@ -1,7 +1,11 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import { Mint as MintEvent, Redeem as RedeemEvent } from '../../generated/PoolRegistry/VToken';
+import {
+  Borrow as BorrowEvent,
+  Mint as MintEvent,
+  Redeem as RedeemEvent,
+} from '../../generated/PoolRegistry/VToken';
 
 export const createMintEvent = (
   vTokenAddress: Address,
@@ -58,6 +62,44 @@ export const createRedeemEvent = (
     ethereum.Value.fromUnsignedBigInt(redeemTokens),
   );
   event.parameters.push(redeemTokensParam);
+
+  return event;
+};
+
+export const createBorrowEvent = (
+  vTokenAddress: Address,
+  borrowerAddress: Address,
+  borrowAmount: BigInt,
+  accountBorrows: BigInt,
+  totalBorrows: BigInt,
+): BorrowEvent => {
+  const event = changetype<BorrowEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const borrowerParam = new ethereum.EventParam(
+    'borrower',
+    ethereum.Value.fromAddress(borrowerAddress),
+  );
+  event.parameters.push(borrowerParam);
+
+  const borrowAmountParam = new ethereum.EventParam(
+    'borrowAmount',
+    ethereum.Value.fromUnsignedBigInt(borrowAmount),
+  );
+  event.parameters.push(borrowAmountParam);
+
+  const accountBorrowsParam = new ethereum.EventParam(
+    'accountBorrows',
+    ethereum.Value.fromUnsignedBigInt(accountBorrows),
+  );
+  event.parameters.push(accountBorrowsParam);
+
+  const totalBorrowsParam = new ethereum.EventParam(
+    'totalBorrows',
+    ethereum.Value.fromUnsignedBigInt(totalBorrows),
+  );
+  event.parameters.push(totalBorrowsParam);
 
   return event;
 };

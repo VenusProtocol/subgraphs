@@ -12,5 +12,6 @@ export const defaultMantissaFactorBigDecimal: BigDecimal = exponentToBigDecimal(
 export const vTokenDecimals = 8;
 export const vTokenDecimalsBigDecimal: BigDecimal = exponentToBigDecimal(vTokenDecimals);
 
+export const BORROW = 'BORROW';
 export const MINT = 'MINT';
 export const REDEEM = 'REDEEM';

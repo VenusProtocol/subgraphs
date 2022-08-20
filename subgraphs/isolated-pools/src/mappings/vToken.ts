@@ -1,6 +1,11 @@
-import { Mint, Redeem } from '../../generated/PoolRegistry/VToken';
-import { createMintTransaction, createRedeemTransaction } from '../operations/create';
+import { Borrow, Mint, Redeem } from '../../generated/PoolRegistry/VToken';
+import {
+  createBorrowTransaction,
+  createMintTransaction,
+  createRedeemTransaction,
+} from '../operations/create';
 import { getOrCreateMarket } from '../operations/getOrCreate';
+import { updateAccountVTokenBorrow } from '../operations/update';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -40,7 +45,35 @@ export const handleRedeem = (event: Redeem): void => {
   createRedeemTransaction(event, market.underlyingDecimals);
 };
 
-export const handleBorrow = (): void => {}; // eslint-disable-line
+/* Borrow assets from the protocol. All values either BNB or BEP20
+ *
+ * event.params.totalBorrows = of the whole market (not used right now)
+ * event.params.accountBorrows = total of the account
+ * event.params.borrowAmount = that was added in this event
+ * event.params.borrower = the account
+ * Notes
+ *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
+ */
+export const handleBorrow = (event: Borrow): void => {
+  const vTokenAddress = event.address;
+  const market = getOrCreateMarket(vTokenAddress);
+
+  updateAccountVTokenBorrow(
+    vTokenAddress,
+    market.symbol,
+    event.params.borrower,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.block.number,
+    event.logIndex,
+    event.params.borrowAmount,
+    event.params.accountBorrows,
+    market.borrowIndex,
+    market.underlyingDecimals,
+  );
+
+  createBorrowTransaction(event, market.underlyingDecimals);
+};
 
 export const handleRepayBorrow = (): void => {}; // eslint-disable-line
 

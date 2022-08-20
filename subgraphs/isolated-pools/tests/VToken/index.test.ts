@@ -1,4 +1,5 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { createMockedFunction } from 'matchstick-as';
 import {
   afterEach,
   assert,
@@ -9,16 +10,23 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { MINT, REDEEM, vTokenDecimals, vTokenDecimalsBigDecimal } from '../../src/constants';
+import {
+  BORROW,
+  MINT,
+  REDEEM,
+  vTokenDecimals,
+  vTokenDecimalsBigDecimal,
+} from '../../src/constants';
 import { handleMarketListed } from '../../src/mappings/pool';
 import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import { handleMint, handleRedeem } from '../../src/mappings/vToken';
+import { handleBorrow, handleMint, handleRedeem } from '../../src/mappings/vToken';
+import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import { readMarket } from '../../src/operations/read';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
-import { getTransactionEventId } from '../../src/utilities/ids';
+import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketListedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
-import { createMintEvent, createRedeemEvent } from './events';
+import { createBorrowEvent, createMintEvent, createRedeemEvent } from './events';
 import { createVBep20AndUnderlyingMock } from './mocks';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
@@ -131,6 +139,99 @@ describe('VToken', () => {
         .div(exponentToBigDecimal(market.underlyingDecimals))
         .truncate(market.underlyingDecimals)
         .toString(),
+    );
+  });
+
+  test('registers borrow event', () => {
+    /** Constants */
+    const borrower = user1Address;
+    const borrowAmount = BigInt.fromI64(1246205398726345);
+    const accountBorrows = BigInt.fromI64(35970026454);
+    const totalBorrows = BigInt.fromI64(37035970026454);
+    const balanceOf = BigInt.fromI64(9937035970026454);
+
+    /** Setup test */
+    const borrowEvent = createBorrowEvent(
+      vTokenAddress,
+      borrower,
+      borrowAmount,
+      accountBorrows,
+      totalBorrows,
+    );
+
+    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(borrower)])
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+
+    /** Fire Event */
+    handleBorrow(borrowEvent);
+
+    const transactionId = getTransactionEventId(
+      borrowEvent.transaction.hash,
+      borrowEvent.transactionLogIndex,
+    );
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
+    const market = readMarket(vTokenAddress);
+    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
+    // Clone the value to remove the reference
+    const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
+      new BigDecimal(new BigInt(1)),
+    );
+    const underlyingDecimals = market.underlyingDecimals;
+    const totalUnderlyingBorrowed = totalUnderlyingBorrowedOriginal.plus(
+      borrowAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
+    );
+    const storedBorrowBalance = accountBorrows
+      .toBigDecimal()
+      .div(exponentToBigDecimal(underlyingDecimals))
+      .truncate(underlyingDecimals);
+
+    assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
+    assert.fieldEquals('Transaction', transactionId, 'type', BORROW);
+    assert.fieldEquals('Transaction', transactionId, 'from', borrowEvent.address.toHexString());
+    assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockNumber',
+      borrowEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'Transaction',
+      transactionId,
+      'blockTime',
+      borrowEvent.block.timestamp.toString(),
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      borrowEvent.block.number.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingBorrowed',
+      totalUnderlyingBorrowed.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'storedBorrowBalance',
+      storedBorrowBalance.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowIndex',
+      market.borrowIndex.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingBorrowed',
+      totalUnderlyingBorrowed.toString(),
     );
   });
 });

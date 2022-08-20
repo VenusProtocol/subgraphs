@@ -2,7 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { AccountVToken, MarketAction, PoolAction } from '../../generated/schema';
 import Box from '../utilities/box';
-import { getAccountVTokenId, getMarketActionId, getPoolActionId } from '../utilities/ids';
+import { getMarketActionId, getPoolActionId } from '../utilities/ids';
 import { getOrCreateAccountVToken } from './getOrCreate';
 
 export const updateOrCreateAccountVToken = (
@@ -12,15 +12,12 @@ export const updateOrCreateAccountVToken = (
   blockNumber: BigInt,
   enteredMarket: Box<boolean> | null = null,
 ): AccountVToken => {
-  const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
-
   let enteredMarketBool = false;
   if (enteredMarket !== null) {
     enteredMarketBool = enteredMarket.value;
   }
 
   const accountVToken = getOrCreateAccountVToken(
-    accountVTokenId,
     marketSymbol,
     accountAddress,
     marketAddress,

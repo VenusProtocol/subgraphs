@@ -207,6 +207,7 @@ type AccountVTokenTransaction @entity {
 enum EventType {
     MINT
     REDEEM
+    BORROW
 }
 
 """
@@ -230,4 +231,6 @@ type Transaction @entity {
     blockTime: Int!
     "Underlying token amount transferred"
     underlyingAmount: BigDecimal
+    "Total borrows of this asset the account has"
+    accountBorrows: BigDecimal
 }
