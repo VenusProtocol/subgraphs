@@ -1,9 +1,11 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { poolRegistryAddress } from '../../src/constants';
+import { poolRegistryAddress } from '../../src/constants/addresses';
 
 // type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
+
+const priceOracleMock = Address.fromString('0x0000000000000000000000000000000000000000');
 
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
@@ -77,4 +79,63 @@ export const createVBep20AndUnderlyingMock = (
   createMockedFunction(underlyingAddress, 'symbol', 'symbol():(string)').returns([
     ethereum.Value.fromString(symbol),
   ]);
+};
+
+export const createMarketMock = (marketAddress: Address): void => {
+  createMockedFunction(
+    marketAddress,
+    'accrualBlockNumber',
+    'accrualBlockNumber():(uint256)',
+  ).returns([ethereum.Value.fromI32(999)]);
+
+  createMockedFunction(marketAddress, 'totalSupply', 'totalSupply():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(36504567163409)),
+  ]);
+
+  createMockedFunction(
+    marketAddress,
+    'exchangeRateStored',
+    'exchangeRateStored():(uint256)',
+  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(365045823500000000000000))]);
+
+  createMockedFunction(marketAddress, 'borrowIndex', 'borrowIndex():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(300000000000000000000)),
+  ]);
+
+  createMockedFunction(marketAddress, 'totalReserves', 'totalReserves():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5128924555022289393)),
+  ]);
+
+  createMockedFunction(marketAddress, 'totalBorrows', 'totalBorrows():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(2641234234636158123)),
+  ]);
+
+  createMockedFunction(marketAddress, 'getCash', 'getCash():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(1418171344423412457)),
+  ]);
+
+  createMockedFunction(
+    marketAddress,
+    'borrowRatePerBlock',
+    'borrowRatePerBlock():(uint256)',
+  ).returns([ethereum.Value.fromI32(12678493)]);
+
+  createMockedFunction(
+    marketAddress,
+    'supplyRatePerBlock',
+    'supplyRatePerBlock():(uint256)',
+  ).returns([ethereum.Value.fromI32(12678493)]);
+};
+
+// type Tokens = [address, price][]
+export const createPriceOracleMock = (tokens: Array<Array<ethereum.Value>>): void => {
+  tokens.forEach((token): void => {
+    createMockedFunction(
+      priceOracleMock,
+      'getUnderlyingPrice',
+      'getUnderlyingPrice(address):(uint256)',
+    )
+      .withArgs([token[0]])
+      .returns([token[1]]);
+  });
 };

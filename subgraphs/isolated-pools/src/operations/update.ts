@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
 import { exponentToBigDecimal } from '../../../venus/src/mappings/helpers';
 import { AccountVToken, Market } from '../../generated/schema';
@@ -16,6 +16,7 @@ import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
   getOrCreateAccountVTokenTransaction,
+  getOrCreateMarket,
 } from './getOrCreate';
 
 const updateAccountVToken = (

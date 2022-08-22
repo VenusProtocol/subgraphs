@@ -20,9 +20,11 @@ import {
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
+import { vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketListed } from '../../src/mappings/pool';
 import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
+  handleAccrueInterest,
   handleBorrow,
   handleLiquidateBorrow,
   handleMint,
@@ -39,6 +41,7 @@ import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/i
 import { createMarketListedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import {
+  createAccrueInterestEvent,
   createBorrowEvent,
   createLiquidateBorrowEvent,
   createMintEvent,
@@ -48,7 +51,7 @@ import {
   createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
-import { createVBep20AndUnderlyingMock } from './mocks';
+import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
@@ -73,6 +76,11 @@ beforeAll(() => {
     BigInt.fromI32(100),
     interestRateModelAddress,
   );
+  createPriceOracleMock([
+    [ethereum.Value.fromAddress(vBnbAddress), ethereum.Value.fromI32(326)],
+    [ethereum.Value.fromAddress(vTokenAddress), ethereum.Value.fromI32(99)],
+  ]);
+  createMarketMock(vTokenAddress);
 });
 
 beforeEach(() => {

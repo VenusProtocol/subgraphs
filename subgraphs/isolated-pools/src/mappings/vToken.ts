@@ -159,7 +159,9 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   createLiquidateBorrowTransaction(event, market.underlyingDecimals);
 };
 
-export const handleAccrueInterest = (event: AccrueInterest): void => {}; // eslint-disable-line
+export const handleAccrueInterest = (event: AccrueInterest): void => {
+  updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
+};
 
 export const handleNewReserveFactor = (event: NewReserveFactor): void => {}; // eslint-disable-line
 
