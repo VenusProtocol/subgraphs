@@ -3,7 +3,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   Borrow,
-  Liquidation,
+  LiquidateBorrow,
   Mint,
   Redeem,
   RepayBorrow,
@@ -190,13 +190,13 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
 };
 
 export const createLiquidateBorrowTransaction = (
-  event: Liquidation,
+  event: LiquidateBorrow,
   underlyingDecimals: i32,
 ): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
   const amount = event.params.seizeTokens
     .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimalsBigDecimal))
+    .div(exponentToBigDecimal(vTokenDecimals))
     .truncate(vTokenDecimals);
 
   const underlyingRepayAmount = event.params.repayAmount
