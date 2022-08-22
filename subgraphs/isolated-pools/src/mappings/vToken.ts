@@ -163,7 +163,12 @@ export const handleAccrueInterest = (event: AccrueInterest): void => {
   updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
 };
 
-export const handleNewReserveFactor = (event: NewReserveFactor): void => {}; // eslint-disable-line
+export const handleNewReserveFactor = (event: NewReserveFactor): void => {
+  const vTokenAddress = event.address;
+  const market = getOrCreateMarket(vTokenAddress);
+  market.reserveFactor = event.params.newReserveFactorMantissa;
+  market.save();
+};
 
 /* Transferring of vTokens
  *
