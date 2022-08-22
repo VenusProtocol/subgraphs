@@ -6809,6 +6809,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"venus-governance-abis@workspace:packages/venus-governance-abis":
+  version: 0.0.0-use.local
+  resolution: "venus-governance-abis@workspace:packages/venus-governance-abis"
+  languageName: unknown
+  linkType: soft
+
+"venus-governance@workspace:subgraphs/venus-governance":
+  version: 0.0.0-use.local
+  resolution: "venus-governance@workspace:subgraphs/venus-governance"
+  languageName: unknown
+  linkType: soft
+
 "venus@workspace:subgraphs/venus":
   version: 0.0.0-use.local
   resolution: "venus@workspace:subgraphs/venus"

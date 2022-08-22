@@ -1,0 +1,136 @@
+enum ProposalStatus {
+  PENDING
+  ACTIVE
+  CANCELLED
+  QUEUED
+  EXECUTED
+}
+
+type TokenHolder @entity {
+  "A TokenHolder is any address that holds any amount of Venus Tokens, the id used is the blockchain address."
+  id: ID!
+
+  "Delegate address of the token holder which will participate in votings. Delegates don't need to hold any tokens and can even be the token holder itself."
+  delegate: Delegate
+
+  "Venus Token balance of this address expressed in the smallest unit of the VenusToken"
+  tokenBalanceRaw: BigInt!
+
+  "Venus Token balance of this address expressed as a BigDecimal normalized value for the Venus Token"
+  tokenBalance: BigDecimal!
+
+  "Total amount of Venus Token ever held by this address expressed in the smallest unit of the VenusToken"
+  totalTokensHeldRaw: BigInt!
+
+  "Total amount of Venus Token ever held by this address expressed as a BigDecimal normalized value for the Venus Token"
+  totalTokensHeld: BigDecimal!
+}
+
+type Delegate @entity {
+  "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
+  id: ID!
+
+  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the VenusToken"
+  delegatedVotesRaw: BigInt!
+
+  "Amount of votes delegated to this delegate to be used on proposal votings expressed as a BigDecimal normalized value for the Venus Token"
+  delegatedVotes: BigDecimal!
+
+  tokenHoldersRepresentedAmount: Int!
+
+  "Token holders that this delegate represents"
+  tokenHoldersRepresented: [TokenHolder!]! @derivedFrom(field: "delegate")
+
+  "Votes that a delegate has made in different proposals"
+  votes: [Vote!]! @derivedFrom(field: "voter")
+
+  "Proposals that the delegate has created"
+  proposals: [Proposal!]! @derivedFrom(field: "proposer")
+}
+
+type Proposal @entity {
+  "Internal proposal ID, in this implementation it seems to be a autoincremental id"
+  id: ID!
+
+  "Delegate that proposed the change"
+  proposer: Delegate!
+
+  "Targets data for the change"
+  targets: [Bytes!]
+
+  "Values data for the change"
+  values: [BigInt!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [Bytes!]
+
+  "Block number from where the voting starts"
+  startBlock: BigInt!
+
+  "Block number from where the voting ends"
+  endBlock: BigInt!
+
+  "String description of the change"
+  description: String!
+
+  "Status of the proposal"
+  status: ProposalStatus!
+
+  "Once the proposal is queued for execution it will have an ETA of the execution"
+  executionETA: BigInt
+
+  "Votes associated to this proposal"
+  votes: [Vote!]! @derivedFrom(field: "proposal")
+}
+
+type Vote @entity {
+  "Delegate ID + Proposal ID"
+  id: ID!
+
+  "Whether the vote is in favour or against the proposal"
+  support: Boolean!
+
+  "Amount of votes in favour or against expressed in the smallest unit of the VenusToken"
+  votesRaw: BigInt!
+
+  "Amount of votes in favour or against expressed as a BigDecimal normalized value for the Venus Token"
+  votes: BigDecimal!
+
+  "Delegate that emitted the vote"
+  voter: Delegate!
+
+  "Proposal that is being voted on"
+  proposal: Proposal!
+}
+
+type Governance @entity {
+  "Unique entity used to keep track of common aggregated data"
+  id: ID!
+
+  "Number of proposals created"
+  proposals: BigInt!
+
+  "Total number of token holders currently"
+  currentTokenHolders: BigInt!
+
+  "Total number of delegates participating on the governance currently"
+  currentDelegates: BigInt!
+
+  "Total number of token holders"
+  totalTokenHolders: BigInt!
+
+  "Total number of delegates that held delegated votes"
+  totalDelegates: BigInt!
+
+  "Total number of votes delegated expressed in the smallest unit of the Venus Token"
+  delegatedVotesRaw: BigInt!
+
+  "Total number of votes delegated expressed as a BigDecimal normalized value for the Venus Token"
+  delegatedVotes: BigDecimal!
+
+  "Number of proposals currently queued for execution"
+  proposalsQueued: BigInt!
+}

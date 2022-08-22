@@ -1,0 +1,7 @@
+{
+  "network": "bsc-testnet",
+  "governorAlphaAddress": "",
+  "governorAlphaStartBlock": "0",
+  "venusTokenAddress": "",
+  "venusTokenStartBlock": "0"
+}
