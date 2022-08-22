@@ -23,7 +23,6 @@ You can also see the saved queries on the hosted service for examples.
 Hardhat is used for development and testing. First start a local node. We'll also need to deploy the contracts.
 ```
 $ yarn hardhat node
-$ yarn hardhat run --network localhost scripts/deploy.ts  
 ```
 
 ### IPFS local
@@ -42,7 +41,9 @@ cargo run -p graph-node --release -- \
   --ipfs 127.0.0.1:5001
 
 ### Deploy your local subgraph
+To build or deploy the subgraph you'll need to first compile the subgraph.yaml template and then run the build of deploy commands which can be run for all packages or individual packages.
 
 ```
-$ yarn deploy-local
+$ yarn prepare:local
+$ yarn deploy:local
 ```
