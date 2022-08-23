@@ -15,7 +15,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings.ts
+      file: ./src/mappings/alpha.ts
       entities:
         - Delegate
         - TokenHolder
@@ -47,7 +47,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings.ts
+      file: ./src/mappings/alpha.ts
       entities:
         - Delegate
         - TokenHolder
