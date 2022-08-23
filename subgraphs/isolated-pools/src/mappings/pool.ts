@@ -15,12 +15,12 @@ import {
 import { VToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { createMarket } from '../operations/create';
+import { getPool } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
-import { readPool } from '../operations/read';
 import {
   updateOrCreateAccountVToken,
   updateOrCreateMarketAction,
@@ -83,7 +83,7 @@ export const handleMarketExited = (event: MarketExited): void => {
 
 export const handleNewCloseFactor = (event: NewCloseFactor): void => {
   const poolAddress = event.address;
-  const pool = readPool(poolAddress);
+  const pool = getPool(poolAddress);
   pool.closeFactor = event.params.newCloseFactorMantissa;
   pool.save();
 };
@@ -100,21 +100,21 @@ export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
 
 export const handleNewLiquidationIncentive = (event: NewLiquidationIncentive): void => {
   const poolAddress = event.address;
-  const pool = readPool(poolAddress);
+  const pool = getPool(poolAddress);
   pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
   pool.save();
 };
 
 export const handleNewPriceOracle = (event: NewPriceOracle): void => {
   const poolAddress = event.address;
-  const pool = readPool(poolAddress);
+  const pool = getPool(poolAddress);
   pool.priceOracle = event.params.newPriceOracle;
   pool.save();
 };
 
 export const handleNewPauseGuardian = (event: NewPauseGuardian): void => {
   const poolAddress = event.address;
-  const pool = readPool(poolAddress);
+  const pool = getPool(poolAddress);
   pool.pauseGuardian = event.params.newPauseGuardian;
   pool.save();
 };

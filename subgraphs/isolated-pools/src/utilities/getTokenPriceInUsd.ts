@@ -1,7 +1,7 @@
 import { Address, BigDecimal } from '@graphprotocol/graph-ts';
 
 import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
-import { readPool } from '../operations/read';
+import { getPool } from '../operations/get';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
 // Used for all vBEP20 contracts
@@ -10,7 +10,7 @@ const getTokenPrice = (
   eventAddress: Address,
   underlyingDecimals: i32,
 ): BigDecimal => {
-  const pool = readPool(poolAddress);
+  const pool = getPool(poolAddress);
   let underlyingPrice = BigDecimal.zero();
   const oracleAddress = Address.fromBytes(pool.priceOracle);
   if (pool.priceOracle) {
