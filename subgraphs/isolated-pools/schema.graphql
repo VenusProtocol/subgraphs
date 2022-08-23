@@ -6,29 +6,24 @@ type PoolRegistry @entity {
     id: ID!
 }
 
-"""
+
 enum RiskRating {
-    VERY_HIGH_RISK,
-    HIGH_RISK,
-    MEDIUM_RISK,
-    LOW_RISK,
+    VERY_HIGH_RISK
+    HIGH_RISK
+    MEDIUM_RISK
+    LOW_RISK
     MINIMAL_RISK
 }
-"""
 
-type RiskRating @entity {
-    id: ID!
+
+enum PoolActionType {
+  Transfer
+  Seize
 }
 
-"""
-enum PoolActionPauseState {
-  Transfer = "Transfer",
-  Seize = "Seize",
-}
-"""
 type PoolAction @entity {
     id: ID!
-    action: String!
+    action: PoolActionType!
     pauseState: Boolean!
     pool: Bytes!
 }
@@ -207,4 +202,37 @@ type AccountVTokenTransaction @entity {
   block: BigInt!
 
   logIndex: BigInt!
+}
+
+enum EventType {
+    MINT
+    REDEEM
+    BORROW
+}
+
+"""
+An interface for a transfer of any vToken. TransferEvent, MintEvent,
+RedeemEvent, and LiquidationEvent all use this interface
+"""
+type Transaction @entity {
+    "Transaction hash concatenated with log index"
+    id: ID!
+    "enum of event type"
+    type: EventType
+    "The account that sent the tokens, usually vToken"
+    from: Bytes!
+    "count of vTokens transferred"
+    amount: BigDecimal!
+    "Account that received tokens"
+    to: Bytes!
+    "Block number"
+    blockNumber: Int!
+    "Block time"
+    blockTime: Int!
+    "Underlying token amount transferred"
+    underlyingAmount: BigDecimal
+    "Total borrows of this asset the account has"
+    accountBorrows: BigDecimal
+    "LIQUIATION: Underlying vToken amount that was repaid by liquidator"
+    underlyingRepayAmount: BigDecimal
 }

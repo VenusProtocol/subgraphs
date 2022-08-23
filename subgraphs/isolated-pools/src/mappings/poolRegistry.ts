@@ -4,7 +4,7 @@ import {
   PoolRegistry as PoolRegistryContract,
 } from '../../generated/PoolRegistry/PoolRegistry';
 import { Pool } from '../../generated/schema';
-import { poolRegistryAddress } from '../constants';
+import { poolRegistryAddress } from '../constants/addresses';
 import { createPool } from '../operations/create';
 
 export const handlePoolRegistered = (event: PoolRegistered): void => {

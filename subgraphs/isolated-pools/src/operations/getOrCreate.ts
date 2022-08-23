@@ -3,7 +3,7 @@ import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { BEP20 } from '../../generated/PoolRegistry/BEP20';
 import { Account, AccountVToken, AccountVTokenTransaction, Market } from '../../generated/schema';
 import { zeroBigDecimal } from '../constants';
-import { getAccountVTokenTransactionId } from '../utilities/ids';
+import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
 import { createAccount, createMarket } from './create';
 
 export const getOrCreateMarket = (vTokenAddress: Address): Market => {
@@ -50,12 +50,12 @@ export const getOrCreateAccountVTokenTransaction = (
 };
 
 export const getOrCreateAccountVToken = (
-  accountVTokenId: string,
   marketSymbol: string,
   accountAddress: Address,
   marketAddress: Address,
-  enteredMarket: boolean,
+  enteredMarket = false,
 ): AccountVToken => {
+  const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
   let accountVToken = AccountVToken.load(accountVTokenId);
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
