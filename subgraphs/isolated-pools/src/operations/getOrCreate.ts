@@ -53,7 +53,7 @@ export const getOrCreateAccountVToken = (
   marketSymbol: string,
   accountAddress: Address,
   marketAddress: Address,
-  enteredMarket = false,
+  enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
 ): AccountVToken => {
   const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
   let accountVToken = AccountVToken.load(accountVTokenId);
