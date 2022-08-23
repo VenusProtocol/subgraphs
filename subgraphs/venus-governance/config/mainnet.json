@@ -2,6 +2,10 @@
   "network": "bsc",
   "governorAlphaAddress": "0x406f48f47d25e9caa29f17e7cfbd1dc6878f078f",
   "governorAlphaStartBlock": "2474351",
+  "governorAlpha2Address": "0x388313BfEFEE8ddfeAD55b585F62812293Cf3A60",
+  "governorAlpha2StartBlock": "11934064",
+  "governorBravoDelegatorAddress": "0x2d56dC077072B53571b8252008C60e945108c75a",
+  "governorBravoDelegatorBlock": "13729317",
   "venusTokenAddress": "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63",
   "venusTokenStartBlock": "858561"
 }
