@@ -37,6 +37,38 @@ dataSources:
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
   - kind: ethereum/contract
+    name: GovernorAlpha2
+    network: {{ network }}
+    source:
+      address: "{{ governorAlpha2Address }}"
+      abi: GovernorAlpha2
+      startBlock: {{ governorAlpha2StartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings.ts
+      entities:
+        - Delegate
+        - TokenHolder
+        - Proposal
+        - Vote
+        - Governance
+      abis:
+        - name: GovernorAlpha2
+          file: ../../packages/venus-governance-abis/GovernorAlpha2.json
+      eventHandlers:
+        - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
+          handler: handleProposalCreated
+        - event: ProposalCanceled(uint256)
+          handler: handleProposalCanceled
+        - event: ProposalQueued(uint256,uint256)
+          handler: handleProposalQueued
+        - event: ProposalExecuted(uint256)
+          handler: handleProposalExecuted
+        - event: VoteCast(address,uint256,bool,uint256)
+          handler: handleVoteCast
+  - kind: ethereum/contract
     name: VenusToken
     network: {{ network }}
     source:
