@@ -22,6 +22,7 @@ import {
   handleProposalQueued,
   handleVoteCast,
   handleVotingDelaySet,
+  handleVotingPeriodSet,
 } from '../../src/mappings/bravo';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
 import { getVoteId } from '../../src/utils/ids';
@@ -33,7 +34,7 @@ import {
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
 } from '../common/events';
-import { createNewVotingDelayEvent } from './events';
+import { createNewVotingDelayEvent, createNewVotingPeriodEvent } from './events';
 
 const startBlock = 4563820;
 const endBlock = 4593820;
@@ -212,5 +213,18 @@ describe('Bravo', () => {
 
     handleVotingDelaySet(votingDelayEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'votingDelay', newVotingDelay.toString());
+  });
+
+  test('registers new voting period', () => {
+    const oldVotingPeriod = BigInt.fromI32(1);
+    const newVotingPeriod = BigInt.fromI32(2);
+    const votingPeriodEvent = createNewVotingPeriodEvent(
+      governanceAddress,
+      oldVotingPeriod,
+      newVotingPeriod,
+    );
+
+    handleVotingPeriodSet(votingPeriodEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'votingPeriod', newVotingPeriod.toString());
   });
 });

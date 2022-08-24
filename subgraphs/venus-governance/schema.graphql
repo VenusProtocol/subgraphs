@@ -127,4 +127,7 @@ type Governance @entity {
 
   "The delay before voting on a proposal may take place, once proposed, in blocks"
   votingDelay: BigInt!
+
+  "The duration of voting on a proposal, in blocks"
+  votingPeriod: BigInt!
 }

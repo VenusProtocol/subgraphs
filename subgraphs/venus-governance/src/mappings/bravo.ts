@@ -59,7 +59,11 @@ export const handleVotingDelaySet = (event: VotingDelaySet): void => {
   governance.save();
 };
 
-export const handleVotingPeriodSet = (event: VotingPeriodSet): void => {};
+export const handleVotingPeriodSet = (event: VotingPeriodSet): void => {
+  const governance = getGovernanceEntity();
+  governance.votingPeriod = event.params.newVotingPeriod;
+  governance.save();
+};
 
 export const handleNewImplementation = (event: NewImplementation): void => {};
 
