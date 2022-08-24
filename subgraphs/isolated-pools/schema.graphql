@@ -60,6 +60,8 @@ type Pool @entity {
     liquidationIncentive: BigInt!
     "Max assets a single user can enter"
     maxAssets: BigInt!
+    "Markets associated to this pool"
+    markets: [Market!]! @derivedFrom(field: "pool")
 }
 
 """
