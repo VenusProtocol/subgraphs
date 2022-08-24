@@ -65,7 +65,11 @@ export const handleVotingPeriodSet = (event: VotingPeriodSet): void => {
   governance.save();
 };
 
-export const handleNewImplementation = (event: NewImplementation): void => {};
+export const handleNewImplementation = (event: NewImplementation): void => {
+  const governance = getGovernanceEntity();
+  governance.implementation = event.params.newImplementation;
+  governance.save();
+};
 
 export const handleProposalThresholdSet = (event: ProposalThresholdSet): void => {};
 

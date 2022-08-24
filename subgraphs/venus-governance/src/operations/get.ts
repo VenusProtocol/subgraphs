@@ -1,4 +1,4 @@
-import { BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Delegate, Governance, Proposal } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO, GOVERNANCE } from '../constants';
@@ -21,6 +21,7 @@ export const getGovernanceEntity = (): Governance => {
     // defaulting to Governor Bravo constructor defaults
     governance.votingDelay = BIGINT_ONE;
     governance.votingPeriod = BigInt.fromI64(86400);
+    governance.implementation = Address.fromString('0x18df46ec843e79d9351b57f85af7d69aec0d7eff');
   }
 
   return governance as Governance;

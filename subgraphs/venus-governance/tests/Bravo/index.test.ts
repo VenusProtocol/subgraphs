@@ -16,6 +16,7 @@ import {
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { GOVERNANCE } from '../../src/constants';
 import {
+  handleNewImplementation,
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
@@ -34,7 +35,11 @@ import {
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
 } from '../common/events';
-import { createNewVotingDelayEvent, createNewVotingPeriodEvent } from './events';
+import {
+  createNewImplementationEvent,
+  createNewVotingDelayEvent,
+  createNewVotingPeriodEvent,
+} from './events';
 
 const startBlock = 4563820;
 const endBlock = 4593820;
@@ -226,5 +231,18 @@ describe('Bravo', () => {
 
     handleVotingPeriodSet(votingPeriodEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'votingPeriod', newVotingPeriod.toString());
+  });
+
+  test('registers new implementation', () => {
+    const oldImplementation = Address.fromString('0x0a00000000000000000000000000000000000000');
+    const newImplementation = Address.fromString('0x0b00000000000000000000000000000000000000');
+    const newImplementationEvent = createNewImplementationEvent(
+      governanceAddress,
+      oldImplementation,
+      newImplementation,
+    );
+
+    handleNewImplementation(newImplementationEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'implementation', newImplementation.toHexString());
   });
 });

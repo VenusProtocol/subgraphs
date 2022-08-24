@@ -2,6 +2,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
+  NewImplementation,
   VotingDelaySet,
   VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
@@ -50,6 +51,30 @@ export function createNewVotingPeriodEvent(
     ethereum.Value.fromUnsignedBigInt(newVotingPeriod),
   );
   event.parameters.push(newVotingPeriodParam);
+
+  return event;
+}
+
+export function createNewImplementationEvent(
+  governanceAddress: Address,
+  oldImplementation: Address,
+  newImplementation: Address,
+): NewImplementation {
+  const event = changetype<NewImplementation>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldImplementationParam = new ethereum.EventParam(
+    'oldImplementation',
+    ethereum.Value.fromAddress(oldImplementation),
+  );
+  event.parameters.push(oldImplementationParam);
+
+  const newImplementationParam = new ethereum.EventParam(
+    'newImplementation',
+    ethereum.Value.fromAddress(newImplementation),
+  );
+  event.parameters.push(newImplementationParam);
 
   return event;
 }

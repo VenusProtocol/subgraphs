@@ -130,4 +130,7 @@ type Governance @entity {
 
   "The duration of voting on a proposal, in blocks"
   votingPeriod: BigInt!
+  
+  "Active brains of Governor"
+  implementation: Bytes!
 }
