@@ -56,7 +56,7 @@ export function handleProposalCanceled(event: ProposalCanceled): void {
 //   handler: handleProposalQueued
 
 export function handleProposalQueued(event: ProposalQueued): void {
-  updateProposalQueued(event);
+  updateProposalQueued<ProposalQueued>(event);
 }
 
 // - event: ProposalExecuted(uint256)

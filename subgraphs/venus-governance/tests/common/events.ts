@@ -71,3 +71,16 @@ export function createProposalCanceledEvent<E>(id: i32): E {
   event.parameters.push(idParam);
   return event;
 }
+
+export function createProposalQueuedEvent<E>(id: i32, eta: BigInt): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const idParam = new ethereum.EventParam('id', ethereum.Value.fromI32(id));
+  event.parameters.push(idParam);
+
+  const etaParam = new ethereum.EventParam('eta', ethereum.Value.fromUnsignedBigInt(eta));
+  event.parameters.push(etaParam);
+  
+  return event;
+}

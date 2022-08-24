@@ -1,16 +1,16 @@
 import { log } from '@graphprotocol/graph-ts';
 
 import { Delegate, Governance, Proposal } from '../../generated/schema';
-import { BIGINT_ZERO } from '../constants';
+import { BIGINT_ZERO, GOVERNANCE } from '../constants';
 
 /**
  * While techinically this function does also create, we don't care because it only happens once as the id is a constant.
  * @returns Governance
  */
 export const getGovernanceEntity = (): Governance => {
-  let governance = Governance.load('GOVERNANCE');
+  let governance = Governance.load(GOVERNANCE);
   if (!governance) {
-    governance = new Governance('GOVERNANCE');
+    governance = new Governance(GOVERNANCE);
     governance.proposals = BIGINT_ZERO;
     governance.totalTokenHolders = BIGINT_ZERO;
     governance.currentTokenHolders = BIGINT_ZERO;

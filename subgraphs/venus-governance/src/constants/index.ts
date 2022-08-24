@@ -9,3 +9,6 @@ export const CANCELLED = 'CANCELLED';
 export const EXECUTED = 'EXECUTED';
 export const QUEUED = 'QUEUED';
 export const ACTIVE = 'ACTIVE';
+
+// Ids
+export const GOVERNANCE = 'GOVERNANCE';
