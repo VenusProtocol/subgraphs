@@ -12,14 +12,13 @@ import {
   DelegateVotesChanged,
   Transfer,
 } from '../../generated/VenusToken/VenusToken';
-import { ACTIVE, PENDING, ZERO_ADDRESS } from '../constants';
+import { ACTIVE, CANCELLED, PENDING, ZERO_ADDRESS } from '../constants';
 import { createProposal, createVote } from '../operations/create';
 import { getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
   updateDelegateChanged,
   updateDelegateVoteChanged,
-  updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
   updateProposalStatus,
@@ -49,7 +48,8 @@ export function handleProposalCreated(event: ProposalCreated): void {
 //   handler: handleProposalCanceled
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
-  updateProposalCanceled(event);
+  const proposalId = event.params.id.toString();
+  updateProposalStatus(proposalId, CANCELLED);
 }
 
 // - event: ProposalQueued(uint256,uint256)

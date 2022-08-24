@@ -1,10 +1,13 @@
 import { BigInt } from '@graphprotocol/graph-ts';
 import { afterEach, assert, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import { ProposalCreated } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { handleProposalCreated } from '../../src/mappings/bravo';
+import {
+  ProposalCanceled,
+  ProposalCreated,
+} from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { handleProposalCanceled, handleProposalCreated } from '../../src/mappings/bravo';
 import { user1 } from '../common/constants';
-import { createProposalCreatedEvent } from '../common/events';
+import { createProposalCanceledEvent, createProposalCreatedEvent } from '../common/events';
 
 const cleanup = (): void => {
   clearStore();
@@ -54,5 +57,33 @@ describe('Bravo', () => {
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);
     assertProposalDocument('status', 'PENDING');
+  });
+
+  test('cancel proposal', () => {
+    /** setup test */
+    const startBlock = 4563820;
+    const endBlock = 4593820;
+    const description = 'Very creative Proposal';
+    const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
+      1,
+      user1,
+      [],
+      [],
+      [],
+      [],
+      BigInt.fromI64(startBlock),
+      BigInt.fromI64(endBlock),
+      description,
+    );
+    handleProposalCreated(proposalCreatedEvent);
+    /** run handler */
+    const proposalCanceledEvent = createProposalCanceledEvent<ProposalCanceled>(1);
+    handleProposalCanceled(proposalCanceledEvent);
+
+    // Proposal
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+    assertProposalDocument('status', 'CANCELLED');
   });
 });

@@ -16,15 +16,20 @@ import {
   VotingDelaySet,
   VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { CANCELLED } from '../constants';
 import { createProposal } from '../operations/create';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
+import { updateProposalStatus } from '../operations/update';
 
 export const handleProposalCreated = (event: ProposalCreated): void => {
   getOrCreateDelegate(event.params.proposer.toHexString());
   createProposal<ProposalCreated>(event);
 };
 
-export const handleProposalCanceled = (event: ProposalCanceled): void => {};
+export const handleProposalCanceled = (event: ProposalCanceled): void => {
+  const proposalId = event.params.id.toString();
+  updateProposalStatus(proposalId, CANCELLED);
+};
 
 export const handleProposalQueued = (event: ProposalQueued): void => {};
 
