@@ -17,6 +17,7 @@ import {
 import { GOVERNANCE } from '../../src/constants';
 import {
   handleNewImplementation,
+  handleNewPendingAdmin,
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
@@ -38,6 +39,7 @@ import {
 } from '../common/events';
 import {
   createNewImplementationEvent,
+  createNewPendingAdminEvent,
   createNewProposalThresholdEvent,
   createNewVotingDelayEvent,
   createNewVotingPeriodEvent,
@@ -264,5 +266,18 @@ describe('Bravo', () => {
       'proposalThreshold',
       newProposalThreshold.toString(),
     );
+  });
+
+  test('registers new pending admin', () => {
+    const oldPendingAdmin = Address.fromString('0x0000000000000000000000000000000000000000');
+    const newPendingAdmin = Address.fromString('0x0b00000000000000000000000000000000000000');
+    const pendingAdminEvent = createNewPendingAdminEvent(
+      governanceAddress,
+      oldPendingAdmin,
+      newPendingAdmin,
+    );
+
+    handleNewPendingAdmin(pendingAdminEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', newPendingAdmin.toHexString());
   });
 });

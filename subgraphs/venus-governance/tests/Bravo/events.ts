@@ -3,6 +3,7 @@ import { newMockEvent } from 'matchstick-as';
 
 import {
   NewImplementation,
+  NewPendingAdmin,
   ProposalThresholdSet,
   VotingDelaySet,
   VotingPeriodSet,
@@ -100,6 +101,30 @@ export function createNewProposalThresholdEvent(
     ethereum.Value.fromUnsignedBigInt(newProposalThreshold),
   );
   event.parameters.push(newProposalThresholdParam);
+
+  return event;
+}
+
+export function createNewPendingAdminEvent(
+  governanceAddress: Address,
+  oldPendingAdmin: Address,
+  newPendingAdmin: Address,
+): NewPendingAdmin {
+  const event = changetype<NewPendingAdmin>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldPendingAdminParam = new ethereum.EventParam(
+    'oldPendingAdmin',
+    ethereum.Value.fromAddress(oldPendingAdmin),
+  );
+  event.parameters.push(oldPendingAdminParam);
+
+  const newPendingAdminParam = new ethereum.EventParam(
+    'newPendingAdmin',
+    ethereum.Value.fromAddress(newPendingAdmin),
+  );
+  event.parameters.push(newPendingAdminParam);
 
   return event;
 }

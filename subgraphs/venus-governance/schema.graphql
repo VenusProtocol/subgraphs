@@ -136,4 +136,7 @@ type Governance @entity {
 
   "The number of votes required in order for a voter to become a proposer"
   proposalThreshold: BigInt!
+  
+  "Pending administrator for this contract"
+  pendingAdmin: Bytes
 }
