@@ -15,6 +15,11 @@
         "internalType": "address",
         "name": "guardian_",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lastProposalId_",
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -401,7 +406,7 @@
             "type": "uint96"
           }
         ],
-        "internalType": "struct GovernorAlpha.Receipt",
+        "internalType": "struct GovernorAlpha2.Receipt",
         "name": "",
         "type": "tuple"
       }
@@ -650,7 +655,7 @@
     "name": "state",
     "outputs": [
       {
-        "internalType": "enum GovernorAlpha.ProposalState",
+        "internalType": "enum GovernorAlpha2.ProposalState",
         "name": "",
         "type": "uint8"
       }
