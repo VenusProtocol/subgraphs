@@ -23,6 +23,7 @@ import {
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
+  handleProposalMaxOperationsUpdated,
   handleProposalQueued,
   handleProposalThresholdSet,
   handleVoteCast,
@@ -44,6 +45,7 @@ import {
   createNewGuardianEvent,
   createNewImplementationEvent,
   createNewPendingAdminEvent,
+  createNewProposalMaxOperationsEvent,
   createNewProposalThresholdEvent,
   createNewVotingDelayEvent,
   createNewVotingPeriodEvent,
@@ -302,5 +304,23 @@ describe('Bravo', () => {
 
     handleNewGuardian(newGuardianEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'guardian', newGuardian.toHexString());
+  });
+
+  test('registers new proposal max operations', () => {
+    const oldProposalMaxOperations = BigInt.fromI32(10);
+    const newProposalMaxOperations = BigInt.fromI32(20);
+    const newProposalMaxOperationsEvent = createNewProposalMaxOperationsEvent(
+      governanceAddress,
+      oldProposalMaxOperations,
+      newProposalMaxOperations,
+    );
+
+    handleProposalMaxOperationsUpdated(newProposalMaxOperationsEvent);
+    assert.fieldEquals(
+      'Governance',
+      GOVERNANCE,
+      'proposalMaxOperations',
+      newProposalMaxOperations.toString(),
+    );
   });
 });

@@ -145,4 +145,8 @@ type Governance @entity {
   
   "A privileged role that can cancel any proposal"
   guardian: Bytes!
+
+  "The maximum number of actions that can be included in a proposal"
+  proposalMaxOperations: BigInt!
+
 }

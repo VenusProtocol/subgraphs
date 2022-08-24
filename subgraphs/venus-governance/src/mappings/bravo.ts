@@ -96,4 +96,8 @@ export const handleNewGuardian = (event: NewGuardian): void => {
   governance.save();
 };
 
-export const handleProposalMaxOperationsUpdated = (event: ProposalMaxOperationsUpdated): void => {};
+export const handleProposalMaxOperationsUpdated = (event: ProposalMaxOperationsUpdated): void => {
+  const governance = getGovernanceEntity();
+  governance.proposalMaxOperations = event.params.newMaxOperations;
+  governance.save();
+};

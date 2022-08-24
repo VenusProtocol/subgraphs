@@ -25,6 +25,7 @@ export const getGovernanceEntity = (): Governance => {
     governance.proposalThreshold = BigInt.fromI64(300000000000000000000000);
     governance.admin = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
     governance.guardian = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
+    governance.proposalMaxOperations = BigInt.fromI32(10);
   }
 
   return governance as Governance;

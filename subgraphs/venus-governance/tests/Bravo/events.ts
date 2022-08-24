@@ -6,6 +6,7 @@ import {
   NewGuardian,
   NewImplementation,
   NewPendingAdmin,
+  ProposalMaxOperationsUpdated,
   ProposalThresholdSet,
   VotingDelaySet,
   VotingPeriodSet,
@@ -169,6 +170,30 @@ export function createNewGuardianEvent(
     ethereum.Value.fromAddress(newGuardian),
   );
   event.parameters.push(newGuardianParam);
+
+  return event;
+}
+
+export function createNewProposalMaxOperationsEvent(
+  governanceAddress: Address,
+  oldMaxOperations: BigInt,
+  newMaxOperations: BigInt,
+): ProposalMaxOperationsUpdated {
+  const event = changetype<ProposalMaxOperationsUpdated>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldMaxOperationsParam = new ethereum.EventParam(
+    'oldMaxOperations',
+    ethereum.Value.fromUnsignedBigInt(oldMaxOperations),
+  );
+  event.parameters.push(oldMaxOperationsParam);
+
+  const newMaxOperationsParam = new ethereum.EventParam(
+    'newMaxOperations',
+    ethereum.Value.fromUnsignedBigInt(newMaxOperations),
+  );
+  event.parameters.push(newMaxOperationsParam);
 
   return event;
 }
