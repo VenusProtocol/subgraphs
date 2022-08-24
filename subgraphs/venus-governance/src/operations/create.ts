@@ -1,12 +1,12 @@
-import { Bytes } from '@graphprotocol/graph-ts';
+import { Address, Bytes } from '@graphprotocol/graph-ts';
 
-import { ProposalCreated, VoteCast } from '../../generated/GovernorAlpha/GovernorAlpha';
+import { VoteCast } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { Proposal, Vote } from '../../generated/schema';
 import { ACTIVE, BIGINT_ONE, PENDING } from '../constants';
 import { getVoteId } from '../utils/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
-export const createProposal = (event: ProposalCreated): Proposal => {
+export function createProposal<E>(event: E): Proposal {
   const id = event.params.id.toString();
   let proposal = Proposal.load(id);
   if (!proposal) {
@@ -16,8 +16,10 @@ export const createProposal = (event: ProposalCreated): Proposal => {
 
     governance.proposals = governance.proposals.plus(BIGINT_ONE);
     governance.save();
-
-    proposal.targets = event.params.targets as Bytes[];
+    const targets = event.params.targets.map<Bytes>((address: Address) =>
+      Bytes.fromHexString(address.toHexString()),
+    );
+    proposal.targets = targets;
     proposal.proposer = event.params.proposer.toHexString();
     proposal.values = event.params.values;
     proposal.signatures = event.params.signatures;
@@ -31,7 +33,7 @@ export const createProposal = (event: ProposalCreated): Proposal => {
   }
 
   return proposal as Proposal;
-};
+}
 
 export const createVote = (event: VoteCast): Vote => {
   const proposal = getProposal(event.params.proposalId.toString());

@@ -31,9 +31,9 @@ import {
 //   handler: handleProposalCreated
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  const result = getOrCreateDelegate(event.params.proposer.toHexString()); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const result = getOrCreateDelegate(event.params.proposer.toHex());
   const created = result.created;
-  createProposal(event);
+  createProposal<ProposalCreated>(event);
 
   // checking if the proposer was a delegate already accounted for, if not we should log an error
   // since it shouldn't be possible for a delegate to propose anything without first being "created"
