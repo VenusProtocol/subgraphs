@@ -18,7 +18,7 @@ import {
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { ACTIVE, CANCELLED, PENDING } from '../constants';
 import { createProposal, createVoteBravo } from '../operations/create';
-import { getProposal } from '../operations/get';
+import { getGovernanceEntity, getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
   updateProposalExecuted,
@@ -53,7 +53,11 @@ export const handleVoteCast = (event: VoteCast): void => {
   }
 };
 
-export const handleVotingDelaySet = (event: VotingDelaySet): void => {};
+export const handleVotingDelaySet = (event: VotingDelaySet): void => {
+  const governance = getGovernanceEntity();
+  governance.votingDelay = event.params.newVotingDelay;
+  governance.save();
+};
 
 export const handleVotingPeriodSet = (event: VotingPeriodSet): void => {};
 

@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
@@ -21,6 +21,7 @@ import {
   handleProposalExecuted,
   handleProposalQueued,
   handleVoteCast,
+  handleVotingDelaySet,
 } from '../../src/mappings/bravo';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
 import { getVoteId } from '../../src/utils/ids';
@@ -32,10 +33,12 @@ import {
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
 } from '../common/events';
+import { createNewVotingDelayEvent } from './events';
 
 const startBlock = 4563820;
 const endBlock = 4593820;
 const description = 'Very creative Proposal';
+const governanceAddress = Address.fromString('0x0000000000000000000000000000000000000e0e');
 
 const cleanup = (): void => {
   clearStore();
@@ -196,5 +199,18 @@ describe('Bravo', () => {
     assertVoteDocument('votes', votes.toString());
 
     assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
+  });
+
+  test('registers new voting Delay', () => {
+    const oldVotingDelay = BigInt.fromI32(1);
+    const newVotingDelay = BigInt.fromI32(2);
+    const votingDelayEvent = createNewVotingDelayEvent(
+      governanceAddress,
+      oldVotingDelay,
+      newVotingDelay,
+    );
+
+    handleVotingDelaySet(votingDelayEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'votingDelay', newVotingDelay.toString());
   });
 });

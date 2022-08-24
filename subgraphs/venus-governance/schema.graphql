@@ -124,4 +124,7 @@ type Governance @entity {
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!
+
+  "The delay before voting on a proposal may take place, once proposed, in blocks"
+  votingDelay: BigInt!
 }
