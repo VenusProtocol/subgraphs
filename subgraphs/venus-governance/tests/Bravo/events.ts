@@ -3,6 +3,7 @@ import { newMockEvent } from 'matchstick-as';
 
 import {
   NewImplementation,
+  ProposalThresholdSet,
   VotingDelaySet,
   VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
@@ -75,6 +76,30 @@ export function createNewImplementationEvent(
     ethereum.Value.fromAddress(newImplementation),
   );
   event.parameters.push(newImplementationParam);
+
+  return event;
+}
+
+export function createNewProposalThresholdEvent(
+  governanceAddress: Address,
+  oldProposalThreshold: BigInt,
+  newProposalThreshold: BigInt,
+): ProposalThresholdSet {
+  const event = changetype<ProposalThresholdSet>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldProposalThresholdParam = new ethereum.EventParam(
+    'oldProposalThreshold',
+    ethereum.Value.fromUnsignedBigInt(oldProposalThreshold),
+  );
+  event.parameters.push(oldProposalThresholdParam);
+
+  const newProposalThresholdParam = new ethereum.EventParam(
+    'newProposalThreshold',
+    ethereum.Value.fromUnsignedBigInt(newProposalThreshold),
+  );
+  event.parameters.push(newProposalThresholdParam);
 
   return event;
 }

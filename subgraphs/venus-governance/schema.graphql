@@ -133,4 +133,7 @@ type Governance @entity {
   
   "Active brains of Governor"
   implementation: Bytes!
+
+  "The number of votes required in order for a voter to become a proposer"
+  proposalThreshold: BigInt!
 }

@@ -21,6 +21,7 @@ import {
   handleProposalCreated,
   handleProposalExecuted,
   handleProposalQueued,
+  handleProposalThresholdSet,
   handleVoteCast,
   handleVotingDelaySet,
   handleVotingPeriodSet,
@@ -37,6 +38,7 @@ import {
 } from '../common/events';
 import {
   createNewImplementationEvent,
+  createNewProposalThresholdEvent,
   createNewVotingDelayEvent,
   createNewVotingPeriodEvent,
 } from './events';
@@ -244,5 +246,23 @@ describe('Bravo', () => {
 
     handleNewImplementation(newImplementationEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'implementation', newImplementation.toHexString());
+  });
+
+  test('registers new proposal threshold', () => {
+    const oldProposalThreshold = BigInt.fromI64(300000000000000000000000);
+    const newProposalThreshold = BigInt.fromI64(500000000000000000000000);
+    const proposalThresholdEvent = createNewProposalThresholdEvent(
+      governanceAddress,
+      oldProposalThreshold,
+      newProposalThreshold,
+    );
+
+    handleProposalThresholdSet(proposalThresholdEvent);
+    assert.fieldEquals(
+      'Governance',
+      GOVERNANCE,
+      'proposalThreshold',
+      newProposalThreshold.toString(),
+    );
   });
 });

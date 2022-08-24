@@ -71,7 +71,11 @@ export const handleNewImplementation = (event: NewImplementation): void => {
   governance.save();
 };
 
-export const handleProposalThresholdSet = (event: ProposalThresholdSet): void => {};
+export const handleProposalThresholdSet = (event: ProposalThresholdSet): void => {
+  const governance = getGovernanceEntity();
+  governance.proposalThreshold = event.params.newProposalThreshold;
+  governance.save();
+};
 
 export const handleNewPendingAdmin = (event: NewPendingAdmin): void => {};
 

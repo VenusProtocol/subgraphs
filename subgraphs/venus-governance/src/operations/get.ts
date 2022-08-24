@@ -22,6 +22,7 @@ export const getGovernanceEntity = (): Governance => {
     governance.votingDelay = BIGINT_ONE;
     governance.votingPeriod = BigInt.fromI64(86400);
     governance.implementation = Address.fromString('0x18df46ec843e79d9351b57f85af7d69aec0d7eff');
+    governance.proposalThreshold = BigInt.fromI64(300000000000000000000000);
   }
 
   return governance as Governance;
