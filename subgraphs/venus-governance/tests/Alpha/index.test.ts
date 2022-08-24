@@ -1,12 +1,37 @@
 import { BigInt } from '@graphprotocol/graph-ts';
-import { afterEach, assert, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
+import {
+  afterEach,
+  assert,
+  beforeEach,
+  clearStore,
+  describe,
+  test,
+} from 'matchstick-as/assembly/index';
 
-import { ProposalCanceled, ProposalCreated, ProposalQueued, ProposalExecuted } from '../../generated/GovernorAlpha/GovernorAlpha';
-import { handleProposalCanceled, handleProposalCreated, handleProposalQueued, handleProposalExecuted } from '../../src/mappings/alpha';
+import {
+  ProposalCanceled,
+  ProposalCreated,
+  ProposalExecuted,
+  ProposalQueued,
+} from '../../generated/GovernorAlpha/GovernorAlpha';
 import { GOVERNANCE } from '../../src/constants';
-import { user1 } from '../common/constants';
+import {
+  handleProposalCanceled,
+  handleProposalCreated,
+  handleProposalExecuted,
+  handleProposalQueued,
+  handleVoteCast,
+} from '../../src/mappings/alpha';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalQueuedEvent, createProposalExecutedEvent } from '../common/events';
+import { getVoteId } from '../../src/utils/ids';
+import { user1 } from '../common/constants';
+import {
+  createProposalCanceledEvent,
+  createProposalCreatedEvent,
+  createProposalExecutedEvent,
+  createProposalQueuedEvent,
+  createVoteCastAlphaEvent,
+} from '../common/events';
 
 const cleanup = (): void => {
   clearStore();
@@ -31,7 +56,7 @@ beforeEach(() => {
     description,
   );
   handleProposalCreated(proposalCreatedEvent);
-})
+});
 
 afterEach(() => {
   cleanup();
@@ -92,7 +117,7 @@ describe('Alpha', () => {
 
     assertProposalDocument('status', 'QUEUED');
     assertProposalDocument('executionETA', eta.toString());
-    assertGovernanceDocument('proposalsQueued', '1')
+    assertGovernanceDocument('proposalsQueued', '1');
   });
 
   test('proposal executed', () => {
@@ -115,6 +140,28 @@ describe('Alpha', () => {
 
     assertProposalDocument('status', 'EXECUTED');
     assertProposalDocument('executionETA', 'null');
-    assertGovernanceDocument('proposalsQueued', '0')
+    assertGovernanceDocument('proposalsQueued', '0');
+  });
+
+  test('vote cast', () => {
+    /** Setup test */
+    const votes = 300000000000000000000000000000;
+    /** run handler */
+    const voteCastEvent = createVoteCastAlphaEvent(user1, 1, true, BigInt.fromI64(votes));
+    handleVoteCast(voteCastEvent);
+
+    // Vote
+    const assertVoteDocument = (key: string, value: string): void => {
+      const voteId = getVoteId(user1, BigInt.fromI32(1));
+      assert.fieldEquals('Vote', voteId, key, value);
+    };
+
+    assertVoteDocument('proposal', '1');
+    assertVoteDocument('voter', user1.toHexString());
+    assertVoteDocument('votes', votes.toString());
+    assertVoteDocument('support', 'FOR');
+    assertVoteDocument('votes', votes.toString());
+
+    assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
   });
 });

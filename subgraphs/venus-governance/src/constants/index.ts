@@ -12,3 +12,8 @@ export const ACTIVE = 'ACTIVE';
 
 // Ids
 export const GOVERNANCE = 'GOVERNANCE';
+
+// Vote support
+export const FOR = 'FOR';
+export const AGAINST = 'AGAINST';
+export const ABSTAIN = 'ABSTAIN';

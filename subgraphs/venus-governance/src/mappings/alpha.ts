@@ -13,7 +13,7 @@ import {
   Transfer,
 } from '../../generated/VenusToken/VenusToken';
 import { ACTIVE, CANCELLED, PENDING, ZERO_ADDRESS } from '../constants';
-import { createProposal, createVote } from '../operations/create';
+import { createProposal, createVoteAlpha } from '../operations/create';
 import { getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
@@ -70,7 +70,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 //   handler: handleVoteCast
 
 export function handleVoteCast(event: VoteCast): void {
-  createVote(event);
+  createVoteAlpha(event);
   const proposalId = event.params.proposalId.toString();
   const proposal = getProposal(proposalId);
   if (proposal.status == PENDING) {
