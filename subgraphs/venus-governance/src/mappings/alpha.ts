@@ -7,23 +7,14 @@ import {
   ProposalQueued,
   VoteCast,
 } from '../../generated/GovernorAlpha/GovernorAlpha';
-import {
-  DelegateChanged,
-  DelegateVotesChanged,
-  Transfer,
-} from '../../generated/VenusToken/VenusToken';
-import { ACTIVE, CANCELLED, PENDING, ZERO_ADDRESS } from '../constants';
+import { ACTIVE, CANCELLED, PENDING } from '../constants';
 import { createProposal, createVoteAlpha } from '../operations/create';
 import { getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
-  updateDelegateChanged,
-  updateDelegateVoteChanged,
   updateProposalExecuted,
   updateProposalQueued,
   updateProposalStatus,
-  updateReceivedXvs,
-  updateSentXvs,
 } from '../operations/update';
 
 // - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
@@ -76,31 +67,4 @@ export function handleVoteCast(event: VoteCast): void {
   if (proposal.status == PENDING) {
     updateProposalStatus(proposalId, ACTIVE);
   }
-}
-
-// - event: DelegateChanged(indexed address,indexed address,indexed address)
-//   handler: handleDelegateChanged
-
-export function handleDelegateChanged(event: DelegateChanged): void {
-  updateDelegateChanged(event);
-}
-
-// - event: DelegateVotesChanged(indexed address,uint256,uint256)
-//   handler: handleDelegateVotesChanged
-
-export function handleDelegateVotesChanged(event: DelegateVotesChanged): void {
-  updateDelegateVoteChanged(event);
-}
-
-// - event: Transfer(indexed address,indexed address,uint256)
-//   handler: handleTransfer
-
-export function handleTransfer(event: Transfer): void {
-  const params = event.params;
-
-  if (params.from.toHexString() != ZERO_ADDRESS) {
-    updateSentXvs(params.from, params.amount);
-  }
-
-  updateReceivedXvs(params.to, params.amount);
 }
