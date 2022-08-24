@@ -14,16 +14,10 @@ type TokenHolder @entity {
   delegate: Delegate
 
   "Venus Token balance of this address expressed in the smallest unit of the VenusToken"
-  tokenBalanceRaw: BigInt!
-
-  "Venus Token balance of this address expressed as a BigDecimal normalized value for the Venus Token"
-  tokenBalance: BigDecimal!
+  tokenBalance: BigInt!
 
   "Total amount of Venus Token ever held by this address expressed in the smallest unit of the VenusToken"
-  totalTokensHeldRaw: BigInt!
-
-  "Total amount of Venus Token ever held by this address expressed as a BigDecimal normalized value for the Venus Token"
-  totalTokensHeld: BigDecimal!
+  totalTokensHeld: BigInt!
 }
 
 type Delegate @entity {
@@ -31,10 +25,7 @@ type Delegate @entity {
   id: ID!
 
   "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the VenusToken"
-  delegatedVotesRaw: BigInt!
-
-  "Amount of votes delegated to this delegate to be used on proposal votings expressed as a BigDecimal normalized value for the Venus Token"
-  delegatedVotes: BigDecimal!
+  delegatedVotes: BigInt!
 
   tokenHoldersRepresentedAmount: Int!
 
@@ -94,10 +85,7 @@ type Vote @entity {
   support: Boolean!
 
   "Amount of votes in favour or against expressed in the smallest unit of the VenusToken"
-  votesRaw: BigInt!
-
-  "Amount of votes in favour or against expressed as a BigDecimal normalized value for the Venus Token"
-  votes: BigDecimal!
+  votes: BigInt!
 
   "Delegate that emitted the vote"
   voter: Delegate!
@@ -126,10 +114,7 @@ type Governance @entity {
   totalDelegates: BigInt!
 
   "Total number of votes delegated expressed in the smallest unit of the Venus Token"
-  delegatedVotesRaw: BigInt!
-
-  "Total number of votes delegated expressed as a BigDecimal normalized value for the Venus Token"
-  delegatedVotes: BigDecimal!
+  delegatedVotes: BigInt!
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!

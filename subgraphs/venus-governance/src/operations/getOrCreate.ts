@@ -1,5 +1,5 @@
 import { Delegate, TokenHolder } from '../../generated/schema';
-import { BIGDECIMAL_ZERO, BIGINT_ONE, BIGINT_ZERO, ZERO_ADDRESS } from '../constants';
+import { BIGINT_ONE, BIGINT_ZERO, ZERO_ADDRESS } from '../constants';
 import { getGovernanceEntity } from './get';
 
 export class GetOrCreateTokenHolderReturn {
@@ -12,10 +12,8 @@ export const getOrCreateTokenHolder = (id: string): GetOrCreateTokenHolderReturn
   let created = false;
   if (!tokenHolder) {
     tokenHolder = new TokenHolder(id);
-    tokenHolder.tokenBalanceRaw = BIGINT_ZERO;
-    tokenHolder.tokenBalance = BIGDECIMAL_ZERO;
-    tokenHolder.totalTokensHeldRaw = BIGINT_ZERO;
-    tokenHolder.totalTokensHeld = BIGDECIMAL_ZERO;
+    tokenHolder.tokenBalance = BIGINT_ZERO;
+    tokenHolder.totalTokensHeld = BIGINT_ZERO;
 
     if (id != ZERO_ADDRESS) {
       const governance = getGovernanceEntity();
@@ -40,8 +38,7 @@ export const getOrCreateDelegate = (id: string): GetOrCreateDelegateReturn => {
   let created = false;
   if (!delegate) {
     delegate = new Delegate(id);
-    delegate.delegatedVotesRaw = BIGINT_ZERO;
-    delegate.delegatedVotes = BIGDECIMAL_ZERO;
+    delegate.delegatedVotes = BIGINT_ZERO;
     delegate.tokenHoldersRepresentedAmount = 0;
 
     if (id != ZERO_ADDRESS) {

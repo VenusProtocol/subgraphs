@@ -7,17 +7,16 @@ import {
 } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { DelegateChanged, DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
-import { toDecimal } from '../utils/decimals';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate, getOrCreateTokenHolder } from './getOrCreate';
 
-export const updateProposalStatus = (id: string, status: string) => {
+export const updateProposalStatus = (id: string, status: string): void => {
   const proposal = getProposal(id);
   proposal.status = status;
   proposal.save();
 };
 
-export const updateProposalCanceled = (event: ProposalCanceled) => {
+export const updateProposalCanceled = (event: ProposalCanceled): void => {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
@@ -25,7 +24,7 @@ export const updateProposalCanceled = (event: ProposalCanceled) => {
   proposal.save();
 };
 
-export const updateProposalQueued = (event: ProposalQueued) => {
+export const updateProposalQueued = (event: ProposalQueued): void => {
   const params = event.params;
   const governance = getGovernanceEntity();
   const proposal = getProposal(params.id.toString());
@@ -38,7 +37,7 @@ export const updateProposalQueued = (event: ProposalQueued) => {
   governance.save();
 };
 
-export const updateProposalExecuted = (event: ProposalExecuted) => {
+export const updateProposalExecuted = (event: ProposalExecuted): void => {
   const params = event.params;
   const governance = getGovernanceEntity();
   const proposal = getProposal(params.id.toString());
@@ -51,7 +50,7 @@ export const updateProposalExecuted = (event: ProposalExecuted) => {
   governance.save();
 };
 
-export const updateDelegateChanged = (event: DelegateChanged) => {
+export const updateDelegateChanged = (event: DelegateChanged): void => {
   const params = event.params;
   const tokenHolderResult = getOrCreateTokenHolder(params.delegator.toHexString());
   const tokenHolder = tokenHolderResult.entity;
@@ -68,15 +67,14 @@ export const updateDelegateChanged = (event: DelegateChanged) => {
   newDelegate.save();
 };
 
-export const updateDelegateVoteChanged = (event: DelegateVotesChanged) => {
+export const updateDelegateVoteChanged = (event: DelegateVotesChanged): void => {
   const params = event.params;
   const governance = getGovernanceEntity();
   const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
   const delegate = delegateResult.entity;
   const votesDifference = event.params.newBalance.minus(params.previousBalance);
 
-  delegate.delegatedVotesRaw = params.newBalance;
-  delegate.delegatedVotes = toDecimal(params.newBalance);
+  delegate.delegatedVotes = params.newBalance;
   delegate.save();
 
   if (params.previousBalance == BIGINT_ZERO && params.newBalance > BIGINT_ZERO) {
@@ -85,30 +83,28 @@ export const updateDelegateVoteChanged = (event: DelegateVotesChanged) => {
   if (params.newBalance == BIGINT_ZERO) {
     governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
   }
-  governance.delegatedVotesRaw = governance.delegatedVotesRaw.plus(votesDifference);
-  governance.delegatedVotes = toDecimal(governance.delegatedVotesRaw);
+  governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
   governance.save();
 };
 
-export const updateSentXvs = (from: Address, amount: BigInt) => {
+export const updateSentXvs = (from: Address, amount: BigInt): void => {
   const governance = getGovernanceEntity();
   const fromHolderResult = getOrCreateTokenHolder(from.toHexString());
   const fromHolder = fromHolderResult.entity;
-  const fromHolderPreviousBalance = fromHolder.tokenBalanceRaw;
-  fromHolder.tokenBalanceRaw = fromHolder.tokenBalanceRaw.minus(amount);
-  fromHolder.tokenBalance = toDecimal(fromHolder.tokenBalanceRaw);
+  const fromHolderPreviousBalance = fromHolder.tokenBalance;
+  fromHolder.tokenBalance = fromHolder.tokenBalance.minus(amount);
 
-  if (fromHolder.tokenBalanceRaw < BIGINT_ZERO) {
+  if (fromHolder.tokenBalance < BIGINT_ZERO) {
     log.error('Negative balance on holder {} with balance {}', [
       fromHolder.id,
-      fromHolder.tokenBalanceRaw.toString(),
+      fromHolder.tokenBalance.toString(),
     ]);
   }
 
-  if (fromHolder.tokenBalanceRaw == BIGINT_ZERO && fromHolderPreviousBalance > BIGINT_ZERO) {
+  if (fromHolder.tokenBalance == BIGINT_ZERO && fromHolderPreviousBalance > BIGINT_ZERO) {
     governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
     governance.save();
-  } else if (fromHolder.tokenBalanceRaw > BIGINT_ZERO && fromHolderPreviousBalance == BIGINT_ZERO) {
+  } else if (fromHolder.tokenBalance > BIGINT_ZERO && fromHolderPreviousBalance == BIGINT_ZERO) {
     governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
     governance.save();
   }
@@ -116,20 +112,18 @@ export const updateSentXvs = (from: Address, amount: BigInt) => {
   fromHolder.save();
 };
 
-export const updateReceivedXvs = (to: Address, amount: BigInt) => {
+export const updateReceivedXvs = (to: Address, amount: BigInt): void => {
   const governance = getGovernanceEntity();
   const toHolderResult = getOrCreateTokenHolder(to.toHexString());
   const toHolder = toHolderResult.entity;
-  const toHolderPreviousBalance = toHolder.tokenBalanceRaw;
-  toHolder.tokenBalanceRaw = toHolder.tokenBalanceRaw.plus(amount);
-  toHolder.tokenBalance = toDecimal(toHolder.tokenBalanceRaw);
-  toHolder.totalTokensHeldRaw = toHolder.totalTokensHeldRaw.plus(amount);
-  toHolder.totalTokensHeld = toDecimal(toHolder.totalTokensHeldRaw);
+  const toHolderPreviousBalance = toHolder.tokenBalance;
+  toHolder.tokenBalance = toHolder.tokenBalance.plus(amount);
+  toHolder.totalTokensHeld = toHolder.totalTokensHeld.plus(amount);
 
-  if (toHolder.tokenBalanceRaw == BIGINT_ZERO && toHolderPreviousBalance > BIGINT_ZERO) {
+  if (toHolder.tokenBalance == BIGINT_ZERO && toHolderPreviousBalance > BIGINT_ZERO) {
     governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
     governance.save();
-  } else if (toHolder.tokenBalanceRaw > BIGINT_ZERO && toHolderPreviousBalance == BIGINT_ZERO) {
+  } else if (toHolder.tokenBalance > BIGINT_ZERO && toHolderPreviousBalance == BIGINT_ZERO) {
     governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
     governance.save();
   }
