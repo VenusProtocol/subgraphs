@@ -19,7 +19,7 @@ import {
 import { CANCELLED } from '../constants';
 import { createProposal } from '../operations/create';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
-import { updateProposalStatus, updateProposalQueued } from '../operations/update';
+import { updateProposalStatus, updateProposalQueued, updateProposalExecuted } from '../operations/update';
 
 export const handleProposalCreated = (event: ProposalCreated): void => {
   getOrCreateDelegate(event.params.proposer.toHexString());
@@ -35,7 +35,9 @@ export const handleProposalQueued = (event: ProposalQueued): void => {
   updateProposalQueued<ProposalQueued>(event);
 };
 
-export const handleProposalExecuted = (event: ProposalExecuted): void => {};
+export const handleProposalExecuted = (event: ProposalExecuted): void => {
+  updateProposalExecuted<ProposalExecuted>(event);
+};
 
 export const handleVoteCast = (event: VoteCast): void => {};
 

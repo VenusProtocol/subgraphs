@@ -63,7 +63,7 @@ export function handleProposalQueued(event: ProposalQueued): void {
 //   handler: handleProposalExecuted
 
 export function handleProposalExecuted(event: ProposalExecuted): void {
-  updateProposalExecuted(event);
+  updateProposalExecuted<ProposalExecuted>(event);
 }
 
 // - event: VoteCast(address,uint256,bool,uint256)

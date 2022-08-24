@@ -84,3 +84,13 @@ export function createProposalQueuedEvent<E>(id: i32, eta: BigInt): E {
   
   return event;
 }
+
+export function createProposalExecutedEvent<E>(id: i32): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const idParam = new ethereum.EventParam('id', ethereum.Value.fromI32(id));
+  event.parameters.push(idParam);
+  
+  return event;
+}

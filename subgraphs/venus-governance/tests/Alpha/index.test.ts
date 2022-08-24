@@ -1,12 +1,12 @@
 import { BigInt } from '@graphprotocol/graph-ts';
 import { afterEach, assert, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import { ProposalCanceled, ProposalCreated, ProposalQueued } from '../../generated/GovernorAlpha/GovernorAlpha';
-import { handleProposalCanceled, handleProposalCreated, handleProposalQueued } from '../../src/mappings/alpha';
+import { ProposalCanceled, ProposalCreated, ProposalQueued, ProposalExecuted } from '../../generated/GovernorAlpha/GovernorAlpha';
+import { handleProposalCanceled, handleProposalCreated, handleProposalQueued, handleProposalExecuted } from '../../src/mappings/alpha';
 import { GOVERNANCE } from '../../src/constants';
 import { user1 } from '../common/constants';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalQueuedEvent } from '../common/events';
+import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalQueuedEvent, createProposalExecutedEvent } from '../common/events';
 
 const cleanup = (): void => {
   clearStore();
@@ -93,5 +93,28 @@ describe('Alpha', () => {
     assertProposalDocument('status', 'QUEUED');
     assertProposalDocument('executionETA', eta.toString());
     assertGovernanceDocument('proposalsQueued', '1')
+  });
+
+  test('proposal executed', () => {
+    /** Setup test */
+    const eta = 1661361080;
+    const proposalQueuedEvent = createProposalQueuedEvent<ProposalQueued>(1, BigInt.fromU64(eta));
+    handleProposalQueued(proposalQueuedEvent);
+    /** run handler */
+    const proposalExecutedEvent = createProposalExecutedEvent<ProposalExecuted>(1);
+    handleProposalExecuted(proposalExecutedEvent);
+
+    // Proposal
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+
+    const assertGovernanceDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+    };
+
+    assertProposalDocument('status', 'EXECUTED');
+    assertProposalDocument('executionETA', 'null');
+    assertGovernanceDocument('proposalsQueued', '0')
   });
 });

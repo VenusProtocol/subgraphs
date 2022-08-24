@@ -5,12 +5,13 @@ import {
   ProposalCanceled,
   ProposalCreated,
   ProposalQueued,
+  ProposalExecuted,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { GOVERNANCE } from '../../src/constants';
-import { handleProposalCanceled, handleProposalCreated, handleProposalQueued } from '../../src/mappings/bravo';
+import { handleProposalCanceled, handleProposalCreated, handleProposalQueued, handleProposalExecuted } from '../../src/mappings/bravo';
 import { user1 } from '../common/constants';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalQueuedEvent } from '../common/events';
+import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalQueuedEvent, createProposalExecutedEvent } from '../common/events';
 
 const startBlock = 4563820;
 const endBlock = 4593820;
@@ -129,5 +130,28 @@ describe('Bravo', () => {
     assertProposalDocument('status', 'QUEUED');
     assertProposalDocument('executionETA', eta.toString());
     assertGovernanceDocument('proposalsQueued', '1')
+  });
+
+  test('proposal executed', () => {
+    /** Setup test */
+    const eta = 1661361080;
+    const proposalQueuedEvent = createProposalQueuedEvent<ProposalQueued>(1, BigInt.fromU64(eta));
+    handleProposalQueued(proposalQueuedEvent);
+    /** run handler */
+    const proposalExecutedEvent = createProposalExecutedEvent<ProposalExecuted>(1);
+    handleProposalExecuted(proposalExecutedEvent);
+
+    // Proposal
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+
+    const assertGovernanceDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+    };
+
+    assertProposalDocument('status', 'EXECUTED');
+    assertProposalDocument('executionETA', 'null');
+    assertGovernanceDocument('proposalsQueued', '0')
   });
 });
