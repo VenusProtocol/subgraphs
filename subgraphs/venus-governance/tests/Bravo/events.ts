@@ -3,6 +3,7 @@ import { newMockEvent } from 'matchstick-as';
 
 import {
   NewAdmin,
+  NewGuardian,
   NewImplementation,
   NewPendingAdmin,
   ProposalThresholdSet,
@@ -144,6 +145,30 @@ export function createNewAdminEvent(
 
   const newAdminParam = new ethereum.EventParam('newAdmin', ethereum.Value.fromAddress(newAdmin));
   event.parameters.push(newAdminParam);
+
+  return event;
+}
+
+export function createNewGuardianEvent(
+  governanceAddress: Address,
+  oldGuardian: Address,
+  newGuardian: Address,
+): NewGuardian {
+  const event = changetype<NewGuardian>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldGuardianParam = new ethereum.EventParam(
+    'oldGuardian',
+    ethereum.Value.fromAddress(oldGuardian),
+  );
+  event.parameters.push(oldGuardianParam);
+
+  const newGuardianParam = new ethereum.EventParam(
+    'newGuardian',
+    ethereum.Value.fromAddress(newGuardian),
+  );
+  event.parameters.push(newGuardianParam);
 
   return event;
 }

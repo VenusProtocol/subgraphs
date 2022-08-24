@@ -17,6 +17,7 @@ import {
 import { GOVERNANCE } from '../../src/constants';
 import {
   handleNewAdmin,
+  handleNewGuardian,
   handleNewImplementation,
   handleNewPendingAdmin,
   handleProposalCanceled,
@@ -40,6 +41,7 @@ import {
 } from '../common/events';
 import {
   createNewAdminEvent,
+  createNewGuardianEvent,
   createNewImplementationEvent,
   createNewPendingAdminEvent,
   createNewProposalThresholdEvent,
@@ -213,7 +215,7 @@ describe('Bravo', () => {
     assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
   });
 
-  test('registers new voting Delay', () => {
+  test('registers new voting delay', () => {
     const oldVotingDelay = BigInt.fromI32(1);
     const newVotingDelay = BigInt.fromI32(2);
     const votingDelayEvent = createNewVotingDelayEvent(
@@ -283,7 +285,7 @@ describe('Bravo', () => {
     assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', newPendingAdmin.toHexString());
   });
 
-  test('registers new  admin', () => {
+  test('registers new admin', () => {
     const oldAdmin = Address.fromString('0x0000000000000000000000000000000000000000');
     const newAdmin = Address.fromString('0x0b00000000000000000000000000000000000000');
     const newAdminEvent = createNewAdminEvent(governanceAddress, oldAdmin, newAdmin);
@@ -291,5 +293,14 @@ describe('Bravo', () => {
     handleNewAdmin(newAdminEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'admin', newAdmin.toHexString());
     assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', 'null');
+  });
+
+  test('registers new guardian', () => {
+    const oldGuardian = Address.fromString('0x0000000000000000000000000000000000000000');
+    const newGuardian = Address.fromString('0x0b00000000000000000000000000000000000000');
+    const newGuardianEvent = createNewGuardianEvent(governanceAddress, oldGuardian, newGuardian);
+
+    handleNewGuardian(newGuardianEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'guardian', newGuardian.toHexString());
   });
 });

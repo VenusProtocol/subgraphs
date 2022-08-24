@@ -142,4 +142,7 @@ type Governance @entity {
 
   "Administrator for this contract"
   admin: Bytes!
+  
+  "A privileged role that can cancel any proposal"
+  guardian: Bytes!
 }
