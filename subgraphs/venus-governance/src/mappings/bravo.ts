@@ -83,7 +83,11 @@ export const handleNewPendingAdmin = (event: NewPendingAdmin): void => {
   governance.save();
 };
 
-export const handleNewAdmin = (event: NewAdmin): void => {};
+export const handleNewAdmin = (event: NewAdmin): void => {
+  const governance = getGovernanceEntity();
+  governance.admin = event.params.admin;
+  governance.save();
+};
 
 export const handleNewGuardian = (event: NewGuardian): void => {};
 

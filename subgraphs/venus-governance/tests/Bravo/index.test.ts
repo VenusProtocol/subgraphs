@@ -16,6 +16,7 @@ import {
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { GOVERNANCE } from '../../src/constants';
 import {
+  handleNewAdmin,
   handleNewImplementation,
   handleNewPendingAdmin,
   handleProposalCanceled,
@@ -38,6 +39,7 @@ import {
   createVoteCastBravoEvent,
 } from '../common/events';
 import {
+  createNewAdminEvent,
   createNewImplementationEvent,
   createNewPendingAdminEvent,
   createNewProposalThresholdEvent,
@@ -279,5 +281,15 @@ describe('Bravo', () => {
 
     handleNewPendingAdmin(pendingAdminEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', newPendingAdmin.toHexString());
+  });
+
+  test('registers new  admin', () => {
+    const oldAdmin = Address.fromString('0x0000000000000000000000000000000000000000');
+    const newAdmin = Address.fromString('0x0b00000000000000000000000000000000000000');
+    const newAdminEvent = createNewAdminEvent(governanceAddress, oldAdmin, newAdmin);
+
+    handleNewAdmin(newAdminEvent);
+    assert.fieldEquals('Governance', GOVERNANCE, 'admin', newAdmin.toHexString());
+    assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', 'null');
   });
 });

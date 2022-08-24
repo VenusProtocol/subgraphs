@@ -2,6 +2,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
+  NewAdmin,
   NewImplementation,
   NewPendingAdmin,
   ProposalThresholdSet,
@@ -125,6 +126,24 @@ export function createNewPendingAdminEvent(
     ethereum.Value.fromAddress(newPendingAdmin),
   );
   event.parameters.push(newPendingAdminParam);
+
+  return event;
+}
+
+export function createNewAdminEvent(
+  governanceAddress: Address,
+  oldAdmin: Address,
+  newAdmin: Address,
+): NewAdmin {
+  const event = changetype<NewAdmin>(newMockEvent());
+  event.address = governanceAddress;
+  event.parameters = [];
+
+  const oldAdminParam = new ethereum.EventParam('oldAdmin', ethereum.Value.fromAddress(oldAdmin));
+  event.parameters.push(oldAdminParam);
+
+  const newAdminParam = new ethereum.EventParam('newAdmin', ethereum.Value.fromAddress(newAdmin));
+  event.parameters.push(newAdminParam);
 
   return event;
 }

@@ -23,6 +23,7 @@ export const getGovernanceEntity = (): Governance => {
     governance.votingPeriod = BigInt.fromI64(86400);
     governance.implementation = Address.fromString('0x18df46ec843e79d9351b57f85af7d69aec0d7eff');
     governance.proposalThreshold = BigInt.fromI64(300000000000000000000000);
+    governance.admin = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
   }
 
   return governance as Governance;

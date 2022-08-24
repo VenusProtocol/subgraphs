@@ -139,4 +139,7 @@ type Governance @entity {
   
   "Pending administrator for this contract"
   pendingAdmin: Bytes
+
+  "Administrator for this contract"
+  admin: Bytes!
 }
