@@ -16,29 +16,34 @@ import {
   VotingDelaySet,
   VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { createProposal } from '../operations/create';
+import { getOrCreateDelegate } from '../operations/getOrCreate';
 
-export const handleProposalCreated = (event: ProposalCreated) => {};
+export const handleProposalCreated = (event: ProposalCreated): void => {
+  getOrCreateDelegate(event.params.proposer.toHexString());
+  createProposal<ProposalCreated>(event);
+};
 
-export const handleProposalCanceled = (event: ProposalCanceled) => {};
+export const handleProposalCanceled = (event: ProposalCanceled): void => {};
 
-export const handleProposalQueued = (event: ProposalQueued) => {};
+export const handleProposalQueued = (event: ProposalQueued): void => {};
 
-export const handleProposalExecuted = (event: ProposalExecuted) => {};
+export const handleProposalExecuted = (event: ProposalExecuted): void => {};
 
-export const handleVoteCast = (event: VoteCast) => {};
+export const handleVoteCast = (event: VoteCast): void => {};
 
-export const handleVotingDelaySet = (event: VotingDelaySet) => {};
+export const handleVotingDelaySet = (event: VotingDelaySet): void => {};
 
-export const handleVotingPeriodSet = (event: VotingPeriodSet) => {};
+export const handleVotingPeriodSet = (event: VotingPeriodSet): void => {};
 
-export const handleNewImplementation = (event: NewImplementation) => {};
+export const handleNewImplementation = (event: NewImplementation): void => {};
 
-export const handleProposalThresholdSet = (event: ProposalThresholdSet) => {};
+export const handleProposalThresholdSet = (event: ProposalThresholdSet): void => {};
 
-export const handleNewPendingAdmin = (event: NewPendingAdmin) => {};
+export const handleNewPendingAdmin = (event: NewPendingAdmin): void => {};
 
-export const handleNewAdmin = (event: NewAdmin) => {};
+export const handleNewAdmin = (event: NewAdmin): void => {};
 
-export const handleNewGuardian = (event: NewGuardian) => {};
+export const handleNewGuardian = (event: NewGuardian): void => {};
 
-export const handleProposalMaxOperationsUpdated = (event: ProposalMaxOperationsUpdated) => {};
+export const handleProposalMaxOperationsUpdated = (event: ProposalMaxOperationsUpdated): void => {};
