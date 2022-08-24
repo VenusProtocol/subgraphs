@@ -3,7 +3,6 @@ import { Bytes } from '@graphprotocol/graph-ts';
 import { ProposalCreated, VoteCast } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { Proposal, Vote } from '../../generated/schema';
 import { ACTIVE, BIGINT_ONE, PENDING } from '../constants';
-import { toDecimal } from '../utils/decimals';
 import { getVoteId } from '../utils/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
@@ -41,8 +40,7 @@ export const createVote = (event: VoteCast): Vote => {
   const vote = new Vote(id);
   vote.proposal = proposal.id;
   vote.voter = voter.id;
-  vote.votesRaw = event.params.votes;
-  vote.votes = toDecimal(event.params.votes);
+  vote.votes = event.params.votes;
   vote.support = event.params.support;
 
   vote.save();
