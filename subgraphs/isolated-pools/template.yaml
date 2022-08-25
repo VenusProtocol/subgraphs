@@ -39,12 +39,16 @@ dataSources:
     name: PoolLens
     network: {{ network }}
     source:
-      address: "{{ address }}"
+      address: "{{ poolLensAddress }}"
       abi: PoolLens
-      startBlock: {{ startBlock }}
-    abis:
-      - name: PoolLens
-      file: ../../packages/isolated-pools-abis/PoolLens.json  
+      startBlock: {{ poolLensStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      abis:
+        - name: PoolLens
+          file: ../../packages/isolated-pools-abis/PoolLens.json  
 
 templates:
   - name: Pool

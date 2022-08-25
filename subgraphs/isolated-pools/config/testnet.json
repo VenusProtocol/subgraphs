@@ -1,5 +1,7 @@
 {
   "network": "bsc-testnet",
   "address": "",
-  "startBlock": ""
+  "startBlock": "",
+  "poolLensAddress": "",
+  "poolLensStartBlock": ""
 }
