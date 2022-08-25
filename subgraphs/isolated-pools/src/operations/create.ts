@@ -68,7 +68,7 @@ export function createMarket(vTokenAddress: Address): Market {
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
 
   const market = new Market(vTokenAddress.toHexString());
-  market.pool = vTokenContract.comptroller();
+  market.pool = vTokenContract.comptroller().toHexString();
   market.name = vTokenContract.name();
   market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
   market.symbol = vTokenContract.symbol();

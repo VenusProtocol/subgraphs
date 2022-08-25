@@ -84,7 +84,7 @@ type Market @entity {
     "VToken address"
     id: ID!
     "Pool address"
-    pool: Bytes!
+    pool: Pool!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRate: BigDecimal!
