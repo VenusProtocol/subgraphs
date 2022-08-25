@@ -24,7 +24,7 @@ jobs:
         run: yarn pretty
   test: 
     - name: Checkout
-        uses: actions/checkout@v2
+      uses: actions/checkout@v2
 
     - uses: actions/setup-node@v2
       with:
