@@ -2,5 +2,10 @@
   "network": "bsc-testnet",
   "address": "",
   "startBlock": "",
+<<<<<<< HEAD
   "poolLensAddress": ""
+=======
+  "poolLensAddress": "",
+  "poolLensStartBlock": ""
+>>>>>>> c6d8a29 (isolated-pools PoolLens : fix template entries)
 }
