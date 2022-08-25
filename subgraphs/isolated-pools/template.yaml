@@ -25,7 +25,7 @@ dataSources:
         - name: Comptroller
           file: ../../packages/isolated-pools-abis/Comptroller.json
         - name: VToken
-          file: ../../packages/isolated-pools-abis/Ctoken.json
+          file: ../../packages/isolated-pools-abis/CToken.json
         - name: PriceOracle
           file: ../../packages/isolated-pools-abis/PriceOracle.json
         - name: BEP20
