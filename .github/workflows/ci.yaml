@@ -12,7 +12,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install deps
         run: yarn
@@ -22,20 +22,25 @@ jobs:
 
       - name: pretty
         run: yarn pretty
-  test: 
-    - name: Checkout
-      uses: actions/checkout@v2
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 14
-        cache: 'yarn'
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: "yarn"
 
-    - name: Install deps
-      run: yarn
-    
-    - name: Codegen
-      run: yarn codegen
+      - name: Install deps
+        run: yarn
 
-    - name: Run Matchstick tests
-      run: yarn test
+      - name: Codegen
+        run: yarn prepare:local
+
+      - name: Codegen
+        run: yarn codegen
+
+      - name: Run Matchstick tests
+        run: yarn test
