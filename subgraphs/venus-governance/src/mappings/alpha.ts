@@ -12,14 +12,13 @@ import {
   DelegateVotesChanged,
   Transfer,
 } from '../../generated/VenusToken/VenusToken';
-import { ACTIVE, PENDING, ZERO_ADDRESS } from '../constants';
-import { createProposal, createVote } from '../operations/create';
+import { ACTIVE, CANCELLED, PENDING, ZERO_ADDRESS } from '../constants';
+import { createProposal, createVoteAlpha } from '../operations/create';
 import { getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
   updateDelegateChanged,
   updateDelegateVoteChanged,
-  updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
   updateProposalStatus,
@@ -31,9 +30,9 @@ import {
 //   handler: handleProposalCreated
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  const result = getOrCreateDelegate(event.params.proposer.toHexString()); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const result = getOrCreateDelegate(event.params.proposer.toHex());
   const created = result.created;
-  createProposal(event);
+  createProposal<ProposalCreated>(event);
 
   // checking if the proposer was a delegate already accounted for, if not we should log an error
   // since it shouldn't be possible for a delegate to propose anything without first being "created"
@@ -49,28 +48,29 @@ export function handleProposalCreated(event: ProposalCreated): void {
 //   handler: handleProposalCanceled
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
-  updateProposalCanceled(event);
+  const proposalId = event.params.id.toString();
+  updateProposalStatus(proposalId, CANCELLED);
 }
 
 // - event: ProposalQueued(uint256,uint256)
 //   handler: handleProposalQueued
 
 export function handleProposalQueued(event: ProposalQueued): void {
-  updateProposalQueued(event);
+  updateProposalQueued<ProposalQueued>(event);
 }
 
 // - event: ProposalExecuted(uint256)
 //   handler: handleProposalExecuted
 
 export function handleProposalExecuted(event: ProposalExecuted): void {
-  updateProposalExecuted(event);
+  updateProposalExecuted<ProposalExecuted>(event);
 }
 
 // - event: VoteCast(address,uint256,bool,uint256)
 //   handler: handleVoteCast
 
 export function handleVoteCast(event: VoteCast): void {
-  createVote(event);
+  createVoteAlpha(event);
   const proposalId = event.params.proposalId.toString();
   const proposal = getProposal(proposalId);
   if (proposal.status == PENDING) {

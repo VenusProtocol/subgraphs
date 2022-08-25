@@ -1,10 +1,5 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
-import {
-  ProposalCanceled,
-  ProposalExecuted,
-  ProposalQueued,
-} from '../../generated/GovernorAlpha/GovernorAlpha';
 import { DelegateChanged, DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
 import { getGovernanceEntity, getProposal } from './get';
@@ -16,15 +11,15 @@ export const updateProposalStatus = (id: string, status: string): void => {
   proposal.save();
 };
 
-export const updateProposalCanceled = (event: ProposalCanceled): void => {
+export function updateProposalCanceled<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
   proposal.status = CANCELLED;
   proposal.save();
-};
+}
 
-export const updateProposalQueued = (event: ProposalQueued): void => {
+export function updateProposalQueued<E>(event: E): void {
   const params = event.params;
   const governance = getGovernanceEntity();
   const proposal = getProposal(params.id.toString());
@@ -37,7 +32,7 @@ export const updateProposalQueued = (event: ProposalQueued): void => {
   governance.save();
 };
 
-export const updateProposalExecuted = (event: ProposalExecuted): void => {
+export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
   const governance = getGovernanceEntity();
   const proposal = getProposal(params.id.toString());

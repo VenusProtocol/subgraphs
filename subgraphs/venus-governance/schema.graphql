@@ -77,12 +77,18 @@ type Proposal @entity {
   votes: [Vote!]! @derivedFrom(field: "proposal")
 }
 
+enum SUPPORT {
+  FOR
+  AGAINST
+  ABSTAIN
+}
+
 type Vote @entity {
   "Delegate ID + Proposal ID"
   id: ID!
 
   "Whether the vote is in favour or against the proposal"
-  support: Boolean!
+  support: SUPPORT!
 
   "Amount of votes in favour or against expressed in the smallest unit of the VenusToken"
   votes: BigInt!
@@ -118,4 +124,29 @@ type Governance @entity {
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!
+
+  "The delay before voting on a proposal may take place, once proposed, in blocks"
+  votingDelay: BigInt!
+
+  "The duration of voting on a proposal, in blocks"
+  votingPeriod: BigInt!
+  
+  "Active brains of Governor"
+  implementation: Bytes!
+
+  "The number of votes required in order for a voter to become a proposer"
+  proposalThreshold: BigInt!
+  
+  "Pending administrator for this contract"
+  pendingAdmin: Bytes
+
+  "Administrator for this contract"
+  admin: Bytes!
+  
+  "A privileged role that can cancel any proposal"
+  guardian: Bytes!
+
+  "The maximum number of actions that can be included in a proposal"
+  proposalMaxOperations: BigInt!
+
 }

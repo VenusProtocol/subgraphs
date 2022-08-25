@@ -1,16 +1,16 @@
-import { log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Delegate, Governance, Proposal } from '../../generated/schema';
-import { BIGINT_ZERO } from '../constants';
+import { BIGINT_ONE, BIGINT_ZERO, GOVERNANCE } from '../constants';
 
 /**
  * While techinically this function does also create, we don't care because it only happens once as the id is a constant.
  * @returns Governance
  */
 export const getGovernanceEntity = (): Governance => {
-  let governance = Governance.load('GOVERNANCE');
+  let governance = Governance.load(GOVERNANCE);
   if (!governance) {
-    governance = new Governance('GOVERNANCE');
+    governance = new Governance(GOVERNANCE);
     governance.proposals = BIGINT_ZERO;
     governance.totalTokenHolders = BIGINT_ZERO;
     governance.currentTokenHolders = BIGINT_ZERO;
@@ -18,6 +18,14 @@ export const getGovernanceEntity = (): Governance => {
     governance.totalDelegates = BIGINT_ZERO;
     governance.delegatedVotes = BIGINT_ZERO;
     governance.proposalsQueued = BIGINT_ZERO;
+    // defaulting to Governor Bravo constructor defaults
+    governance.votingDelay = BIGINT_ONE;
+    governance.votingPeriod = BigInt.fromI64(86400);
+    governance.implementation = Address.fromString('0x18df46ec843e79d9351b57f85af7d69aec0d7eff');
+    governance.proposalThreshold = BigInt.fromI64(300000000000000000000000);
+    governance.admin = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
+    governance.guardian = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
+    governance.proposalMaxOperations = BigInt.fromI32(10);
   }
 
   return governance as Governance;
