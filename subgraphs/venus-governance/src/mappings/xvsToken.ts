@@ -15,7 +15,7 @@ import {
 //   handler: handleDelegateChanged
 
 export function handleDelegateChanged(event: DelegateChanged): void {
-  updateDelegateChanged(event);
+  updateDelegateChanged<DelegateChanged>(event);
 }
 
 // - event: DelegateVotesChanged(indexed address,uint256,uint256)

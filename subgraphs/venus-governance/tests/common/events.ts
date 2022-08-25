@@ -149,3 +149,32 @@ export function createVoteCastBravoEvent(
 
   return event;
 }
+
+export function createDelegateChangedEvent<E>(
+  delegator: Address,
+  fromDelegate: Address,
+  toDelegate: Address,
+): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const delegatorParam = new ethereum.EventParam(
+    'delegator',
+    ethereum.Value.fromAddress(delegator),
+  );
+  event.parameters.push(delegatorParam);
+
+  const fromDelegateParam = new ethereum.EventParam(
+    'fromDelegate',
+    ethereum.Value.fromAddress(fromDelegate),
+  );
+  event.parameters.push(fromDelegateParam);
+
+  const toDelegateParam = new ethereum.EventParam(
+    'toDelegate',
+    ethereum.Value.fromAddress(toDelegate),
+  );
+  event.parameters.push(toDelegateParam);
+
+  return event;
+}

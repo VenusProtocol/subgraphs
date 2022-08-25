@@ -1,6 +1,6 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
-import { DelegateChanged, DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
+import { DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate, getOrCreateTokenHolder } from './getOrCreate';
@@ -30,7 +30,7 @@ export function updateProposalQueued<E>(event: E): void {
 
   governance.proposalsQueued = governance.proposalsQueued.plus(BIGINT_ONE);
   governance.save();
-};
+}
 
 export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
@@ -43,9 +43,9 @@ export function updateProposalExecuted<E>(event: E): void {
 
   governance.proposalsQueued = governance.proposalsQueued.minus(BIGINT_ONE);
   governance.save();
-};
+}
 
-export const updateDelegateChanged = (event: DelegateChanged): void => {
+export function updateDelegateChanged<E>(event: E): void {
   const params = event.params;
   const tokenHolderResult = getOrCreateTokenHolder(params.delegator.toHexString());
   const tokenHolder = tokenHolderResult.entity;
@@ -60,7 +60,7 @@ export const updateDelegateChanged = (event: DelegateChanged): void => {
   newDelegate.tokenHoldersRepresentedAmount = newDelegate.tokenHoldersRepresentedAmount + 1;
   oldDelegate.save();
   newDelegate.save();
-};
+}
 
 export const updateDelegateVoteChanged = (event: DelegateVotesChanged): void => {
   const params = event.params;
