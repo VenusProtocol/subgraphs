@@ -30,25 +30,13 @@ dataSources:
           file: ../../packages/isolated-pools-abis/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
+        - name: PoolLens
+          file: ../../packages/isolated-pools-abis/PoolLens.json  
       eventHandlers:
         - event: PoolRegistered(uint256,(uint256,string,address,address,uint256,uint256))
           handler: handlePoolRegistered
         - event: PoolNameSet(uint256,string)
-          handler: handlePoolNameSet
-  - kind: ethereum/contract
-    name: PoolLens
-    network: {{ network }}
-    source:
-      address: "{{ poolLensAddress }}"
-      abi: PoolLens
-      startBlock: {{ poolLensStartBlock }}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      abis:
-        - name: PoolLens
-          file: ../../packages/isolated-pools-abis/PoolLens.json  
+          handler: handlePoolNameSet 
 
 templates:
   - name: Pool
