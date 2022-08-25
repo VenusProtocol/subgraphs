@@ -34,6 +34,9 @@ import { getTransactionEventId } from '../utilities/ids';
 export function createPool(event: PoolRegistered): Pool {
   const pool = new Pool(event.params.pool.comptroller.toHexString());
   // Fill in pool from pool lens
+  //const poolLensContract = PoolLensContract.bind(poolLensAddress);
+  //const poolDataFromLens = poolRegistryContract.getPoolData(event.params.pool.comptroller.toHexString());
+
   pool.name = '';
   pool.creator = event.address;
   pool.blockPosted = event.block.number;

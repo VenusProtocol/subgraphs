@@ -1,0 +1,897 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken",
+        "name": "cToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "cTokenBalances",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceOf",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowBalanceCurrent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceOfUnderlying",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenBalance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenAllowance",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenBalances",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken[]",
+        "name": "cTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address payable",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "cTokenBalancesAll",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceOf",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowBalanceCurrent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "balanceOfUnderlying",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenBalance",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenAllowance",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenBalances[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken",
+        "name": "cToken",
+        "type": "address"
+      }
+    ],
+    "name": "cTokenMetadata",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "exchangeRateCurrent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "supplyRatePerBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowRatePerBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reserveFactorMantissa",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalBorrows",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalReserves",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalCash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralFactorMantissa",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "underlyingAssetAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cTokenDecimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "underlyingDecimals",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenMetadata",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken[]",
+        "name": "cTokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "cTokenMetadataAll",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "exchangeRateCurrent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "supplyRatePerBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "borrowRatePerBlock",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reserveFactorMantissa",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalBorrows",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalReserves",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalSupply",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalCash",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "isListed",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralFactorMantissa",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "underlyingAssetAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "cTokenDecimals",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "underlyingDecimals",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenMetadata[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken",
+        "name": "cToken",
+        "type": "address"
+      }
+    ],
+    "name": "cTokenUnderlyingPrice",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "underlyingPrice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenUnderlyingPrice",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract CToken[]",
+        "name": "cTokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "cTokenUnderlyingPriceAll",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "cToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "underlyingPrice",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolLens.CTokenUnderlyingPrice[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "poolRegistryAddress",
+        "type": "address"
+      }
+    ],
+    "name": "getAllPools",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "poolId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "comptroller",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestampPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PoolRegistry.RiskRating",
+            "name": "riskRating",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "logoURL",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "cToken",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "exchangeRateCurrent",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "supplyRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "borrowRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "reserveFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalBorrows",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalReserves",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalSupply",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalCash",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "isListed",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "collateralFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "underlyingAssetAddress",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "cTokenDecimals",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "underlyingDecimals",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct PoolLens.CTokenMetadata[]",
+            "name": "cTokens",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct PoolLens.PoolData[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "poolRegistryAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      }
+    ],
+    "name": "getCTokenForAsset",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "poolRegistryAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "comptroller",
+        "type": "address"
+      }
+    ],
+    "name": "getPoolByComptroller",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "poolId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "comptroller",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestampPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PoolRegistry.RiskRating",
+            "name": "riskRating",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "logoURL",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "cToken",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "exchangeRateCurrent",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "supplyRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "borrowRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "reserveFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalBorrows",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalReserves",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalSupply",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalCash",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "isListed",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "collateralFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "underlyingAssetAddress",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "cTokenDecimals",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "underlyingDecimals",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct PoolLens.CTokenMetadata[]",
+            "name": "cTokens",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct PoolLens.PoolData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "poolRegistryAddress",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "poolId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "comptroller",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestampPosted",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PoolRegistry.VenusPool",
+        "name": "venusPool",
+        "type": "tuple"
+      }
+    ],
+    "name": "getPoolDataFromVenusPool",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "poolId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "creator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "comptroller",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timestampPosted",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PoolRegistry.RiskRating",
+            "name": "riskRating",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "logoURL",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "cToken",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "exchangeRateCurrent",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "supplyRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "borrowRatePerBlock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "reserveFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalBorrows",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalReserves",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalSupply",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalCash",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "isListed",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "collateralFactorMantissa",
+                "type": "uint256"
+              },
+              {
+                "internalType": "address",
+                "name": "underlyingAssetAddress",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "cTokenDecimals",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "underlyingDecimals",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct PoolLens.CTokenMetadata[]",
+            "name": "cTokens",
+            "type": "tuple[]"
+          }
+        ],
+        "internalType": "struct PoolLens.PoolData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "poolRegistryAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      }
+    ],
+    "name": "getPoolsSupportedByAsset",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

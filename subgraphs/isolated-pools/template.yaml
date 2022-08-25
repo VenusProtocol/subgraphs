@@ -35,6 +35,16 @@ dataSources:
           handler: handlePoolRegistered
         - event: PoolNameSet(uint256,string)
           handler: handlePoolNameSet
+  - kind: ethereum/contract
+    name: PoolLens
+    network: {{ network }}
+    source:
+      address: "{{ address }}"
+      abi: PoolLens
+      startBlock: {{ startBlock }}
+    abis:
+      - name: PoolLens
+      file: ../../packages/isolated-pools-abis/PoolLens.json  
 
 templates:
   - name: Pool
