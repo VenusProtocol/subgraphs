@@ -3,10 +3,10 @@ import { Address, BigDecimal } from '@graphprotocol/graph-ts';
 import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { vBnbAddress } from '../constants/addresses';
-import { readPool } from '../operations/read';
+import { getPool } from '../operations/get';
 
 const getBnbPriceInUsd = (poolAddress: Address): BigDecimal => {
-  const comptroller = readPool(poolAddress);
+  const comptroller = getPool(poolAddress);
 
   const priceOracleAddress = Address.fromBytes(comptroller.priceOracle);
   const priceOracle = PriceOracle.bind(priceOracleAddress);
