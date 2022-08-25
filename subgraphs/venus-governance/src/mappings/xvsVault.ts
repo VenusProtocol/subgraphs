@@ -2,7 +2,7 @@
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { DelegateChangedV2, DelegateVotesChangedV2 } from '../../generated/XVSVault/XVSVault';
-import { updateDelegateChanged } from '../operations/update';
+import { updateDelegateChanged, updateDelegateVoteChanged } from '../operations/update';
 
 // - event: DelegateChanged(indexed address,indexed address,indexed address)
 //   handler: handleDelegateChanged
@@ -15,5 +15,5 @@ export function handleDelegateChanged(event: DelegateChangedV2): void {
 //   handler: handleDelegateVotesChanged
 
 export function handleDelegateVotesChanged(event: DelegateVotesChangedV2): void {
-  // updateDelegateVoteChanged(event);
+  updateDelegateVoteChanged<DelegateVotesChangedV2>(event);
 }

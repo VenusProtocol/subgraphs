@@ -8,37 +8,24 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { ProposalCreated } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { DelegateChanged } from '../../generated/VenusToken/VenusToken';
-import { handleProposalCreated } from '../../src/mappings/bravo';
-import { handleDelegateChanged } from '../../src/mappings/xvsToken';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
+import { DelegateChanged, DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
+import { GOVERNANCE } from '../../src/constants';
+import { handleDelegateChanged, handleDelegateVotesChanged } from '../../src/mappings/xvsToken';
+import { getGovernanceEntity } from '../../src/operations/get';
 import { user1, user2, user3 } from '../common/constants';
-import { createDelegateChangedEvent, createProposalCreatedEvent } from '../common/events';
+import { createDelegateChangedEvent, createDelegateVotesChangedEvent } from '../common/events';
+
+const originalBalance = BigInt.fromI64(700000000000000000000000000000);
 
 const cleanup = (): void => {
   clearStore();
 };
 
-const startBlock = 4563820;
-const endBlock = 4593820;
-const description = 'Very creative Proposal';
-
 beforeEach(() => {
   /** setup test */
-  getOrCreateDelegate(user1.toHexString());
-  const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
-    1,
-    user1,
-    [],
-    [],
-    [],
-    [],
-    BigInt.fromI64(startBlock),
-    BigInt.fromI64(endBlock),
-    description,
-  );
-  handleProposalCreated(proposalCreatedEvent);
+  const governance = getGovernanceEntity();
+  governance.delegatedVotes = originalBalance;
+  governance.save();
 });
 
 afterEach(() => {
@@ -74,5 +61,76 @@ describe('XVS Token', () => {
       assert.fieldEquals('TokenHolder', user1.toHex(), key, value);
     };
     assertTokenHolderDocument('delegate', user3.toHexString());
+  });
+
+  test('delegate votes - new delegate', () => {
+    /** setup tests */
+    const delegate = user3;
+    const previousBalance = BigInt.fromI64(0);
+    const newBalance = BigInt.fromI64(500000000000000000000000000000);
+    /** run handler */
+    const delegateVotesChangedEvent = createDelegateVotesChangedEvent<DelegateVotesChanged>(
+      delegate,
+      previousBalance,
+      newBalance,
+    );
+    handleDelegateVotesChanged(delegateVotesChangedEvent);
+    const votesDifference = newBalance.minus(previousBalance);
+    // Delegate
+    const assertDelegateDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Delegate', user3.toHex(), key, value);
+    };
+    assertDelegateDocument('delegatedVotes', newBalance.toString());
+
+    // Governance
+    const assertGovernanceDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+    };
+    assertGovernanceDocument('delegatedVotes', originalBalance.plus(votesDifference).toString());
+    assertGovernanceDocument('currentDelegates', '1');
+  });
+  // const params = event.params;
+  // const governance = getGovernanceEntity();
+  // const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
+  // const delegate = delegateResult.entity;
+
+  // delegate.delegatedVotes = params.newBalance;
+  // delegate.save();
+
+  // if (params.previousBalance == BIGINT_ZERO && params.newBalance > BIGINT_ZERO) {
+  //   governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
+  // }
+  // if (params.newBalance == BIGINT_ZERO) {
+  //   governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
+  // }
+  // governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
+  // governance.save();
+
+  test('delegate votes - lost delegate', () => {
+    /** setup tests */
+    const delegate = user3;
+    const previousBalance = BigInt.fromI64(300000000000000000000000000000);
+    const newBalance = BigInt.fromI64(0);
+    /** run handler */
+    const delegateVotesChangedEvent = createDelegateVotesChangedEvent<DelegateVotesChanged>(
+      delegate,
+      previousBalance,
+      newBalance,
+    );
+    handleDelegateVotesChanged(delegateVotesChangedEvent);
+
+    const votesDifference = newBalance.minus(previousBalance);
+    // Delegate
+    const assertDelegateDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Delegate', user3.toHex(), key, value);
+    };
+    assertDelegateDocument('delegatedVotes', newBalance.toString());
+
+    // Governance
+    const assertGovernanceDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+    };
+    assertGovernanceDocument('delegatedVotes', originalBalance.plus(votesDifference).toString());
+    assertGovernanceDocument('currentDelegates', '-1');
   });
 });

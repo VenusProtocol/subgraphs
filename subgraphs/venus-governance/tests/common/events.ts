@@ -178,3 +178,29 @@ export function createDelegateChangedEvent<E>(
 
   return event;
 }
+
+export function createDelegateVotesChangedEvent<E>(
+  delegate: Address,
+  previousBalance: BigInt,
+  newBalance: BigInt,
+): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const delegateParam = new ethereum.EventParam('delegate', ethereum.Value.fromAddress(delegate));
+  event.parameters.push(delegateParam);
+
+  const previousBalanceParam = new ethereum.EventParam(
+    'previousBalance',
+    ethereum.Value.fromUnsignedBigInt(previousBalance),
+  );
+  event.parameters.push(previousBalanceParam);
+
+  const newBalanceParam = new ethereum.EventParam(
+    'newBalance',
+    ethereum.Value.fromUnsignedBigInt(newBalance),
+  );
+  event.parameters.push(newBalanceParam);
+
+  return event;
+}
