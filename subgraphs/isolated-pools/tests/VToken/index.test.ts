@@ -34,8 +34,8 @@ import {
   handleRepayBorrow,
   handleTransfer,
 } from '../../src/mappings/vToken';
+import { getMarket } from '../../src/operations/get';
 import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
-import { readMarket } from '../../src/operations/read';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketListedEvent } from '../Pool/events';
@@ -105,7 +105,7 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromI64(124620530798726345);
     const mintTokens = BigInt.fromI64(37035970026454);
     const mintEvent = createMintEvent(vTokenAddress, minter, actualMintAmount, mintTokens);
-    const market = readMarket(vTokenAddress);
+    const market = getMarket(vTokenAddress);
 
     handleMint(mintEvent);
     const id = getTransactionEventId(mintEvent.transaction.hash, mintEvent.transactionLogIndex);
@@ -143,7 +143,7 @@ describe('VToken', () => {
       actualRedeemAmount,
       redeemTokens,
     );
-    const market = readMarket(vTokenAddress);
+    const market = getMarket(vTokenAddress);
 
     handleRedeem(redeemEvent);
     const id = getTransactionEventId(redeemEvent.transaction.hash, redeemEvent.transactionLogIndex);
@@ -200,7 +200,7 @@ describe('VToken', () => {
       borrowEvent.transactionLogIndex,
     );
     const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
-    const market = readMarket(vTokenAddress);
+    const market = getMarket(vTokenAddress);
     const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
     // Clone the value to remove the reference
     const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
@@ -256,12 +256,6 @@ describe('VToken', () => {
       'accountBorrowIndex',
       market.borrowIndex.toString(),
     );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingBorrowed',
-      totalUnderlyingBorrowed.toString(),
-    );
   });
 
   test('registers repay borrow event', () => {
@@ -295,7 +289,7 @@ describe('VToken', () => {
       repayBorrowEvent.transactionLogIndex,
     );
     const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
-    const market = readMarket(vTokenAddress);
+    const market = getMarket(vTokenAddress);
     const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
     // Clone the value to remove the reference
     const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
@@ -383,7 +377,7 @@ describe('VToken', () => {
       liquidateBorrowEvent.transaction.hash,
       liquidateBorrowEvent.transactionLogIndex,
     );
-    const market = readMarket(vTokenAddress);
+    const market = getMarket(vTokenAddress);
 
     const underlyingDecimals = market.underlyingDecimals;
     const underlyingRepayAmount = liquidateBorrowEvent.params.repayAmount
