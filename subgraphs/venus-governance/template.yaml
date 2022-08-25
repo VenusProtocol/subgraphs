@@ -127,7 +127,7 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
-      file: ./src/mappings/alpha.ts
+      file: ./src/mappings/xvsToken.ts
       entities:
         - Delegate
         - TokenHolder
@@ -141,3 +141,26 @@ dataSources:
           handler: handleDelegateVotesChanged
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
+  - kind: ethereum/contract
+    name: XVSVault
+    network: {{ network }}
+    source:
+      address: "{{ xvsVaultAddress }}"
+      abi: XVSVault
+      startBlock: {{ xvsVaultStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/mappings/xvsVault.ts
+      entities:
+        - Delegate
+        - TokenHolder
+      abis:
+        - name: XVSVault
+          file: ../../packages/venus-governance-abis/XVSVault.json
+      eventHandlers:
+        - event: DelegateVotesChangedV2(indexed address,uint256,uint256)
+          handler: handleDelegateChanged
+        - event: DelegateChangedV2(indexed address,indexed address,indexed address)
+          handler: handleDelegateVotesChanged

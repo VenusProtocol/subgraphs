@@ -149,3 +149,58 @@ export function createVoteCastBravoEvent(
 
   return event;
 }
+
+export function createDelegateChangedEvent<E>(
+  delegator: Address,
+  fromDelegate: Address,
+  toDelegate: Address,
+): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const delegatorParam = new ethereum.EventParam(
+    'delegator',
+    ethereum.Value.fromAddress(delegator),
+  );
+  event.parameters.push(delegatorParam);
+
+  const fromDelegateParam = new ethereum.EventParam(
+    'fromDelegate',
+    ethereum.Value.fromAddress(fromDelegate),
+  );
+  event.parameters.push(fromDelegateParam);
+
+  const toDelegateParam = new ethereum.EventParam(
+    'toDelegate',
+    ethereum.Value.fromAddress(toDelegate),
+  );
+  event.parameters.push(toDelegateParam);
+
+  return event;
+}
+
+export function createDelegateVotesChangedEvent<E>(
+  delegate: Address,
+  previousBalance: BigInt,
+  newBalance: BigInt,
+): E {
+  const event = changetype<E>(newMockEvent());
+  event.parameters = [];
+
+  const delegateParam = new ethereum.EventParam('delegate', ethereum.Value.fromAddress(delegate));
+  event.parameters.push(delegateParam);
+
+  const previousBalanceParam = new ethereum.EventParam(
+    'previousBalance',
+    ethereum.Value.fromUnsignedBigInt(previousBalance),
+  );
+  event.parameters.push(previousBalanceParam);
+
+  const newBalanceParam = new ethereum.EventParam(
+    'newBalance',
+    ethereum.Value.fromUnsignedBigInt(newBalance),
+  );
+  event.parameters.push(newBalanceParam);
+
+  return event;
+}
