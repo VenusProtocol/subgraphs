@@ -54,3 +54,8 @@ Unit tests are run with `matchstick-as`. They can be run with the `test` command
 
 ### Integration tests
 The integration test environment is orchestrated with containers. They can be brought up using `docker-compose up`.
+
+Clone and setup the [isolated-pools](https://github.com/VenusProtocol/isolated-pools) repo. This repo contains scripts to deploy the contracts and setup the store for test cases.
+```
+yarn ts-node script/hardhat/deploy-pool-lens.ts
+```
