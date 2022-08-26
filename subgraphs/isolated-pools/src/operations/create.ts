@@ -45,20 +45,16 @@ export function createPool(event: PoolRegistered): Pool {
   pool.creator = event.address;
   pool.blockPosted = event.block.number;
   pool.timestampPosted = event.block.timestamp;
-  pool.riskRating = poolDataFromLens.riskRating;
+  pool.riskRating = poolDataFromLens.riskRating.toString();
   pool.category = poolDataFromLens.category;
   pool.logoURL = poolDataFromLens.logoURL;
   pool.description = poolDataFromLens.description;
   pool.priceOracle = poolDataFromLens.priceOracle;
-  pool.closeFactor = poolDataFromLens.closeFactor
-    ? new BigInt(poolDataFromLens.closeFactor)
-    : new BigInt(0);
+  pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
   pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
-    ? new BigInt(poolDataFromLens.liquidationIncentive)
+    ? poolDataFromLens.liquidationIncentive
     : new BigInt(0);
-  pool.maxAssets = poolDataFromLens.maxAssets
-    ? new BigInt(poolDataFromLens.maxAssets)
-    : new BigInt(0);
+  pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
   pool.save();
 
   return pool;
