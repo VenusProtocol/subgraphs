@@ -418,6 +418,31 @@
             "type": "string"
           },
           {
+            "internalType": "address",
+            "name": "priceOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "pauseGuardian",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "closeFactor",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxAssets",
+            "type": "uint256"
+          },
+          {
             "components": [
               {
                 "internalType": "address",
@@ -598,6 +623,31 @@
             "internalType": "string",
             "name": "description",
             "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "priceOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "pauseGuardian",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "closeFactor",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxAssets",
+            "type": "uint256"
           },
           {
             "components": [
@@ -783,6 +833,31 @@
             "internalType": "string",
             "name": "description",
             "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "priceOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "pauseGuardian",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "closeFactor",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxAssets",
+            "type": "uint256"
           },
           {
             "components": [

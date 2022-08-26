@@ -10,7 +10,6 @@ import { createPool } from '../operations/create';
 
 export const handlePoolRegistered = (event: PoolRegistered): void => {
   createPool(event);
-  // Fetch metadata from lens
 };
 
 export const handlePoolNameSet = (event: PoolNameSet): void => {

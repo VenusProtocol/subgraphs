@@ -1,5 +1,6 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
+import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   Borrow,
@@ -23,6 +24,7 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
+import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
@@ -34,22 +36,29 @@ import { getTransactionEventId } from '../utilities/ids';
 export function createPool(event: PoolRegistered): Pool {
   const pool = new Pool(event.params.pool.comptroller.toHexString());
   // Fill in pool from pool lens
-  //const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  //const poolDataFromLens = poolRegistryContract.getPoolData(event.params.pool.comptroller.toHexString());
-
-  pool.name = '';
+  const poolLensContract = PoolLensContract.bind(poolLensAddress);
+  const poolDataFromLens = poolLensContract.getPoolByComptroller(
+    poolRegistryAddress,
+    event.params.pool.comptroller,
+  );
+  pool.name = poolDataFromLens.name;
   pool.creator = event.address;
   pool.blockPosted = event.block.number;
   pool.timestampPosted = event.block.timestamp;
-  pool.riskRating = '';
-  pool.category = '';
-  pool.logoURL = '';
-  pool.description = '';
-  pool.priceOracle = Address.fromString('0x0000000000000000000000000000000000000000');
-  pool.pauseGuardian = Address.fromString('0x0000000000000000000000000000000000000000');
-  pool.closeFactor = new BigInt(0);
-  pool.liquidationIncentive = new BigInt(0);
-  pool.maxAssets = new BigInt(0);
+  pool.riskRating = poolDataFromLens.riskRating;
+  pool.category = poolDataFromLens.category;
+  pool.logoURL = poolDataFromLens.logoURL;
+  pool.description = poolDataFromLens.description;
+  pool.priceOracle = poolDataFromLens.priceOracle;
+  pool.closeFactor = poolDataFromLens.closeFactor
+    ? new BigInt(poolDataFromLens.closeFactor)
+    : new BigInt(0);
+  pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
+    ? new BigInt(poolDataFromLens.liquidationIncentive)
+    : new BigInt(0);
+  pool.maxAssets = poolDataFromLens.maxAssets
+    ? new BigInt(poolDataFromLens.maxAssets)
+    : new BigInt(0);
   pool.save();
 
   return pool;
