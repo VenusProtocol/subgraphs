@@ -47,3 +47,10 @@ To build or deploy the subgraph you'll need to first compile the subgraph.yaml t
 $ yarn prepare:local
 $ yarn deploy:local
 ```
+
+## Testing
+### Unit tests
+Unit tests are run with `matchstick-as`. They can be run with the `test` command at the project or workspace level. Tests are organized by datasource with files for creating events and mocks. A test consists of setting up and creating an event, then passing it to the handler and asserting against changes to the document store.
+
+### Integration tests
+The integration test environment is orchestrated with containers. They can be brought up using `docker-compose up`.

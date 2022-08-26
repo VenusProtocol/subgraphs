@@ -1,0 +1,14 @@
+FROM node:16.14.2-alpine3.14
+
+RUN apk add git;
+
+COPY package.json /usr/app/package.json
+COPY yarn.lock /usr/app/yarn.lock
+COPY .yarn /usr/app/.yarn
+COPY .yarnrc.yml /usr/app/.yarnrc.yml
+
+WORKDIR /usr/app
+
+RUN yarn
+
+EXPOSE 8545
