@@ -19,3 +19,6 @@ generated
 # Matchstick
 .latest.json
 **/tests/.bin
+
+# Hardhat
+cache

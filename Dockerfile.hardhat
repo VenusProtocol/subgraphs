@@ -1,6 +1,6 @@
 FROM node:16.14.2-alpine3.14
 
-RUN apk add git;
+RUN apk add g++ make py3-pip git;
 
 COPY package.json /usr/app/package.json
 COPY yarn.lock /usr/app/yarn.lock
@@ -10,5 +10,8 @@ COPY .yarnrc.yml /usr/app/.yarnrc.yml
 WORKDIR /usr/app
 
 RUN yarn
+
+# Explicetly installing for hardhat
+RUN yarn add ts-node --dev
 
 EXPOSE 8545

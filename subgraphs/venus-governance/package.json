@@ -23,6 +23,7 @@
     "prepare:local": "mustache config/local.json template.yaml > subgraph.yaml",
     "prepare:testnet": "mustache config/testnet.json template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache config/mainnet.json template.yaml > subgraph.yaml",
-    "test": "graph test"
+    "test": "graph test",
+    "test:integration": "true"
   }
 }
