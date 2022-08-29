@@ -1,5 +1,5 @@
 {
-  "name": "isolated-pools",
+  "name": "isolated-pools-subgraph",
   "version": "0.0.0",
   "license": "MIT",
   "repository": {
@@ -23,7 +23,9 @@
     "prepare:local": "mustache config/local.json template.yaml > subgraph.yaml",
     "prepare:testnet": "mustache config/testnet.json template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache config/mainnet.json template.yaml > subgraph.yaml",
+    "rempve-local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
     "pretty": "prettier —-write '**/*.ts'",
-    "test": "graph test"
+    "test": "graph test",
+    "test:integration": "hardhat test ./tests/integration.ts"
   }
 }

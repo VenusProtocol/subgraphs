@@ -3,7 +3,9 @@
   "compilerOptions": {
     "types": ["@graphprotocol/graph-ts"],
     "noLib": false,
-    "lib": ["es2015"]
+    "lib": ["es2015"],
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true
   },
-  "include": ["subgraphs"]
+  "include": ["subgraphs", "hardhat.config.ts"]
 }
