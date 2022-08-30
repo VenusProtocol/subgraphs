@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node
+    image: graphprotocol/graph-node:v0.27.0
     ports:
       - '8000:8000'
       - '8001:8001'
@@ -18,8 +18,7 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: ipfs:5001
-      ethereum: mainnet:http://hardhat:8545
-      RUST_LOG: info
+      ethereum: bsc:http://hardhat:8545
   hardhat:
     build:
       context: .
