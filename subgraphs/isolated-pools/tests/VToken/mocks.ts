@@ -1,7 +1,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { poolRegistryAddress } from '../../src/constants/addresses';
+import { poolLensAddress, poolRegistryAddress } from '../../src/constants/addresses';
 
 // type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
 
@@ -27,6 +27,52 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     )
       .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx))])
       .returns([tupleValue]);
+
+    //address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
+    const cTokenData = changetype<ethereum.Tuple>([
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromBoolean(true),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+    ]);
+
+    const lensTupleArray: Array<ethereum.Value> = [
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)),
+      ethereum.Value.fromString(''),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromString(''),
+      ethereum.Value.fromString(''),
+      ethereum.Value.fromString(''),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromTuple(cTokenData),
+    ];
+    const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
+    const lensTupleValue = ethereum.Value.fromTuple(lensTuple);
+
+    createMockedFunction(
+      poolLensAddress,
+      'getPoolByComptroller',
+      'getPoolByComptroller(address,address):((uint256,string,address,address,uint256,uint256,uint8,string,string,string,address,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
+    )
+      .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
+      .returns([lensTupleValue]);
   });
 };
 
