@@ -20,7 +20,12 @@ You can also see the saved queries on the hosted service for examples.
 
 # Development / Testing
 
-Hardhat is used for development and testing. First start a local node. We'll also need to deploy the contracts.
+## Running in docker
+All the required services are networked with a docker-compose and can be brought up using `docker-compose up`.
+
+## Running all servies locally
+
+Hardhat is used for development and testing. First start a local node. We'll also need to deploy the contracts. For debugging you may also find it useful to use a [fork](https://hardhat.org/hardhat-network/docs/guides/forking-other-networks)
 ```
 $ yarn hardhat node
 ```
@@ -35,10 +40,16 @@ $ ipfs daemon --offline
 ```
 
 ### Graph Node
+Clone the [graph-node repo](https://github.com/graphprotocol/graph-node).
+
+Then you can run the node.
+
+```
 cargo run -p graph-node --release -- \
   --postgres-url postgresql://<USERNAME>[:PASSWORD]@localhost:5432/graph-node \
-  --ethereum-rpc bsc-testnet:http://127.0.0.1:8545/ \
+  --ethereum-rpc <NETWORK>:http://127.0.0.1:8545/ \
   --ipfs 127.0.0.1:5001
+```
 
 ### Deploy your local subgraph
 To build or deploy the subgraph you'll need to first compile the subgraph.yaml template and then run the build of deploy commands which can be run for all packages or individual packages.
@@ -56,6 +67,7 @@ Unit tests are run with `matchstick-as`. They can be run with the `test` command
 The integration test environment is orchestrated with containers. They can be brought up using `docker-compose up`.
 
 Clone and setup the [isolated-pools](https://github.com/VenusProtocol/isolated-pools) repo. This repo contains scripts to deploy the contracts and setup the store for test cases.
+
 ```
 yarn ts-node script/hardhat/deploy-pool-lens.ts
 ```
