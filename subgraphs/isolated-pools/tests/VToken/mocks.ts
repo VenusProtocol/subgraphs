@@ -8,7 +8,6 @@ import {
 } from '../../src/constants/addresses';
 
 // type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
-
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
     const tupleArray: Array<ethereum.Value> = [
@@ -30,7 +29,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx))])
       .returns([tupleValue]);
 
-    //address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
+    // address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
     const cTokenData = changetype<ethereum.Tuple>([
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
@@ -55,15 +54,15 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromI32(1),
       ethereum.Value.fromString(''),
       ethereum.Value.fromString(''),
-      ethereum.Value.fromString(''),
+      ethereum.Value.fromString('0x0000000000000000000000000000000000000000'),
+      ethereum.Value.fromAddress(priceOracleAddress),
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromTuple(cTokenData),
+      ethereum.Value.fromArray([ethereum.Value.fromTuple(cTokenData)]),
     ];
     const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
     const lensTupleValue = ethereum.Value.fromTuple(lensTuple);

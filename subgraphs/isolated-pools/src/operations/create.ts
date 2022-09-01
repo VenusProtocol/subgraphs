@@ -24,7 +24,7 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
-import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { pauseGuardianAddress, poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
@@ -50,11 +50,13 @@ export function createPool(event: PoolRegistered): Pool {
   pool.logoURL = poolDataFromLens.logoURL;
   pool.description = poolDataFromLens.description;
   pool.priceOracle = poolDataFromLens.priceOracle;
+  pool.pauseGuardian = pauseGuardianAddress;
   pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
   pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
     ? poolDataFromLens.liquidationIncentive
     : new BigInt(0);
-  pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
+  // poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets :
+  pool.maxAssets = new BigInt(0);
   pool.save();
 
   return pool;

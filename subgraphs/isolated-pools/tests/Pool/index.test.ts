@@ -34,6 +34,7 @@ import {
 } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { createPoolRegistryMock } from '../VToken/mocks';
 import {
   createMarketActionPausedEvent,
   createMarketEnteredEvent,
@@ -79,6 +80,16 @@ beforeAll(() => {
   createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromI32(100)]);
+
+  createPoolRegistryMock([
+    [
+      ethereum.Value.fromString('Gamer Pool'),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
+    ],
+  ]);
 });
 
 beforeEach(() => {
