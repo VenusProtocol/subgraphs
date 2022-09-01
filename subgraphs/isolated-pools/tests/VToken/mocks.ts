@@ -1,11 +1,13 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { poolLensAddress, poolRegistryAddress } from '../../src/constants/addresses';
+import {
+  poolLensAddress,
+  poolRegistryAddress,
+  priceOracleAddress,
+} from '../../src/constants/addresses';
 
 // type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
-
-const priceOracleMock = Address.fromString('0x0000000000000000000000000000000000000000');
 
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
@@ -177,7 +179,7 @@ export const createMarketMock = (marketAddress: Address): void => {
 export const createPriceOracleMock = (tokens: Array<Array<ethereum.Value>>): void => {
   tokens.forEach((token): void => {
     createMockedFunction(
-      priceOracleMock,
+      priceOracleAddress,
       'getUnderlyingPrice',
       'getUnderlyingPrice(address):(uint256)',
     )
