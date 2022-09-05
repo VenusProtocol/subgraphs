@@ -15,13 +15,15 @@ jobs:
           cache: "yarn"
 
       - name: Install deps
-        run: yarn
+        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
 
       - name: Lint
         run: yarn lint
 
       - name: pretty
         run: yarn pretty
+  
   test:
     runs-on: ubuntu-20.04
     steps:
@@ -34,7 +36,8 @@ jobs:
           cache: "yarn"
 
       - name: Install deps
-        run: yarn
+        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
 
       - name: Prepare local
         run: yarn prepare:local
