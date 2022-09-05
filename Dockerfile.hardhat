@@ -1,6 +1,6 @@
 FROM node:16.14.2-alpine3.14
 
-RUN apk add g++ make py3-pip git;
+RUN apk add g++ make py3-pip git openssh;
 
 COPY package.json /usr/app/package.json
 COPY yarn.lock /usr/app/yarn.lock

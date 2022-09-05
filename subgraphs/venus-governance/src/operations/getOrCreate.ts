@@ -8,8 +8,9 @@ export class GetOrCreateTokenHolderReturn {
 }
 
 export const getOrCreateTokenHolder = (id: string): GetOrCreateTokenHolderReturn => {
-  let tokenHolder = TokenHolder.load(id);
   let created = false;
+  let tokenHolder = TokenHolder.load(id);
+
   if (!tokenHolder) {
     tokenHolder = new TokenHolder(id);
     tokenHolder.tokenBalance = BIGINT_ZERO;
@@ -34,8 +35,9 @@ export class GetOrCreateDelegateReturn {
 }
 
 export const getOrCreateDelegate = (id: string): GetOrCreateDelegateReturn => {
-  let delegate = Delegate.load(id);
   let created = false;
+  let delegate = Delegate.load(id);
+
   if (!delegate) {
     delegate = new Delegate(id);
     delegate.delegatedVotes = BIGINT_ZERO;

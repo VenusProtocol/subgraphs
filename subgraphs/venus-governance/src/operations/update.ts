@@ -66,15 +66,22 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   const governance = getGovernanceEntity();
   const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
   const delegate = delegateResult.entity;
-  const votesDifference = event.params.newBalance.minus(params.previousBalance);
+  // // Accessing this parameters by name throws `Ethereum value is not an int or uint`
+  const previousBalance = event.parameters[1].value.kind
+    ? BigInt.fromU64(event.parameters[1].value.data)
+    : BIGINT_ZERO;
+  const newBalance = event.parameters[2].value.kind
+    ? BigInt.fromU64(event.parameters[2].value.data)
+    : BIGINT_ZERO;
+  const votesDifference = newBalance.minus(previousBalance);
 
-  delegate.delegatedVotes = params.newBalance;
+  delegate.delegatedVotes = newBalance;
   delegate.save();
 
-  if (params.previousBalance == BIGINT_ZERO && params.newBalance > BIGINT_ZERO) {
+  if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {
     governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
   }
-  if (params.newBalance == BIGINT_ZERO) {
+  if (newBalance == BIGINT_ZERO) {
     governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
   }
   governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
