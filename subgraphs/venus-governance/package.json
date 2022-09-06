@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "hardhat": "^2.10.2",
-    "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#2808f20fa89c4c454a74589d140b59e7733db94b"
+    "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#64446f1c60bceca8884c6bab9fdf41fd6bd2c81f"
   }
 }
