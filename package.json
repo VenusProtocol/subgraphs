@@ -14,8 +14,6 @@
   "scripts": {
     "codegen": "yarn workspaces foreach run codegen",
     "create:local": "yarn workspaces foreach run create:local",
-    "create:testnet": "yarn workspaces foreach run create:testnet",
-    "create:mainnet": "yarn workspaces foreach run create:mainnet",
     "build:local": "yarn workspaces foreach run build:local",
     "build:testnet": "yarn workspaces foreach run build:testnet",
     "build:mainnet": "yarn workspaces foreach run build:mainnet",
