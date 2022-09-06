@@ -29,7 +29,7 @@ services:
       - sh
       - -c
       - |
-        yarn hardhat node
+        node_modules/.bin/hardhat node
     ports:
       - 8545:8545
     volumes:
