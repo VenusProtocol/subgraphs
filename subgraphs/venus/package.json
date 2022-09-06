@@ -12,8 +12,6 @@
   "scripts": {
     "codegen": "graph codegen",
     "create:local": "graph create venusprotocol/venus-subgraph --node http://127.0.0.1:8020",
-    "create:testnet": "graph create venusprotocol/venus-subgraph --node https://api.staging.thegraph.com/deploy/",
-    "create:mainnet": "graph create venusprotocol/venus-subgraph --node https://api.thegraph.com/deploy/",
     "build:local": "graph build --ipfs http://localhost:5001",
     "build:testnet": "graph build --ipfs https://api.staging.thegraph.com/ipfs/ ",
     "build:mainnet": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
