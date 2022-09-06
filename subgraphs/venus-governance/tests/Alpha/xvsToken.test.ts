@@ -89,22 +89,6 @@ describe('XVS Token', () => {
     assertGovernanceDocument('delegatedVotes', originalBalance.plus(votesDifference).toString());
     assertGovernanceDocument('currentDelegates', '1');
   });
-  // const params = event.params;
-  // const governance = getGovernanceEntity();
-  // const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
-  // const delegate = delegateResult.entity;
-
-  // delegate.delegatedVotes = params.newBalance;
-  // delegate.save();
-
-  // if (params.previousBalance == BIGINT_ZERO && params.newBalance > BIGINT_ZERO) {
-  //   governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
-  // }
-  // if (params.newBalance == BIGINT_ZERO) {
-  //   governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
-  // }
-  // governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
-  // governance.save();
 
   test('delegate votes - lost delegate', () => {
     /** setup tests */
