@@ -40,6 +40,10 @@ services:
     image: ipfs/go-ipfs:v0.4.23
     ports:
       - '5001:5001'
+    command:
+      - daemon
+      - --migrate=true
+      - --offline
   postgres:
     image: postgres:12
     ports:

@@ -160,7 +160,7 @@ dataSources:
         - name: XVSVault
           file: ../../packages/venus-governance-abis/XVSVault.json
       eventHandlers:
-        - event: DelegateVotesChangedV2(indexed address,uint256,uint256)
-          handler: handleDelegateChanged
         - event: DelegateChangedV2(indexed address,indexed address,indexed address)
+          handler: handleDelegateChanged
+        - event: DelegateVotesChangedV2(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged

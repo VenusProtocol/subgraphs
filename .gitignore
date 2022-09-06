@@ -22,3 +22,6 @@ generated
 
 # Hardhat
 cache
+contracts
+artifacts
+typechain-types

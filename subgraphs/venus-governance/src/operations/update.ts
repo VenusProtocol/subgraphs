@@ -66,15 +66,18 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   const governance = getGovernanceEntity();
   const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
   const delegate = delegateResult.entity;
-  const votesDifference = event.params.newBalance.minus(params.previousBalance);
 
-  delegate.delegatedVotes = params.newBalance;
+  const previousBalance = params.previousBalance;
+  const newBalance = params.newBalance;
+  const votesDifference = newBalance.minus(previousBalance);
+
+  delegate.delegatedVotes = newBalance;
   delegate.save();
 
-  if (params.previousBalance == BIGINT_ZERO && params.newBalance > BIGINT_ZERO) {
+  if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {
     governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
   }
-  if (params.newBalance == BIGINT_ZERO) {
+  if (newBalance == BIGINT_ZERO) {
     governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
   }
   governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);

@@ -14,14 +14,21 @@ jobs:
           node-version: 14
           cache: "yarn"
 
+      - name: Set git config
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
       - name: Install deps
-        run: yarn
+        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
 
       - name: Lint
         run: yarn lint
 
       - name: pretty
         run: yarn pretty
+  
   test:
     runs-on: ubuntu-20.04
     steps:
@@ -33,8 +40,14 @@ jobs:
           node-version: 14
           cache: "yarn"
 
+      - name: Set git config
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
       - name: Install deps
-        run: yarn
+        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
 
       - name: Prepare local
         run: yarn prepare:local

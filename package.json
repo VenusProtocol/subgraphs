@@ -41,6 +41,7 @@
     "@nomiclabs/hardhat-ethers": "^2.1.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
+    "@typechain/ethers-v5": "^10.1.0",
     "@typechain/hardhat": "^6.1.2",
     "@types/mocha": "^9.1.1",
     "@types/mustache": "^4.2.1",
@@ -70,8 +71,5 @@
       "pre-commit": "lint-staged"
     }
   },
-  "packageManager": "yarn@3.2.2",
-  "dependencies": {
-    "utf-8-validate": "^5.0.9"
-  }
+  "packageManager": "yarn@3.2.2"
 }

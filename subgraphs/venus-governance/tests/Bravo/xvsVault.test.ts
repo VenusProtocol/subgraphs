@@ -45,7 +45,7 @@ afterEach(() => {
   cleanup();
 });
 
-describe('XVS Token', () => {
+describe('XVS Vault', () => {
   test('delegate changed', () => {
     const delegator = user1;
     const fromDelegate = user2;
