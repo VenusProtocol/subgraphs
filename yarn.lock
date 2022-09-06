@@ -19006,16 +19006,18 @@ __metadata:
   resolution: "venus-governance@workspace:subgraphs/venus-governance"
   dependencies:
     hardhat: ^2.10.2
-    venus-protocol: "git@github.com:VenusProtocol/venus-protocol.git#b7e661096b94ed97631008ac33f83619d0ca08ff"
+    venus-protocol: "https://github.com/VenusProtocol/venus-protocol.git#2808f20fa89c4c454a74589d140b59e7733db94b"
   languageName: unknown
   linkType: soft
 
-"venus-protocol@git@github.com:VenusProtocol/venus-protocol.git#b7e661096b94ed97631008ac33f83619d0ca08ff":
+"venus-protocol@https://github.com/VenusProtocol/venus-protocol.git#2808f20fa89c4c454a74589d140b59e7733db94b":
   version: 0.2.1
-  resolution: "venus-protocol@git@github.com:VenusProtocol/venus-protocol.git#commit=b7e661096b94ed97631008ac33f83619d0ca08ff"
+  resolution: "venus-protocol@https://github.com/VenusProtocol/venus-protocol.git#commit=2808f20fa89c4c454a74589d140b59e7733db94b"
   dependencies:
     dotenv: ^16.0.1
-  checksum: 76b23fcbbde761ef77b05a0157d44525743acf5937d513d43166893ae5b8de19cd6d31a3965b69a9dcee32c1ab96339d7ebe10a46228640e02f08243d8acde25
+  peerDependencies:
+    hardhat: ^2.10.1
+  checksum: f11b9228256fd705050a8d40518615b323f6a16a16f8ad6a39baf52a67469c251d2d323c9109b3c74ece188e713d82e71ef42972f3eac0c18b0e990e0b4e304c
   languageName: node
   linkType: hard
 
