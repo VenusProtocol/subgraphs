@@ -67,7 +67,7 @@ export const deployContracts = async () => {
     };
     console.log('writing subgraph.yaml', templateValues);
     const renderedTemplate = Mustache.render(yamlTemplate, templateValues);
-    await fs.writeFileSync(`${__dirname}/../../subgraph.yaml`, renderedTemplate);
+    await fs.writeFileSync(`${__dirname}/../../../subgraph.yaml`, renderedTemplate);
   } else {
     throw Error('Unable to write subgraph.yaml from template');
   }
@@ -78,11 +78,15 @@ export const deployContracts = async () => {
   // Build and Deploy Subgraph
   console.log('Build and deploy subgraph...');
 
-  exec('yarn workspace venus-governance run codegen');
-  exec('yarn workspace venus-governance run create:local');
-  exec(`yarn workspace venus-governance run deploy:local -l ${Date.now().toString()}`);
+  exec('yarn workspace venus-governance run codegen', __dirname);
+  exec('yarn workspace venus-governance run create:local', __dirname);
+  exec(
+    `yarn workspace venus-governance run deploy:integration -l ${Date.now().toString()}`,
+    __dirname,
+  );
 
   await waitForSubgraphToBeSynced(SYNC_DELAY);
+
   return {
     subgraph,
     xvs,

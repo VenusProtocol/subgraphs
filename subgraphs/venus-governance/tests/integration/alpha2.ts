@@ -6,12 +6,12 @@ import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 // Utils
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { normalizeMantissa } from 'venus-subgraph-utils';
 
 import { SYNC_DELAY } from './constants';
 // Queries
 import { queryProposalById } from './queries';
 import { deployContracts } from './utils/deploy';
-import { normalizeMantissa } from './utils/math';
 import { enfranchiseAccount } from './utils/voter';
 
 // Test
@@ -33,7 +33,7 @@ describe('Alpha2', function () {
   after(async function () {
     process.stdout.write('Clean up, removing subgraph....');
 
-    exec(`yarn remove:local`);
+    exec(`yarn remove:local`, __dirname);
 
     process.stdout.write('Clean up complete.');
   });

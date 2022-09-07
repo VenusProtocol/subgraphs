@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { Contract } from 'ethers';
-
-import { normalizeMantissa } from '../utils/math';
+import { normalizeMantissa } from 'venus-subgraph-utils';
 
 export async function enfranchiseAccount(
   xvs: Contract,
