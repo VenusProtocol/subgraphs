@@ -26,8 +26,10 @@
     "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost",
     "postinstall": "rm -rf ./artifacts && cp -rf ../../node_modules/venus-protocol/artifacts ./artifacts && rm -rf ./contracts && cp -rf ../../node_modules/venus-protocol/contracts ./contracts"
   },
-  "dependencies": {
+  "devDependencies": {
+    "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#cca2c2f95edd805dc66073f6971642dc8dfc342a"
+    "venus-subgraph-utils": "0.0.0"
   }
 }
