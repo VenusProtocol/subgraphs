@@ -57,3 +57,23 @@ jobs:
 
       - name: Run Matchstick tests
         run: yarn test
+
+  integration-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Install deps
+        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
+        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
+
+      - name: Start containers
+        run: docker-compose up -d --build
+
+      - name: Run integration tests
+        run: yarn test:integration
+      
+      - name: Stop containers
+        if: always()
+        run: docker-compose down -v

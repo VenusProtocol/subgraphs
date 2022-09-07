@@ -24,6 +24,6 @@
     "rempve-local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "graph test",
-    "test:integration": "hardhat test ./tests/integration.ts"
+    "test:integration": "true"
   }
 }
