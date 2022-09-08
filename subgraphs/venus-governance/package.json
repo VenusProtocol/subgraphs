@@ -15,7 +15,8 @@
     "build:local": "graph build --ipfs http://localhost:5001",
     "build:testnet": "graph build --ipfs https://api.staging.thegraph.com/ipfs/ ",
     "build:mainnet": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:local": "npx mustache config/local.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-governance --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:integration": "graph deploy venusprotocol/venus-governance --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:local": "npx mustache config/local.json template.yaml > subgraph.yaml && yarn deploy:integration",
     "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-governance --debug --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
     "deploy:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-governance --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "prepare:local": "mustache config/local.json template.yaml > subgraph.yaml",
@@ -26,8 +27,10 @@
     "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost",
     "postinstall": "rm -rf ./artifacts && cp -rf ../../node_modules/venus-protocol/artifacts ./artifacts && rm -rf ./contracts && cp -rf ../../node_modules/venus-protocol/contracts ./contracts"
   },
-  "dependencies": {
+  "devDependencies": {
+    "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
-    "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#cca2c2f95edd805dc66073f6971642dc8dfc342a"
+    "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#64446f1c60bceca8884c6bab9fdf41fd6bd2c81f",
+    "venus-subgraph-utils": "0.0.0"
   }
 }

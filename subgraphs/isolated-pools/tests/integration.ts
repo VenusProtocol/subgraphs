@@ -3,12 +3,12 @@ import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { ApolloFetch, FetchResult } from 'apollo-fetch';
 import fs from 'fs';
 import Mustache from 'mustache';
+// eslint-disable-line @typescript-eslint/no-var-requires
+// Utils
+import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 // Queries
 import { queryTokenHolderById } from './queries';
-// eslint-disable-line @typescript-eslint/no-var-requires
-// Utils
-import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from './utils';
 
 const { ethers } = require('hardhat'); // eslint-disable-line @typescript-eslint/no-var-requires
 
@@ -43,10 +43,10 @@ describe('Token', function () {
     // Build and Deploy Subgraph
     console.log('Build and deploy subgraph...');
     // exec(`npx hardhat compile`);
-    exec(`yarn workspace isolated-pools-subgraph run codegen`);
-    exec(`yarn workspace isolated-pools-subgraph run build:local`);
-    exec(`yarn workspace isolated-pools-subgraph run create:local`);
-    exec(`yarn workspace isolated-pools-subgraph run deploy:local`);
+    exec(`yarn workspace isolated-pools-subgraph run codegen`, __dirname);
+    exec(`yarn workspace isolated-pools-subgraph run build:local`, __dirname);
+    exec(`yarn workspace isolated-pools-subgraph run create:local`, __dirname);
+    exec(`yarn workspace isolated-pools-subgraph run deploy:local`, __dirname);
 
     await waitForSubgraphToBeSynced(syncDelay);
   });
@@ -54,7 +54,7 @@ describe('Token', function () {
   after(async function () {
     process.stdout.write('Clean up, removing subgraph....');
 
-    exec(`yarn remove:local`);
+    exec(`yarn remove:local`, __dirname);
 
     process.stdout.write('Clean up complete.');
   });

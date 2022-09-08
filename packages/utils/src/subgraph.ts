@@ -1,6 +1,5 @@
 import { createApolloFetch } from 'apollo-fetch';
 import { execSync } from 'child_process';
-import path from 'path';
 
 // Types
 interface SyncedSubgraphType {
@@ -8,8 +7,7 @@ interface SyncedSubgraphType {
 }
 
 // Execute Child Processes
-const srcDir = path.join(__dirname, '..');
-export const exec = (cmd: string) => {
+export const exec = (cmd: string, srcDir: string) => {
   try {
     return execSync(cmd, { cwd: srcDir, stdio: 'inherit' });
   } catch (e) {
@@ -36,7 +34,7 @@ const checkIfAllSynced = (subgraphs: SyncedSubgraphType[]) => {
 export const waitForSubgraphToBeSynced = async (delay: number) =>
   new Promise<{ synced: boolean }>((resolve, reject) => {
     // Wait for 5s
-    const deadline = Date.now() + 5 * 1000;
+    const deadline = Date.now() + 60 * 1000;
 
     // Function to check if the subgraph is synced
     const checkSubgraphSynced = async () => {
