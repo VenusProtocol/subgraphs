@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
@@ -42,15 +42,14 @@ const endBlock = 4593820;
 const description = 'Very creative Proposal';
 
 beforeEach(() => {
-  /** setup test */
   getOrCreateDelegate(user1.toHexString());
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
     user1,
-    [],
-    [],
-    [],
-    [],
+    [Address.fromString('0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396')], // targets
+    [BigInt.fromI32(0)], // values
+    ['setPendingAdmin(address)'], // signatures
+    [Bytes.fromHexString('0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396')], // params
     BigInt.fromI64(startBlock),
     BigInt.fromI64(endBlock),
     description,
@@ -78,10 +77,10 @@ describe('Alpha', () => {
     };
     assertProposalDocument('id', '1');
     assertProposalDocument('proposer', user1.toHexString());
-    assertProposalDocument('targets', '[]');
-    assertProposalDocument('values', '[]');
-    assertProposalDocument('signatures', '[]');
-    assertProposalDocument('calldatas', '[]');
+    assertProposalDocument('targets', '[0x939bd8d64c0a9583a7dcea9933f7b21697ab6396]');
+    assertProposalDocument('values', '[0]');
+    assertProposalDocument('signatures', '[setPendingAdmin(address)]');
+    assertProposalDocument('calldatas', '[0x939bd8d64c0a9583a7dcea9933f7b21697ab6396]');
     assertProposalDocument('startBlock', `${startBlock}`);
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);

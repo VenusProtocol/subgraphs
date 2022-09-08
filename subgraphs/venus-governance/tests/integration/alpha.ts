@@ -69,8 +69,6 @@ describe('Alpha', function () {
     ]);
     expect(proposal.values).to.deep.equal(['0']);
     expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
-    expect(proposal.calldatas).to.deep.equal([
-      '0x000000000000000000000000f30d040c8fe6a3ee53355e9d3b7a07cea477b8d8',
-    ]);
+    expect(proposal.calldatas).to.deep.equal([callData]);
   });
 });
