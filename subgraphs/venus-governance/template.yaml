@@ -67,7 +67,7 @@ dataSources:
         - event: ProposalExecuted(uint256)
           handler: handleProposalExecuted
         - event: VoteCast(address,uint256,bool,uint256)
-          handler: handleVoteCast
+          handler: handleVoteCastV2
   - kind: ethereum/contract
     name: GovernorBravoDelegate
     network: {{ network }}
