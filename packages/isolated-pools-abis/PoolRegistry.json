@@ -17,6 +17,31 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "comptroller",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "vTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "MarketAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
         "type": "address"
@@ -35,10 +60,41 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "comptrollerAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum PoolRegistry.RiskRating",
+        "name": "riskRating",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "category",
+        "type": "string"
+      }
+    ],
+    "name": "PoolMedatataUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "comptroller",
+        "type": "address"
       },
       {
         "indexed": false,
@@ -159,6 +215,11 @@
             "internalType": "uint256",
             "name": "collateralFactor",
             "type": "uint256"
+          },
+          {
+            "internalType": "contract AccessControlManager",
+            "name": "accessControlManager",
+            "type": "address"
           }
         ],
         "internalType": "struct PoolRegistry.AddMarketInput",
@@ -287,30 +348,6 @@
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "asset",
-        "type": "address"
-      }
-    ],
-    "name": "getCTokenForAsset",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -459,8 +496,73 @@
   {
     "inputs": [
       {
-        "internalType": "contract CErc20ImmutableFactory",
-        "name": "_cTokenFactory",
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "asset",
+        "type": "address"
+      }
+    ],
+    "name": "getVTokenForAsset",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getVenusPoolMetadata",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum PoolRegistry.RiskRating",
+            "name": "riskRating",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "category",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "logoURL",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct PoolRegistry.VenusPoolMetaData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract VBep20ImmutableFactory",
+        "name": "_vTokenFactory",
         "type": "address"
       },
       {

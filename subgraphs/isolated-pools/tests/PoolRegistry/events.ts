@@ -32,12 +32,18 @@ export const createPoolRegisteredEvent = (
   return event;
 };
 
-export const createPoolNameSetEvent = (index: BigInt, name: string): PoolNameSetEvent => {
+export const createPoolNameSetEvent = (
+  comptrollerAddress: Address,
+  name: string,
+): PoolNameSetEvent => {
   const event = changetype<PoolNameSetEvent>(newMockEvent());
 
   event.parameters = [];
 
-  const indexParam = new ethereum.EventParam('index', ethereum.Value.fromUnsignedBigInt(index));
+  const indexParam = new ethereum.EventParam(
+    'comptroller',
+    ethereum.Value.fromAddress(comptrollerAddress),
+  );
   event.parameters.push(indexParam);
   const nameParam = new ethereum.EventParam('name', ethereum.Value.fromString(name));
   event.parameters.push(nameParam);

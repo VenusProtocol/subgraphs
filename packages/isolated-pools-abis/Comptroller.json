@@ -5,6 +5,11 @@
         "internalType": "address",
         "name": "_poolRegistry",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_accessControl",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -34,8 +39,8 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -84,8 +89,8 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -103,8 +108,8 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -122,8 +127,8 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       }
     ],
@@ -135,8 +140,8 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -192,8 +197,8 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -236,8 +241,8 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -248,25 +253,6 @@
       }
     ],
     "name": "NewMinLiquidatableAmount",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldPauseGuardian",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newPauseGuardian",
-        "type": "address"
-      }
-    ],
-    "name": "NewPauseGuardian",
     "type": "event"
   },
   {
@@ -289,6 +275,25 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract VToken",
+        "name": "vToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "newSupplyCap",
+        "type": "uint256"
+      }
+    ],
+    "name": "NewSupplyCap",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "contract Unitroller",
@@ -302,49 +307,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "_borrowGuardianPaused",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "_mintGuardianPaused",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
-        "internalType": "address",
-        "name": "newBorrowCapGuardian",
-        "type": "address"
-      }
-    ],
-    "name": "_setBorrowCapGuardian",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -386,8 +352,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -429,8 +395,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken[]",
-        "name": "cTokens",
+        "internalType": "contract VToken[]",
+        "name": "vTokens",
         "type": "address[]"
       },
       {
@@ -447,8 +413,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken[]",
-        "name": "cTokens",
+        "internalType": "contract VToken[]",
+        "name": "vTokens",
         "type": "address[]"
       },
       {
@@ -465,8 +431,26 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken[]",
+        "name": "vTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "newSupplyCaps",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "_setMarketSupplyCaps",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -481,25 +465,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newPauseGuardian",
-        "type": "address"
-      }
-    ],
-    "name": "_setPauseGuardian",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -565,8 +530,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       }
     ],
@@ -597,7 +562,7 @@
     "name": "accountAssets",
     "outputs": [
       {
-        "internalType": "contract CToken",
+        "internalType": "contract VToken",
         "name": "",
         "type": "address"
       }
@@ -648,7 +613,7 @@
     "name": "allMarkets",
     "outputs": [
       {
-        "internalType": "contract CToken",
+        "internalType": "contract VToken",
         "name": "",
         "type": "address"
       }
@@ -660,7 +625,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -740,7 +705,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -767,8 +732,8 @@
         "type": "address"
       },
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       }
     ],
@@ -798,57 +763,6 @@
   },
   {
     "inputs": [],
-    "name": "compRate",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "compReceivable",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "compSpeeds",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "comptrollerImplementation",
     "outputs": [
       {
@@ -864,7 +778,7 @@
     "inputs": [
       {
         "internalType": "address[]",
-        "name": "cTokens",
+        "name": "vTokens",
         "type": "address[]"
       }
     ],
@@ -883,7 +797,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenAddress",
+        "name": "vTokenAddress",
         "type": "address"
       }
     ],
@@ -932,7 +846,7 @@
     "name": "getAllMarkets",
     "outputs": [
       {
-        "internalType": "contract CToken[]",
+        "internalType": "contract VToken[]",
         "name": "",
         "type": "address[]"
       }
@@ -951,7 +865,7 @@
     "name": "getAssetsIn",
     "outputs": [
       {
-        "internalType": "contract CToken[]",
+        "internalType": "contract VToken[]",
         "name": "",
         "type": "address[]"
       }
@@ -981,7 +895,7 @@
       },
       {
         "internalType": "address",
-        "name": "cTokenModify",
+        "name": "vTokenModify",
         "type": "address"
       },
       {
@@ -1032,8 +946,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       }
     ],
@@ -1051,8 +965,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract CToken",
-        "name": "cToken",
+        "internalType": "contract VToken",
+        "name": "vToken",
         "type": "address"
       }
     ],
@@ -1071,12 +985,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenBorrowed",
+        "name": "vTokenBorrowed",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
@@ -1110,12 +1024,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenBorrowed",
+        "name": "vTokenBorrowed",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
@@ -1148,12 +1062,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenBorrowed",
+        "name": "vTokenBorrowed",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
@@ -1256,7 +1170,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1304,7 +1218,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1381,23 +1295,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "proposal65FixExecuted",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1426,7 +1327,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1454,7 +1355,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1488,7 +1389,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1521,12 +1422,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenBorrowed",
+        "name": "vTokenBorrowed",
         "type": "address"
       },
       {
@@ -1573,12 +1474,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenBorrowed",
+        "name": "vTokenBorrowed",
         "type": "address"
       },
       {
@@ -1606,7 +1507,26 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "supplyCaps",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1653,7 +1573,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "cToken",
+        "name": "vToken",
         "type": "address"
       },
       {
@@ -1686,12 +1606,12 @@
       },
       {
         "internalType": "address",
-        "name": "cTokenCollateral",
+        "name": "vTokenCollateral",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "cTokenBorrow",
+        "name": "vTokenBorrow",
         "type": "address"
       }
     ],

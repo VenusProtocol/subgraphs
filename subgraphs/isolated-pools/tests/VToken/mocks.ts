@@ -63,7 +63,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(7)), // liquidationIncentive
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(10)), // maxAssets
-      ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // cTokens
+      ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
     ];
     const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
     const lensTupleValue = ethereum.Value.fromTuple(lensTuple);

@@ -7,7 +7,6 @@ import {
   describe,
   test,
 } from 'matchstick-as/assembly/index';
-import { logStore } from 'matchstick-as/assembly/store';
 
 import { priceOracleAddress } from '../../src/constants/addresses';
 import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
@@ -75,21 +74,19 @@ describe('Pool Registry', () => {
   });
 
   test('updates pool name correctly', () => {
-    const index = new BigInt(1);
+    const index = new BigInt(2);
     const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000025');
     const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
-    const poolNameSetEvent = createPoolNameSetEvent(index, 'Gamer Pool2');
+    const poolNameSetEvent = createPoolNameSetEvent(comptrollerAddress, 'Summer Pool');
 
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000025', key, value);
     };
     assertPoolDocument('id', comptrollerAddress.toHex());
     assertPoolDocument('name', 'Gamer Pool2');
-    logStore();
     handlePoolNameSet(poolNameSetEvent);
-    logStore();
-    assertPoolDocument('name', 'Gamer Pool2');
+    assertPoolDocument('name', 'Summer Pool');
   });
 });

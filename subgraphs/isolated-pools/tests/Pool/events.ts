@@ -11,7 +11,6 @@ import {
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
   NewMinLiquidatableAmount as NewMinLiquidatableAmountEvent,
-  NewPauseGuardian as NewPauseGuardianEvent,
   NewPriceOracle as NewPriceOracleEvent,
   ActionPaused as PoolActionPausedEvent,
 } from '../../generated/PoolRegistry/Comptroller';
@@ -20,7 +19,7 @@ export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEve
   const event = changetype<MarketListedEvent>(newMockEvent());
 
   event.parameters = [];
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
   return event;
@@ -33,7 +32,7 @@ export const createMarketEnteredEvent = (
   const event = changetype<MarketEnteredEvent>(newMockEvent());
 
   event.parameters = [];
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
   const accountAddressParam = new ethereum.EventParam(
     'account',
@@ -51,7 +50,7 @@ export const createMarketExitedEvent = (
   const event = changetype<MarketExitedEvent>(newMockEvent());
 
   event.parameters = [];
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
   const accountAddressParam = new ethereum.EventParam(
     'account',
@@ -95,7 +94,7 @@ export const createNewCollateralFactorEvent = (
 
   event.parameters = [];
 
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
   const oldCollateralFactorMantissaParam = new ethereum.EventParam(
@@ -161,30 +160,6 @@ export const createNewPriceOracleEvent = (
   return event;
 };
 
-export const createNewPauseGuardianEvent = (
-  comptrollerAddress: Address,
-  oldPauseGuardian: Address,
-  newPauseGuardian: Address,
-): NewPauseGuardianEvent => {
-  const event = changetype<NewPauseGuardianEvent>(newMockEvent());
-  event.address = comptrollerAddress;
-  event.parameters = [];
-
-  const oldPauseGuardianParam = new ethereum.EventParam(
-    'oldPauseGuardian',
-    ethereum.Value.fromAddress(oldPauseGuardian),
-  );
-  event.parameters.push(oldPauseGuardianParam);
-
-  const newPauseGuardianParam = new ethereum.EventParam(
-    'newPauseGuardian',
-    ethereum.Value.fromAddress(newPauseGuardian),
-  );
-  event.parameters.push(newPauseGuardianParam);
-
-  return event;
-};
-
 export const createPoolActionPausedEvent = (
   poolAddress: Address,
   action: string,
@@ -214,7 +189,7 @@ export const createMarketActionPausedEvent = (
   const event = changetype<MarketActionPausedEvent>(newMockEvent());
   event.parameters = [];
 
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
   const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
@@ -236,7 +211,7 @@ export const createNewBorrowCapEvent = (
   const event = changetype<NewBorrowCapEvent>(newMockEvent());
   event.parameters = [];
 
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
   const newBorrowCapParam = new ethereum.EventParam(
@@ -255,7 +230,7 @@ export const createNewMinLiquidatableAmountEvent = (
   const event = changetype<NewMinLiquidatableAmountEvent>(newMockEvent());
   event.parameters = [];
 
-  const vTokenParam = new ethereum.EventParam('cToken', ethereum.Value.fromAddress(vTokenAddress));
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
   const newMinLiquidatableAmountParam = new ethereum.EventParam(

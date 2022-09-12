@@ -21,7 +21,6 @@ import {
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
   handleNewMinLiquidatableAmount,
-  handleNewPauseGuardian,
   handleNewPriceOracle,
   handlePoolActionPaused,
 } from '../../src/mappings/pool';
@@ -45,7 +44,6 @@ import {
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
   createNewMinLiquidatableAmountEvent,
-  createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
 } from './events';
@@ -270,25 +268,6 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('priceOracle', newPriceOracle.toHexString());
-  });
-
-  test('indexes NewPauseGuardian event', () => {
-    const oldPauseGuardian = oldAddress;
-    const newPauseGuardian = newAddress;
-    const newPauseGuardianEvent = createNewPauseGuardianEvent(
-      comptrollerAddress,
-      oldPauseGuardian,
-      newPauseGuardian,
-    );
-
-    handleNewPauseGuardian(newPauseGuardianEvent);
-
-    const assertPoolDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
-    };
-
-    assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('pauseGuardian', newPauseGuardian.toHexString());
   });
 
   test('indexes PoolPauseAction event', () => {
