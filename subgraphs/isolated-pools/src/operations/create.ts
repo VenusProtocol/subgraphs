@@ -43,8 +43,8 @@ export function createPool(event: PoolRegistered): Pool {
   );
   pool.name = poolDataFromLens.name;
   pool.creator = event.address;
-  pool.blockPosted = event.block.number;
-  pool.timestampPosted = event.block.timestamp;
+  pool.blockPosted = poolDataFromLens.blockPosted;
+  pool.timestampPosted = poolDataFromLens.timestampPosted;
   pool.riskRating = poolDataFromLens.riskRating.toString();
   pool.category = poolDataFromLens.category;
   pool.logoURL = poolDataFromLens.logoURL;

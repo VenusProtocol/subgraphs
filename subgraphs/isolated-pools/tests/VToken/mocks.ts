@@ -11,12 +11,12 @@ import {
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool, idx): void => {
     const tupleArray: Array<ethereum.Value> = [
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)),
-      pool[0],
-      pool[1],
-      pool[2],
-      pool[3],
-      pool[4],
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)), // id
+      pool[0], // name
+      pool[1], // creator
+      pool[2], // comptroller
+      pool[3], // blockPosted
+      pool[4], // timestampPosted
     ];
     const tuple = changetype<ethereum.Tuple>(tupleArray);
     const tupleValue = ethereum.Value.fromTuple(tuple);
@@ -30,7 +30,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       .returns([tupleValue]);
 
     // address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
-    const cTokenData = changetype<ethereum.Tuple>([
+    const vTokenData = changetype<ethereum.Tuple>([
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
@@ -48,21 +48,22 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     ]);
 
     const lensTupleArray: Array<ethereum.Value> = [
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)),
-      ethereum.Value.fromString(''),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromI32(1),
-      ethereum.Value.fromString(''),
-      ethereum.Value.fromString(''),
-      ethereum.Value.fromString('0x0000000000000000000000000000000000000000'),
-      ethereum.Value.fromAddress(priceOracleAddress),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromArray([ethereum.Value.fromTuple(cTokenData)]),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)), // poolId
+      pool[0], // name
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // creator
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // comptroller
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(100)), // blockPosted
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(1662990421)), // timestampPosted
+      ethereum.Value.fromI32(1), // riskRating
+      ethereum.Value.fromString('Games'), // category
+      ethereum.Value.fromString('/logo.png'), // logoURL
+      ethereum.Value.fromString('Game related tokens'), // description
+      ethereum.Value.fromAddress(priceOracleAddress), // priceOracle
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // pauseGuardian
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5)), // closeFactor
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(7)), // liquidationIncentive
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(10)), // maxAssets
+      ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // cTokens
     ];
     const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
     const lensTupleValue = ethereum.Value.fromTuple(lensTuple);
