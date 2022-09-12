@@ -55,8 +55,7 @@ export function createPool(event: PoolRegistered): Pool {
   pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
     ? poolDataFromLens.liquidationIncentive
     : new BigInt(0);
-  // poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets :
-  pool.maxAssets = new BigInt(0);
+  pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
   pool.save();
 
   return pool;
