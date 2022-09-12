@@ -80,7 +80,7 @@ describe('Pool Registry', () => {
     const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
-    const poolNameSetEvent = createPoolNameSetEvent(index, 'Summer Pool');
+    const poolNameSetEvent = createPoolNameSetEvent(index, 'Gamer Pool2');
 
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000025', key, value);
@@ -90,6 +90,6 @@ describe('Pool Registry', () => {
     logStore();
     handlePoolNameSet(poolNameSetEvent);
     logStore();
-    assertPoolDocument('name', 'Summer Pool');
+    assertPoolDocument('name', 'Gamer Pool2');
   });
 });
