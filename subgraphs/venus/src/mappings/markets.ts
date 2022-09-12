@@ -45,7 +45,11 @@ const getTokenPrice = (
   let mantissaDecimalFactor = 18 - underlyingDecimals + 18;
   let bdFactor = exponentToBigDecimal(mantissaDecimalFactor);
   let oracle2 = PriceOracle2.bind(oracleAddress);
-  underlyingPrice = oracle2.getUnderlyingPrice(eventAddress).toBigDecimal().div(bdFactor);
+  const oracleUnderlyingPrice = oracle2.getUnderlyingPrice(eventAddress).toBigDecimal();
+  if (oracleUnderlyingPrice.equals(BigDecimal.zero())) {
+    return oracleUnderlyingPrice;
+  }
+  underlyingPrice = oracleUnderlyingPrice.div(bdFactor);
 
   return underlyingPrice;
 };
@@ -152,7 +156,7 @@ export const updateMarket = (
         Address.fromBytes(market.underlyingAddress),
         market.underlyingDecimals,
       );
-      if (bnbPriceInUSD.equals(BigDecimal.zero())) {
+      if (bnbPriceInUSD.equals(BigDecimal.zero()) || tokenPriceUSD.equals(BigDecimal.zero())) {
         market.underlyingPrice = BigDecimal.zero();
       } else {
         market.underlyingPrice = tokenPriceUSD
