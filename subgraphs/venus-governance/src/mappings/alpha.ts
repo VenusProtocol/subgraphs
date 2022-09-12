@@ -61,6 +61,17 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 //   handler: handleVoteCast
 
 export function handleVoteCast(event: VoteCast): void {
+  // Alpha V1 doesn't require staking in the vault so we need to create delegates when casting a vote
+  getOrCreateDelegate(event.params.voter.toHexString());
+  createVoteAlpha(event);
+  const proposalId = event.params.proposalId.toString();
+  const proposal = getProposal(proposalId);
+  if (proposal.status == PENDING) {
+    updateProposalStatus(proposalId, ACTIVE);
+  }
+}
+
+export function handleVoteCastV2(event: VoteCast): void {
   createVoteAlpha(event);
   const proposalId = event.params.proposalId.toString();
   const proposal = getProposal(proposalId);
