@@ -21,7 +21,6 @@ import {
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
   handleNewMinLiquidatableAmount,
-  handleNewPauseGuardian,
   handleNewPriceOracle,
   handlePoolActionPaused,
 } from '../../src/mappings/pool';
@@ -34,6 +33,7 @@ import {
 } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { createPoolRegistryMock } from '../VToken/mocks';
 import {
   createMarketActionPausedEvent,
   createMarketEnteredEvent,
@@ -44,7 +44,6 @@ import {
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
   createNewMinLiquidatableAmountEvent,
-  createNewPauseGuardianEvent,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
 } from './events';
@@ -79,6 +78,16 @@ beforeAll(() => {
   createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromI32(100)]);
+
+  createPoolRegistryMock([
+    [
+      ethereum.Value.fromString('Gamer Pool'),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
+    ],
+  ]);
 });
 
 beforeEach(() => {
@@ -259,25 +268,6 @@ describe('Pool Events', () => {
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('priceOracle', newPriceOracle.toHexString());
-  });
-
-  test('indexes NewPauseGuardian event', () => {
-    const oldPauseGuardian = oldAddress;
-    const newPauseGuardian = newAddress;
-    const newPauseGuardianEvent = createNewPauseGuardianEvent(
-      comptrollerAddress,
-      oldPauseGuardian,
-      newPauseGuardian,
-    );
-
-    handleNewPauseGuardian(newPauseGuardianEvent);
-
-    const assertPoolDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Pool', comptrollerAddress.toHex(), key, value);
-    };
-
-    assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('pauseGuardian', newPauseGuardian.toHexString());
   });
 
   test('indexes PoolPauseAction event', () => {

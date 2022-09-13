@@ -25,16 +25,18 @@ dataSources:
         - name: Comptroller
           file: ../../packages/isolated-pools-abis/Comptroller.json
         - name: VToken
-          file: ../../packages/isolated-pools-abis/CToken.json
+          file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
           file: ../../packages/isolated-pools-abis/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
+        - name: PoolLens
+          file: ../../packages/isolated-pools-abis/PoolLens.json  
       eventHandlers:
         - event: PoolRegistered(uint256,(uint256,string,address,address,uint256,uint256))
           handler: handlePoolRegistered
-        - event: PoolNameSet(uint256,string)
-          handler: handlePoolNameSet
+        - event: PoolNameSet(address,string)
+          handler: handlePoolNameSet 
 
 templates:
   - name: Pool
@@ -70,8 +72,6 @@ templates:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
-        - event: NewPauseGuardian(address,address)
-          handler: handleNewPauseGuardian
         - event: ActionPaused(address,string,bool)
           handler: handlePoolActionPaused
         - event: ActionPaused(address,string,bool)
@@ -98,7 +98,7 @@ templates:
         - VTokenInfo
       abis:
         - name: VToken
-          file: ../../packages/isolated-pools-abis/CToken.json
+          file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
           file: ../../packages/isolated-pools-abis/PriceOracle.json
         - name: BEP20

@@ -20,7 +20,7 @@ import {
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
-import { vBnbAddress } from '../../src/constants/addresses';
+import { aaaTokenAddress, vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketListed } from '../../src/mappings/pool';
 import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
@@ -51,9 +51,9 @@ import {
   createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
+import { createPoolRegistryMock } from './mocks';
 import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
-const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
@@ -67,7 +67,7 @@ const cleanup = (): void => {
 
 beforeAll(() => {
   createVBep20AndUnderlyingMock(
-    vTokenAddress,
+    aaaTokenAddress,
     tokenAddress,
     comptrollerAddress,
     'AAA Coin',
@@ -76,11 +76,23 @@ beforeAll(() => {
     BigInt.fromI32(100),
     interestRateModelAddress,
   );
+
+  createMarketMock(aaaTokenAddress);
+
   createPriceOracleMock([
     [ethereum.Value.fromAddress(vBnbAddress), ethereum.Value.fromI32(326)],
-    [ethereum.Value.fromAddress(vTokenAddress), ethereum.Value.fromI32(99)],
+    [ethereum.Value.fromAddress(aaaTokenAddress), ethereum.Value.fromI32(99)],
   ]);
-  createMarketMock(vTokenAddress);
+
+  createPoolRegistryMock([
+    [
+      ethereum.Value.fromString('Gamer Pool'),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
+      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
+    ],
+  ]);
 });
 
 beforeEach(() => {
@@ -90,7 +102,7 @@ beforeEach(() => {
 
   handlePoolRegistered(poolRegisteredEvent);
   // Add Market
-  const marketListedEvent = createMarketListedEvent(vTokenAddress);
+  const marketListedEvent = createMarketListedEvent(aaaTokenAddress);
 
   handleMarketListed(marketListedEvent);
 });
@@ -104,8 +116,8 @@ describe('VToken', () => {
     const minter = user1Address;
     const actualMintAmount = BigInt.fromI64(124620530798726345);
     const mintTokens = BigInt.fromI64(37035970026454);
-    const mintEvent = createMintEvent(vTokenAddress, minter, actualMintAmount, mintTokens);
-    const market = getMarket(vTokenAddress);
+    const mintEvent = createMintEvent(aaaTokenAddress, minter, actualMintAmount, mintTokens);
+    const market = getMarket(aaaTokenAddress);
 
     handleMint(mintEvent);
     const id = getTransactionEventId(mintEvent.transaction.hash, mintEvent.transactionLogIndex);
@@ -138,12 +150,12 @@ describe('VToken', () => {
     const actualRedeemAmount = BigInt.fromI64(124620530798726345);
     const redeemTokens = BigInt.fromI64(37035970026454);
     const redeemEvent = createRedeemEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       redeemer,
       actualRedeemAmount,
       redeemTokens,
     );
-    const market = getMarket(vTokenAddress);
+    const market = getMarket(aaaTokenAddress);
 
     handleRedeem(redeemEvent);
     const id = getTransactionEventId(redeemEvent.transaction.hash, redeemEvent.transactionLogIndex);
@@ -181,14 +193,14 @@ describe('VToken', () => {
 
     /** Setup test */
     const borrowEvent = createBorrowEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       borrower,
       borrowAmount,
       accountBorrows,
       totalBorrows,
     );
 
-    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(borrower)])
       .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
 
@@ -199,9 +211,9 @@ describe('VToken', () => {
       borrowEvent.transaction.hash,
       borrowEvent.transactionLogIndex,
     );
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
-    const market = getMarket(vTokenAddress);
-    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
+    const market = getMarket(aaaTokenAddress);
+    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, aaaTokenAddress);
     // Clone the value to remove the reference
     const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
       new BigDecimal(new BigInt(1)),
@@ -269,7 +281,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const repayBorrowEvent = createRepayBorrowEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       payer,
       borrower,
       repayAmount,
@@ -277,7 +289,7 @@ describe('VToken', () => {
       totalBorrows,
     );
 
-    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(borrower)])
       .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
 
@@ -288,9 +300,9 @@ describe('VToken', () => {
       repayBorrowEvent.transaction.hash,
       repayBorrowEvent.transactionLogIndex,
     );
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, borrower);
-    const market = getMarket(vTokenAddress);
-    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, vTokenAddress);
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
+    const market = getMarket(aaaTokenAddress);
+    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, aaaTokenAddress);
     // Clone the value to remove the reference
     const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
       new BigDecimal(new BigInt(1)),
@@ -362,7 +374,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const liquidateBorrowEvent = createLiquidateBorrowEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       liquidator,
       borrower,
       repayAmount,
@@ -377,7 +389,7 @@ describe('VToken', () => {
       liquidateBorrowEvent.transaction.hash,
       liquidateBorrowEvent.transactionLogIndex,
     );
-    const market = getMarket(vTokenAddress);
+    const market = getMarket(aaaTokenAddress);
 
     const underlyingDecimals = market.underlyingDecimals;
     const underlyingRepayAmount = liquidateBorrowEvent.params.repayAmount
@@ -424,7 +436,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const accrueInterestEvent = createAccrueInterestEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       cashPrior,
       interestAccumulated,
       borrowIndex,
@@ -435,7 +447,7 @@ describe('VToken', () => {
     handleAccrueInterest(accrueInterestEvent);
 
     const assertMarketDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Market', vTokenAddress.toHexString(), key, value);
+      assert.fieldEquals('Market', aaaTokenAddress.toHexString(), key, value);
     };
 
     assertMarketDocument('accrualBlockNumber', '999');
@@ -454,16 +466,16 @@ describe('VToken', () => {
     const oldReserveFactor = BigInt.fromI64(12462053079875);
     const newReserveFactor = BigInt.fromI64(37035970026454);
     const reserveFactorEvent = createNewReserveFactorEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       oldReserveFactor,
       newReserveFactor,
     );
 
     handleNewReserveFactor(reserveFactorEvent);
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
     assert.fieldEquals(
       'Market',
-      vTokenAddress.toHex(),
+      aaaTokenAddress.toHex(),
       'reserveFactor',
       newReserveFactor.toString(),
     );
@@ -472,13 +484,13 @@ describe('VToken', () => {
   test('registers transfer from event', () => {
     /** Constants */
     const from = user1Address; // 101
-    const to = vTokenAddress;
+    const to = aaaTokenAddress;
     const amount = BigInt.fromI64(1246205398726345);
     const balanceOf = BigInt.fromI64(262059874253345);
 
     /** Setup test */
-    const transferEvent = createTransferEvent(vTokenAddress, from, to, amount);
-    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
+    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(from)])
       .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
 
@@ -489,7 +501,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     );
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, from);
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, from);
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -536,13 +548,13 @@ describe('VToken', () => {
   test('registers transfer to event', () => {
     /** Constants */
     const amount = BigInt.fromI64(5246205398726345);
-    const from = vTokenAddress;
+    const from = aaaTokenAddress;
     const to = user2Address;
     const balanceOf = BigInt.fromI64(262059874253345);
 
     /** Setup test */
-    const transferEvent = createTransferEvent(vTokenAddress, from, to, amount);
-    createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
+    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(to)])
       .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
 
@@ -553,7 +565,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     );
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, to);
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, to);
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -601,16 +613,16 @@ describe('VToken', () => {
     const oldInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000e0e');
     const newInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000f0f');
     const newMarketInterestRateModelEvent = createNewMarketInterestRateModelEvent(
-      vTokenAddress,
+      aaaTokenAddress,
       oldInterestRateModel,
       newInterestRateModel,
     );
 
     handleNewMarketInterestRateModel(newMarketInterestRateModelEvent);
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
     assert.fieldEquals(
       'Market',
-      vTokenAddress.toHex(),
+      aaaTokenAddress.toHex(),
       'interestRateModelAddress',
       newInterestRateModel.toHexString(),
     );

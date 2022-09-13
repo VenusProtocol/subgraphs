@@ -183,7 +183,7 @@ export const createLiquidateBorrowEvent = (
   event.parameters.push(repayAmountParam);
 
   const vTokenCollateralParam = new ethereum.EventParam(
-    'cTokenCollateral',
+    'vTokenCollateral',
     ethereum.Value.fromAddress(vTokenCollateral),
   );
   event.parameters.push(vTokenCollateralParam);
