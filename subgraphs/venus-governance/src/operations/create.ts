@@ -9,29 +9,26 @@ import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
 export function createProposal<E>(event: E): Proposal {
   const id = event.params.id.toString();
-  let proposal = Proposal.load(id);
-  if (!proposal) {
-    proposal = new Proposal(id);
+  const proposal = new Proposal(id);
 
-    const governance = getGovernanceEntity();
+  const governance = getGovernanceEntity();
 
-    governance.proposals = governance.proposals.plus(BIGINT_ONE);
-    governance.save();
-    const targets = event.params.targets.map<Bytes>((address: Address) =>
-      Bytes.fromHexString(address.toHexString()),
-    );
-    proposal.targets = targets;
-    proposal.proposer = event.params.proposer.toHexString();
-    proposal.values = event.params.values;
-    proposal.signatures = event.params.signatures;
-    proposal.calldatas = event.params.calldatas;
-    proposal.startBlock = event.params.startBlock;
-    proposal.endBlock = event.params.endBlock;
-    proposal.description = event.params.description;
-    proposal.status = event.block.number >= proposal.startBlock ? ACTIVE : PENDING;
+  governance.proposals = governance.proposals.plus(BIGINT_ONE);
+  governance.save();
+  const targets = event.params.targets.map<Bytes>((address: Address) =>
+    Bytes.fromHexString(address.toHexString()),
+  );
+  proposal.targets = targets;
+  proposal.proposer = event.params.proposer.toHexString();
+  proposal.values = event.params.values;
+  proposal.signatures = event.params.signatures;
+  proposal.calldatas = event.params.calldatas;
+  proposal.startBlock = event.params.startBlock;
+  proposal.endBlock = event.params.endBlock;
+  proposal.description = event.params.description;
+  proposal.status = event.block.number >= proposal.startBlock ? ACTIVE : PENDING;
 
-    proposal.save();
-  }
+  proposal.save();
 
   return proposal as Proposal;
 }
