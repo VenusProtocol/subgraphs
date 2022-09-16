@@ -1,7 +1,7 @@
 {
   "network": "bsc",
   "governorAlphaAddress": "0x406f48f47d25e9caa29f17e7cfbd1dc6878f078f",
-  "governorAlphaStartBlock": "4154402",
+  "governorAlphaStartBlock": "2474351",
   "governorAlpha2Address": "0x388313BfEFEE8ddfeAD55b585F62812293Cf3A60",
   "governorAlpha2StartBlock": "11934064",
   "governorBravoDelegateAddress": "0x2d56dC077072B53571b8252008C60e945108c75a",
