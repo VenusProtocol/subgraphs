@@ -71,3 +71,44 @@ Clone and setup the [isolated-pools](https://github.com/VenusProtocol/isolated-p
 ```
 yarn ts-node script/hardhat/deploy-pool-lens.ts
 ```
+## Debugging
+To query the indexing error use a graphql explorer like [GraphiQl](https://graphiql-online.com/graphiql) to query the graph node for the status of the graph. The endpoint for the hosted service is `https://api.thegraph.com/index-node/graphql`.
+
+Example query
+
+```
+{
+  indexingStatuses(subgraphs: ["QmRY..."]) {
+    subgraph
+    synced
+    health
+    fatalError {
+      handler
+      message
+      deterministic
+      block {
+        hash
+        number
+      }
+    }
+  }
+}
+```
+
+### Forking
+
+Forking the subgraph is an easy way to debug indexing errors. To deploy a forked subgraph follow the above instructions to setup a local environment wit the following adjustments
+
+#### GraphNode
+- Use the forkbase option to point towards the graph api
+- Set the ethereum RPC to an archive node
+
+#### Subgraph
+Set the starting block for all handlers to at or before the erroring block.
+Redploy the subgraph pointing to the deployed fork
+
+```
+graph deploy venusprotocol/venus-governance --debug-fork QmRYhnkD3vYBhsMZ7hPE1PaL19msw7xekafPndK8mDSvzZ --ipfs http://localhost:5001 --node http://localhost:8020
+```
+
+After these steps you should quickly run into the indexing error. After updating hte code you can redeploy the forked subgraph to check the fix.
