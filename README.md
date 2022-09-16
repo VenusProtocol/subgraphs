@@ -108,7 +108,7 @@ Set the starting block for all handlers to at or before the erroring block.
 Redploy the subgraph pointing to the deployed fork
 
 ```
-graph deploy venusprotocol/venus-governance --debug-fork QmRYhnkD3vYBhsMZ7hPE1PaL19msw7xekafPndK8mDSvzZ --ipfs http://localhost:5001 --node http://localhost:8020
+graph deploy <SUBGRAPH_NAME> --debug-fork <SUBGRAPH_ID> --ipfs http://localhost:5001 --node http://localhost:8020
 ```
 
 After these steps you should quickly run into the indexing error. After updating hte code you can redeploy the forked subgraph to check the fix.
