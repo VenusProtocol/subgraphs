@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-
 import {
   Account,
   BorrowEvent,
@@ -22,14 +21,15 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/templates/VToken/VToken';
+import { createAccount } from '../operations/create';
+import { createMarket } from '../operations/create';
+import { updateCommonVTokenStats } from '../operations/update';
+import { updateMarket } from '../operations/update';
 import {
-  createAccount,
   exponentToBigDecimal,
-  updateCommonVTokenStats,
   vTokenDecimals,
   vTokenDecimalsBD,
-} from './helpers';
-import { createMarket, updateMarket } from './markets';
+} from '../utilities/exponentToBigDecimal';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *

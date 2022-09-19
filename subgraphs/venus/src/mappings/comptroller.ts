@@ -13,13 +13,10 @@ import {
 } from '../../generated/Comptroller/Comptroller';
 import { Account, Comptroller, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates';
-import {
-  createAccount,
-  ensureComptrollerSynced,
-  mantissaFactorBD,
-  updateCommonVTokenStats,
-} from './helpers';
-import { createMarket } from './markets';
+import { createAccount, createMarket } from '../operations/create';
+import { updateCommonVTokenStats } from '../operations/update';
+import { ensureComptrollerSynced } from '../utilities';
+import { mantissaFactorBD } from '../utilities/exponentToBigDecimal';
 
 export const handleMarketListed = (event: MarketListed): void => {
   // Dynamically index all new listed tokens
