@@ -1,2 +1,7 @@
-export const vBNBAddress = '0xa07c5b74c9b40447a954e1466938b865b6bbea36';
-export const vUSDCAddress = '0xeca88125a5adbe82614ffc12d0db554e2e2867c8';
+import { Address } from '@graphprotocol/graph-ts'
+
+export const vUsdcAddress = Address.fromString('0xecA88125a5ADbe82614ffC12D0DB554E2e2867C8');
+export const usdcAddress = Address.fromString('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
+export const vBnbAddress = Address.fromString('0xA07c5b74C9B40447a954e1466938b865b6BBea36');
+export const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
+export const nullAddress = Address.fromString('0x0000000000000000000000000000000000000000');

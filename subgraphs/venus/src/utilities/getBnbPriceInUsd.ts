@@ -2,7 +2,7 @@ import { Address, BigDecimal } from '@graphprotocol/graph-ts';
 
 import { Comptroller } from '../../generated/schema';
 import { PriceOracle2 } from '../../generated/templates/VToken/PriceOracle2';
-import { vBNBAddress } from '../constants/addresses';
+import { vBnbAddress } from '../constants/addresses';
 import { mantissaFactorBD } from './exponentToBigDecimal';
 
 export function getBnbPriceInUsd(): BigDecimal {
@@ -14,7 +14,7 @@ export function getBnbPriceInUsd(): BigDecimal {
   const oracleAddress = Address.fromBytes(comptroller.priceOracle);
   const oracle = PriceOracle2.bind(oracleAddress);
   const bnbPriceInUSD = oracle
-    .getUnderlyingPrice(Address.fromString(vBNBAddress))
+    .getUnderlyingPrice(vBnbAddress)
     .toBigDecimal()
     .div(mantissaFactorBD);
   return bnbPriceInUSD;

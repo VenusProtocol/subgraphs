@@ -1,10 +1,9 @@
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { vBNBAddress, vUSDCAddress } from '../constants/addresses';
 import { createMarket } from '../operations/create';
-import { getBnbPriceInUsd, getTokenPrice } from '../utilities';
+import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice'
 import {
   exponentToBigDecimal,
   mantissaFactor,
@@ -54,25 +53,9 @@ export const updateMarket = (
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
     market.blockTimestamp = blockTimestamp;
 
-    const bnbPriceInUSD = getBnbPriceInUsd();
-
-    // if vBNB, we only update USD price
-    if (market.id == vBNBAddress) {
-      market.underlyingPriceUSD = bnbPriceInUSD.truncate(market.underlyingDecimals);
-    } else {
-      const tokenPriceUSD = getTokenPrice(contractAddress, market.underlyingDecimals);
-      if (bnbPriceInUSD.equals(BigDecimal.zero()) || tokenPriceUSD.equals(BigDecimal.zero())) {
-        market.underlyingPrice = BigDecimal.zero();
-      } else {
-        market.underlyingPrice = tokenPriceUSD
-          .div(bnbPriceInUSD)
-          .truncate(market.underlyingDecimals);
-      }
-      // if USDC, we only update BNB price
-      if (market.id != vUSDCAddress) {
-        market.underlyingPriceUSD = tokenPriceUSD.truncate(market.underlyingDecimals);
-      }
-    }
+    const underlyingValue = getUnderlyingPrice(market.id, market.underlyingDecimals);
+    market.underlyingPrice = underlyingValue.underlyingPrice;
+    market.underlyingPriceUSD = underlyingValue.underlyingPriceUsd;
 
     market.totalSupply = contract.totalSupply().toBigDecimal().div(vTokenDecimalsBD);
 

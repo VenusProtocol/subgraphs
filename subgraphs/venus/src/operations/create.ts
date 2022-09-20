@@ -3,7 +3,8 @@ import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 import { Account, AccountVToken, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { vBNBAddress, vUSDCAddress } from '../constants/addresses';
+import { nullAddress, vBnbAddress } from '../constants/addresses';
+import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice'
 import { zeroBD } from '../utilities/exponentToBigDecimal';
 
 export const createAccountVToken = (
@@ -49,9 +50,9 @@ export const createMarket = (marketAddress: string): Market => {
   log.debug('[createMarket] market address: {}', [marketAddress]);
 
   // It is vBNB, which has a slightly different interface
-  if (marketAddress == vBNBAddress) {
+  if (marketAddress == vBnbAddress.toHexString()) {
     market = new Market(marketAddress);
-    market.underlyingAddress = Address.fromString('0x0000000000000000000000000000000000000000');
+    market.underlyingAddress = nullAddress;
     market.underlyingDecimals = 18;
     market.underlyingPrice = BigDecimal.fromString('1');
     market.underlyingName = 'Binance Coin';
@@ -69,11 +70,9 @@ export const createMarket = (marketAddress: string): Market => {
     market.underlyingName = underlyingContract.name();
     market.underlyingSymbol = underlyingContract.symbol();
 
-    market.underlyingPriceUSD = zeroBD; // fix
-    market.underlyingPrice = zeroBD; // fix
-    if (marketAddress == vUSDCAddress) {
-      market.underlyingPriceUSD = BigDecimal.fromString('1');
-    }
+    const underlyingValue = getUnderlyingPrice(market.id, market.underlyingDecimals);
+    market.underlyingPrice = underlyingValue.underlyingPrice;
+    market.underlyingPriceUSD = underlyingValue.underlyingPriceUsd;
   }
 
   const interestRateModelAddress = contract.try_interestRateModel();
@@ -84,7 +83,7 @@ export const createMarket = (marketAddress: string): Market => {
   market.collateralFactor = zeroBD;
   market.exchangeRate = zeroBD;
   market.interestRateModelAddress = interestRateModelAddress.reverted
-    ? Address.fromString('0x0000000000000000000000000000000000000000')
+    ? nullAddress
     : interestRateModelAddress.value;
   market.name = contract.name();
   market.reserves = zeroBD;
