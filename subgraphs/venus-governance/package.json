@@ -23,13 +23,11 @@
     "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml",
     "remove:local": "graph remove --node http://localhost:8020/ venusprotocol/venus-governance",
     "test": "graph test",
-    "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost",
-    "postinstall": "rm -rf ./artifacts && cp -rf ../../node_modules/venus-protocol/artifacts ./artifacts && rm -rf ./contracts && cp -rf ../../node_modules/venus-protocol/contracts ./contracts"
+    "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
-    "venus-protocol": "https://github.com/VenusProtocol/venus-protocol.git#64446f1c60bceca8884c6bab9fdf41fd6bd2c81f",
     "venus-subgraph-utils": "0.0.0"
   }
 }

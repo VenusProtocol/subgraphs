@@ -4334,9 +4334,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 18.7.23
-  resolution: "@types/node@npm:18.7.23"
-  checksum: 2c8df0830d8345e5cd1ca17feb9cf43fa667aae749888e0a068c5c1b35eaedd2f9b24ed987a0758078395edf7a03681e5e0b7790a518ff7afe1ff6d8459f7b4a
+  version: 18.7.18
+  resolution: "@types/node@npm:18.7.18"
+  checksum: 8aec61f0f96e2a69ce51f1f40f949ca578bbb4fe05d7c0b8ce3aeeb848e90f755837f17f6ac132ca404d974fe9b2974150ad3b4984fc9dc7c3ceddb10bae0167
   languageName: node
   linkType: hard
 
@@ -9328,8 +9328,8 @@ __metadata:
   linkType: hard
 
 "hardhat@npm:^2.10.2":
-  version: 2.11.2
-  resolution: "hardhat@npm:2.11.2"
+  version: 2.11.1
+  resolution: "hardhat@npm:2.11.1"
   dependencies:
     "@ethersproject/abi": ^5.1.2
     "@metamask/eth-sig-util": ^4.0.0
@@ -9391,7 +9391,7 @@ __metadata:
       optional: true
   bin:
     hardhat: internal/cli/cli.js
-  checksum: 6fc289931c970a16fe09f7aa2b14f8b4f4a63304895be7e89112d4065cfdb15887d90cdd827d10f413fb5cc1ca09fb0b512b7ffc79dc6bc121368bda70dffb4a
+  checksum: fc35526bcc2fd44fba38bfe7dd7049e9771f860f6d804c2505188c610f9562f674601260f704254de757442cbcf3e0225be45020a4b8c46c6cbe68fd6da0976b
   languageName: node
   linkType: hard
 
@@ -16019,21 +16019,9 @@ __metadata:
   dependencies:
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
-    venus-protocol: "https://github.com/VenusProtocol/venus-protocol.git#64446f1c60bceca8884c6bab9fdf41fd6bd2c81f"
     venus-subgraph-utils: 0.0.0
   languageName: unknown
   linkType: soft
-
-"venus-protocol@https://github.com/VenusProtocol/venus-protocol.git#64446f1c60bceca8884c6bab9fdf41fd6bd2c81f":
-  version: 0.2.1
-  resolution: "venus-protocol@https://github.com/VenusProtocol/venus-protocol.git#commit=64446f1c60bceca8884c6bab9fdf41fd6bd2c81f"
-  dependencies:
-    dotenv: ^16.0.1
-  peerDependencies:
-    hardhat: ^2.10.1
-  checksum: ee505b176dad8f238cfad2ba6372acee03e574ba5590205f526cd75737ea7d53dab53c70898cc51ba106146b15a2bb269816a6384e26dcbd52dda734ff49a80a
-  languageName: node
-  linkType: hard
 
 "venus-subgraph-utils@0.0.0, venus-subgraph-utils@workspace:packages/utils":
   version: 0.0.0-use.local

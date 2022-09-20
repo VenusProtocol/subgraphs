@@ -1,13 +1,12 @@
-import fs from 'fs';
-import { ethers } from 'hardhat';
-import Mustache from 'mustache';
 import {
   deployAndConfigureXvsVault,
   deployGovernorAlpha,
-  deployGovernorAlpha2,
-  deployGovernorBravoDelegate,
-  deployGovernorBravoDelegator,
-} from 'venus-protocol/script/hardhat';
+  deployGovernorAlpha2, // deployGovernorBravoDelegate,
+  // deployGovernorBravoDelegator,
+} from '@venusprotocol/venus-protocol/script/hardhat';
+import fs from 'fs';
+import { ethers } from 'hardhat';
+import Mustache from 'mustache';
 import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
@@ -36,25 +35,25 @@ export const deployContracts = async () => {
     guardianAddress,
     lastProposalId: 20,
   });
-  const governorAlpha2Address = governorAlpha2.address;
+  // const governorAlpha2Address = governorAlpha2.address;
 
-  const governorBravoDelegate = await deployGovernorBravoDelegate();
-  const governorBravoDelegateAddress = governorBravoDelegate.address;
+  // const governorBravoDelegate = await deployGovernorBravoDelegate();
+  // const governorBravoDelegateAddress = governorBravoDelegate.address;
 
-  await deployGovernorBravoDelegator({
-    timelockAddress,
-    xvsVaultAddress,
-    guardianAddress,
-    governorBravoDelegateAddress,
-  });
+  // await deployGovernorBravoDelegator({
+  //   timelockAddress,
+  //   xvsVaultAddress,
+  //   guardianAddress,
+  //   governorBravoDelegateAddress,
+  // });
 
   // Read yaml template
   const yamlTemplate = await fs.promises.readFile(`${__dirname}/../../../template.yaml`, 'binary');
   if (yamlTemplate) {
     const templateValues = {
       governorAlphaAddress,
-      governorAlpha2Address,
-      governorBravoDelegateAddress,
+      governorAlpha2Address: '0x0000000000000000000000000000000000000000',
+      governorBravoDelegateAddress: '0x0000000000000000000000000000000000000000',
       venusTokenAddress: xvsAddress,
       xvsVaultAddress,
       governorAlphaStartBlock: 0,
@@ -93,6 +92,5 @@ export const deployContracts = async () => {
     xvsVault,
     governorAlpha,
     governorAlpha2,
-    governorBravoDelegate,
   };
 };

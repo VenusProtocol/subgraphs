@@ -1,5 +1,5 @@
 export const queryProposalById = (id: string) => `
-{
+  {
     proposal(id: "${id}") {
       id
       proposer
@@ -12,7 +12,30 @@ export const queryProposalById = (id: string) => `
       description
       status
       executionETA
-      votes
+      votes {
+        id
+        votes
+        support
+      }
     }
   }
-  `;
+`;
+
+export const queryDelegateById = (id: string) => `
+  {
+    delegate(id: "${id}") {
+      id
+      delegatedVotes
+      tokenHoldersRepresented
+      votes {
+        id
+        support
+        votes
+        proposal
+      }
+      proposals {
+        id
+      }
+    }
+  }
+`;
