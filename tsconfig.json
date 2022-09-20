@@ -7,5 +7,5 @@
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true
   },
-  "include": ["subgraphs", "hardhat.config.ts"]
+  "include": ["subgraphs", "hardhat.config.ts", "deploy"]
 }

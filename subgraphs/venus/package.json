@@ -1,5 +1,5 @@
 {
-  "name": "venus",
+  "name": "venus-subgraph",
   "version": "0.0.0",
   "license": "MIT",
   "repository": {
@@ -21,7 +21,13 @@
     "prepare:local": "mustache config/local.json template.yaml > subgraph.yaml",
     "prepare:testnet": "mustache config/testnet.json template.yaml > subgraph.yaml",
     "prepare:mainnet": "mustache config/mainnet.json template.yaml > subgraph.yaml",
+    "remove:local": "graph remove --node http://localhost:8020/ venusprotocol/venus-subgraph",
     "test": "graph test",
-    "test:integration": "true"
+    "test:integration": "NETWORK=mainnet PACKAGE=venus-subgraph hardhat test tests/integration/index.ts --network localhost"
+  },
+  "devDependencies": {
+    "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "venus-subgraph-utils": "0.0.0"
   }
 }

@@ -1,4 +1,5 @@
 import '@nomicfoundation/hardhat-toolbox';
+import 'hardhat-deploy';
 import { HardhatUserConfig } from 'hardhat/config';
 
 const packageCompilerVersions = {
@@ -17,6 +18,19 @@ const config: HardhatUserConfig = {
   },
   paths: {
     sources: `./subgraphs/${process.env.PACKAGE}/contracts`,
+  },
+  // Hardhat deploy
+  namedAccounts: {
+    deployer: {
+      default: 0, // here this will by default take the first account as deployer
+    },
+  },
+  external: {
+    contracts: [
+      {
+        artifacts: 'node_modules/@venusprotocol/isolated-pools/artifacts',
+      },
+    ],
   },
 };
 
