@@ -1,0 +1,26 @@
+FROM node:16.14.2-alpine3.14
+
+ARG TAR_FILE_PREFIX
+
+ENV NODE_ENV development
+ENV NODE_PATH=src/
+
+RUN apk add g++ make py3-pip git openssh;
+
+WORKDIR /usr/app
+
+COPY package.json ./
+COPY yarn.lock ./
+
+RUN yarn
+
+COPY . .
+
+#----- Deploy subgraph ------
+
+ARG VERSION
+ARG DEPLOY_KEY
+
+RUN yarn graph auth --product hosted-service $DEPLOY_KEY
+
+RUN yarn workspace $SUBGRAPH run deploy:testnet --version $VERSION
