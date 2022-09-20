@@ -1,6 +1,12 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
+import { vBnbAddress, vUsdcAddress } from '../src/constants/addresses';
+
+export const mockPriceOracleAddress = Address.fromString(
+  '0x0000000000000000000000000000000000000001',
+);
+
 export const createVBep20AndUnderlyingMock = (
   contractAddress: Address,
   underlyingAddress: Address,
@@ -41,4 +47,42 @@ export const createVBep20AndUnderlyingMock = (
   createMockedFunction(underlyingAddress, 'symbol', 'symbol():(string)').returns([
     ethereum.Value.fromString(symbol),
   ]);
+};
+
+export const createComptrollerMock = (comptrollerAddress: Address): void => {
+  createMockedFunction(comptrollerAddress, 'oracle', 'oracle():(address)').returns([
+    ethereum.Value.fromAddress(mockPriceOracleAddress),
+  ]);
+
+  createMockedFunction(
+    comptrollerAddress,
+    'closeFactorMantissa',
+    'closeFactorMantissa():(uint256)',
+  ).returns([ethereum.Value.fromI32(1)]);
+
+  createMockedFunction(
+    comptrollerAddress,
+    'liquidationIncentiveMantissa',
+    'liquidationIncentiveMantissa():(uint256)',
+  ).returns([ethereum.Value.fromI32(1)]);
+
+  createMockedFunction(comptrollerAddress, 'maxAssets', 'maxAssets():(uint256)').returns([
+    ethereum.Value.fromI32(10),
+  ]);
+
+  createMockedFunction(
+    mockPriceOracleAddress,
+    'getUnderlyingPrice',
+    'getUnderlyingPrice(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(vUsdcAddress)])
+    .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1000000000000000'))]);
+
+  createMockedFunction(
+    mockPriceOracleAddress,
+    'getUnderlyingPrice',
+    'getUnderlyingPrice(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(vBnbAddress)])
+    .returns([ethereum.Value.fromI32(200000)]);
 };

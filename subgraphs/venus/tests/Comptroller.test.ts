@@ -7,11 +7,18 @@ import {
   describe,
   test,
 } from 'matchstick-as/assembly/index';
-import { vBnbAddress, vUsdcAddress, usdcAddress, nullAddress, interestRateModelAddress } from '../src/constants/addresses'
+
+import {
+  comptrollerAddress,
+  interestRateModelAddress,
+  nullAddress,
+  usdcAddress,
+  vBnbAddress,
+  vUsdcAddress,
+} from '../src/constants/addresses';
 import { handleMarketListed } from '../src/mappings/comptroller';
 import { createMarketListedEvent } from './events';
-import { createVBep20AndUnderlyingMock } from './mocks';
-
+import { createComptrollerMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -42,6 +49,8 @@ beforeAll(() => {
     BigInt.fromI32(100),
     interestRateModelAddress,
   );
+
+  createComptrollerMock(comptrollerAddress);
 });
 
 describe('handleMarketListing', () => {
@@ -59,7 +68,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('underlyingName', 'USD Coin');
     assertMarketDocument('underlyingSymbol', 'USDC');
     assertMarketDocument('underlyingPriceUSD', '1');
-    assertMarketDocument('underlyingPrice', '0');
+    assertMarketDocument('underlyingPrice', '5000000000');
     assertMarketDocument('borrowRate', '0');
     assertMarketDocument('cash', '0');
     assertMarketDocument('collateralFactor', '0');

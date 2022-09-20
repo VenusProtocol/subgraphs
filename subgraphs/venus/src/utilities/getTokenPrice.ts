@@ -1,17 +1,14 @@
-import { Address, BigDecimal } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, log } from '@graphprotocol/graph-ts';
 
-import { Comptroller } from '../../generated/schema';
 import { PriceOracle2 } from '../../generated/templates/VToken/PriceOracle2';
+import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { exponentToBigDecimal } from './exponentToBigDecimal';
 
 // Used for all vBEP20 contracts
 export function getTokenPrice(eventAddress: Address, underlyingDecimals: i32): BigDecimal {
-  let comptroller = Comptroller.load('1');
-  if (!comptroller) {
-    comptroller = new Comptroller('1');
-  }
+  const comptroller = getOrCreateComptroller();
   if (!comptroller.priceOracle) {
-    // log.debug('[getTokenPrice] empty price oracle: {}', ['0']);
+    log.debug('[getTokenPrice] empty price oracle: {}', ['0']);
     return BigDecimal.zero();
   }
   const oracleAddress = Address.fromBytes(comptroller.priceOracle);
