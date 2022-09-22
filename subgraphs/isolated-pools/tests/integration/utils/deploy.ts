@@ -1,3 +1,4 @@
+import { ethers } from 'hardhat';
 import {
   exec,
   fetchSubgraph,
@@ -8,7 +9,17 @@ import {
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
 
 const deploy = async () => {
-  await writeSubgraphYaml(`${__dirname}/../../..`, {});
+  const poolLens = await ethers.getContract('PoolLens');
+
+  const poolRegistry = await ethers.getContract('PoolRegistry');
+
+  const templateVars = {
+    network: 'bsc',
+    address: poolRegistry.address,
+    startBlock: 0,
+    poolLensAddress: poolLens.address,
+  };
+  await writeSubgraphYaml(`${__dirname}/../../..`, templateVars);
 
   // Create Subgraph Connection
   const subgraph = fetchSubgraph(SUBGRAPH_ACCOUNT, SUBGRAPH_NAME);

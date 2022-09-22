@@ -3,7 +3,7 @@
   "plugins": ["@typescript-eslint", "jest"],
   "extends": ["plugin:@typescript-eslint/recommended", "prettier", "prettier/@typescript-eslint"],
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": ["./.eslinttsconfigrc"]
   },
   "rules": {
     "@typescript-eslint/no-unused-vars": 2,
