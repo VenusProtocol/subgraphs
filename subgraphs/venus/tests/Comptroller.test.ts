@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { BigInt } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
@@ -8,16 +8,17 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
+import {
+  comptrollerAddress,
+  interestRateModelAddress,
+  nullAddress,
+  usdcAddress,
+  vBnbAddress,
+  vUsdcAddress,
+} from '../src/constants/addresses';
 import { handleMarketListed } from '../src/mappings/comptroller';
 import { createMarketListedEvent } from './events';
-import { createVBep20AndUnderlyingMock } from './mocks';
-
-const vUsdcAddress = Address.fromString('0xecA88125a5ADbe82614ffC12D0DB554E2e2867C8');
-const usdcAddress = Address.fromString('0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d');
-const vBnbAddress = Address.fromString('0xA07c5b74C9B40447a954e1466938b865b6BBea36');
-
-const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
-const nullAddress = Address.fromString('0x0000000000000000000000000000000000000000');
+import { createComptrollerMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -48,6 +49,8 @@ beforeAll(() => {
     BigInt.fromI32(100),
     interestRateModelAddress,
   );
+
+  createComptrollerMock(comptrollerAddress);
 });
 
 describe('handleMarketListing', () => {
@@ -65,7 +68,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('underlyingName', 'USD Coin');
     assertMarketDocument('underlyingSymbol', 'USDC');
     assertMarketDocument('underlyingPriceUSD', '1');
-    assertMarketDocument('underlyingPrice', '0');
+    assertMarketDocument('underlyingPrice', '5000000000');
     assertMarketDocument('borrowRate', '0');
     assertMarketDocument('cash', '0');
     assertMarketDocument('collateralFactor', '0');

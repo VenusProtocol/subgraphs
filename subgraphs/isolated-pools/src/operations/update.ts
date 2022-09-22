@@ -1,6 +1,5 @@
 import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
-import { exponentToBigDecimal } from '../../../venus/src/mappings/helpers';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import {
@@ -11,6 +10,7 @@ import {
   zeroBigDecimal,
 } from '../constants';
 import { vBnbAddress } from '../constants/addresses';
+import { exponentToBigDecimal } from '../utilities';
 import { getBnbPriceInUsd, getTokenPriceInUsd } from '../utilities';
 import {
   getOrCreateAccount,

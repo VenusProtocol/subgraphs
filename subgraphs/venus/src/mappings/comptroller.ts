@@ -11,15 +11,13 @@ import {
   NewLiquidationIncentive,
   NewPriceOracle,
 } from '../../generated/Comptroller/Comptroller';
-import { Account, Comptroller, Market } from '../../generated/schema';
+import { Account, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates';
-import {
-  createAccount,
-  ensureComptrollerSynced,
-  mantissaFactorBD,
-  updateCommonVTokenStats,
-} from './helpers';
-import { createMarket } from './markets';
+import { createAccount, createMarket } from '../operations/create';
+import { getOrCreateComptroller } from '../operations/getOrCreate';
+import { updateCommonVTokenStats } from '../operations/update';
+import { ensureComptrollerSynced } from '../utilities';
+import { mantissaFactorBD } from '../utilities/exponentToBigDecimal';
 
 export const handleMarketListed = (event: MarketListed): void => {
   // Dynamically index all new listed tokens
@@ -45,16 +43,16 @@ export const handleMarketEntered = (event: MarketEntered): void => {
     return;
   }
 
-  let accountID = event.params.account.toHex();
-  let account = Account.load(accountID);
+  let accountId = event.params.account.toHex();
+  let account = Account.load(accountId);
   if (account == null) {
-    createAccount(accountID);
+    createAccount(accountId);
   }
 
   let vTokenStats = updateCommonVTokenStats(
     market.id,
     market.symbol,
-    accountID,
+    accountId,
     event.transaction.hash,
     event.block.timestamp,
     event.block.number,
@@ -100,10 +98,7 @@ export const handleMarketExited = (event: MarketExited): void => {
 };
 
 export const handleNewCloseFactor = (event: NewCloseFactor): void => {
-  let comptroller = Comptroller.load('1');
-  if (comptroller == null) {
-    comptroller = new Comptroller('1');
-  }
+  const comptroller = getOrCreateComptroller();
   comptroller.closeFactor = event.params.newCloseFactorMantissa;
   comptroller.save();
 };
@@ -123,20 +118,13 @@ export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
 
 // This should be the first event acccording to bscscan but it isn't.... price oracle is. weird
 export const handleNewLiquidationIncentive = (event: NewLiquidationIncentive): void => {
-  let comptroller = Comptroller.load('1');
-  if (comptroller == null) {
-    comptroller = new Comptroller('1');
-  }
+  const comptroller = getOrCreateComptroller();
   comptroller.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
   comptroller.save();
 };
 
 export const handleNewPriceOracle = (event: NewPriceOracle): void => {
-  let comptroller = Comptroller.load('1');
-  // This is the first event used in this mapping, so we use it to create the entity
-  if (comptroller == null) {
-    comptroller = new Comptroller('1');
-  }
+  const comptroller = getOrCreateComptroller();
   comptroller.priceOracle = event.params.newPriceOracle;
   comptroller.save();
 };
