@@ -19,6 +19,7 @@ import {
   MINT,
   REDEEM,
   REPAY_BORROW,
+  RiskRatings,
   TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
@@ -33,7 +34,7 @@ import {
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import { getTransactionEventId } from '../utilities/ids';
 
-export function createPool(event: PoolRegistered): Pool {
+export function createPool(event: PoolRegistered): void {
   const pool = new Pool(event.params.pool.comptroller.toHexString());
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
@@ -45,7 +46,7 @@ export function createPool(event: PoolRegistered): Pool {
   pool.creator = event.address;
   pool.blockPosted = poolDataFromLens.blockPosted;
   pool.timestampPosted = poolDataFromLens.timestampPosted;
-  pool.riskRating = poolDataFromLens.riskRating.toString();
+  pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
   pool.category = poolDataFromLens.category;
   pool.logoURL = poolDataFromLens.logoURL;
   pool.description = poolDataFromLens.description;
@@ -57,8 +58,6 @@ export function createPool(event: PoolRegistered): Pool {
     : new BigInt(0);
   pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
   pool.save();
-
-  return pool;
 }
 
 export function createAccount(accountAddress: Address): Account {
