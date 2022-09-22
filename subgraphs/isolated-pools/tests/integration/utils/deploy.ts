@@ -1,18 +1,14 @@
-import fs from 'fs';
-import Mustache from 'mustache';
-import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import {
+  exec,
+  fetchSubgraph,
+  waitForSubgraphToBeSynced,
+  writeSubgraphYaml,
+} from 'venus-subgraph-utils';
 
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
 
 const deploy = async () => {
-  // Read yaml template
-  const yamlTemplate = await fs.promises.readFile(`${__dirname}/../../../template.yaml`, 'binary');
-  if (yamlTemplate) {
-    const renderedTemplate = Mustache.render(yamlTemplate, {});
-    await fs.writeFileSync(`${__dirname}/../../../subgraph.yaml`, renderedTemplate);
-  } else {
-    throw Error('Unable to write subgraph.yaml from template');
-  }
+  await writeSubgraphYaml(`${__dirname}/../../..`, {});
 
   // Create Subgraph Connection
   const subgraph = fetchSubgraph(SUBGRAPH_ACCOUNT, SUBGRAPH_NAME);
