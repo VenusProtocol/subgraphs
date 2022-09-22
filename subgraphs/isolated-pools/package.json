@@ -24,6 +24,16 @@
     "rempve-local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "graph test",
-    "test:integration": "true"
+    "test:integration": "NETWORK=mainnet PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost",
+    "postinstall": "./copy_contracts.sh"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "@openzeppelin/contracts-upgradeable": "^4.7.3",
+    "@venusprotocol/isolated-pools": "link:../../../isolated-pools",
+    "@venusprotocol/venus-protocol": "link:../../../protocol",
+    "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "venus-subgraph-utils": "0.0.0"
   }
 }

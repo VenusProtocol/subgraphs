@@ -25,3 +25,4 @@ cache
 contracts
 artifacts
 typechain-types
+deployments/localhost
