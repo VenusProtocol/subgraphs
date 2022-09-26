@@ -1,7 +1,9 @@
-import 'module-alias/register'; // eslint-disable-line this needs to come first
+// this needs to come first
+// eslint-disable-line
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
 import { HardhatUserConfig } from 'hardhat/config';
+import 'module-alias/register';
 
 const packageCompilerVersions = {
   'venus-governance': '0.5.16',
@@ -59,6 +61,9 @@ const config: HardhatUserConfig = {
     contracts: [
       {
         artifacts: `${__dirname}/node_modules/@venusprotocol/isolated-pools/artifacts/`,
+      },
+      {
+        artifacts: `${__dirname}/node_modules/@venusprotocol/oracle/artifacts/`,
       },
     ],
   },
