@@ -1,9 +1,7 @@
-// this needs to come first
-// eslint-disable-line
+import 'module-alias/register';
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
 import { HardhatUserConfig } from 'hardhat/config';
-import 'module-alias/register';
 
 const packageCompilerVersions = {
   'venus-governance': '0.5.16',
