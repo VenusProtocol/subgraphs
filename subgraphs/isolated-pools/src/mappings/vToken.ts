@@ -40,11 +40,11 @@ import {
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export const handleMint = (event: Mint): void => {
+export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
   createMintTransaction(event, market.underlyingDecimals);
-};
+}
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
  *
@@ -58,11 +58,11 @@ export const handleMint = (event: Mint): void => {
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export const handleRedeem = (event: Redeem): void => {
+export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
   createRedeemTransaction(event, market.underlyingDecimals);
-};
+}
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
  *
@@ -73,7 +73,7 @@ export const handleRedeem = (event: Redeem): void => {
  * Notes
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
  */
-export const handleBorrow = (event: Borrow): void => {
+export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
 
@@ -92,7 +92,7 @@ export const handleBorrow = (event: Borrow): void => {
   );
 
   createBorrowTransaction(event, market.underlyingDecimals);
-};
+}
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
  *
@@ -108,7 +108,7 @@ export const handleBorrow = (event: Borrow): void => {
  *    markets value. We keep this, even though you might think it would reset to 0 upon full
  *    repay.
  */
-export const handleRepayBorrow = (event: RepayBorrow): void => {
+export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
 
@@ -127,7 +127,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
   );
 
   createRepayBorrowTransaction(event, market.underlyingDecimals);
-};
+}
 
 /*
  * Liquidate an account who has fell below the collateral factor.
@@ -145,7 +145,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
  *    of the vTokens, which is covered by transfer. Therefore we only
  *    add liquidation counts in this handler.
  */
-export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
+export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
   const liquidator = getOrCreateAccount(event.params.liquidator);
@@ -157,18 +157,18 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   borrower.save();
 
   createLiquidateBorrowTransaction(event, market.underlyingDecimals);
-};
+}
 
-export const handleAccrueInterest = (event: AccrueInterest): void => {
+export function handleAccrueInterest(event: AccrueInterest): void {
   updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
-};
+}
 
-export const handleNewReserveFactor = (event: NewReserveFactor): void => {
+export function handleNewReserveFactor(event: NewReserveFactor): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
   market.reserveFactor = event.params.newReserveFactorMantissa;
   market.save();
-};
+}
 
 /* Transferring of vTokens
  *
@@ -185,7 +185,7 @@ export const handleNewReserveFactor = (event: NewReserveFactor): void => {
  *    This const handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
  *    events. So for those events, we do not update vToken balances.
  */
-export const handleTransfer = (event: Transfer): void => {
+export function handleTransfer(event: Transfer): void {
   const marketAddress = event.address;
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
@@ -238,11 +238,11 @@ export const handleTransfer = (event: Transfer): void => {
   }
 
   createTransferTransaction(event);
-};
+}
 
-export const handleNewMarketInterestRateModel = (event: NewMarketInterestRateModel): void => {
+export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress);
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
-};
+}
