@@ -28,7 +28,8 @@
     "lint:fix": "yarn lint --fix",
     "pretty": "prettier '**/*.ts' --write",
     "test": "yarn workspaces foreach run test",
-    "test:integration": "yarn workspaces foreach run test:integration"
+    "test:integration": "yarn workspaces foreach run test:integration",
+    "postinstall": "./copy_contracts.sh"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "0.33.0",

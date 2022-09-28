@@ -6,6 +6,7 @@ COPY package.json /usr/app/package.json
 COPY yarn.lock /usr/app/yarn.lock
 COPY .yarn /usr/app/.yarn
 COPY .yarnrc.yml /usr/app/.yarnrc.yml
+COPY copy_contracts.sh /usr/app/copy_contracts.sh
 
 WORKDIR /usr/app
 
