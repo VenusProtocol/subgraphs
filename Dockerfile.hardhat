@@ -12,7 +12,7 @@ WORKDIR /usr/app
 
 RUN yarn
 
-# Explicetly installing for hardhat
+# Explicitly installing for hardhat
 RUN yarn add ts-node --dev
 
 EXPOSE 8545
