@@ -13,13 +13,15 @@ const deploy = async () => {
 
   const poolRegistry = await ethers.getContract('PoolRegistry');
 
+  const root = `${__dirname}/../../..`;
+
   const templateVars = {
     network: 'bsc',
     address: poolRegistry.address,
     startBlock: 0,
     poolLensAddress: poolLens.address,
   };
-  await writeSubgraphYaml(`${__dirname}/../../..`, templateVars);
+  await writeSubgraphYaml(root, templateVars);
 
   // Create Subgraph Connection
   const subgraph = fetchSubgraph(SUBGRAPH_ACCOUNT, SUBGRAPH_NAME);
@@ -27,12 +29,16 @@ const deploy = async () => {
   // Build and Deploy Subgraph
   console.log('Build and deploy subgraph...');
   // exec(`npx hardhat compile`);
-  exec(`yarn workspace isolated-pools-subgraph run codegen`, __dirname);
-  exec(`yarn workspace isolated-pools-subgraph run build:local`, __dirname);
-  exec(`yarn workspace isolated-pools-subgraph run create:local`, __dirname);
-  exec(`yarn workspace isolated-pools-subgraph run deploy:local`, __dirname);
+  exec(`yarn workspace isolated-pools-subgraph run codegen`, root);
+  exec(`yarn workspace isolated-pools-subgraph run build:local`, root);
+  exec(`yarn workspace isolated-pools-subgraph run create:local`, root);
+  exec(
+    `graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
+    root,
+  );
 
   await waitForSubgraphToBeSynced(SYNC_DELAY);
+
   return { subgraph };
 };
 
