@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
 import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
@@ -38,10 +38,17 @@ export function createPool(event: PoolRegistered): void {
   const pool = new Pool(event.params.pool.comptroller.toHexString());
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  const poolDataFromLens = poolLensContract.getPoolByComptroller(
+  const getPoolByComptrollerResult = poolLensContract.try_getPoolByComptroller(
     poolRegistryAddress,
     event.params.pool.comptroller,
   );
+  if (getPoolByComptrollerResult.reverted) {
+    log.critical('Unable to fetch pool info for {} with lens {}', [
+      event.params.pool.comptroller.toHexString(),
+      poolLensAddress.toHexString(),
+    ]);
+  }
+  const poolDataFromLens = getPoolByComptrollerResult.value;
   pool.name = poolDataFromLens.name;
   pool.creator = event.address;
   pool.blockPosted = poolDataFromLens.blockPosted;

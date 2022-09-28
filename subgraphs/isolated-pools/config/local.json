@@ -1,6 +1,6 @@
 {
-  "network": "bsc-testnet",
-  "address": "0x0000000000000000000000000000000000000000",
-  "startBlock": "",
-  "poolLensAddress": ""
+  "network": "bsc",
+  "poolRegistryAddress": "0x68B1D87F95878fE05B998F19b66F4baba5De1aed",
+  "poolLensAddress": "0x4a679253410272dd5232b3ff7cf5dbb88f295319",
+  "startBlock": 0
 }
