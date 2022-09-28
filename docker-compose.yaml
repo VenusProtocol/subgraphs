@@ -29,6 +29,7 @@ services:
       - sh
       - -c
       - |
+        node_modules/.bin/hardhat clean
         node_modules/.bin/hardhat node
     ports:
       - 8545:8545
