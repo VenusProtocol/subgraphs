@@ -64,13 +64,10 @@ $ yarn deploy:local
 Unit tests are run with `matchstick-as`. They can be run with the `test` command at the project or workspace level. Tests are organized by datasource with files for creating events and mocks. A test consists of setting up and creating an event, then passing it to the handler and asserting against changes to the document store.
 
 ### Integration tests
-The integration test environment is orchestrated with containers. They can be brought up using `docker-compose up`.
+To run the integration tests you'll need to setup a local environment and run the tests with the `test:integration` in the project or workspace that you want to test.
 
-Clone and setup the [isolated-pools](https://github.com/VenusProtocol/isolated-pools) repo. This repo contains scripts to deploy the contracts and setup the store for test cases.
+The required services are composed in a docker-compose file but currently there is an issue with the registrar on the graph-node that needs to be sorted.
 
-```
-yarn ts-node script/hardhat/deploy-pool-lens.ts
-```
 ## Debugging
 To query the indexing error use a graphql explorer like [GraphiQl](https://graphiql-online.com/graphiql) to query the graph node for the status of the graph. The endpoint for the hosted service is `https://api.thegraph.com/index-node/graphql`.
 
