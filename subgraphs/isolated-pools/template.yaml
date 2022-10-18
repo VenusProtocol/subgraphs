@@ -8,7 +8,7 @@ dataSources:
     name: PoolRegistry
     network: {{ network }}
     source:
-      address: "{{ address }}"
+      address: "{{ poolRegistryAddress }}"
       abi: PoolRegistry
       startBlock: {{ startBlock }}
     mapping:
