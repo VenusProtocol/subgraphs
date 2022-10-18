@@ -1,5 +1,5 @@
 {
   "network": "bsc-testnet",
-  "poolRegistryAddress": "",
-  "startBlock": ""
+  "poolRegistryAddress": "0x2Ae316c0D3252fDE765246B27978588C6533629B",
+  "startBlock": "23668005"
 }
