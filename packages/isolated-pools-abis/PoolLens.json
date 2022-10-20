@@ -67,11 +67,6 @@
             "type": "address"
           },
           {
-            "internalType": "address",
-            "name": "pauseGuardian",
-            "type": "address"
-          },
-          {
             "internalType": "uint256",
             "name": "closeFactor",
             "type": "uint256"
@@ -242,11 +237,6 @@
           {
             "internalType": "address",
             "name": "priceOracle",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "pauseGuardian",
             "type": "address"
           },
           {
@@ -452,11 +442,6 @@
           {
             "internalType": "address",
             "name": "priceOracle",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "pauseGuardian",
             "type": "address"
           },
           {
