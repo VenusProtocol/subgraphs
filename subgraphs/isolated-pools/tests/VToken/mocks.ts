@@ -50,8 +50,8 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     const lensTupleArray: Array<ethereum.Value> = [
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)), // poolId
       pool[0], // name
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // creator
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // comptroller
+      pool[1], // creator
+      pool[2], // comptroller
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(100)), // blockPosted
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(1662990421)), // timestampPosted
       ethereum.Value.fromI32(1), // riskRating
@@ -59,7 +59,6 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromString('/logo.png'), // logoURL
       ethereum.Value.fromString('Game related tokens'), // description
       ethereum.Value.fromAddress(priceOracleAddress), // priceOracle
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // pauseGuardian
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(7)), // liquidationIncentive
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(10)), // maxAssets
@@ -71,7 +70,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     createMockedFunction(
       poolLensAddress,
       'getPoolByComptroller',
-      'getPoolByComptroller(address,address):((uint256,string,address,address,uint256,uint256,uint8,string,string,string,address,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
+      'getPoolByComptroller(address,address):((uint256,string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
     )
       .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
       .returns([lensTupleValue]);
