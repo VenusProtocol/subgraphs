@@ -32,7 +32,7 @@ describe('Pools', function () {
     const query = await queryPools();
     const response = (await subgraph({ query })) as FetchResult;
     const data = response.data.pools;
-    console.log(data);
+
     expect(data).toHaveLength(1);
     const pool = data[0];
     expect(pool.id).toBe('0x5e3d0fde6f793b3115a9e7f5ebc195bbeed35d6c');
