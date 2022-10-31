@@ -21,8 +21,7 @@ import {
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
 import { aaaTokenAddress, vBnbAddress } from '../../src/constants/addresses';
-import { handleMarketListed } from '../../src/mappings/pool';
-import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
+import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
   handleBorrow,
@@ -38,7 +37,7 @@ import { getMarket } from '../../src/operations/get';
 import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
-import { createMarketListedEvent } from '../Pool/events';
+import { createMarketAddedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import {
   createAccrueInterestEvent,
@@ -102,9 +101,9 @@ beforeEach(() => {
 
   handlePoolRegistered(poolRegisteredEvent);
   // Add Market
-  const marketListedEvent = createMarketListedEvent(aaaTokenAddress);
+  const marketAddedEvent = createMarketAddedEvent(comptrollerAddress, aaaTokenAddress);
 
-  handleMarketListed(marketListedEvent);
+  handleMarketAdded(marketAddedEvent);
 });
 
 afterEach(() => {

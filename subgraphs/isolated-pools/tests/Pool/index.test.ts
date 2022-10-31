@@ -15,7 +15,6 @@ import {
   handleMarketActionPaused,
   handleMarketEntered,
   handleMarketExited,
-  handleMarketListed,
   handleNewBorrowCap,
   handleNewCloseFactor,
   handleNewCollateralFactor,
@@ -24,7 +23,7 @@ import {
   handleNewPriceOracle,
   handlePoolActionPaused,
 } from '../../src/mappings/pool';
-import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
+import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
@@ -36,9 +35,9 @@ import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import { createPoolRegistryMock } from '../VToken/mocks';
 import {
   createMarketActionPausedEvent,
+  createMarketAddedEvent,
   createMarketEnteredEvent,
   createMarketExitedEvent,
-  createMarketListedEvent,
   createNewBorrowCapEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
@@ -103,9 +102,9 @@ afterEach(() => {
 
 describe('Pool Events', () => {
   test('creates Market correctly', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const assertMarketDocument = (key: string, value: string): void => {
       assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
@@ -181,9 +180,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCloseFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldCloseFactorMantissa = BigInt.fromI64(900000000);
     const newCloseFactorMantissa = BigInt.fromI64(540000000);
@@ -203,9 +202,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCollateralFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldCollateralFactorMantissa = BigInt.fromI64(900000000000000);
     const newCollateralFactorMantissa = BigInt.fromI64(540000000000000);
@@ -229,9 +228,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewLiquidationIncentive event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldLiquidationIncentiveMantissa = BigInt.fromI64(900000000);
     const newLiquidationIncentiveMantissa = BigInt.fromI64(540000000);

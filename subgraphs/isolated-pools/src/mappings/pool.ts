@@ -2,7 +2,6 @@ import {
   ActionPaused1 as MarketActionPaused,
   MarketEntered,
   MarketExited,
-  MarketListed,
   NewBorrowCap,
   NewCloseFactor,
   NewCollateralFactor,
@@ -12,24 +11,14 @@ import {
   ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
-import { getPool, getMarket } from '../operations/get';
-import {
-  getOrCreateAccount,
-  getOrCreateAccountVTokenTransaction,
-} from '../operations/getOrCreate';
+import { getMarket, getPool } from '../operations/get';
+import { getOrCreateAccount, getOrCreateAccountVTokenTransaction } from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
   updateOrCreateMarketAction,
   updateOrCreatePoolAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
-
-export function handleMarketListed(event: MarketListed): void {
-  // Dynamically index all new listed tokens
-  const vTokenAddress = event.params.vToken;
-  VToken.create(vTokenAddress);
-  createMarket(vTokenAddress);
-}
 
 export function handleMarketEntered(event: MarketEntered): void {
   const vTokenAddress = event.params.vToken;
