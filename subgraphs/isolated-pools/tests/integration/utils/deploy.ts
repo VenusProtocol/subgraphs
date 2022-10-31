@@ -10,7 +10,7 @@ const deploy = async () => {
 
   // Build and Deploy Subgraph
   console.log('Build and deploy subgraph...');
-  // exec(`npx hardhat compile`);
+  exec(`yarn workspace isolated-pools-subgraph run prepare:local`, root);
   exec(`yarn workspace isolated-pools-subgraph run codegen`, root);
   exec(`yarn workspace isolated-pools-subgraph run build:local`, root);
   exec(`yarn workspace isolated-pools-subgraph run create:local`, root);
@@ -20,7 +20,6 @@ const deploy = async () => {
   );
 
   await waitForSubgraphToBeSynced(SYNC_DELAY);
-
   return { subgraph };
 };
 

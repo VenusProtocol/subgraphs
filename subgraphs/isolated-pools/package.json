@@ -25,16 +25,13 @@
     "pretty": "prettier —-write '**/*.ts'",
     "test": "graph test",
     "node:integration": "PACKAGE=isolated-pools hardhat node",
-    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost",
-    "postinstall": "./copy_contracts.sh"
+    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.19.3",
     "@babel/preset-typescript": "^7.18.6",
     "@openzeppelin/contracts": "^4.7.3",
     "@openzeppelin/contracts-upgradeable": "^4.7.3",
-    "@venusprotocol/isolated-pools": "^0.0.5",
-    "@venusprotocol/venus-protocol": "^0.4.1",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "venus-subgraph-utils": "0.0.0"

@@ -1,11 +1,7 @@
-import '@nomiclabs/hardhat-ethers';
 import { ApolloFetch, FetchResult } from 'apollo-fetch';
-// Test
+import { ethers } from 'hardhat';
 import { expect } from 'chai';
-// Utils
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
-
-// Queries
 import { queryPools } from './queries';
 import deploy from './utils/deploy';
 
@@ -27,38 +23,57 @@ describe('Pools', function () {
     process.stdout.write('Clean up complete.');
   });
 
-  it('indexes pools', async function () {
-    await waitForSubgraphToBeSynced(syncDelay);
-
+  it('indexes pool registry events', async function () {
     const query = await queryPools();
-    const response = (await subgraph({ query })) as FetchResult;
-    const data = response.data.pools;
+    let response = (await subgraph({ query })) as FetchResult;
+    let data = response.data.pools;
 
+    const pool1Address = '0xec4cfde48eadca2bc63e94bb437bbeace1371bf3';
     expect(data.length).to.equal(1);
-    const pool = data[0];
-    expect(pool.id).to.be.equal('0x5e3d0fde6f793b3115a9e7f5ebc195bbeed35d6c');
+    let pool = data[0];
+    expect(pool.id).to.be.equal(pool1Address);
     expect(pool.name).to.be.equal('Pool 1');
-    expect(pool.creator).to.be.equal('0x68b1d87f95878fe05b998f19b66f4baba5de1aed');
-    expect(pool.blockPosted).to.be.equal('44');
+    expect(pool.creator).to.be.equal('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266');
+    expect(pool.blockPosted).to.be.string;
     expect(pool.riskRating).to.be.equal('VERY_HIGH_RISK');
     expect(pool.category).to.be.equal('');
-    expect(pool.logoURL).to.be.equal('');
+    expect(pool.logoUrl).to.be.equal('');
     expect(pool.description).to.be.equal('');
-    expect(pool.priceOracle).to.be.equal('0xdc64a140aa3e981100a9beca4e685f962f0cf6c9');
-    expect(pool.pauseGuardian).to.be.equal('0xd0d0000000000000000000000000000000000000');
+    expect(pool.priceOracle).to.be.equal('0x59b670e9fa9d0a427751af201d676719a970857b');
     expect(pool.closeFactor).to.be.equal('50000000000000000');
     expect(pool.liquidationIncentive).to.be.equal('1000000000000000000');
     expect(pool.maxAssets).to.be.equal('0');
-  });
 
-  it('indexes pool rename event', async function () {
+    const newName  = 'New Pool 1';    
+    const poolRegistry = await ethers.getContract("PoolRegistry");
+
+    let tx = await poolRegistry.setPoolName(pool1Address, newName);
+    await tx.wait(1);
+
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const query = await queryPools();
-    const response = (await subgraph({ query })) as FetchResult;
-    const data = response.data.pools;
+    response = (await subgraph({ query })) as FetchResult;
+    data = response.data.pools;
 
-    const pool = data[0];
-    expect(pool.name).to.be.equal('New Pool 1');
+    pool = data[0];
+    expect(pool.name).to.be.equal(newName);
+
+    const category = 'Games';
+    const logoUrl = 'https://images.com/gamer-cat.png';
+    const description = 'Cat Games';
+
+    tx = await poolRegistry.updatePoolMetadata(pool1Address, { riskRating: 2, category: 'Games', logoURL: logoUrl, description });
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    // Check market pools
+    const poolQuery = await queryPools();
+    response = (await subgraph({ query: poolQuery })) as FetchResult;
+    data = response.data.pools;
+    pool = data[0];
+    expect(pool.riskRating).to.equal('MEDIUM_RISK');
+    expect(pool.category).to.equal(category);
+    expect(pool.logoUrl).to.equal(logoUrl);
+    expect(pool.description).to.equal(description);
   });
 });

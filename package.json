@@ -46,7 +46,7 @@
     "@types/mustache": "^4.2.1",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/isolated-pools": "^0.0.5",
+    "@venusprotocol/isolated-pools": "link:../isolated-pools",
     "@venusprotocol/oracle": "^1.2.0",
     "@venusprotocol/venus-protocol": "^0.4.1",
     "assemblyscript": "0.19.23",

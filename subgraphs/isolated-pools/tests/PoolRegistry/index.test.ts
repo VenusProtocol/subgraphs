@@ -57,9 +57,10 @@ describe('Pool Registry', () => {
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000064', key, value);
     };
-    assertPoolDocument('id', comptrollerAddress.toHex());
+    assertPoolDocument('id', index.toString());
     assertPoolDocument('name', 'Gamer Pool1');
     assertPoolDocument('creator', '0xa16081f360e3847006db660bae1c6d1b2e17ec2a');
+    assertPoolDocument('comptroller', comptrollerAddress.toHex());
     assertPoolDocument('blockPosted', '100');
     assertPoolDocument('timestampPosted', '1662990421');
     assertPoolDocument('riskRating', 'HIGH_RISK');
@@ -67,7 +68,6 @@ describe('Pool Registry', () => {
     assertPoolDocument('logoURL', '/logo.png');
     assertPoolDocument('description', 'Game related tokens');
     assertPoolDocument('priceOracle', priceOracleAddress.toHex());
-    assertPoolDocument('pauseGuardian', '0xd0d0000000000000000000000000000000000000');
     assertPoolDocument('closeFactor', '5');
     assertPoolDocument('liquidationIncentive', '7');
     assertPoolDocument('maxAssets', '10');

@@ -7,12 +7,45 @@ export const queryPools = () => `{
     timestampPosted
     riskRating
     category
-    logoURL
+    logoUrl
     description
     priceOracle
-    pauseGuardian
     closeFactor
     liquidationIncentive
     maxAssets
+    markets {
+      id
+    }
   }
 }`;
+
+
+export const queryMarkets = () => `{
+  markets {
+    id
+    pool
+    borrowRate
+    cash
+    collateralFactor
+    exchangeRate
+    interestRateModelAddress
+    name
+    reserves
+    supplyRate
+    symbol
+    totalBorrows
+    totalSupply
+    underlyingAddress
+    underlyingName
+    underlyingPrice
+    underlyingSymbol
+    borrowCap
+    minLiquidatableAmount
+    accrualBlockNumber
+    blockTimestamp
+    borrowIndex
+    reserveFactor
+    underlyingPriceUsd
+    underlyingDecimals
+  }
+}`

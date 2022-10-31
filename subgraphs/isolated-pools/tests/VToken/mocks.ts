@@ -48,7 +48,6 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     ]);
 
     const lensTupleArray: Array<ethereum.Value> = [
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(idx)), // poolId
       pool[0], // name
       pool[1], // creator
       pool[2], // comptroller

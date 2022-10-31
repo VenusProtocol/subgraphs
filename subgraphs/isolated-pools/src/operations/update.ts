@@ -1,5 +1,6 @@
 import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
+import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import {
@@ -8,6 +9,7 @@ import {
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
+  RiskRatings,
 } from '../constants';
 import { vBnbAddress } from '../constants/addresses';
 import { exponentToBigDecimal } from '../utilities';
@@ -16,8 +18,9 @@ import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
   getOrCreateAccountVTokenTransaction,
-  getOrCreateMarket,
 } from './getOrCreate';
+
+import { getMarket, getPool } from './get';
 
 const updateAccountVToken = (
   marketAddress: Address,
@@ -187,7 +190,7 @@ export const updateMarket = (
   blockNumber: i32,
   blockTimestamp: i32,
 ): Market => {
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
 
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber === blockNumber) {
@@ -199,7 +202,7 @@ export const updateMarket = (
 
   // if vBNB, we only update USD price
   if (market.id == vBnbAddress.toHexString()) {
-    market.underlyingPriceUSD = bnbPriceInUsd.truncate(market.underlyingDecimals);
+    market.underlyingPriceUsd = bnbPriceInUsd.truncate(market.underlyingDecimals);
   } else {
     const tokenPriceUsd = getTokenPriceInUsd(
       marketContract.comptroller(),
@@ -281,3 +284,14 @@ export const updateMarket = (
   market.save();
   return market as Market;
 };
+
+
+export function updatePoolMetadata(comptroller: Address, newMetadata: PoolMetadataUpdatedNewMetadataStruct): void {
+  const pool = getPool(comptroller)
+  pool.riskRating = RiskRatings[newMetadata.riskRating];
+  pool.category = newMetadata.category;
+  pool.logoUrl = newMetadata.logoURL;
+  pool.description = newMetadata.description;
+  pool.save();
+
+}

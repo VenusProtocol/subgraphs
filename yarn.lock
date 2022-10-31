@@ -2488,7 +2488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts-upgradeable@npm:^4.6.0, @openzeppelin/contracts-upgradeable@npm:^4.7.3":
+"@openzeppelin/contracts-upgradeable@npm:^4.7.3":
   version: 4.7.3
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.7.3"
   checksum: c9ffb40cb847a975d440204fc6a811f43af960050242f707332b984d29bd16dc242ffa0935de61867aeb9e0357fadedb16b09b276deda5e9775582face831021
@@ -2623,15 +2623,6 @@ __metadata:
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
-  languageName: node
-  linkType: hard
-
-"@solidity-parser/parser@npm:^0.13.2":
-  version: 0.13.2
-  resolution: "@solidity-parser/parser@npm:0.13.2"
-  dependencies:
-    antlr4ts: ^0.5.0-alpha.4
-  checksum: bfdd8ec7f7b88f3cc75e333e03202cde5e5dacbec7f00612f22dec5e22b0995713637872ce202064d182bae56a274fcb2ca8715ad5482af5e8b38728a0216cf7
   languageName: node
   linkType: hard
 
@@ -3175,19 +3166,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:^0.0.5":
-  version: 0.0.5
-  resolution: "@venusprotocol/isolated-pools@npm:0.0.5"
-  dependencies:
-    "@openzeppelin/contracts": ^4.6.0
-    "@openzeppelin/contracts-upgradeable": ^4.6.0
-    "@solidity-parser/parser": ^0.13.2
-    ethers: ^5.7.0
-    hardhat-deploy: ^0.11.14
-    sleep-promise: ^9.1.0
-  checksum: 73bd75046d123bfb589bece93bfba8f15f9ac205e9d8b3d385615eef1cff6afd5df8bb6c2f61704d037bbad28c0b5e43b3692b9efe2cdf3d638cb06d9ea1869d
+"@venusprotocol/isolated-pools@link:../isolated-pools::locator=subgraphs%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@venusprotocol/isolated-pools@link:../isolated-pools::locator=subgraphs%40workspace%3A."
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@venusprotocol/oracle@npm:^1.2.0":
   version: 1.2.0
@@ -7417,7 +7400,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hardhat-deploy@npm:^0.11.14, hardhat-deploy@npm:^0.11.15":
+"hardhat-deploy@npm:^0.11.15":
   version: 0.11.15
   resolution: "hardhat-deploy@npm:0.11.15"
   dependencies:
@@ -8507,8 +8490,6 @@ __metadata:
     "@babel/preset-typescript": ^7.18.6
     "@openzeppelin/contracts": ^4.7.3
     "@openzeppelin/contracts-upgradeable": ^4.7.3
-    "@venusprotocol/isolated-pools": ^0.0.5
-    "@venusprotocol/venus-protocol": ^0.4.1
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     venus-subgraph-utils: 0.0.0
@@ -12111,13 +12092,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sleep-promise@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "sleep-promise@npm:9.1.0"
-  checksum: a93359c18d2e4d586f2ecd4575cbdbc92bcbd9d387bd4bca249892abb512ca4e80075f67e53ec1279ea4555e8a1f6dc9df9e90f8aa71178ad943e9ba1f27debb
-  languageName: node
-  linkType: hard
-
 "slice-ansi@npm:^3.0.0":
   version: 3.0.0
   resolution: "slice-ansi@npm:3.0.0"
@@ -12594,7 +12568,7 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": ^0.0.5
+    "@venusprotocol/isolated-pools": "link:../isolated-pools"
     "@venusprotocol/oracle": ^1.2.0
     "@venusprotocol/venus-protocol": ^0.4.1
     assemblyscript: 0.19.23

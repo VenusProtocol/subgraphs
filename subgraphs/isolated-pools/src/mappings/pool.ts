@@ -11,14 +11,11 @@ import {
   NewPriceOracle,
   ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
-import { VToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
-import { createMarket } from '../operations/create';
-import { getPool } from '../operations/get';
+import { getPool, getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
-  getOrCreateMarket,
 } from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
@@ -38,7 +35,7 @@ export function handleMarketEntered(event: MarketEntered): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -61,7 +58,7 @@ export function handleMarketExited(event: MarketExited): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -90,7 +87,7 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
 export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
@@ -128,7 +125,7 @@ export function handleMarketActionPaused(event: MarketActionPaused): void {
 export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   market.borrowCap = borrowCap;
   market.save();
 }
@@ -136,7 +133,7 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
 export function handleNewMinLiquidatableAmount(event: NewMinLiquidatableAmount): void {
   const vTokenAddress = event.params.vToken;
   const newMinLiquidatableAmount = event.params.newMinLiquidatableAmount;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   market.minLiquidatableAmount = newMinLiquidatableAmount;
   market.save();
 }

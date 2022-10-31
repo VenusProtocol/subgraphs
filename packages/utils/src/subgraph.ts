@@ -40,7 +40,22 @@ export const waitForSubgraphToBeSynced = async (delay: number) =>
     const checkSubgraphSynced = async () => {
       try {
         const result = await fetchSubgraphs({
-          query: `{ indexingStatuses { synced } }`,
+          query: `{ 
+            indexingStatuses { 
+              subgraph
+              synced
+              health
+              fatalError {
+                handler
+                message
+                deterministic
+                block {
+                  hash
+                  number
+                }
+              }
+            }
+          }`,
         });
 
         if (checkIfAllSynced(result.data.indexingStatuses)) {

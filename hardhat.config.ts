@@ -24,7 +24,7 @@ const compilers = {
       version: '0.6.6',
       settings: {
         optimizer: {
-          enabled: true,
+          enabled: !process.env.CI,
         },
         outputSelection: {
           '*': {

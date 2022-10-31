@@ -17,7 +17,8 @@ import {
   createRepayBorrowTransaction,
   createTransferTransaction,
 } from '../operations/create';
-import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate';
+import { getMarket } from '../operations/get';
+import { getOrCreateAccount } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
   updateAccountVTokenRepayBorrow,
@@ -42,7 +43,7 @@ import {
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   createMintTransaction(event, market.underlyingDecimals);
 }
 
@@ -60,7 +61,7 @@ export function handleMint(event: Mint): void {
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   createRedeemTransaction(event, market.underlyingDecimals);
 }
 
@@ -75,7 +76,7 @@ export function handleRedeem(event: Redeem): void {
  */
 export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
 
   updateAccountVTokenBorrow(
     vTokenAddress,
@@ -110,7 +111,7 @@ export function handleBorrow(event: Borrow): void {
  */
 export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
 
   updateAccountVTokenRepayBorrow(
     vTokenAddress,
@@ -147,7 +148,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   const liquidator = getOrCreateAccount(event.params.liquidator);
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
@@ -165,7 +166,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   market.reserveFactor = event.params.newReserveFactorMantissa;
   market.save();
 }
@@ -190,7 +191,7 @@ export function handleTransfer(event: Transfer): void {
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
 
-  let market = getOrCreateMarket(marketAddress);
+  let market = getMarket(marketAddress);
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   if (market.accrualBlockNumber != event.block.number.toI32()) {
@@ -242,7 +243,7 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   const marketAddress = event.address;
-  const market = getOrCreateMarket(marketAddress);
+  const market = getMarket(marketAddress);
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
 }

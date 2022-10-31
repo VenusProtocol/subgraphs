@@ -25,7 +25,7 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
-import { pauseGuardianAddress, poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
@@ -48,22 +48,23 @@ export function createPool(event: PoolRegistered): void {
       poolLensAddress.toHexString(),
     ]);
   }
+
   const poolDataFromLens = getPoolByComptrollerResult.value;
   pool.name = poolDataFromLens.name;
-  pool.creator = event.address;
+  pool.creator = poolDataFromLens.creator;
   pool.blockPosted = poolDataFromLens.blockPosted;
   pool.timestampPosted = poolDataFromLens.timestampPosted;
   pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
   pool.category = poolDataFromLens.category;
-  pool.logoURL = poolDataFromLens.logoURL;
+  pool.logoUrl = poolDataFromLens.logoURL;
   pool.description = poolDataFromLens.description;
   pool.priceOracle = poolDataFromLens.priceOracle;
-  pool.pauseGuardian = pauseGuardianAddress;
   pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
   pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
     ? poolDataFromLens.liquidationIncentive
     : new BigInt(0);
   pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
+  // Note: we don't index vTokens here because when a pool is created it has no markets
   pool.save();
 }
 
@@ -77,20 +78,19 @@ export function createAccount(accountAddress: Address): Account {
   return account;
 }
 
-export function createMarket(vTokenAddress: Address): Market {
+export function createMarket(comptroller: Address, vTokenAddress: Address): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const underlyingAddress = getUnderlyingAddress(vTokenContract);
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
-
   const market = new Market(vTokenAddress.toHexString());
-  market.pool = vTokenContract.comptroller().toHexString();
+  market.pool = comptroller.toHexString();
   market.name = vTokenContract.name();
   market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
   market.symbol = vTokenContract.symbol();
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceUSD = zeroBigDecimal;
+  market.underlyingPriceUsd = zeroBigDecimal;
   market.underlyingDecimals = underlyingContract.decimals();
 
   market.borrowRate = zeroBigDecimal;
