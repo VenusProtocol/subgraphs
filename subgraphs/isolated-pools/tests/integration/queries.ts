@@ -49,3 +49,22 @@ export const queryMarkets = () => `{
     underlyingDecimals
   }
 }`
+
+export const queryAccounts = () => `{
+  accounts {
+    id
+  }
+}`
+
+export const queryAccountVTokens = () => `{
+  accountVTokens {
+    id
+  }
+}`
+
+
+export const queryAccountVTokenTransactions = () => `{
+  accountVTokenTransactions {
+   id
+  }
+}`
