@@ -4,6 +4,9 @@ const SEPERATOR = '-';
 
 const joinIds = (idArray: Array<string>): string => idArray.join(SEPERATOR);
 
+export const getMarketId = (vTokenAddress: Address): string =>
+  joinIds([vTokenAddress.toHexString()]);
+
 export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): string =>
   joinIds([marketAddress.toHexString(), accountAddress.toHexString()]);
 
