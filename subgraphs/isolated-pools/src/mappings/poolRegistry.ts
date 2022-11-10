@@ -1,12 +1,19 @@
 import { log } from '@graphprotocol/graph-ts';
 
-import { MarketAdded, PoolMetadataUpdated, PoolNameSet, PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
+import {
+  MarketAdded,
+  PoolMetadataUpdated,
+  PoolNameSet,
+  PoolRegistered,
+} from '../../generated/PoolRegistry/PoolRegistry';
 import { Pool } from '../../generated/schema';
-import { VToken } from '../../generated/templates';
-import { createPool, createMarket } from '../operations/create';
-import { updatePoolMetadata } from '../operations/update'
+import { Pool as PoolDataSource, VToken } from '../../generated/templates';
+import { createMarket, createPool } from '../operations/create';
+import { updatePoolMetadata } from '../operations/update';
 
 export function handlePoolRegistered(event: PoolRegistered): void {
+  // Create data source
+  PoolDataSource.create(event.params.comptroller);
   createPool(event);
 }
 
@@ -32,5 +39,5 @@ export function handleMarketAdded(event: MarketAdded): void {
 }
 
 export function handlePoolMetadataUpdated(event: PoolMetadataUpdated): void {
-  updatePoolMetadata(event.params.comptroller, event.params.newMetadata)
+  updatePoolMetadata(event.params.comptroller, event.params.newMetadata);
 }
