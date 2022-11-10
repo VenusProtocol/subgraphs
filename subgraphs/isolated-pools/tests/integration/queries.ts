@@ -16,15 +16,19 @@ export const queryPools = () => `{
     maxAssets
     markets {
       id
+      pool {
+        id
+      }
     }
   }
 }`;
 
-
 export const queryMarkets = () => `{
   markets {
     id
-    pool
+    pool {
+      id
+    }
     borrowRate
     cash
     collateralFactor
@@ -48,23 +52,46 @@ export const queryMarkets = () => `{
     underlyingPriceUsd
     underlyingDecimals
   }
-}`
+}`;
 
-export const queryAccounts = () => `{
-  accounts {
+export const queryAccounts = (address?: string) => `{
+  ${address ? `account(id: "${address.toLowerCase()}")` : 'accounts'} {
     id
+    tokens {
+      id
+    }
+    countLiquidated
+    countLiquidator
+    hasBorrowed
   }
-}`
+}`;
 
-export const queryAccountVTokens = () => `{
-  accountVTokens {
+export const queryAccountVTokens = (id: string) => `{
+  accountVTokens( id: "${id}") {
     id
+    market {
+      id
+    }
+    symbol
+    account {
+      id
+    }
+    transactions { 
+      id
+    }
+    enteredMarket
+    vTokenBalance
+    totalUnderlyingSupplied
+    totalUnderlyingRedeemed
+    accountBorrowIndex
+    totalUnderlyingBorrowed
+    totalUnderlyingRepaid
+    storedBorrowBalance
   }
-}`
-
+}`;
 
 export const queryAccountVTokenTransactions = () => `{
   accountVTokenTransactions {
    id
   }
-}`
+}`;

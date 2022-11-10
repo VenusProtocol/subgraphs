@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/poolRegistry.ts
       entities:
@@ -23,11 +23,11 @@ dataSources:
         - name: PoolRegistry
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Pool/PoolRegistry.sol/PoolRegistry.json
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../packages/isolated-pools-abis/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
@@ -50,7 +50,7 @@ templates:
       abi: Comptroller
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/pool.ts
       entities:
@@ -60,9 +60,13 @@ templates:
         - PoolAction
       abis:
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
         - name: PoolRegistry
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Pool/PoolRegistry.sol/PoolRegistry.json
+        - name: VToken
+          file: ../../packages/isolated-pools-abis/VToken.json
+        - name: BEP20
+          file: ../../packages/isolated-pools-abis/Bep20.json
       eventHandlers:
         - event: MarketEntered(address,address)
           handler: handleMarketEntered
@@ -76,7 +80,7 @@ templates:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
-        - event: ActionPaused(string,bool)
+        - event: ActionPausedMarket(address,uint8,bool)
           handler: handlePoolActionPaused
         - event: ActionPausedMarket(address,uint8,bool)
           handler: handleMarketActionPaused
@@ -93,7 +97,7 @@ templates:
       abi: VToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/vToken.ts
       entities:
@@ -104,11 +108,11 @@ templates:
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../packages/isolated-pools-abis/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
       eventHandlers:
         - event: Mint(address,uint256,uint256)
           handler: handleMint

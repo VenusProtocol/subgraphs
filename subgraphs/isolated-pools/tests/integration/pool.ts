@@ -1,23 +1,31 @@
 import { ApolloFetch, FetchResult } from 'apollo-fetch';
-import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
-import { ethers } from 'hardhat';
 import { expect } from 'chai';
-import { Pool } from '../../generated/schema';
-
-import { queryPools, queryMarkets, queryAccountVTokens, queryAccountVTokenTransactions, queryAccounts } from './queries';
-import deploy from './utils/deploy';
 import { Signer } from 'ethers';
+import { ethers } from 'hardhat';
+import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+
+import { Pool } from '../../generated/schema';
+import { getAccountVTokenId, getMarketId } from '../../src/utilities/ids';
+import {
+  queryAccountVTokenTransactions,
+  queryAccountVTokens,
+  queryAccounts,
+  queryMarkets,
+  queryPools,
+} from './queries';
+import { createMockAddressObject } from './utils/address';
+import deploy from './utils/deploy';
 
 describe('Pools', function () {
   let subgraph: ApolloFetch;
-  let deployer: Signer
   let acc1: Signer;
   let pools: Array<Pool> = [];
 
-  const syncDelay = 2000;
+  const syncDelay = 3000;
 
   before(async function () {
-    ([deployer, acc1] = await ethers.getSigners());
+    const signers = await ethers.getSigners();
+    acc1 = signers[1];
     ({ subgraph } = await deploy());
   });
 
@@ -43,21 +51,109 @@ describe('Pools', function () {
   });
 
   it('handles MarketEntered and MarketExited event', async function () {
-    const pool1Comptroller = await ethers.getContractAt('Comptroller', pools[0].id)
-    await pool1Comptroller.connect(acc1).callStatic.enterMarkets(['0x8acd85898458400f7db866d53fcff6f0d49741ff']);
+    const account1Address = await acc1.getAddress();
+    await waitForSubgraphToBeSynced(syncDelay * 2);
 
-    await waitForSubgraphToBeSynced(syncDelay);
-    // check accounts
-    const accountsQuery = await queryAccounts();
+    // check account
+    const accountsQuery = await queryAccounts(account1Address);
     let response = (await subgraph({ query: accountsQuery })) as FetchResult;
-    console.log({ response })
+    const { account } = response.data;
+
+    expect(account.id).to.equal(account1Address.toLowerCase());
+    expect(account.tokens.length).to.equal(2);
+    expect(account.countLiquidated).to.equal(0);
+    expect(account.countLiquidator).to.equal(0);
+    expect(account.hasBorrowed).to.equal(false);
+
     // check accountVTokens
-    const accountVTokensQuery = await queryAccountVTokens();
+    const accountVTokenId = getAccountVTokenId(
+      createMockAddressObject(account.tokens[0].id),
+      createMockAddressObject(account1Address),
+    );
+    const accountVTokensQuery = await queryAccountVTokens(accountVTokenId);
     response = (await subgraph({ query: accountVTokensQuery })) as FetchResult;
-    console.log({ response })
+    const { accountVTokens } = response.data;
+
+    accountVTokens.forEach(avt => {
+      expect(avt.market.id).to.equal(getMarketId(createMockAddressObject(account.tokens[0].id)));
+      expect(avt.symbol).to.equal(0);
+      expect(avt.account).to.equal(0);
+      expect(avt.transactions).to.equal(0);
+      expect(avt.enteredMarket).to.equal(true);
+      expect(avt.vTokenBalance).to.equal(true);
+      expect(avt.totalUnderlyingSupplied).to.equal(true);
+      expect(avt.totalUnderlyingRedeemed).to.equal(true);
+      expect(avt.accountBorrowIndex).to.equal(true);
+      expect(avt.totalUnderlyingBorrowed).to.equal(true);
+      expect(avt.totalUnderlyingRepaid).to.equal(true);
+      expect(avt.storedBorrowBalance).to.equal(true);
+    });
+
     // check accountVTokenTransaction
     const accountVTokenTransactionsQuery = await queryAccountVTokenTransactions();
     response = (await subgraph({ query: accountVTokenTransactionsQuery })) as FetchResult;
-    console.log({ response })
+    const { accountVTokenTransaction } = response.data.accountVTokenTransactions;
+    // @TODO write assertions
+    expect(accountVTokenTransaction.account).to.equal(true);
+  });
+
+  it('handles NewCloseFactor event', async function () {
+    const poolsQuery = await queryPools();
+    const response = (await subgraph({ query: poolsQuery })) as FetchResult;
+    const { pools } = response.data;
+    // @TODO this event is fired from deployment
+    // Could test by refiring event
+    pools.forEach(p => {
+      expect(p.closeFactor).to.equal('50000000000000000');
+    });
+  });
+
+  it('handles NewCollateralFactor event', async function () {
+    const poolsQuery = await queryPools();
+    const response = (await subgraph({ query: poolsQuery })) as FetchResult;
+    const { pools } = response.data;
+    // @TODO this event is fired from deployment
+    // Could test by refiring event
+    pools.forEach(p => {
+      expect(p.collateralFactor).to.equal(0);
+    });
+  });
+
+  it('handles NewLiquidationIncentive event', async function () {
+    const poolsQuery = await queryPools();
+    const response = (await subgraph({ query: poolsQuery })) as FetchResult;
+    const { pools } = response.data;
+    // @TODO this event is fired from deployment
+    // Could test by refiring event
+    pools.forEach(p => {
+      expect(p.liquidationIncentive).to.equal('1000000000000000000');
+    });
+  });
+
+  it('handles NewPriceOracle event', async function () {
+    // @TODO
+  });
+
+  it('handles PoolActionPaused event', async function () {
+    // @TODO
+  });
+
+  it('handles MarketActionPaused event', async function () {
+    // @TODO
+  });
+
+  it('handles NewBorrowCap event', async function () {
+    // @TODO
+  });
+
+  it('handles NewMinLiquidatableCollateral event', async function () {
+    const poolsQuery = await queryPools();
+    const response = (await subgraph({ query: poolsQuery })) as FetchResult;
+    const { pools } = response.data;
+    // @TODO this event is fired from deployment
+    // Could test by refiring event
+    pools.forEach(p => {
+      expect(p.minLiquidatableCollateral).to.equal(0);
+    });
   });
 });

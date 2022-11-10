@@ -1,11 +1,12 @@
 import { ApolloFetch, FetchResult } from 'apollo-fetch';
-import { ethers } from 'hardhat';
 import { expect } from 'chai';
+import { ethers } from 'hardhat';
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+
 import { queryPools } from './queries';
 import deploy from './utils/deploy';
 
-describe('Pools', function () {
+describe('Pool Registry', function () {
   let subgraph: ApolloFetch;
 
   const syncDelay = 2000;
@@ -44,8 +45,8 @@ describe('Pools', function () {
     expect(pool.liquidationIncentive).to.be.equal('1000000000000000000');
     expect(pool.maxAssets).to.be.equal('0');
 
-    const newName  = 'New Pool 1';    
-    const poolRegistry = await ethers.getContract("PoolRegistry");
+    const newName = 'New Pool 1';
+    const poolRegistry = await ethers.getContract('PoolRegistry');
 
     let tx = await poolRegistry.setPoolName(pool1Address, newName);
     await tx.wait(1);
@@ -62,7 +63,12 @@ describe('Pools', function () {
     const logoUrl = 'https://images.com/gamer-cat.png';
     const description = 'Cat Games';
 
-    tx = await poolRegistry.updatePoolMetadata(pool1Address, { riskRating: 2, category: 'Games', logoURL: logoUrl, description });
+    tx = await poolRegistry.updatePoolMetadata(pool1Address, {
+      riskRating: 2,
+      category: 'Games',
+      logoURL: logoUrl,
+      description,
+    });
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 

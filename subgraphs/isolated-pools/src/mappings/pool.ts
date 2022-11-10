@@ -1,6 +1,5 @@
 import {
   ActionPausedMarket,
-  ActionPaused as ActionPausedPool,
   MarketEntered,
   MarketExited,
   NewBorrowCap,
@@ -20,7 +19,6 @@ import {
 import {
   updateOrCreateAccountVToken,
   updateOrCreateMarketAction,
-  updateOrCreatePoolAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
 
@@ -100,13 +98,6 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
   const pool = getPool(poolAddress);
   pool.priceOracle = event.params.newPriceOracle;
   pool.save();
-}
-
-export function handlePoolActionPaused(event: ActionPausedPool): void {
-  const poolAddress = event.address;
-  const action = event.params.action;
-  const pauseState = event.params.pauseState;
-  updateOrCreatePoolAction(poolAddress, action, pauseState);
 }
 
 export function handleActionPausedMarket(event: ActionPausedMarket): void {

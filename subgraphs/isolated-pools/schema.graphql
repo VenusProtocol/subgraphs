@@ -83,7 +83,7 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     "VToken address"
     id: ID!
-    "Pool address"
+    "Pool the market belongs to"
     pool: Pool!
     #Fields that match Venus API
     "Borrow rate per block"

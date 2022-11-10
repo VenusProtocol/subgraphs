@@ -2488,6 +2488,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts-upgradeable@npm:^4.6.0":
+  version: 4.8.0
+  resolution: "@openzeppelin/contracts-upgradeable@npm:4.8.0"
+  checksum: c39f3a719830c068d0ae413a8beee4072fa19f777b55bf6155fe21023414eab0633a641318845ac50929837b71848de1efbd00d4c181ddd6d8b735ceb0a82070
+  languageName: node
+  linkType: hard
+
 "@openzeppelin/contracts-upgradeable@npm:^4.7.3":
   version: 4.7.3
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.7.3"
@@ -2623,6 +2630,15 @@ __metadata:
   version: 4.6.0
   resolution: "@sindresorhus/is@npm:4.6.0"
   checksum: 83839f13da2c29d55c97abc3bc2c55b250d33a0447554997a85c539e058e57b8da092da396e252b11ec24a0279a0bed1f537fa26302209327060643e327f81d2
+  languageName: node
+  linkType: hard
+
+"@solidity-parser/parser@npm:^0.13.2":
+  version: 0.13.2
+  resolution: "@solidity-parser/parser@npm:0.13.2"
+  dependencies:
+    antlr4ts: ^0.5.0-alpha.4
+  checksum: bfdd8ec7f7b88f3cc75e333e03202cde5e5dacbec7f00612f22dec5e22b0995713637872ce202064d182bae56a274fcb2ca8715ad5482af5e8b38728a0216cf7
   languageName: node
   linkType: hard
 
@@ -3166,21 +3182,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@link:../isolated-pools::locator=subgraphs%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@venusprotocol/isolated-pools@link:../isolated-pools::locator=subgraphs%40workspace%3A."
+"@venusprotocol/isolated-pools@npm:^0.0.11":
+  version: 0.0.11
+  resolution: "@venusprotocol/isolated-pools@npm:0.0.11"
+  dependencies:
+    "@openzeppelin/contracts": ^4.6.0
+    "@openzeppelin/contracts-upgradeable": ^4.6.0
+    "@solidity-parser/parser": ^0.13.2
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    sleep-promise: ^9.1.0
+  checksum: 278e31cccdfd19c6a2496b6b139ea243c6e55fdcdcb532c65b4ec5195737ae8697c3219c8b080d586e6d1154481bc62bff4b1286df931ecf5f5a13f679a64ea0
   languageName: node
-  linkType: soft
+  linkType: hard
 
-"@venusprotocol/oracle@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@venusprotocol/oracle@npm:1.2.0"
+"@venusprotocol/oracle@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@venusprotocol/oracle@npm:1.2.3"
   dependencies:
     "@openzeppelin/contracts": ^4.6.0
     "@openzeppelin/contracts-upgradeable": ^4.7.3
     "@venusprotocol/venus-protocol": 0.4.1
     module-alias: ^2.2.2
-  checksum: 89be0c03469954a86fefbd50874695d1781d2afda438f09e5e2cc0ad147b8a36fb2606f6f52dc98efca92261837e9713e61d9e21907488123152ee725eb692d5
+  checksum: 73f94ef156ececa82dc47886fbda366386d71eb6778ac30fc893da43d5e13d141952f5b586f63e2b65fc5de2bfea001afe98b4bb9ac842594da5a93e5c8c27de
   languageName: node
   linkType: hard
 
@@ -7397,6 +7421,27 @@ __metadata:
     ethers: ^5.0.0
     hardhat: ^2.0.0
   checksum: 45206bf8d088cda08822ecf79d73e4027d8a4777cc23c3ef94568e316c45b8597130d72826fb2417edd32fe4b3dc54097161bef577663769b5c47b8262b983bb
+  languageName: node
+  linkType: hard
+
+"hardhat-deploy@npm:^0.11.14":
+  version: 0.11.20
+  resolution: "hardhat-deploy@npm:0.11.20"
+  dependencies:
+    "@types/qs": ^6.9.7
+    axios: ^0.21.1
+    chalk: ^4.1.2
+    chokidar: ^3.5.2
+    debug: ^4.3.2
+    enquirer: ^2.3.6
+    ethers: ^5.5.3
+    form-data: ^4.0.0
+    fs-extra: ^10.0.0
+    match-all: ^1.2.6
+    murmur-128: ^0.2.1
+    qs: ^6.9.4
+    zksync-web3: ^0.8.1
+  checksum: 855a19aa19ffd36101725e2d10886943d8fa2ba60ae5f319d7683cb1576532b1cff815c5f8fef0543c77c459353e28b56ebbdffd7f1abaffd16793fe3cf0ef48
   languageName: node
   linkType: hard
 
@@ -12092,6 +12137,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sleep-promise@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "sleep-promise@npm:9.1.0"
+  checksum: a93359c18d2e4d586f2ecd4575cbdbc92bcbd9d387bd4bca249892abb512ca4e80075f67e53ec1279ea4555e8a1f6dc9df9e90f8aa71178ad943e9ba1f27debb
+  languageName: node
+  linkType: hard
+
 "slice-ansi@npm:^3.0.0":
   version: 3.0.0
   resolution: "slice-ansi@npm:3.0.0"
@@ -12568,8 +12620,8 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": "link:../isolated-pools"
-    "@venusprotocol/oracle": ^1.2.0
+    "@venusprotocol/isolated-pools": ^0.0.11
+    "@venusprotocol/oracle": ^1.2.3
     "@venusprotocol/venus-protocol": ^0.4.1
     assemblyscript: 0.19.23
     chai: ^4.3.6

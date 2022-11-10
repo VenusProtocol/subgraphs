@@ -71,7 +71,6 @@ export function createPool(event: PoolRegistered): void {
 
 export function createAccount(accountAddress: Address): Account {
   const account = new Account(accountAddress.toHexString());
-  account.tokens = [];
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
