@@ -6,7 +6,7 @@ import {
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
-  NewMinLiquidatableAmount,
+  NewMinLiquidatableCollateral,
   NewPriceOracle,
   ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
@@ -119,10 +119,10 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
   market.save();
 }
 
-export function handleNewMinLiquidatableAmount(event: NewMinLiquidatableAmount): void {
-  const vTokenAddress = event.params.vToken;
-  const newMinLiquidatableAmount = event.params.newMinLiquidatableAmount;
-  const market = getMarket(vTokenAddress);
-  market.minLiquidatableAmount = newMinLiquidatableAmount;
-  market.save();
+export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableCollateral): void {
+  const poolAddress = event.address;
+  const newMinLiquidatableCollateral = event.params.newMinLiquidatableCollateral;
+  const pool = getPool(poolAddress);
+  pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
+  pool.save();
 }

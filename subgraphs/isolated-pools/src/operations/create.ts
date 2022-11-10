@@ -60,6 +60,7 @@ export function createPool(event: PoolRegistered): void {
   pool.description = poolDataFromLens.description;
   pool.priceOracle = poolDataFromLens.priceOracle;
   pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
+  pool.minLiquidatableCollateral = BigInt.fromI32(0);
   pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
     ? poolDataFromLens.liquidationIncentive
     : new BigInt(0);
@@ -107,7 +108,6 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.borrowIndex = zeroBigDecimal;
   market.reserveFactor = getReserveFactorMantissa(vTokenContract);
   market.borrowCap = BigInt.fromI32(0);
-  market.minLiquidatableAmount = BigInt.fromI32(0);
   market.save();
   return market;
 }

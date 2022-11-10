@@ -19,7 +19,7 @@ import {
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
-  handleNewMinLiquidatableAmount,
+  handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
   handlePoolActionPaused,
 } from '../../src/mappings/pool';
@@ -42,7 +42,7 @@ import {
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
-  createNewMinLiquidatableAmountEvent,
+  createNewMinLiquidatableCollateral,
   createNewPriceOracleEvent,
   createPoolActionPausedEvent,
 } from './events';
@@ -313,14 +313,14 @@ describe('Pool Events', () => {
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
   });
 
-  test('indexes NewMinLiquidatableAmount event', () => {
+  test('indexes NewMinLiquidatableCollateral event', () => {
     const newMinLiquidatableAmount = BigInt.fromI64(200000000000000000);
-    const newMinLiquidatableAmountEvent = createNewMinLiquidatableAmountEvent(
+    const newMinLiquidatableAmountEvent = createNewMinLiquidatableCollateral(
       vTokenAddress,
       newMinLiquidatableAmount,
     );
 
-    handleNewMinLiquidatableAmount(newMinLiquidatableAmountEvent);
+    handleNewMinLiquidatableCollateral(newMinLiquidatableAmountEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
     assert.fieldEquals(

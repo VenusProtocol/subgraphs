@@ -56,6 +56,8 @@ type Pool @entity {
     closeFactor: BigInt!
     "The percent bonus liquidators get for liquidating"
     liquidationIncentive: BigInt!
+    "Min Liquidable Amount allowed"
+    minLiquidatableCollateral: BigInt!
     "Max assets a single user can enter"
     maxAssets: BigInt!
     "Markets associated to this pool"
@@ -116,8 +118,6 @@ type Market @entity {
     underlyingSymbol: String!
     "Max token borrow amount allowed"
     borrowCap: BigInt!
-    "Min Liquidable Amount allowed"
-    minLiquidatableAmount: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"

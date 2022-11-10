@@ -84,8 +84,8 @@ templates:
           handler: handleNewBorrowCap
         - event: NewBorrowCapGuardian(address,address)
           handler: handleNewBorrowCapGuardian
-        - event: NewMinLiquidatableAmount(indexed address,uint256)
-          handler: handleNewMinLiquidatableAmount
+        - event: NewMinLiquidatableCollateral(uint256,uint256)
+          handler: handleNewMinLiquidatableCollateral
   - name: VToken
     kind: ethereum/contract
     network: {{ network }}

@@ -12,10 +12,10 @@ import {
 
 import {
   BORROW,
-  LIQUIDATE_BORROW,
+  LIQUIDATE,
   MINT,
   REDEEM,
-  REPAY_BORROW,
+  REPAY,
   TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
@@ -316,7 +316,7 @@ describe('VToken', () => {
       .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
-    assert.fieldEquals('Transaction', transactionId, 'type', REPAY_BORROW);
+    assert.fieldEquals('Transaction', transactionId, 'type', REPAY);
     assert.fieldEquals(
       'Transaction',
       transactionId,
@@ -397,7 +397,7 @@ describe('VToken', () => {
       .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
-    assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE_BORROW);
+    assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE);
     assert.fieldEquals(
       'Transaction',
       transactionId,

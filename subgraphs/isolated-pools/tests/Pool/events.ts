@@ -9,7 +9,7 @@ import {
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
-  NewMinLiquidatableAmount as NewMinLiquidatableAmountEvent,
+  NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
   ActionPaused as PoolActionPausedEvent,
 } from '../../generated/PoolRegistry/Comptroller';
@@ -231,11 +231,11 @@ export const createNewBorrowCapEvent = (
   return event;
 };
 
-export const createNewMinLiquidatableAmountEvent = (
+export const createNewMinLiquidatableCollateralEvent = (
   vTokenAddress: Address,
   newMinLiquidatableAmount: BigInt,
-): NewMinLiquidatableAmountEvent => {
-  const event = changetype<NewMinLiquidatableAmountEvent>(newMockEvent());
+): NewMinLiquidatableCollateralEvent => {
+  const event = changetype<NewMinLiquidatableCollateralEvent>(newMockEvent());
   event.parameters = [];
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));

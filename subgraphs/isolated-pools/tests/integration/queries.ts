@@ -12,6 +12,7 @@ export const queryPools = () => `{
     priceOracle
     closeFactor
     liquidationIncentive
+    minLiquidatableCollateral
     maxAssets
     markets {
       id
@@ -40,7 +41,6 @@ export const queryMarkets = () => `{
     underlyingPrice
     underlyingSymbol
     borrowCap
-    minLiquidatableAmount
     accrualBlockNumber
     blockTimestamp
     borrowIndex
