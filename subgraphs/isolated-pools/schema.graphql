@@ -195,7 +195,7 @@ type AccountVTokenTransaction @entity {
 
   account: AccountVToken!
 
-  tx_hash: Bytes!
+  txHash: Bytes!
 
   timestamp: BigInt!
 

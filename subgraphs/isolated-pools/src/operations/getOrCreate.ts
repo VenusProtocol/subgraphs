@@ -39,7 +39,7 @@ export const getOrCreateAccountVTokenTransaction = (
   if (transaction == null) {
     transaction = new AccountVTokenTransaction(accountVTokenTransactionId);
     transaction.account = accountAddress.toHexString();
-    transaction.tx_hash = txHash;
+    transaction.txHash = txHash;
     transaction.timestamp = timestamp;
     transaction.block = block;
     transaction.logIndex = logIndex;
