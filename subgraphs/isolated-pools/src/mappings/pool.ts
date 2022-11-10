@@ -1,5 +1,6 @@
 import {
-  ActionPaused1 as MarketActionPaused,
+  ActionPausedMarket,
+  ActionPaused as ActionPausedPool,
   MarketEntered,
   MarketExited,
   NewBorrowCap,
@@ -8,7 +9,6 @@ import {
   NewLiquidationIncentive,
   NewMinLiquidatableCollateral,
   NewPriceOracle,
-  ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { getMarket, getPool } from '../operations/get';
@@ -97,16 +97,16 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
   pool.save();
 }
 
-export function handlePoolActionPaused(event: PoolActionPaused): void {
+export function handlePoolActionPaused(event: ActionPausedPool): void {
   const poolAddress = event.address;
-  const action = event.params.action as string;
+  const action = event.params.action;
   const pauseState = event.params.pauseState;
   updateOrCreatePoolAction(poolAddress, action, pauseState);
 }
 
-export function handleMarketActionPaused(event: MarketActionPaused): void {
+export function handleActionPausedMarket(event: ActionPausedMarket): void {
   const vTokenAddress = event.params.vToken;
-  const action = event.params.action as string;
+  const action = event.params.action;
   const pauseState = event.params.pauseState;
   updateOrCreateMarketAction(vTokenAddress, action, pauseState);
 }

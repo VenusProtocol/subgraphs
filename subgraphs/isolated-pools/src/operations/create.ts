@@ -15,10 +15,10 @@ import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
   BORROW,
-  LIQUIDATE_BORROW,
+  LIQUIDATE,
   MINT,
   REDEEM,
-  REPAY_BORROW,
+  REPAY,
   RiskRatings,
   TRANSFER,
   vTokenDecimals,
@@ -194,7 +194,7 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
     .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
-  transaction.type = REPAY_BORROW;
+  transaction.type = REPAY;
   transaction.amount = repayAmount;
   transaction.to = event.params.borrower;
   transaction.accountBorrows = accountBorrows;
@@ -220,7 +220,7 @@ export const createLiquidateBorrowTransaction = (
     .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
-  transaction.type = LIQUIDATE_BORROW;
+  transaction.type = LIQUIDATE;
   transaction.amount = amount;
   transaction.to = event.params.borrower;
   transaction.underlyingRepayAmount = underlyingRepayAmount;

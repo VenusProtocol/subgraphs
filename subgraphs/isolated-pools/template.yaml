@@ -76,9 +76,9 @@ templates:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
-        - event: ActionPaused(address,string,bool)
+        - event: ActionPaused(string,bool)
           handler: handlePoolActionPaused
-        - event: ActionPaused(address,string,bool)
+        - event: ActionPausedMarket(address,uint8,bool)
           handler: handleMarketActionPaused
         - event: NewBorrowCap(indexed address,uint256)
           handler: handleNewBorrowCap
