@@ -12,7 +12,11 @@ import {
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { getMarket, getPool } from '../operations/get';
-import { getOrCreateAccount, getOrCreateAccountVTokenTransaction } from '../operations/getOrCreate';
+import {
+  getOrCreateAccount,
+  getOrCreateAccountVTokenTransaction,
+  getOrCreateMarket,
+} from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
   updateOrCreateMarketAction,
@@ -73,15 +77,16 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
   pool.save();
 }
 
-export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
+export function handleNewCollateralFactor(event: NewCollateralFactor): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(poolAddress, vTokenAddress);
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
   market.save();
-};
+}
 
 export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
   const poolAddress = event.address;
