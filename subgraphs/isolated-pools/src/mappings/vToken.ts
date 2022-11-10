@@ -187,11 +187,11 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
  *    events. So for those events, we do not update vToken balances.
  */
 export function handleTransfer(event: Transfer): void {
-  const marketAddress = event.address;
+  const vTokenAddress = event.address;
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
 
-  let market = getMarket(marketAddress);
+  let market = getMarket(vTokenAddress);
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   if (market.accrualBlockNumber != event.block.number.toI32()) {
@@ -200,11 +200,11 @@ export function handleTransfer(event: Transfer): void {
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
-  if (accountFromAddress.toHex() != marketAddress.toHex()) {
+  if (accountFromAddress.toHex() != vTokenAddress.toHex()) {
     getOrCreateAccount(accountFromAddress);
 
     updateAccountVTokenTransferFrom(
-      marketAddress,
+      vTokenAddress,
       market.symbol,
       accountFromAddress,
       event.transaction.hash,
@@ -221,11 +221,11 @@ export function handleTransfer(event: Transfer): void {
   // If so, we ignore it. this leaves an edge case, where someone who accidentally sends
   // vTokens to a vToken contract, where it will not get recorded. Right now it would
   // be messy to include, so we are leaving it out for now TODO fix this in future
-  if (accountToAddress.toHex() != marketAddress.toHex()) {
+  if (accountToAddress.toHex() != vTokenAddress.toHex()) {
     getOrCreateAccount(accountToAddress);
 
     updateAccountVTokenTransferTo(
-      marketAddress,
+      vTokenAddress,
       market.symbol,
       accountToAddress,
       event.transaction.hash,
@@ -242,8 +242,8 @@ export function handleTransfer(event: Transfer): void {
 }
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
-  const marketAddress = event.address;
-  const market = getMarket(marketAddress);
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
 }
