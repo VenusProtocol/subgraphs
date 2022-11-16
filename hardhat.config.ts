@@ -51,9 +51,10 @@ const config: HardhatUserConfig = {
   },
   // Hardhat deploy
   namedAccounts: {
-    deployer: {
-      default: 0, // here this will by default take the first account as deployer
-    },
+    deployer: 0, // here this will by default take the first account as deployer
+    acc1: 1,
+    acc2: 2,
+    proxyAdmin: 3,
   }
 };
 
