@@ -10,11 +10,12 @@ import {
   NewPriceOracle,
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
-import { getMarket, getPool } from '../operations/get';
+import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
+  getOrCreatePool,
 } from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
@@ -70,9 +71,11 @@ export function handleMarketExited(event: MarketExited): void {
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.closeFactor = event.params.newCloseFactorMantissa;
-  pool.save();
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.closeFactor = event.params.newCloseFactorMantissa;
+    pool.save();
+  }
 }
 
 export function handleNewCollateralFactor(event: NewCollateralFactor): void {
@@ -88,16 +91,20 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
 
 export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
-  pool.save();
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
+    pool.save();
+  }
 }
 
 export function handleNewPriceOracle(event: NewPriceOracle): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.priceOracle = event.params.newPriceOracle;
-  pool.save();
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.priceOracle = event.params.newPriceOracle;
+    pool.save();
+  }
 }
 
 export function handleActionPausedMarket(event: ActionPausedMarket): void {
@@ -118,7 +125,9 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
 export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableCollateral): void {
   const poolAddress = event.address;
   const newMinLiquidatableCollateral = event.params.newMinLiquidatableCollateral;
-  const pool = getPool(poolAddress);
-  pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
-  pool.save();
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
+    pool.save();
+  }
 }

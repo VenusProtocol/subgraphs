@@ -1,7 +1,6 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
-import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   Borrow,
   LiquidateBorrow,
@@ -32,41 +31,44 @@ import {
   getUnderlyingAddress,
 } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
-import { getTransactionEventId } from '../utilities/ids';
+import { getPoolId, getTransactionEventId } from '../utilities/ids';
 
-export function createPool(event: PoolRegistered): void {
-  const pool = new Pool(event.params.pool.comptroller.toHexString());
+export function createPool(comptroller: Address): Pool | null {
+  const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
   const getPoolByComptrollerResult = poolLensContract.try_getPoolByComptroller(
     poolRegistryAddress,
-    event.params.pool.comptroller,
+    comptroller,
   );
+
   if (getPoolByComptrollerResult.reverted) {
-    log.critical('Unable to fetch pool info for {} with lens {}', [
-      event.params.pool.comptroller.toHexString(),
+    log.error('Unable to fetch pool info for {} with lens {}', [
+      comptroller.toHexString(),
       poolLensAddress.toHexString(),
     ]);
+  } else {
+    const poolDataFromLens = getPoolByComptrollerResult.value;
+    pool.name = poolDataFromLens.name;
+    pool.creator = poolDataFromLens.creator;
+    pool.blockPosted = poolDataFromLens.blockPosted;
+    pool.timestampPosted = poolDataFromLens.timestampPosted;
+    pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
+    pool.category = poolDataFromLens.category;
+    pool.logoUrl = poolDataFromLens.logoURL;
+    pool.description = poolDataFromLens.description;
+    pool.priceOracle = poolDataFromLens.priceOracle;
+    pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
+    pool.minLiquidatableCollateral = BigInt.fromI32(0);
+    pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
+      ? poolDataFromLens.liquidationIncentive
+      : new BigInt(0);
+    pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
+    // Note: we don't index vTokens here because when a pool is created it has no markets
+    pool.save();
+    return pool;
   }
-
-  const poolDataFromLens = getPoolByComptrollerResult.value;
-  pool.name = poolDataFromLens.name;
-  pool.creator = poolDataFromLens.creator;
-  pool.blockPosted = poolDataFromLens.blockPosted;
-  pool.timestampPosted = poolDataFromLens.timestampPosted;
-  pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
-  pool.category = poolDataFromLens.category;
-  pool.logoUrl = poolDataFromLens.logoURL;
-  pool.description = poolDataFromLens.description;
-  pool.priceOracle = poolDataFromLens.priceOracle;
-  pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
-  pool.minLiquidatableCollateral = BigInt.fromI32(0);
-  pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
-    ? poolDataFromLens.liquidationIncentive
-    : new BigInt(0);
-  pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
-  // Note: we don't index vTokens here because when a pool is created it has no markets
-  pool.save();
+  return null;
 }
 
 export function createAccount(accountAddress: Address): Account {

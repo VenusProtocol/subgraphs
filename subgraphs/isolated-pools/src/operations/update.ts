@@ -4,23 +4,23 @@ import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegist
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import {
+  RiskRatings,
   defaultMantissaFactorBigDecimal,
   mantissaFactor,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
-  RiskRatings,
 } from '../constants';
 import { vBnbAddress } from '../constants/addresses';
 import { exponentToBigDecimal } from '../utilities';
 import { getBnbPriceInUsd, getTokenPriceInUsd } from '../utilities';
+import { getMarket } from './get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
   getOrCreateAccountVTokenTransaction,
 } from './getOrCreate';
-
-import { getMarket, getPool } from './get';
+import { getOrCreatePool } from './getOrCreate';
 
 const updateAccountVToken = (
   marketAddress: Address,
@@ -285,13 +285,16 @@ export const updateMarket = (
   return market as Market;
 };
 
-
-export function updatePoolMetadata(comptroller: Address, newMetadata: PoolMetadataUpdatedNewMetadataStruct): void {
-  const pool = getPool(comptroller)
-  pool.riskRating = RiskRatings[newMetadata.riskRating];
-  pool.category = newMetadata.category;
-  pool.logoUrl = newMetadata.logoURL;
-  pool.description = newMetadata.description;
-  pool.save();
-
+export function updatePoolMetadata(
+  comptroller: Address,
+  newMetadata: PoolMetadataUpdatedNewMetadataStruct,
+): void {
+  const pool = getOrCreatePool(comptroller);
+  if (pool) {
+    pool.riskRating = RiskRatings[newMetadata.riskRating];
+    pool.category = newMetadata.category;
+    pool.logoUrl = newMetadata.logoURL;
+    pool.description = newMetadata.description;
+    pool.save();
+  }
 }
