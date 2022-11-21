@@ -1,6 +1,6 @@
 {
-  "network": "bsc-testnet",
-  "poolRegistryAddress": "0xB0c59fCA8f4e5450CFb1778FF93B2EdDaA8D2823",
-  "poolLensAddress": "0xbbC449A6a0cdd8e86992645DA8AC61096822A4fa",
-  "startBlock": "23870992"
+  "network": "chapel",
+  "poolRegistryAddress": "0x6e8813dD1a5714182C700A6ba3A05a482b36dEdf",
+  "poolLensAddress": "0x525FAEcE436cF0702b399A9Ef48EAb358E43A671",
+  "startBlock": "24711657"
 }
