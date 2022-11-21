@@ -31,7 +31,7 @@ dataSources:
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
+          file: ../../packages/isolated-pools-abis/PoolLens.json
       eventHandlers:
         - event: PoolRegistered(indexed address,(string,address,address,uint256,uint256))
           handler: handlePoolRegistered
@@ -67,6 +67,8 @@ templates:
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
+        - name: PoolLens
+          file: ../../packages/isolated-pools-abis/PoolLens.json
       eventHandlers:
         - event: MarketEntered(address,address)
           handler: handleMarketEntered
