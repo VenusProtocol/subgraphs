@@ -16,5 +16,3 @@ export const priceOracleAddress = Address.fromString('0xb0b000000000000000000000
 export const pauseGuardianAddress = Address.fromString(
   '0xd0d0000000000000000000000000000000000000',
 );
-
-export const aaaTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');

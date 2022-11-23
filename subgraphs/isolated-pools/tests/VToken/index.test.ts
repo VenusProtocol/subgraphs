@@ -20,7 +20,7 @@ import {
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
-import { aaaTokenAddress, vBnbAddress } from '../../src/constants/addresses';
+import { vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
@@ -57,6 +57,7 @@ const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
+const aaaTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
