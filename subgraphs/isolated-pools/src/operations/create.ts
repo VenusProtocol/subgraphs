@@ -109,6 +109,8 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.borrowIndex = zeroBigDecimal;
   market.reserveFactor = getReserveFactorMantissa(vTokenContract);
   market.borrowCap = BigInt.fromI32(0);
+  market.treasuryTotalBorrowsWei = BigInt.fromI32(0);
+  market.treasuryTotalSupplyWei = BigInt.fromI32(0);
   market.save();
   return market;
 }

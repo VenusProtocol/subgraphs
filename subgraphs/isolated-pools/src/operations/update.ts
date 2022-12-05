@@ -281,6 +281,10 @@ export const updateMarket = (
       .div(defaultMantissaFactorBigDecimal)
       .truncate(mantissaFactor);
   }
+
+  market.treasuryTotalBorrowsWei = marketContract.totalBorrows();
+  market.treasuryTotalSupplyWei = marketContract.totalSupply();
+
   market.save();
   return market as Market;
 };
