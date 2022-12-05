@@ -53,10 +53,10 @@ describe('Pools', function () {
     await waitForSubgraphToBeSynced(syncDelay * 2);
 
     // check account
-    const accountsQuery = await queryAccounts(account1Address);
+    const accountsQuery = await queryAccounts();
     let response = (await subgraph({ query: accountsQuery })) as FetchResult;
     const { account } = response.data;
-
+    console.log({ account: response.data });
     expect(account.id).to.equal(account1Address.toLowerCase());
     expect(account.tokens.length).to.equal(2);
     expect(account.countLiquidated).to.equal(0);
@@ -104,13 +104,13 @@ describe('Pools', function () {
   });
 
   it('handles NewCollateralFactor event', async function () {
-    const poolsQuery = await queryPools();
-    const response = (await subgraph({ query: poolsQuery })) as FetchResult;
-    const { pools } = response.data;
+    const marketsQuery = await queryMarkets();
+    const response = (await subgraph({ query: marketsQuery })) as FetchResult;
+    const { markets } = response.data;
     // @TODO this event is fired from deployment
     // Could test by refiring event
-    pools.forEach(p => {
-      expect(p.collateralFactor).to.equal(0);
+    markets.forEach(p => {
+      expect(p.collateralFactor).to.equal('0');
     });
   });
 

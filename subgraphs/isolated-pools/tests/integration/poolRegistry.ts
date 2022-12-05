@@ -29,10 +29,10 @@ describe('Pool Registry', function () {
     let response = (await subgraph({ query })) as FetchResult;
     let data = response.data.pools;
 
-    const pool1Address = '0xec4cfde48eadca2bc63e94bb437bbeace1371bf3';
+    const pool1Address = '0x9467A509DA43CB50EB332187602534991Be1fEa4';
     expect(data.length).to.equal(1);
     let pool = data[0];
-    expect(pool.id).to.be.equal(pool1Address);
+    expect(pool.id).to.be.equal(pool1Address.toLocaleLowerCase());
     expect(pool.name).to.be.equal('Pool 1');
     expect(pool.creator).to.be.equal('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266');
     expect(pool.blockPosted).to.be.string;
@@ -40,7 +40,7 @@ describe('Pool Registry', function () {
     expect(pool.category).to.be.equal('');
     expect(pool.logoUrl).to.be.equal('');
     expect(pool.description).to.be.equal('');
-    expect(pool.priceOracle).to.be.equal('0x59b670e9fa9d0a427751af201d676719a970857b');
+    expect(pool.priceOracle).to.be.equal('0x0165878a594ca255338adfa4d48449f69242eb8f');
     expect(pool.closeFactor).to.be.equal('50000000000000000');
     expect(pool.liquidationIncentive).to.be.equal('1000000000000000000');
     expect(pool.maxAssets).to.be.equal('0');
@@ -48,6 +48,7 @@ describe('Pool Registry', function () {
     const newName = 'New Pool 1';
     const poolRegistry = await ethers.getContract('PoolRegistry');
 
+    // @todo Break this out into a seperate test
     let tx = await poolRegistry.setPoolName(pool1Address, newName);
     await tx.wait(1);
 
@@ -73,6 +74,7 @@ describe('Pool Registry', function () {
     await waitForSubgraphToBeSynced(syncDelay);
 
     // Check market pools
+    // @todo Break this out into a seperate test
     const poolQuery = await queryPools();
     response = (await subgraph({ query: poolQuery })) as FetchResult;
     data = response.data.pools;

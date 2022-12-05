@@ -24,7 +24,7 @@
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:local && graph test",
     "node:integration": "PACKAGE=isolated-pools hardhat node",
-    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts"
+    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.19.3",

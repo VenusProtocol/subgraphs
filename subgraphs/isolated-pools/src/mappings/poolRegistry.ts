@@ -7,7 +7,7 @@ import {
   PoolRegistered,
 } from '../../generated/PoolRegistry/PoolRegistry';
 import { Pool } from '../../generated/schema';
-import { Pool as PoolDataSource, VToken } from '../../generated/templates';
+import { Pool as PoolDataSource, VToken as VTokenDataSource } from '../../generated/templates';
 import { createMarket, createPool } from '../operations/create';
 import { updatePoolMetadata } from '../operations/update';
 
@@ -34,7 +34,7 @@ export function handleMarketAdded(event: MarketAdded): void {
   // Dynamically index all new listed tokens
   const vTokenAddress = event.params.vTokenAddress;
   const comptroller = event.params.comptroller;
-  VToken.create(vTokenAddress);
+  VTokenDataSource.create(vTokenAddress);
   createMarket(comptroller, vTokenAddress);
 }
 
