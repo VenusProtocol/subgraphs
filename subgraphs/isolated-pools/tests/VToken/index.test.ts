@@ -97,8 +97,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   // Create Pool
-  const index = new BigInt(0);
-  const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+  const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
   handlePoolRegistered(poolRegisteredEvent);
   // Add Market

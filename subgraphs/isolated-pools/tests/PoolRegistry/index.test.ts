@@ -49,23 +49,21 @@ afterEach(() => {
 
 describe('Pool Registry', () => {
   test('registers pool correctly', () => {
-    const index = new BigInt(0);
     const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000064');
-    const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+    const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000064', key, value);
     };
-    assertPoolDocument('id', index.toString());
+    assertPoolDocument('id', comptrollerAddress.toHexString());
     assertPoolDocument('name', 'Gamer Pool1');
-    assertPoolDocument('creator', '0xa16081f360e3847006db660bae1c6d1b2e17ec2a');
-    assertPoolDocument('comptroller', comptrollerAddress.toHex());
+    assertPoolDocument('creator', '0x0000000000000000000000000000000000000072');
     assertPoolDocument('blockPosted', '100');
     assertPoolDocument('timestampPosted', '1662990421');
     assertPoolDocument('riskRating', 'HIGH_RISK');
     assertPoolDocument('category', 'Games');
-    assertPoolDocument('logoURL', '/logo.png');
+    assertPoolDocument('logoUrl', '/logo.png');
     assertPoolDocument('description', 'Game related tokens');
     assertPoolDocument('priceOracle', priceOracleAddress.toHex());
     assertPoolDocument('closeFactor', '5');
@@ -74,9 +72,8 @@ describe('Pool Registry', () => {
   });
 
   test('updates pool name correctly', () => {
-    const index = new BigInt(2);
     const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000025');
-    const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+    const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
     const poolNameSetEvent = createPoolNameSetEvent(comptrollerAddress, 'Summer Pool');

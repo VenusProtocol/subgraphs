@@ -49,8 +49,7 @@ export const updateOrCreateMarketAction = (
   action: i32,
   pauseState: boolean,
 ): MarketAction => {
-  const actionString = Actions[action];
-  const id = getMarketActionId(vTokenAddress, actionString);
+  const id = getMarketActionId(vTokenAddress, action);
   const marketAction = new MarketAction(id);
   marketAction.vToken = vTokenAddress;
   marketAction.action = Actions[action];

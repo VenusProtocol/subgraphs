@@ -2,7 +2,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
-  ActionPaused1 as MarketActionPausedEvent,
+  ActionPausedMarket as ActionPausedMarketEvent,
   MarketEntered as MarketEnteredEvent,
   MarketExited as MarketExitedEvent,
   NewBorrowCap as NewBorrowCapEvent,
@@ -11,7 +11,6 @@ import {
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
   NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
-  ActionPaused as PoolActionPausedEvent,
 } from '../../generated/PoolRegistry/Comptroller';
 import { MarketAdded as MarketAddedEvent } from '../../generated/PoolRegistry/PoolRegistry';
 
@@ -168,39 +167,18 @@ export const createNewPriceOracleEvent = (
   return event;
 };
 
-export const createPoolActionPausedEvent = (
-  poolAddress: Address,
-  action: string,
-  pauseState: boolean,
-): PoolActionPausedEvent => {
-  const event = changetype<PoolActionPausedEvent>(newMockEvent());
-  event.address = poolAddress;
-  event.parameters = [];
-
-  const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
-  event.parameters.push(actionParam);
-
-  const pauseStateParam = new ethereum.EventParam(
-    'pauseState',
-    ethereum.Value.fromBoolean(pauseState),
-  );
-  event.parameters.push(pauseStateParam);
-
-  return event;
-};
-
-export const createMarketActionPausedEvent = (
+export const createActionPausedMarketEvent = (
   vTokenAddress: Address,
-  action: string,
+  action: i32,
   pauseState: boolean,
-): MarketActionPausedEvent => {
-  const event = changetype<MarketActionPausedEvent>(newMockEvent());
+): ActionPausedMarketEvent => {
+  const event = changetype<ActionPausedMarketEvent>(newMockEvent());
   event.parameters = [];
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const actionParam = new ethereum.EventParam('action', ethereum.Value.fromString(action));
+  const actionParam = new ethereum.EventParam('action', ethereum.Value.fromI32(action));
   event.parameters.push(actionParam);
 
   const pauseStateParam = new ethereum.EventParam(
@@ -232,20 +210,22 @@ export const createNewBorrowCapEvent = (
 };
 
 export const createNewMinLiquidatableCollateralEvent = (
+  comptrollerAddress: Address,
   vTokenAddress: Address,
-  newMinLiquidatableAmount: BigInt,
+  newMinLiquidatableCollateral: BigInt,
 ): NewMinLiquidatableCollateralEvent => {
   const event = changetype<NewMinLiquidatableCollateralEvent>(newMockEvent());
   event.parameters = [];
+  event.address = comptrollerAddress;
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const newMinLiquidatableAmountParam = new ethereum.EventParam(
-    'newMinLiquidatableAmount',
-    ethereum.Value.fromUnsignedBigInt(newMinLiquidatableAmount),
+  const newMinLiquidatableCollateralParam = new ethereum.EventParam(
+    'newMinLiquidatableCollateral',
+    ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral),
   );
-  event.parameters.push(newMinLiquidatableAmountParam);
+  event.parameters.push(newMinLiquidatableCollateralParam);
 
   return event;
 };

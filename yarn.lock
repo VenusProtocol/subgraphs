@@ -13582,9 +13582,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"venus@workspace:subgraphs/venus":
+"venus-subgraph@workspace:subgraphs/venus":
   version: 0.0.0-use.local
-  resolution: "venus@workspace:subgraphs/venus"
+  resolution: "venus-subgraph@workspace:subgraphs/venus"
   languageName: unknown
   linkType: soft
 

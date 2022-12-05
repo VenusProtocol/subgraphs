@@ -8,12 +8,13 @@ import {
 } from '../../generated/PoolRegistry/PoolRegistry';
 import { Pool } from '../../generated/schema';
 import { Pool as PoolDataSource, VToken } from '../../generated/templates';
-import { createMarket } from '../operations/create';
+import { createMarket, createPool } from '../operations/create';
 import { updatePoolMetadata } from '../operations/update';
 
 export function handlePoolRegistered(event: PoolRegistered): void {
   // Create data source
   PoolDataSource.create(event.params.comptroller);
+  createPool(event.params.comptroller);
 }
 
 export function handlePoolNameSet(event: PoolNameSet): void {
