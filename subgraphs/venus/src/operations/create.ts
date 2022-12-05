@@ -4,8 +4,8 @@ import { Account, AccountVToken, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
-import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice'
 import { zeroBD } from '../utilities/exponentToBigDecimal';
+import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 
 export const createAccountVToken = (
   vTokenStatsID: string,
