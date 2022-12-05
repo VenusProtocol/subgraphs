@@ -27,7 +27,7 @@ dataSources:
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/PriceOracle.sol/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
@@ -110,7 +110,7 @@ templates:
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/PriceOracle.sol/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: Comptroller

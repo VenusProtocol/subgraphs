@@ -3203,15 +3203,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/oracle@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "@venusprotocol/oracle@npm:1.4.0"
+"@venusprotocol/oracle@npm:^1.4.1":
+  version: 1.4.1
+  resolution: "@venusprotocol/oracle@npm:1.4.1"
   dependencies:
     "@openzeppelin/contracts": ^4.6.0
     "@openzeppelin/contracts-upgradeable": ^4.7.3
     "@venusprotocol/venus-protocol": 0.4.1
     module-alias: ^2.2.2
-  checksum: 237ef7dad9bfdd787495b5600da38a1a0f15a17cab4cdf679cb441bcf7a6520b5919180be849b5d57927e83d5cf4d41e409d774b5f267c475b1164d08d14ad3a
+  checksum: de45dfcc99fa10bb9c68fa2b5372917e657a8427e3231e93724f2e6d551e22af790aef176989e8eff1ddcd30c9357f463a4e689de25ce789fbe52ec1d07c53af
   languageName: node
   linkType: hard
 
@@ -12628,7 +12628,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/isolated-pools": ^0.0.13
-    "@venusprotocol/oracle": ^1.4.0
+    "@venusprotocol/oracle": ^1.4.1
     "@venusprotocol/venus-protocol": ^0.4.1
     assemblyscript: 0.19.23
     chai: ^4.3.6
