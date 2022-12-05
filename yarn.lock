@@ -3189,17 +3189,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:^0.0.13":
-  version: 0.0.13
-  resolution: "@venusprotocol/isolated-pools@npm:0.0.13"
+"@venusprotocol/isolated-pools@npm:^0.0.14":
+  version: 0.0.14
+  resolution: "@venusprotocol/isolated-pools@npm:0.0.14"
   dependencies:
     "@openzeppelin/contracts": ^4.6.0
     "@openzeppelin/contracts-upgradeable": ^4.6.0
     "@solidity-parser/parser": ^0.13.2
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
-    sleep-promise: ^9.1.0
-  checksum: 6d3080d41ffd16ca06e109a42b63a5546221a2b495ae05ba2ed579b34c63696dc01322b28cd2baae1df81e58d768d2bdb45d1a7ab912f7d748acad07deafb0eb
+  checksum: 2d2f4b8c409e9a7af248ae2ca06c41eb10f2ce1bede297b78f4aa1d484365153bed7c84db1e2c977db624042a1bb36e3dbd08547eb53eb9731ad5f7c84b1020e
   languageName: node
   linkType: hard
 
@@ -7432,8 +7431,8 @@ __metadata:
   linkType: hard
 
 "hardhat-deploy@npm:^0.11.14":
-  version: 0.11.20
-  resolution: "hardhat-deploy@npm:0.11.20"
+  version: 0.11.22
+  resolution: "hardhat-deploy@npm:0.11.22"
   dependencies:
     "@types/qs": ^6.9.7
     axios: ^0.21.1
@@ -7448,7 +7447,7 @@ __metadata:
     murmur-128: ^0.2.1
     qs: ^6.9.4
     zksync-web3: ^0.8.1
-  checksum: 855a19aa19ffd36101725e2d10886943d8fa2ba60ae5f319d7683cb1576532b1cff815c5f8fef0543c77c459353e28b56ebbdffd7f1abaffd16793fe3cf0ef48
+  checksum: 4b91afd7d8f453e4b20725b0893b7b892ade4f5fcdfb768362fea0edcb066c2ba65649bbed4d8488363835d798fdfb6f1bbc5ecad2b452f40f08374b1438ab5e
   languageName: node
   linkType: hard
 
@@ -12144,13 +12143,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sleep-promise@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "sleep-promise@npm:9.1.0"
-  checksum: a93359c18d2e4d586f2ecd4575cbdbc92bcbd9d387bd4bca249892abb512ca4e80075f67e53ec1279ea4555e8a1f6dc9df9e90f8aa71178ad943e9ba1f27debb
-  languageName: node
-  linkType: hard
-
 "slice-ansi@npm:^3.0.0":
   version: 3.0.0
   resolution: "slice-ansi@npm:3.0.0"
@@ -12627,7 +12619,7 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": ^0.0.13
+    "@venusprotocol/isolated-pools": ^0.0.14
     "@venusprotocol/oracle": ^1.4.1
     "@venusprotocol/venus-protocol": ^0.4.1
     assemblyscript: 0.19.23

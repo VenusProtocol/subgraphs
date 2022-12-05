@@ -20,11 +20,11 @@
     "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts",
     "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx mustache config/testnet.json src/constants/config-template > src/constants/config.ts",
     "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx mustache config/mainnet.json src/constants/config-template > src/constants/config.ts",
-    "rempve-local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
+    "remove:local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:local && graph test",
     "node:integration": "PACKAGE=isolated-pools hardhat node",
-    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost"
+    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.19.3",
