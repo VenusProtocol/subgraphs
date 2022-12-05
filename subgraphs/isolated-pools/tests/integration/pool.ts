@@ -5,7 +5,6 @@ import { ethers } from 'hardhat';
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import { Pool } from '../../generated/schema';
-import { getAccountVTokenId, getMarketId } from '../../src/utilities/ids';
 import {
   queryAccountVTokenTransactions,
   queryAccountVTokens,
@@ -13,7 +12,6 @@ import {
   queryMarkets,
   queryPools,
 } from './queries';
-import { createMockAddressObject } from './utils/address';
 import deploy from './utils/deploy';
 
 describe('Pools', function () {
@@ -66,16 +64,13 @@ describe('Pools', function () {
     expect(account.hasBorrowed).to.equal(false);
 
     // check accountVTokens
-    const accountVTokenId = getAccountVTokenId(
-      createMockAddressObject(account.tokens[0].id),
-      createMockAddressObject(account1Address),
-    );
+    const accountVTokenId = `${account.tokens[0].id}-${account1Address}`;
     const accountVTokensQuery = await queryAccountVTokens(accountVTokenId);
     response = (await subgraph({ query: accountVTokensQuery })) as FetchResult;
     const { accountVTokens } = response.data;
 
     accountVTokens.forEach(avt => {
-      expect(avt.market.id).to.equal(getMarketId(createMockAddressObject(account.tokens[0].id)));
+      expect(avt.market.id).to.equal(account.tokens[0].id);
       expect(avt.symbol).to.equal(0);
       expect(avt.account).to.equal(0);
       expect(avt.transactions).to.equal(0);
