@@ -2,6 +2,11 @@ FROM node:16.14.2-alpine3.14
 
 RUN apk add g++ make py3-pip git openssh;
 
+# Image to copy solc compiler from
+RUN wget https://github.com/ethereum/solidity/releases/download/v0.5.16/solc-static-linux -O /usr/bin/solc-v0.5.16 && chmod +x /usr/bin/solc-v0.5.16
+RUN wget https://github.com/ethereum/solidity/releases/download/v0.6.6/solc-static-linux -O /usr/bin/solc-v0.6.6 && chmod +x /usr/bin/solc-v0.6.6
+RUN wget https://github.com/ethereum/solidity/releases/download/v0.8.13/solc-static-linux -O /usr/bin/solc-v0.8.13 && chmod +x /usr/bin/solc-v0.8.13
+
 COPY package.json /usr/app/package.json
 COPY yarn.lock /usr/app/yarn.lock
 COPY .yarn /usr/app/.yarn

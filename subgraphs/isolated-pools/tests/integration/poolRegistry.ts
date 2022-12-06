@@ -12,7 +12,7 @@ describe('Pool Registry', function () {
   const syncDelay = 2000;
 
   before(async function () {
-    this.timeout(50000); // sometimes it takes a long time
+    this.timeout(500000); // sometimes it takes a long time
     ({ subgraph } = await deploy());
   });
 

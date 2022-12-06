@@ -15,10 +15,9 @@ const deploy = async () => {
   exec(`yarn workspace isolated-pools-subgraph run build:local`, root);
   exec(`yarn workspace isolated-pools-subgraph run create:local`, root);
   exec(
-    `graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
+    `npx graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --debug --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ${Date.now().toString()}`,
     root,
   );
-
   await waitForSubgraphToBeSynced(SYNC_DELAY);
   return { subgraph };
 };

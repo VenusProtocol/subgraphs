@@ -17,12 +17,12 @@ export const exec = (cmd: string, srcDir: string) => {
 
 // Subgraph Support
 export const fetchSubgraphs = createApolloFetch({
-  uri: 'http://localhost:8030/graphql',
+  uri: 'http://graph-node:8030/graphql',
 });
 
 export const fetchSubgraph = (subgraphUser: string, subgraphName: string) => {
   return createApolloFetch({
-    uri: `http://localhost:8000/subgraphs/name/${subgraphUser}/${subgraphName}`,
+    uri: `http://graph-node:8000/subgraphs/name/${subgraphUser}/${subgraphName}`,
   });
 };
 
