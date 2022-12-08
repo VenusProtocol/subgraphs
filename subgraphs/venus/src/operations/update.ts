@@ -3,7 +3,6 @@ import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { createMarket } from '../operations/create';
-import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice'
 import {
   exponentToBigDecimal,
   mantissaFactor,
@@ -11,6 +10,7 @@ import {
   vTokenDecimalsBD,
   zeroBD,
 } from '../utilities/exponentToBigDecimal';
+import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { createAccountVToken } from './create';
 import { getOrCreateAccountVTokenTransaction } from './getOrCreate';
 

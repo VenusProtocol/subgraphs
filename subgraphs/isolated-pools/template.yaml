@@ -8,12 +8,12 @@ dataSources:
     name: PoolRegistry
     network: {{ network }}
     source:
-      address: "{{ address }}"
+      address: "{{ poolRegistryAddress }}"
       abi: PoolRegistry
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/poolRegistry.ts
       entities:
@@ -21,22 +21,26 @@ dataSources:
         - Comptroller
       abis:
         - name: PoolRegistry
-          file: ../../packages/isolated-pools-abis/PoolRegistry.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Pool/PoolRegistry.sol/PoolRegistry.json
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../packages/isolated-pools-abis/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../packages/isolated-pools-abis/PoolLens.json  
+          file: ../../packages/isolated-pools-abis/PoolLens.json
       eventHandlers:
-        - event: PoolRegistered(uint256,(uint256,string,address,address,uint256,uint256))
+        - event: PoolRegistered(indexed address,(string,address,address,uint256,uint256))
           handler: handlePoolRegistered
-        - event: PoolNameSet(address,string)
-          handler: handlePoolNameSet 
+        - event: PoolNameSet(indexed address,string)
+          handler: handlePoolNameSet
+        - event: MarketAdded(indexed address,address)
+          handler: handleMarketAdded
+        - event: PoolMetadataUpdated(indexed address,(uint8,string,string,string),(uint8,string,string,string))
+          handler: handlePoolMetadataUpdated
 
 templates:
   - name: Pool
@@ -46,7 +50,7 @@ templates:
       abi: Comptroller
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/pool.ts
       entities:
@@ -56,10 +60,16 @@ templates:
         - PoolAction
       abis:
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
+        - name: PoolRegistry
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Pool/PoolRegistry.sol/PoolRegistry.json
+        - name: VToken
+          file: ../../packages/isolated-pools-abis/VToken.json
+        - name: BEP20
+          file: ../../packages/isolated-pools-abis/Bep20.json
+        - name: PoolLens
+          file: ../../packages/isolated-pools-abis/PoolLens.json
       eventHandlers:
-        - event: MarketListed(address)
-          handler: handleMarketListed
         - event: MarketEntered(address,address)
           handler: handleMarketEntered
         - event: MarketExited(address,address)
@@ -72,16 +82,16 @@ templates:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
-        - event: ActionPaused(address,string,bool)
+        - event: ActionPausedMarket(address,uint8,bool)
           handler: handlePoolActionPaused
-        - event: ActionPaused(address,string,bool)
+        - event: ActionPausedMarket(address,uint8,bool)
           handler: handleMarketActionPaused
         - event: NewBorrowCap(indexed address,uint256)
           handler: handleNewBorrowCap
         - event: NewBorrowCapGuardian(address,address)
           handler: handleNewBorrowCapGuardian
-        - event: NewMinLiquidatableAmount(indexed address,uint256)
-          handler: handleNewMinLiquidatableAmount
+        - event: NewMinLiquidatableCollateral(uint256,uint256)
+          handler: handleNewMinLiquidatableCollateral
   - name: VToken
     kind: ethereum/contract
     network: {{ network }}
@@ -89,7 +99,7 @@ templates:
       abi: VToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/vToken.ts
       entities:
@@ -100,11 +110,11 @@ templates:
         - name: VToken
           file: ../../packages/isolated-pools-abis/VToken.json
         - name: PriceOracle
-          file: ../../packages/isolated-pools-abis/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: Comptroller
-          file: ../../packages/isolated-pools-abis/Comptroller.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
       eventHandlers:
         - event: Mint(address,uint256,uint256)
           handler: handleMint

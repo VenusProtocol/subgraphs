@@ -1,7 +1,6 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
-import { PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   Borrow,
   LiquidateBorrow,
@@ -15,55 +14,65 @@ import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
   BORROW,
-  LIQUIDATE_BORROW,
+  LIQUIDATE,
   MINT,
   REDEEM,
-  REPAY_BORROW,
+  REPAY,
+  RiskRatings,
   TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
-import { pauseGuardianAddress, poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
   getUnderlyingAddress,
 } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
-import { getTransactionEventId } from '../utilities/ids';
+import { getPoolId, getTransactionEventId } from '../utilities/ids';
 
-export function createPool(event: PoolRegistered): Pool {
-  const pool = new Pool(event.params.pool.comptroller.toHexString());
+export function createPool(comptroller: Address): Pool | null {
+  const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  const poolDataFromLens = poolLensContract.getPoolByComptroller(
+  const getPoolByComptrollerResult = poolLensContract.try_getPoolByComptroller(
     poolRegistryAddress,
-    event.params.pool.comptroller,
+    comptroller,
   );
-  pool.name = poolDataFromLens.name;
-  pool.creator = event.address;
-  pool.blockPosted = poolDataFromLens.blockPosted;
-  pool.timestampPosted = poolDataFromLens.timestampPosted;
-  pool.riskRating = poolDataFromLens.riskRating.toString();
-  pool.category = poolDataFromLens.category;
-  pool.logoURL = poolDataFromLens.logoURL;
-  pool.description = poolDataFromLens.description;
-  pool.priceOracle = poolDataFromLens.priceOracle;
-  pool.pauseGuardian = pauseGuardianAddress;
-  pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
-  pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
-    ? poolDataFromLens.liquidationIncentive
-    : new BigInt(0);
-  pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
-  pool.save();
 
-  return pool;
+  if (getPoolByComptrollerResult.reverted) {
+    log.error('Unable to fetch pool info for {} with lens {}', [
+      comptroller.toHexString(),
+      poolLensAddress.toHexString(),
+    ]);
+  } else {
+    const poolDataFromLens = getPoolByComptrollerResult.value;
+    pool.name = poolDataFromLens.name;
+    pool.creator = poolDataFromLens.creator;
+    pool.blockPosted = poolDataFromLens.blockPosted;
+    pool.timestampPosted = poolDataFromLens.timestampPosted;
+    pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
+    pool.category = poolDataFromLens.category;
+    pool.logoUrl = poolDataFromLens.logoURL;
+    pool.description = poolDataFromLens.description;
+    pool.priceOracle = poolDataFromLens.priceOracle;
+    pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
+    pool.minLiquidatableCollateral = BigInt.fromI32(0);
+    pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
+      ? poolDataFromLens.liquidationIncentive
+      : new BigInt(0);
+    pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
+    // Note: we don't index vTokens here because when a pool is created it has no markets
+    pool.save();
+    return pool;
+  }
+  return null;
 }
 
 export function createAccount(accountAddress: Address): Account {
   const account = new Account(accountAddress.toHexString());
-  account.tokens = [];
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
@@ -71,20 +80,19 @@ export function createAccount(accountAddress: Address): Account {
   return account;
 }
 
-export function createMarket(vTokenAddress: Address): Market {
+export function createMarket(comptroller: Address, vTokenAddress: Address): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const underlyingAddress = getUnderlyingAddress(vTokenContract);
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
-
   const market = new Market(vTokenAddress.toHexString());
-  market.pool = vTokenContract.comptroller().toHexString();
+  market.pool = comptroller.toHexString();
   market.name = vTokenContract.name();
   market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
   market.symbol = vTokenContract.symbol();
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceUSD = zeroBigDecimal;
+  market.underlyingPriceUsd = zeroBigDecimal;
   market.underlyingDecimals = underlyingContract.decimals();
 
   market.borrowRate = zeroBigDecimal;
@@ -101,7 +109,8 @@ export function createMarket(vTokenAddress: Address): Market {
   market.borrowIndex = zeroBigDecimal;
   market.reserveFactor = getReserveFactorMantissa(vTokenContract);
   market.borrowCap = BigInt.fromI32(0);
-  market.minLiquidatableAmount = BigInt.fromI32(0);
+  market.treasuryTotalBorrowsWei = BigInt.fromI32(0);
+  market.treasuryTotalSupplyWei = BigInt.fromI32(0);
   market.save();
   return market;
 }
@@ -188,7 +197,7 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
     .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
-  transaction.type = REPAY_BORROW;
+  transaction.type = REPAY;
   transaction.amount = repayAmount;
   transaction.to = event.params.borrower;
   transaction.accountBorrows = accountBorrows;
@@ -214,7 +223,7 @@ export const createLiquidateBorrowTransaction = (
     .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
-  transaction.type = LIQUIDATE_BORROW;
+  transaction.type = LIQUIDATE;
   transaction.amount = amount;
   transaction.to = event.params.borrower;
   transaction.underlyingRepayAmount = underlyingRepayAmount;

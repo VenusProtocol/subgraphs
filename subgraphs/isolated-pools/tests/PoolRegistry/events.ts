@@ -6,18 +6,18 @@ import {
   PoolRegistered as PoolRegisteredEvent,
 } from '../../generated/PoolRegistry/PoolRegistry';
 
-export const createPoolRegisteredEvent = (
-  index: BigInt,
-  comptrollerAddress: Address,
-): PoolRegisteredEvent => {
+export const createPoolRegisteredEvent = (comptrollerAddress: Address): PoolRegisteredEvent => {
   const event = changetype<PoolRegisteredEvent>(newMockEvent());
 
   event.parameters = [];
-  const indexParam = new ethereum.EventParam('index', ethereum.Value.fromUnsignedBigInt(index));
-  event.parameters.push(indexParam);
+  const comptrollerParam = new ethereum.EventParam(
+    'comptroller',
+    ethereum.Value.fromAddress(comptrollerAddress),
+  );
+  event.parameters.push(comptrollerParam);
 
   const tupleArray: Array<ethereum.Value> = [
-    ethereum.Value.fromUnsignedBigInt(index),
+    ethereum.Value.fromAddress(comptrollerAddress),
     ethereum.Value.fromString('Pool One'),
     ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
     ethereum.Value.fromAddress(comptrollerAddress),

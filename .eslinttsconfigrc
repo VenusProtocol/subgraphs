@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["deploy", "hardhat.config.ts", "subgraphs"]
+}

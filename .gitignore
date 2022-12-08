@@ -25,3 +25,8 @@ cache
 contracts
 artifacts
 typechain-types
+deployments/localhost
+
+# Testing 
+**/constants/config.ts
+**/coverage

@@ -3,9 +3,18 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["plugin:@typescript-eslint/recommended", "prettier", "prettier/@typescript-eslint"],
   "parserOptions": {
-    "project": "./tsconfig.json"
+    "project": ["./.eslinttsconfigrc"]
   },
   "rules": {
     "@typescript-eslint/no-unused-vars": 2,
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "BigInt": false
+        }
+      }
+    ],
+    "@typescript-eslint/no-loss-of-precision": "warn",
   }
 }

@@ -1,17 +1,36 @@
 import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { BEP20 } from '../../generated/PoolRegistry/BEP20';
-import { Account, AccountVToken, AccountVTokenTransaction, Market } from '../../generated/schema';
+import {
+  Account,
+  AccountVToken,
+  AccountVTokenTransaction,
+  Market,
+  Pool,
+} from '../../generated/schema';
 import { zeroBigDecimal } from '../constants';
-import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
-import { createAccount, createMarket } from './create';
+import {
+  getAccountVTokenId,
+  getAccountVTokenTransactionId,
+  getMarketId,
+  getPoolId,
+} from '../utilities/ids';
+import { createAccount, createMarket, createPool } from './create';
 
-export const getOrCreateMarket = (vTokenAddress: Address): Market => {
-  let market = Market.load(vTokenAddress.toHexString());
+export const getOrCreateMarket = (comptroller: Address, vTokenAddress: Address): Market => {
+  let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
-    market = createMarket(vTokenAddress);
+    market = createMarket(comptroller, vTokenAddress);
   }
   return market;
+};
+
+export const getOrCreatePool = (comptroller: Address): Pool | null => {
+  let pool = Pool.load(getPoolId(comptroller));
+  if (!pool) {
+    pool = createPool(comptroller);
+  }
+  return pool;
 };
 
 export const getOrCreateAccount = (accountAddress: Address): Account => {
@@ -39,7 +58,7 @@ export const getOrCreateAccountVTokenTransaction = (
   if (transaction == null) {
     transaction = new AccountVTokenTransaction(accountVTokenTransactionId);
     transaction.account = accountAddress.toHexString();
-    transaction.tx_hash = txHash; // eslint-disable-line @typescript-eslint/camelcase
+    transaction.txHash = txHash;
     transaction.timestamp = timestamp;
     transaction.block = block;
     transaction.logIndex = logIndex;

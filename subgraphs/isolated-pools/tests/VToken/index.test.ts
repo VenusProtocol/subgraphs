@@ -12,17 +12,16 @@ import {
 
 import {
   BORROW,
-  LIQUIDATE_BORROW,
+  LIQUIDATE,
   MINT,
   REDEEM,
-  REPAY_BORROW,
+  REPAY,
   TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
 } from '../../src/constants';
-import { aaaTokenAddress, vBnbAddress } from '../../src/constants/addresses';
-import { handleMarketListed } from '../../src/mappings/pool';
-import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
+import { vBnbAddress } from '../../src/constants/addresses';
+import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
   handleBorrow,
@@ -38,7 +37,7 @@ import { getMarket } from '../../src/operations/get';
 import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
-import { createMarketListedEvent } from '../Pool/events';
+import { createMarketAddedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import {
   createAccrueInterestEvent,
@@ -58,6 +57,7 @@ const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
+const aaaTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
@@ -97,14 +97,13 @@ beforeAll(() => {
 
 beforeEach(() => {
   // Create Pool
-  const index = new BigInt(0);
-  const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+  const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
   handlePoolRegistered(poolRegisteredEvent);
   // Add Market
-  const marketListedEvent = createMarketListedEvent(aaaTokenAddress);
+  const marketAddedEvent = createMarketAddedEvent(comptrollerAddress, aaaTokenAddress);
 
-  handleMarketListed(marketListedEvent);
+  handleMarketAdded(marketAddedEvent);
 });
 
 afterEach(() => {
@@ -317,7 +316,7 @@ describe('VToken', () => {
       .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
-    assert.fieldEquals('Transaction', transactionId, 'type', REPAY_BORROW);
+    assert.fieldEquals('Transaction', transactionId, 'type', REPAY);
     assert.fieldEquals(
       'Transaction',
       transactionId,
@@ -398,7 +397,7 @@ describe('VToken', () => {
       .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
-    assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE_BORROW);
+    assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE);
     assert.fieldEquals(
       'Transaction',
       transactionId,

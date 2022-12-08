@@ -10,20 +10,29 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "graph codegen",
-    "create:local": "graph create venusprotocol/venus-isolated-pools --node http://127.0.0.1:8020",
-    "build:local": "graph build --ipfs http://localhost:5001",
-    "build:testnet": "graph build --ipfs https://api.staging.thegraph.com/ipfs/ ",
-    "build:mainnet": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:local": "npx mustache config/local.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-isolated-pools --debug --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
-    "deploy:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && graph deploy venusprotocol/venus-isolated-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml",
-    "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml",
-    "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml",
-    "rempve-local": "graph remove --node http://localhost:8020/ venusprotocol/venus-isolated-pools",
+    "codegen": "npx graph codegen",
+    "create:local": "npx graph create venusprotocol/venus-isolated-pools --node http://graph-node:8020/",
+    "build:local": "npx graph build --ipfs http://ipfs:5001",
+    "build:mainnet": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools-chapel --debug --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts",
+    "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx mustache config/testnet.json src/constants/config-template > src/constants/config.ts",
+    "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx mustache config/mainnet.json src/constants/config-template > src/constants/config.ts",
+    "remove:local": "npx graph remove --node http://graph-node:8020/ venusprotocol/venus-isolated-pools",
     "pretty": "prettier —-write '**/*.ts'",
-    "test": "graph test",
-    "test:integration": "true"
+    "test": "yarn prepare:local && graph test",
+    "node:integration": "PACKAGE=isolated-pools hardhat node",
+    "test:integration": "PACKAGE=isolated-pools hardhat test tests/integration/index.ts --network localhost"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.19.3",
+    "@babel/preset-typescript": "^7.18.6",
+    "@openzeppelin/contracts": "^4.7.3",
+    "@openzeppelin/contracts-upgradeable": "^4.7.3",
+    "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "venus-subgraph-utils": "0.0.0"
   }
 }

@@ -1,6 +1,8 @@
 {
   "extends": "./node_modules/@graphprotocol/graph-ts/tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
+    "module": "node16",
     "types": ["@graphprotocol/graph-ts"],
     "noLib": false,
     "lib": ["es2015"],

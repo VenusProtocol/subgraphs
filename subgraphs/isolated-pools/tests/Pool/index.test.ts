@@ -10,42 +10,38 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { defaultMantissaFactorBigDecimal } from '../../src/constants';
+import { defaultMantissaFactorBigDecimal } from '../../src/constants/index';
 import {
-  handleMarketActionPaused,
+  handleActionPausedMarket,
   handleMarketEntered,
   handleMarketExited,
-  handleMarketListed,
   handleNewBorrowCap,
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
-  handleNewMinLiquidatableAmount,
+  handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
-  handlePoolActionPaused,
 } from '../../src/mappings/pool';
-import { handlePoolRegistered } from '../../src/mappings/poolRegistry';
+import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
   getMarketActionId,
-  getPoolActionId,
 } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import { createPoolRegistryMock } from '../VToken/mocks';
 import {
-  createMarketActionPausedEvent,
+  createActionPausedMarketEvent,
+  createMarketAddedEvent,
   createMarketEnteredEvent,
   createMarketExitedEvent,
-  createMarketListedEvent,
   createNewBorrowCapEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
-  createNewMinLiquidatableAmountEvent,
+  createNewMinLiquidatableCollateralEvent,
   createNewPriceOracleEvent,
-  createPoolActionPausedEvent,
 } from './events';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
@@ -53,7 +49,6 @@ const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const oldAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 const newAddress = Address.fromString('0x0000000000000000000000000000000000000e0e');
-const poolAddress = Address.fromString('0x0000000000000000000000000000000000000f0f');
 
 const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
@@ -91,10 +86,12 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  const index = new BigInt(0);
-  const poolRegisteredEvent = createPoolRegisteredEvent(index, comptrollerAddress);
+  const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
   handlePoolRegistered(poolRegisteredEvent);
+  const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
+
+  handleMarketAdded(marketListedEvent);
 });
 
 afterEach(() => {
@@ -103,10 +100,6 @@ afterEach(() => {
 
 describe('Pool Events', () => {
   test('creates Market correctly', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
-
-    handleMarketListed(marketListedEvent);
-
     const assertMarketDocument = (key: string, value: string): void => {
       assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
     };
@@ -181,9 +174,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCloseFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldCloseFactorMantissa = BigInt.fromI64(900000000);
     const newCloseFactorMantissa = BigInt.fromI64(540000000);
@@ -203,9 +196,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewCollateralFactor event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldCollateralFactorMantissa = BigInt.fromI64(900000000000000);
     const newCollateralFactorMantissa = BigInt.fromI64(540000000000000);
@@ -229,9 +222,9 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewLiquidationIncentive event', () => {
-    const marketListedEvent = createMarketListedEvent(vTokenAddress);
+    const marketListedEvent = createMarketAddedEvent(comptrollerAddress, vTokenAddress);
 
-    handleMarketListed(marketListedEvent);
+    handleMarketAdded(marketListedEvent);
 
     const oldLiquidationIncentiveMantissa = BigInt.fromI64(900000000);
     const newLiquidationIncentiveMantissa = BigInt.fromI64(540000000);
@@ -270,37 +263,22 @@ describe('Pool Events', () => {
     assertPoolDocument('priceOracle', newPriceOracle.toHexString());
   });
 
-  test('indexes PoolPauseAction event', () => {
-    const action = 'Transfer';
-    const pauseState = true;
-    const poolActionPausedEvent = createPoolActionPausedEvent(poolAddress, action, pauseState);
-
-    handlePoolActionPaused(poolActionPausedEvent);
-
-    const id = getPoolActionId(poolAddress, action);
-
-    assert.fieldEquals('PoolAction', id, 'id', id);
-    assert.fieldEquals('PoolAction', id, 'pool', poolAddress.toHexString());
-    assert.fieldEquals('PoolAction', id, 'action', action);
-    assert.fieldEquals('PoolAction', id, 'pauseState', pauseState.toString());
-  });
-
   test('indexes MarketPauseAction event', () => {
-    const action = 'Mint';
+    const action = 0;
     const pauseState = true;
-    const marketActionPausedEvent = createMarketActionPausedEvent(
+    const marketActionPausedEvent = createActionPausedMarketEvent(
       vTokenAddress,
       action,
       pauseState,
     );
 
-    handleMarketActionPaused(marketActionPausedEvent);
+    handleActionPausedMarket(marketActionPausedEvent);
 
     const id = getMarketActionId(vTokenAddress, action);
 
     assert.fieldEquals('MarketAction', id, 'id', id);
     assert.fieldEquals('MarketAction', id, 'vToken', vTokenAddress.toHexString());
-    assert.fieldEquals('MarketAction', id, 'action', action);
+    assert.fieldEquals('MarketAction', id, 'action', 'MINT');
     assert.fieldEquals('MarketAction', id, 'pauseState', pauseState.toString());
   });
 
@@ -314,21 +292,21 @@ describe('Pool Events', () => {
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
   });
 
-  test('indexes NewMinLiquidatableAmount event', () => {
-    const newMinLiquidatableAmount = BigInt.fromI64(200000000000000000);
-    const newMinLiquidatableAmountEvent = createNewMinLiquidatableAmountEvent(
+  test('indexes NewMinLiquidatableCollateral event', () => {
+    const newMinLiquidatableCollateral = BigInt.fromI64(200000000000000000);
+    const newMinLiquidatableCollateralEvent = createNewMinLiquidatableCollateralEvent(
+      comptrollerAddress,
       vTokenAddress,
-      newMinLiquidatableAmount,
+      newMinLiquidatableCollateral,
     );
 
-    handleNewMinLiquidatableAmount(newMinLiquidatableAmountEvent);
-
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    handleNewMinLiquidatableCollateral(newMinLiquidatableCollateralEvent);
+    assert.fieldEquals('Pool', comptrollerAddress.toHex(), 'id', comptrollerAddress.toHexString());
     assert.fieldEquals(
-      'Market',
-      vTokenAddress.toHex(),
-      'minLiquidatableAmount',
-      newMinLiquidatableAmount.toString(),
+      'Pool',
+      comptrollerAddress.toHex(),
+      'minLiquidatableCollateral',
+      newMinLiquidatableCollateral.toString(),
     );
   });
 });

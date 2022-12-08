@@ -1,44 +1,33 @@
 import {
-  ActionPaused1 as MarketActionPaused,
+  ActionPausedMarket,
   MarketEntered,
   MarketExited,
-  MarketListed,
   NewBorrowCap,
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
-  NewMinLiquidatableAmount,
+  NewMinLiquidatableCollateral,
   NewPriceOracle,
-  ActionPaused as PoolActionPaused,
 } from '../../generated/PoolRegistry/Comptroller';
-import { VToken } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
-import { createMarket } from '../operations/create';
-import { getPool } from '../operations/get';
+import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
+  getOrCreatePool,
 } from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
   updateOrCreateMarketAction,
-  updateOrCreatePoolAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
 
-export const handleMarketListed = (event: MarketListed): void => {
-  // Dynamically index all new listed tokens
-  const vTokenAddress = event.params.vToken;
-  VToken.create(vTokenAddress);
-  createMarket(vTokenAddress);
-};
-
-export const handleMarketEntered = (event: MarketEntered): void => {
+export function handleMarketEntered(event: MarketEntered): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -55,13 +44,13 @@ export const handleMarketEntered = (event: MarketEntered): void => {
     event.block.number,
     event.logIndex,
   );
-};
+}
 
-export const handleMarketExited = (event: MarketExited): void => {
+export function handleMarketExited(event: MarketExited): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -78,65 +67,67 @@ export const handleMarketExited = (event: MarketExited): void => {
     event.block.number,
     event.logIndex,
   );
-};
+}
 
-export const handleNewCloseFactor = (event: NewCloseFactor): void => {
+export function handleNewCloseFactor(event: NewCloseFactor): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.closeFactor = event.params.newCloseFactorMantissa;
-  pool.save();
-};
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.closeFactor = event.params.newCloseFactorMantissa;
+    pool.save();
+  }
+}
 
-export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
+export function handleNewCollateralFactor(event: NewCollateralFactor): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getOrCreateMarket(poolAddress, vTokenAddress);
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
   market.save();
-};
+}
 
-export const handleNewLiquidationIncentive = (event: NewLiquidationIncentive): void => {
+export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
-  pool.save();
-};
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
+    pool.save();
+  }
+}
 
-export const handleNewPriceOracle = (event: NewPriceOracle): void => {
+export function handleNewPriceOracle(event: NewPriceOracle): void {
   const poolAddress = event.address;
-  const pool = getPool(poolAddress);
-  pool.priceOracle = event.params.newPriceOracle;
-  pool.save();
-};
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.priceOracle = event.params.newPriceOracle;
+    pool.save();
+  }
+}
 
-export const handlePoolActionPaused = (event: PoolActionPaused): void => {
-  const poolAddress = event.address;
-  const action = event.params.action as string;
-  const pauseState = event.params.pauseState;
-  updateOrCreatePoolAction(poolAddress, action, pauseState);
-};
-
-export const handleMarketActionPaused = (event: MarketActionPaused): void => {
+export function handleActionPausedMarket(event: ActionPausedMarket): void {
   const vTokenAddress = event.params.vToken;
-  const action = event.params.action as string;
+  const action = event.params.action;
   const pauseState = event.params.pauseState;
   updateOrCreateMarketAction(vTokenAddress, action, pauseState);
-};
+}
 
-export const handleNewBorrowCap = (event: NewBorrowCap): void => {
+export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress);
   market.borrowCap = borrowCap;
   market.save();
-};
+}
 
-export const handleNewMinLiquidatableAmount = (event: NewMinLiquidatableAmount): void => {
-  const vTokenAddress = event.params.vToken;
-  const newMinLiquidatableAmount = event.params.newMinLiquidatableAmount;
-  const market = getOrCreateMarket(vTokenAddress);
-  market.minLiquidatableAmount = newMinLiquidatableAmount;
-  market.save();
-};
+export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableCollateral): void {
+  const poolAddress = event.address;
+  const newMinLiquidatableCollateral = event.params.newMinLiquidatableCollateral;
+  const pool = getOrCreatePool(poolAddress);
+  if (pool) {
+    pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
+    pool.save();
+  }
+}

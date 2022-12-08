@@ -12,11 +12,6 @@
       {
         "components": [
           {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
-          {
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -67,11 +62,6 @@
             "type": "address"
           },
           {
-            "internalType": "address",
-            "name": "pauseGuardian",
-            "type": "address"
-          },
-          {
             "internalType": "uint256",
             "name": "closeFactor",
             "type": "uint256"
@@ -79,6 +69,11 @@
           {
             "internalType": "uint256",
             "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minLiquidatableCollateral",
             "type": "uint256"
           },
           {
@@ -190,11 +185,6 @@
       {
         "components": [
           {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
-          {
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -245,11 +235,6 @@
             "type": "address"
           },
           {
-            "internalType": "address",
-            "name": "pauseGuardian",
-            "type": "address"
-          },
-          {
             "internalType": "uint256",
             "name": "closeFactor",
             "type": "uint256"
@@ -257,6 +242,11 @@
           {
             "internalType": "uint256",
             "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minLiquidatableCollateral",
             "type": "uint256"
           },
           {
@@ -360,11 +350,6 @@
       {
         "components": [
           {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
-          {
             "internalType": "string",
             "name": "name",
             "type": "string"
@@ -399,11 +384,6 @@
     "outputs": [
       {
         "components": [
-          {
-            "internalType": "uint256",
-            "name": "poolId",
-            "type": "uint256"
-          },
           {
             "internalType": "string",
             "name": "name",
@@ -455,11 +435,6 @@
             "type": "address"
           },
           {
-            "internalType": "address",
-            "name": "pauseGuardian",
-            "type": "address"
-          },
-          {
             "internalType": "uint256",
             "name": "closeFactor",
             "type": "uint256"
@@ -467,6 +442,11 @@
           {
             "internalType": "uint256",
             "name": "liquidationIncentive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minLiquidatableCollateral",
             "type": "uint256"
           },
           {
@@ -592,9 +572,9 @@
         "type": "address"
       },
       {
-        "internalType": "uint256",
-        "name": "poolId",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "comptroller",
+        "type": "address"
       },
       {
         "internalType": "address",
