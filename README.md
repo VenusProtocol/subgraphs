@@ -24,19 +24,20 @@ You can also see the saved queries on the hosted service for examples.
 All the required services are networked with a docker-compose and can be brought up using `docker-compose up`.
 
 ## Running all servies locally
-
-Hardhat is used for development and testing. First start a local node. We'll also need to deploy the contracts. For debugging you may also find it useful to use a [fork](https://hardhat.org/hardhat-network/docs/guides/forking-other-networks)
-```
-$ yarn hardhat node
-```
-
 ### IPFS local
-Initialize ipfs with the test profile and run offline to avoid connecting to the external network. When running the daemon check the port the API server is listening on.
+First start by initializing ipfs with the test profile and run offline to avoid connecting to the external network. When running the daemon check the port the API server is listening on.
 
 ```
 $ ipfs init --profile=test
 $ ipfs config Addresses.API /ip4/0.0.0.0/tcp/5001
 $ ipfs daemon --offline
+```
+
+### Running hardhat
+
+Hardhat is used for development and testing. First start a local node. We'll also need to deploy the contracts. For debugging you may also find it useful to use a [fork](https://hardhat.org/hardhat-network/docs/guides/forking-other-networks)
+```
+$ yarn hardhat node
 ```
 
 ### Graph Node
@@ -51,6 +52,8 @@ cargo run -p graph-node --release -- \
   --ipfs 127.0.0.1:5001
 ```
 
+Replace `<NETWORK>` with the network indicated by your subgraph.yaml (usually bsc).
+
 ### Deploy your local subgraph
 To build or deploy the subgraph you'll need to first compile the subgraph.yaml template and then run the build of deploy commands which can be run for all packages or individual packages.
 
@@ -64,9 +67,17 @@ $ yarn deploy:local
 Unit tests are run with `matchstick-as`. They can be run with the `test` command at the project or workspace level. Tests are organized by datasource with files for creating events and mocks. A test consists of setting up and creating an event, then passing it to the handler and asserting against changes to the document store.
 
 ### Integration tests
-To run the integration tests you'll need to setup a local environment and run the tests with the `test:integration` in the project or workspace that you want to test.
+To run the integration tests, first you'll need to run a node with the contracts properly deployed. For that, you can use the `node:integraton` command. Make sure to have ipfs running. Then use the `test:integration` command in the project or workspace that you want to test.
 
-The required services are composed in a docker-compose file but currently there is an issue with the registrar on the graph-node that needs to be sorted.
+The required services for the graph-node are composed in a docker-compose file inside `<graph_node_repo>\docker\docker-compose.yml`. Currently there is an issue with the registrar on the graph-node that needs to be sorted. You can replace the `ethereum` env var with the corresponding URI for the ethereum node running in your setup (usually `bsc:http://127.0.0.1:8545`).
+
+If you run into additional issues, you might try to recreate your graph-node db:
+```
+dropdb graph-node
+createdb graph-node
+```
+
+Also, you might want to make sure test assertions are not being made against a state that was previously mutated by other test runs. To avoid this scenario, you will want to also recreate your Postgres DB and restart your ipfs and eth node services.
 
 ## Debugging
 To query the indexing error use a graphql explorer like [GraphiQl](https://graphiql-online.com/graphiql) to query the graph node for the status of the graph. The endpoint for the hosted service is `https://api.thegraph.com/index-node/graphql`.
@@ -108,4 +119,4 @@ Redploy the subgraph pointing to the deployed fork
 graph deploy <SUBGRAPH_NAME> --debug-fork <SUBGRAPH_ID> --ipfs http://localhost:5001 --node http://localhost:8020
 ```
 
-After these steps you should quickly run into the indexing error. After updating hte code you can redeploy the forked subgraph to check the fix.
+After these steps you should quickly run into the indexing error. After updating the code you can redeploy the forked subgraph to check the fix.
