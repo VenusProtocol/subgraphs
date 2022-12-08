@@ -2,6 +2,9 @@
 
 [Venus](https://venus.io/) is an open-source protocol for algorithmic, efficient Money Markets on the Binance Smart Chain. The Subgraphs ingest events sent by the Venus protocol and make the queryable.
 
+## Integration tests were temporarily disabled during CI
+This is due to issues caused when trying to run them using docker containers. For now, we can run the integration tests locally using the steps described below.
+
 ## Networks and Performance
 The following subgraphs are deployed to the BSC mainnet
 [Markets](https://thegraph.com/explorer/subgraph/venusprotocol/venus-subgraph)
