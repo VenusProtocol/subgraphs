@@ -24,6 +24,7 @@
     "prepare:testnet": "yarn workspaces foreach run prepare:testnet",
     "prepare:mainnet": "yarn workspaces foreach run prepare:mainnet",
     "remove:local": "yarn workspaces foreach run remove:local",
+    "generate-subgraph-types": "yarn graphclient build --dir ./packages/utils/src",
     "lint": "eslint '**/*.{ts,tsx}'",
     "lint:fix": "yarn lint --fix",
     "pretty": "prettier '**/*.ts' --write",
@@ -32,6 +33,7 @@
     "postinstall": "./copy_contracts.sh"
   },
   "devDependencies": {
+    "@graphprotocol/client-cli": "^2.2.16",
     "@graphprotocol/graph-cli": "0.33.0",
     "@graphprotocol/graph-ts": "0.27.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
@@ -55,6 +57,8 @@
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-import": "^2.26.0",
     "ethers": "^5.7.0",
+    "graphql": "16.6.0",
+    "graphql-tag": "2.12.6",
     "hardhat": "^2.10.2",
     "hardhat-deploy": "^0.11.15",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",

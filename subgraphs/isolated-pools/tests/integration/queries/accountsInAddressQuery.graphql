@@ -1,0 +1,11 @@
+query Accounts {
+  accounts {
+    id
+    tokens {
+      id
+    }
+    countLiquidated
+    countLiquidator
+    hasBorrowed
+  }
+}
