@@ -24,7 +24,7 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
-import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { nullAddress, poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
@@ -33,7 +33,7 @@ import {
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import { getPoolId, getTransactionEventId } from '../utilities/ids';
 
-export function createPool(comptroller: Address): Pool | null {
+export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
@@ -42,12 +42,7 @@ export function createPool(comptroller: Address): Pool | null {
     comptroller,
   );
 
-  if (getPoolByComptrollerResult.reverted) {
-    log.error('Unable to fetch pool info for {} with lens {}', [
-      comptroller.toHexString(),
-      poolLensAddress.toHexString(),
-    ]);
-  } else {
+  if (!getPoolByComptrollerResult.reverted) {
     const poolDataFromLens = getPoolByComptrollerResult.value;
     pool.name = poolDataFromLens.name;
     pool.creator = poolDataFromLens.creator;
@@ -64,11 +59,28 @@ export function createPool(comptroller: Address): Pool | null {
       ? poolDataFromLens.liquidationIncentive
       : new BigInt(0);
     pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
-    // Note: we don't index vTokens here because when a pool is created it has no markets
-    pool.save();
-    return pool;
+  } else {
+    pool.name = '';
+    pool.creator = nullAddress;
+    pool.blockPosted = new BigInt(0);
+    pool.timestampPosted = new BigInt(0);
+    pool.riskRating = RiskRatings[0];
+    pool.category = '';
+    pool.logoUrl = '';
+    pool.description = '';
+    pool.priceOracle = nullAddress;
+    pool.closeFactor = new BigInt(0);
+    pool.minLiquidatableCollateral = BigInt.fromI32(0);
+    pool.liquidationIncentive = new BigInt(0);
+    pool.maxAssets = new BigInt(0);
+    log.error('Unable to fetch pool info for {} with lens {}', [
+      comptroller.toHexString(),
+      poolLensAddress.toHexString(),
+    ]);
   }
-  return null;
+  // Note: we don't index vTokens here because when a pool is created it has no markets
+  pool.save();
+  return pool;
 }
 
 export function createAccount(accountAddress: Address): Account {
@@ -86,14 +98,42 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress.toHexString());
   market.pool = comptroller.toHexString();
-  market.name = vTokenContract.name();
+  // All these calls fail when listening to // handleNewCollateralFactor
+  const nameResp = vTokenContract.try_name();
+  let name = '';
+  if (!nameResp.reverted) {
+    name = nameResp.value;
+  }
+  market.name = name;
   market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
-  market.symbol = vTokenContract.symbol();
+  const symbolResp = vTokenContract.try_symbol();
+  let symbol = '';
+  if (!symbolResp.reverted) {
+    symbol = symbolResp.value;
+  }
+  market.symbol = symbol;
   market.underlyingAddress = underlyingAddress;
-  market.underlyingName = underlyingContract.name();
-  market.underlyingSymbol = underlyingContract.symbol();
+  const underlyingNameResp = underlyingContract.try_name();
+  let underlyingName = '';
+  if (!underlyingNameResp.reverted) {
+    underlyingName = underlyingNameResp.value;
+  }
+  market.underlyingName = underlyingName;
+
+  const underlyingSymbolResp = underlyingContract.try_symbol();
+  let underlyingSymbol = '';
+  if (!underlyingSymbolResp.reverted) {
+    underlyingSymbol = underlyingSymbolResp.value;
+  }
+  market.underlyingSymbol = underlyingSymbol;
   market.underlyingPriceUsd = zeroBigDecimal;
-  market.underlyingDecimals = underlyingContract.decimals();
+
+  const underlyingDecimalsResp = underlyingContract.try_decimals();
+  let underlyingDecimals = 18;
+  if (!underlyingDecimalsResp.reverted) {
+    underlyingDecimals = underlyingDecimalsResp.value;
+  }
+  market.underlyingDecimals = underlyingDecimals;
 
   market.borrowRate = zeroBigDecimal;
   market.cash = zeroBigDecimal;

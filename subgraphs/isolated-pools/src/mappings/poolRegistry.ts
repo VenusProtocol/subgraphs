@@ -14,7 +14,11 @@ import { updatePoolMetadata } from '../operations/update';
 export function handlePoolRegistered(event: PoolRegistered): void {
   // Create data source
   PoolDataSource.create(event.params.comptroller);
-  createPool(event.params.comptroller);
+  const pool = createPool(event.params.comptroller);
+  // Sometimes the pool doesn't get created and is set with defaults
+  // So we'll make sure we grab at least the block info for debugging
+  pool.blockPosted = event.block.timestamp;
+  pool.timestampPosted = event.block.number;
 }
 
 export function handlePoolNameSet(event: PoolNameSet): void {
