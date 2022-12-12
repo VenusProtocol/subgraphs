@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { Signer } from 'ethers';
 import { ethers } from 'hardhat';
-import { exec, subgraphClient, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
+import subgraphClient from '../../subgraph-client';
 import deploy from './utils/deploy';
 
 describe('Pools', function () {
@@ -26,23 +27,26 @@ describe('Pools', function () {
 
   it('handles MarketAdded event', async function () {
     // Check market pools
-    const queryPools = () => subgraphClient.Pools();
-    const { pools } = await queryPools();
+    const { data } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools } = data!;
     const pool = pools[0];
     expect(pool.markets.length).to.equal(2);
     // check markets
-    const queryMarkets = () => subgraphClient.Markets();
-    const marketsResponse = await queryMarkets();
-    expect(marketsResponse.markets.length).to.equal(2);
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+    expect(markets.length).to.equal(2);
   });
 
-  it('handles MarketEntered and MarketExited event', async function () {
+  it('handles MarketEntered and MarketExited events', async function () {
     const account1Address = await acc1.getAddress();
     await waitForSubgraphToBeSynced(syncDelay * 2);
 
     // check account
-    const queryAccounts = () => subgraphClient.AccountById({ id: account1Address });
-    const { account } = await queryAccounts();
+    const { data } = await subgraphClient.getAccountById(account1Address);
+    expect(data).to.not.be.equal(undefined);
+    const { account } = data!;
     expect(account?.id).to.equal(account1Address.toLowerCase());
     expect(account?.tokens.length).to.equal(2);
     expect(account?.countLiquidated).to.equal(0);
@@ -51,8 +55,9 @@ describe('Pools', function () {
 
     // check accountVTokens
     // const accountVTokenId = `${account?.tokens[0].id}-${account1Address}`;
-    const queryAccountVTokens = () => subgraphClient.AccountVTokens();
-    const { accountVTokens } = await queryAccountVTokens();
+    const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
+    expect(accountVTokensData).to.not.be.equal(undefined);
+    const { accountVTokens } = accountVTokensData!;
 
     accountVTokens.forEach(avt => {
       expect(avt.market.id).to.equal(account?.tokens[0].id);
@@ -70,16 +75,18 @@ describe('Pools', function () {
     });
 
     // check accountVTokenTransaction
-    const queryAccountVTokenTransactions = () => subgraphClient.AccountVTokenTransactions();
-    const accVTokenTransactionsResponse = await queryAccountVTokenTransactions();
-    const { accountVTokenTransactions } = accVTokenTransactionsResponse;
+    const { data: accountVTokensTransactionData } =
+      await subgraphClient.getAccountVTokensTransactions();
+    expect(accountVTokensTransactionData).to.not.be.equal(undefined);
+    const { accountVTokenTransactions } = accountVTokensTransactionData!;
     // @TODO write assertions
     expect(accountVTokenTransactions[0].id).to.equal(true);
   });
 
   it('handles NewCloseFactor event', async function () {
-    const queryPools = () => subgraphClient.Pools();
-    const { pools } = await queryPools();
+    const { data } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools } = data!;
     // @TODO this event is fired from deployment
     // Could test by refiring event
     pools.forEach(p => {
@@ -88,19 +95,20 @@ describe('Pools', function () {
   });
 
   it('handles NewCollateralFactor event', async function () {
-    const queryMarkets = () => subgraphClient.Markets();
-    const response = await queryMarkets();
-    const { markets } = response;
+    const { data } = await subgraphClient.getMarkets();
+    expect(data).to.not.be.equal(undefined);
+    const { markets } = data!;
     // @TODO this event is fired from deployment
     // Could test by refiring event
-    markets.forEach(p => {
-      expect(p.collateralFactor).to.equal('0');
+    markets.forEach(m => {
+      expect(m.collateralFactor).to.equal('0');
     });
   });
 
   it('handles NewLiquidationIncentive event', async function () {
-    const queryPools = () => subgraphClient.Pools();
-    const { pools } = await queryPools();
+    const { data } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools } = data!;
     // @TODO this event is fired from deployment
     // Could test by refiring event
     pools.forEach(p => {
@@ -125,8 +133,9 @@ describe('Pools', function () {
   });
 
   it('handles NewMinLiquidatableCollateral event', async function () {
-    const queryPools = () => subgraphClient.Pools();
-    const { pools } = await queryPools();
+    const { data } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools } = data!;
     // @TODO this event is fired from deployment
     // Could test by refiring event
     pools.forEach(p => {

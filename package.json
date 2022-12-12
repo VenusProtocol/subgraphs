@@ -24,7 +24,7 @@
     "prepare:testnet": "yarn workspaces foreach run prepare:testnet",
     "prepare:mainnet": "yarn workspaces foreach run prepare:mainnet",
     "remove:local": "yarn workspaces foreach run remove:local",
-    "generate-subgraph-types": "yarn graphclient build --dir ./packages/utils/src",
+    "generate-subgraph-types": "yarn workspaces foreach run generate-subgraph-types",
     "lint": "eslint '**/*.{ts,tsx}'",
     "lint:fix": "yarn lint --fix",
     "pretty": "prettier '**/*.ts' --write",

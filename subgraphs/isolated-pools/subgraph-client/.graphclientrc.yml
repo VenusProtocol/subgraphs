@@ -5,4 +5,4 @@ sources:
         endpoint: http://127.0.0.1:8000/subgraphs/name/venusprotocol/venus-isolated-pools
 
 documents:
-  - '../../../subgraphs/**/*.graphql'
+  - '../**/*.graphql'

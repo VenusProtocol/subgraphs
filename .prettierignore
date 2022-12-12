@@ -2,4 +2,4 @@ node_modules
 build
 generated
 hardhat.config.ts
-/subgraphs/.graphclient
+/subgraphs/isolated-pools/subgraph-client/.graphclient

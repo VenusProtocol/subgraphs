@@ -4574,6 +4574,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@urql/core@npm:^3.0.3":
+  version: 3.1.1
+  resolution: "@urql/core@npm:3.1.1"
+  dependencies:
+    wonka: ^6.1.2
+  peerDependencies:
+    graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: 8fa40d9d1e387ec50571f78df59beae7d0eb9f7f4297255ad1c1201e7fe45d8f8fc4d9ed23586b2ae25531e1c200dee7486d42ac120d8d258d420f22a947a612
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/isolated-pools@npm:^0.0.14":
   version: 0.0.14
   resolution: "@venusprotocol/isolated-pools@npm:0.0.14"
@@ -10481,10 +10492,12 @@ __metadata:
   dependencies:
     "@babel/preset-env": ^7.19.3
     "@babel/preset-typescript": ^7.18.6
+    "@graphprotocol/client-cli": ^2.2.16
     "@openzeppelin/contracts": ^4.7.3
     "@openzeppelin/contracts-upgradeable": ^4.7.3
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
+    urql: ^3.0.3
     venus-subgraph-utils: 0.0.0
   languageName: unknown
   linkType: soft
@@ -15847,6 +15860,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"urql@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "urql@npm:3.0.3"
+  dependencies:
+    "@urql/core": ^3.0.3
+    wonka: ^6.0.0
+  peerDependencies:
+    graphql: ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    react: ">= 16.8.0"
+  checksum: 0376873d95b28a7593c9c791da2df54fbbd079caa283ef0225b51bd169d87108744dc47d3d14417e51f7079439e4dd28427bc7f4d74b22b7c5de36a0dea06855
+  languageName: node
+  linkType: hard
+
 "ursa-optional@npm:~0.10.0":
   version: 0.10.2
   resolution: "ursa-optional@npm:0.10.2"
@@ -16506,6 +16532,13 @@ __metadata:
   dependencies:
     string-width: ^1.0.2 || 2 || 3 || 4
   checksum: d5fc37cd561f9daee3c80e03b92ed3e84d80dde3365a8767263d03dacfc8fa06b065ffe1df00d8c2a09f731482fcacae745abfbb478d4af36d0a891fad4834d3
+  languageName: node
+  linkType: hard
+
+"wonka@npm:^6.0.0, wonka@npm:^6.1.2":
+  version: 6.1.2
+  resolution: "wonka@npm:6.1.2"
+  checksum: 474dcffd3861faaf5df8f4ef1ea1e614eb0cf36f54003974ebd4ab43b8fd6aad26317ef75e55488e7a61d64922531ae3ca2890dac90922d46715e0dd795682ce
   languageName: node
   linkType: hard
 

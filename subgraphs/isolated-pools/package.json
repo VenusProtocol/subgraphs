@@ -21,6 +21,7 @@
     "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx mustache config/testnet.json src/constants/config-template > src/constants/config.ts",
     "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx mustache config/mainnet.json src/constants/config-template > src/constants/config.ts",
     "remove:local": "npx graph remove --node http://graph-node:8020/ venusprotocol/venus-isolated-pools",
+    "generate-subgraph-types": "yarn graphclient build --dir ./subgraph-client",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:local && graph test",
     "node:integration": "PACKAGE=isolated-pools hardhat node",
@@ -29,10 +30,12 @@
   "devDependencies": {
     "@babel/preset-env": "^7.19.3",
     "@babel/preset-typescript": "^7.18.6",
+    "@graphprotocol/client-cli": "^2.2.16",
     "@openzeppelin/contracts": "^4.7.3",
     "@openzeppelin/contracts-upgradeable": "^4.7.3",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
+    "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }
 }
