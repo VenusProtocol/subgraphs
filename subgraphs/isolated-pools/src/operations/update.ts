@@ -218,7 +218,6 @@ export const updateMarket = (
 
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
-  market.totalSupply = marketContract.totalSupply().toBigDecimal().div(vTokenDecimalsBigDecimal);
 
   /* Exchange rate explanation
      In Practice
@@ -246,12 +245,6 @@ export const updateMarket = (
 
   market.reserves = marketContract
     .totalReserves()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  market.totalBorrows = marketContract
-    .totalBorrows()
     .toBigDecimal()
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);

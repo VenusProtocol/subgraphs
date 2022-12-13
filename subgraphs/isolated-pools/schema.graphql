@@ -104,10 +104,6 @@ type Market @entity {
     supplyRate: BigDecimal!
     "VToken symbol"
     symbol: String!
-    "Borrows in the market"
-    totalBorrows: BigDecimal!
-    "VToken supply. VTokens have 8 decimals"
-    totalSupply: BigDecimal!
     "Underlying token address"
     underlyingAddress: Bytes!
     "Underlying token name"
