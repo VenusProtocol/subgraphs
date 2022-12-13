@@ -139,7 +139,7 @@ describe('Pools', function () {
     // @TODO this event is fired from deployment
     // Could test by refiring event
     pools.forEach(p => {
-      expect(p.minLiquidatableCollateral).to.equal(0);
+      expect(p.minLiquidatableCollateral).to.equal('100000000000000000000');
     });
   });
 });
