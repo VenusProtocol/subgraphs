@@ -1,0 +1,24 @@
+query Pools {
+  pools {
+    id
+    name
+    creator
+    blockPosted
+    timestampPosted
+    riskRating
+    category
+    logoUrl
+    description
+    priceOracle
+    closeFactor
+    liquidationIncentive
+    minLiquidatableCollateral
+    maxAssets
+    markets {
+      id
+      pool {
+        id
+      }
+    }
+  }
+}
