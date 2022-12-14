@@ -39,6 +39,12 @@ type Delegate @entity {
   proposals: [Proposal!]! @derivedFrom(field: "proposer")
 }
 
+enum PROPOSAL_TYPE {
+  NORMAL
+  FASTRACK
+  CRITICAL
+}
+
 type Proposal @entity {
   "Internal proposal ID, in this implementation it seems to be a autoincremental id"
   id: ID!
@@ -75,6 +81,9 @@ type Proposal @entity {
 
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
+
+  "Type of Proposal can be normal fast track or critical"
+  type: PROPOSAL_TYPE!
 }
 
 enum SUPPORT {
