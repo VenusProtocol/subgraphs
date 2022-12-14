@@ -88,10 +88,8 @@ export const getOrCreateAccountVToken = (
     const vTokenContract = BEP20.bind(marketAddress);
     accountVToken.vTokenBalance = new BigDecimal(vTokenContract.balanceOf(accountAddress));
 
-    accountVToken.totalUnderlyingSupplied = zeroBigDecimal;
     accountVToken.totalUnderlyingRedeemed = zeroBigDecimal;
     accountVToken.accountBorrowIndex = zeroBigDecimal;
-    accountVToken.totalUnderlyingBorrowed = zeroBigDecimal;
     accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
     accountVToken.storedBorrowBalance = zeroBigDecimal;
   }

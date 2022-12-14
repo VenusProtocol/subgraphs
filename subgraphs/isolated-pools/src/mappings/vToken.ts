@@ -233,8 +233,6 @@ export function handleTransfer(event: Transfer): void {
       event.block.number,
       event.logIndex,
       event.params.amount,
-      market.exchangeRate,
-      market.underlyingDecimals,
     );
   }
 
