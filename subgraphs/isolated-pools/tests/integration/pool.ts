@@ -44,7 +44,7 @@ describe('Pools', function () {
     await waitForSubgraphToBeSynced(syncDelay * 2);
 
     // check account
-    const { data } = await subgraphClient.getAccountById(account1Address);
+    const { data } = await subgraphClient.getAccountById(account1Address.toLowerCase());
     expect(data).to.not.be.equal(undefined);
     const { account } = data!;
     expect(account?.id).to.equal(account1Address.toLowerCase());
@@ -59,19 +59,23 @@ describe('Pools', function () {
     expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
 
-    accountVTokens.forEach(avt => {
-      expect(avt.market.id).to.equal(account?.tokens[0].id);
-      expect(avt.symbol).to.equal(0);
-      expect(avt.account).to.equal(0);
-      expect(avt.transactions).to.equal(0);
+    const symbols = ['vBSW', 'vBNX'];
+
+    accountVTokens.forEach((avt, idx) => {
+      expect(avt.id).to.equal(account?.tokens[idx].id);
+      const expectedMarketId = account?.tokens[idx].id.split('-')[0];
+      expect(avt.market.id).to.equal(expectedMarketId);
+      expect(avt.symbol).to.equal(symbols[idx]);
+      expect(avt.account.id).to.equal(account?.id);
+      expect(avt.transactions.length).to.equal(0);
       expect(avt.enteredMarket).to.equal(true);
-      expect(avt.vTokenBalance).to.equal(true);
-      expect(avt.totalUnderlyingSupplied).to.equal(true);
-      expect(avt.totalUnderlyingRedeemed).to.equal(true);
-      expect(avt.accountBorrowIndex).to.equal(true);
-      expect(avt.totalUnderlyingBorrowed).to.equal(true);
-      expect(avt.totalUnderlyingRepaid).to.equal(true);
-      expect(avt.storedBorrowBalance).to.equal(true);
+      expect(avt.vTokenBalance).to.equal('0');
+      expect(avt.totalUnderlyingSupplied).to.equal('0');
+      expect(avt.totalUnderlyingRedeemed).to.equal('0');
+      expect(avt.accountBorrowIndex).to.equal('0');
+      expect(avt.totalUnderlyingBorrowed).to.equal('0');
+      expect(avt.totalUnderlyingRepaid).to.equal('0');
+      expect(avt.storedBorrowBalance).to.equal('0');
     });
 
     // check accountVTokenTransaction
