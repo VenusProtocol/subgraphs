@@ -104,10 +104,6 @@ type Market @entity {
     supplyRate: BigDecimal!
     "VToken symbol"
     symbol: String!
-    "Borrows in the market"
-    totalBorrows: BigDecimal!
-    "VToken supply. VTokens have 8 decimals"
-    totalSupply: BigDecimal!
     "Underlying token address"
     underlyingAddress: Bytes!
     "Underlying token name"
@@ -177,14 +173,10 @@ type AccountVToken @entity {
 
     "VToken balance of the user"
     vTokenBalance: BigDecimal!
-    "Total amount of underlying supplied"
-    totalUnderlyingSupplied: BigDecimal!
     "Total amount of underling redeemed"
     totalUnderlyingRedeemed: BigDecimal!
     "The value of the borrow index upon users last interaction"
     accountBorrowIndex: BigDecimal!
-    "Total amount underlying borrowed, exclusive of interest"
-    totalUnderlyingBorrowed: BigDecimal!
     "Total amount underlying repaid"
     totalUnderlyingRepaid: BigDecimal!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"

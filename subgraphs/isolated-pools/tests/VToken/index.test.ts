@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 import {
   afterEach,
@@ -34,7 +34,6 @@ import {
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
-import { getOrCreateAccountVToken } from '../../src/operations/getOrCreate';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketAddedEvent } from '../Pool/events';
@@ -212,15 +211,7 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
-    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, aaaTokenAddress);
-    // Clone the value to remove the reference
-    const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
-      new BigDecimal(new BigInt(1)),
-    );
     const underlyingDecimals = market.underlyingDecimals;
-    const totalUnderlyingBorrowed = totalUnderlyingBorrowedOriginal.plus(
-      borrowAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
-    );
     const storedBorrowBalance = accountBorrows
       .toBigDecimal()
       .div(exponentToBigDecimal(underlyingDecimals))
@@ -248,12 +239,6 @@ describe('VToken', () => {
       accountVTokenId,
       'accrualBlockNumber',
       borrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingBorrowed',
-      totalUnderlyingBorrowed.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
@@ -301,15 +286,7 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
-    const accountVToken = getOrCreateAccountVToken(market.symbol, borrower, aaaTokenAddress);
-    // Clone the value to remove the reference
-    const totalUnderlyingBorrowedOriginal = accountVToken.totalUnderlyingBorrowed.times(
-      new BigDecimal(new BigInt(1)),
-    );
     const underlyingDecimals = market.underlyingDecimals;
-    const totalUnderlyingBorrowed = totalUnderlyingBorrowedOriginal.plus(
-      repayAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
-    );
     const storedBorrowBalance = accountBorrows
       .toBigDecimal()
       .div(exponentToBigDecimal(underlyingDecimals))
@@ -354,12 +331,6 @@ describe('VToken', () => {
       accountVTokenId,
       'accountBorrowIndex',
       market.borrowIndex.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingBorrowed',
-      totalUnderlyingBorrowed.toString(),
     );
   });
 
@@ -451,11 +422,11 @@ describe('VToken', () => {
 
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
-    assertMarketDocument('totalSupply', '365045.67163409');
+    assertMarketDocument('treasuryTotalSupplyWei', '36504567163409');
     assertMarketDocument('exchangeRate', '0.000000000320502536');
     assertMarketDocument('borrowIndex', '4.852094820647174144');
     assertMarketDocument('reserves', '5.128924555022289393');
-    assertMarketDocument('totalBorrows', '2.641234234636158123');
+    assertMarketDocument('treasuryTotalBorrowsWei', '2641234234636158123');
     assertMarketDocument('cash', '1.418171344423412457');
     assertMarketDocument('borrowRate', '0.000000000012678493');
     assertMarketDocument('supplyRate', '0.000000000012678493');
@@ -598,13 +569,6 @@ describe('VToken', () => {
       accountVTokenId,
       'vTokenBalance',
       '262059926715398.98726345',
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingSupplied',
-      '0.016814221346686847',
     );
   });
 
