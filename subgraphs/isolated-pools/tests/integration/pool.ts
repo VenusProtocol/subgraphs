@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from 'chai';
 import { Signer } from 'ethers';
 import { ethers } from 'hardhat';
