@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from 'chai';
 import { Signer } from 'ethers';
 import { ethers } from 'hardhat';
@@ -11,6 +10,19 @@ describe('Pools', function () {
   let acc1: Signer;
 
   const syncDelay = 3000;
+
+  const symbols = ['vBSW', 'vBNX'];
+  const marketNames = ['Venus BSW', 'Venus BNX'];
+  const underlyingNames = ['Biswap', 'BinaryX'];
+  const underlyingAddresses = [
+    '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
+    '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+  ];
+  const underlyingSymbols = ['BSW', 'BNX'];
+  const interestRateModelAddresses = [
+    '0xb267c5f8279a939062a20d29ca9b185b61380f10',
+    '0xe73bc5bd4763a3307ab5f8f126634b7e12e3da9b',
+  ];
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
@@ -39,6 +51,32 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     expect(markets.length).to.equal(2);
+
+    markets.forEach((m, idx) => {
+      expect(m.pool.id).to.equal(pool.id);
+      expect(m.borrowRate).to.equal('0');
+      expect(m.cash).to.equal('0');
+      expect(m.collateralFactor).to.equal('0');
+      expect(m.exchangeRate).to.equal('0');
+      expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
+      expect(m.name).to.equal(marketNames[idx]);
+      expect(m.reserves).to.equal('0');
+      expect(m.supplyRate).to.equal('0');
+      expect(m.symbol).to.equal(symbols[idx]);
+      expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
+      expect(m.underlyingName).to.equal(underlyingNames[idx]);
+      expect(m.underlyingPrice).to.equal('0');
+      expect(m.underlyingSymbol).to.equal(underlyingSymbols[idx]);
+      expect(m.borrowCap).to.equal(
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+      );
+      expect(m.accrualBlockNumber).to.equal(0);
+      expect(m.blockTimestamp).to.equal(0);
+      expect(m.borrowIndex).to.equal('0');
+      expect(m.reserveFactor).to.equal('0');
+      expect(m.underlyingPriceUsd).to.equal('0');
+      expect(m.underlyingDecimals).to.equal(18);
+    });
   });
 
   it('handles MarketEntered and MarketExited events', async function () {
@@ -60,8 +98,6 @@ describe('Pools', function () {
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
     expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
-
-    const symbols = ['vBSW', 'vBNX'];
 
     accountVTokens.forEach((avt, idx) => {
       expect(avt.id).to.equal(account?.tokens[idx].id);

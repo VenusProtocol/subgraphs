@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
