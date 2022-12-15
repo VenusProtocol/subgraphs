@@ -5,7 +5,6 @@ import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
 const deploy = async () => {
   const root = `${__dirname}/../../..`;
   const env = process.env.LOCAL ? 'local' : 'docker';
-  console.warn('mdsmds', env);
 
   // Create Subgraph Connection
   const subgraph = fetchSubgraph(SUBGRAPH_ACCOUNT, SUBGRAPH_NAME);

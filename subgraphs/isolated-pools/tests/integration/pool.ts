@@ -12,6 +12,7 @@ describe('Pools', function () {
   const syncDelay = 3000;
 
   before(async function () {
+    this.timeout(500000); // sometimes it takes a long time
     const signers = await ethers.getSigners();
     acc1 = signers[1];
     await deploy();
@@ -70,10 +71,8 @@ describe('Pools', function () {
       expect(avt.transactions.length).to.equal(0);
       expect(avt.enteredMarket).to.equal(true);
       expect(avt.vTokenBalance).to.equal('0');
-      expect(avt.totalUnderlyingSupplied).to.equal('0');
       expect(avt.totalUnderlyingRedeemed).to.equal('0');
       expect(avt.accountBorrowIndex).to.equal('0');
-      expect(avt.totalUnderlyingBorrowed).to.equal('0');
       expect(avt.totalUnderlyingRepaid).to.equal('0');
       expect(avt.storedBorrowBalance).to.equal('0');
     });
@@ -83,8 +82,14 @@ describe('Pools', function () {
       await subgraphClient.getAccountVTokensTransactions();
     expect(accountVTokensTransactionData).to.not.be.equal(undefined);
     const { accountVTokenTransactions } = accountVTokensTransactionData!;
-    // @TODO write assertions
-    expect(accountVTokenTransactions[0].id).to.equal(true);
+    expect(accountVTokenTransactions.length).to.be.equal(2);
+
+    const expectedVTokenTransactionHash =
+      '0xf8f4db1ac7dcf72642f685fdc7904e99930ab16d7d4623b3cecb3b07dc74a093';
+    accountVTokenTransactions.forEach((avtt, idx) => {
+      const expectedAccountVTokenTransactionsId = `${account?.id}-${expectedVTokenTransactionHash}-${idx}`;
+      expect(avtt.id).to.equal(expectedAccountVTokenTransactionsId);
+    });
   });
 
   it('handles NewCloseFactor event', async function () {
