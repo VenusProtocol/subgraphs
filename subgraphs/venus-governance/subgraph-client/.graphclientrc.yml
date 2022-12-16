@@ -1,0 +1,8 @@
+sources:
+  - name: venus-governance
+    handler:
+      graphql:
+        endpoint: http://127.0.0.1:8000/subgraphs/name/venusprotocol/venus-governance
+
+documents:
+  - '../**/*.graphql'

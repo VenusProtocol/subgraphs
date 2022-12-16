@@ -1,0 +1,20 @@
+query DelegateById($id: ID!) {
+  delegate(id: $id) {
+      id
+      delegatedVotes
+      tokenHoldersRepresented {
+        id
+      }
+      votes {
+        id
+        support
+        votes
+        proposal {
+          id
+        }
+      }
+      proposals {
+        id
+      }
+    }
+}
