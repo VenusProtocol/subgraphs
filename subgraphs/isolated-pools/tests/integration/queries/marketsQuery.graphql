@@ -13,8 +13,6 @@ query Markets {
     reserves
     supplyRate
     symbol
-    totalBorrows
-    totalSupply
     underlyingAddress
     underlyingName
     underlyingPrice

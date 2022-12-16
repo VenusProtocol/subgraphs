@@ -11,7 +11,21 @@ describe('Pools', function () {
 
   const syncDelay = 3000;
 
+  const symbols = ['vBSW', 'vBNX'];
+  const marketNames = ['Venus BSW', 'Venus BNX'];
+  const underlyingNames = ['Biswap', 'BinaryX'];
+  const underlyingAddresses = [
+    '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
+    '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+  ];
+  const underlyingSymbols = ['BSW', 'BNX'];
+  const interestRateModelAddresses = [
+    '0xb267c5f8279a939062a20d29ca9b185b61380f10',
+    '0xe73bc5bd4763a3307ab5f8f126634b7e12e3da9b',
+  ];
+
   before(async function () {
+    this.timeout(500000); // sometimes it takes a long time
     const signers = await ethers.getSigners();
     acc1 = signers[1];
     await deploy();
@@ -37,6 +51,32 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     expect(markets.length).to.equal(2);
+
+    markets.forEach((m, idx) => {
+      expect(m.pool.id).to.equal(pool.id);
+      expect(m.borrowRate).to.equal('0');
+      expect(m.cash).to.equal('0');
+      expect(m.collateralFactor).to.equal('0');
+      expect(m.exchangeRate).to.equal('0');
+      expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
+      expect(m.name).to.equal(marketNames[idx]);
+      expect(m.reserves).to.equal('0');
+      expect(m.supplyRate).to.equal('0');
+      expect(m.symbol).to.equal(symbols[idx]);
+      expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
+      expect(m.underlyingName).to.equal(underlyingNames[idx]);
+      expect(m.underlyingPrice).to.equal('0');
+      expect(m.underlyingSymbol).to.equal(underlyingSymbols[idx]);
+      expect(m.borrowCap).to.equal(
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+      );
+      expect(m.accrualBlockNumber).to.equal(0);
+      expect(m.blockTimestamp).to.equal(0);
+      expect(m.borrowIndex).to.equal('0');
+      expect(m.reserveFactor).to.equal('0');
+      expect(m.underlyingPriceUsd).to.equal('0');
+      expect(m.underlyingDecimals).to.equal(18);
+    });
   });
 
   it('handles MarketEntered and MarketExited events', async function () {
@@ -59,8 +99,6 @@ describe('Pools', function () {
     expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
 
-    const symbols = ['vBSW', 'vBNX'];
-
     accountVTokens.forEach((avt, idx) => {
       expect(avt.id).to.equal(account?.tokens[idx].id);
       const expectedMarketId = account?.tokens[idx].id.split('-')[0];
@@ -70,10 +108,8 @@ describe('Pools', function () {
       expect(avt.transactions.length).to.equal(0);
       expect(avt.enteredMarket).to.equal(true);
       expect(avt.vTokenBalance).to.equal('0');
-      expect(avt.totalUnderlyingSupplied).to.equal('0');
       expect(avt.totalUnderlyingRedeemed).to.equal('0');
       expect(avt.accountBorrowIndex).to.equal('0');
-      expect(avt.totalUnderlyingBorrowed).to.equal('0');
       expect(avt.totalUnderlyingRepaid).to.equal('0');
       expect(avt.storedBorrowBalance).to.equal('0');
     });
@@ -83,8 +119,14 @@ describe('Pools', function () {
       await subgraphClient.getAccountVTokensTransactions();
     expect(accountVTokensTransactionData).to.not.be.equal(undefined);
     const { accountVTokenTransactions } = accountVTokensTransactionData!;
-    // @TODO write assertions
-    expect(accountVTokenTransactions[0].id).to.equal(true);
+    expect(accountVTokenTransactions.length).to.be.equal(2);
+
+    const expectedVTokenTransactionHash =
+      '0xf8f4db1ac7dcf72642f685fdc7904e99930ab16d7d4623b3cecb3b07dc74a093';
+    accountVTokenTransactions.forEach((avtt, idx) => {
+      const expectedAccountVTokenTransactionsId = `${account?.id}-${expectedVTokenTransactionHash}-${idx}`;
+      expect(avtt.id).to.equal(expectedAccountVTokenTransactionsId);
+    });
   });
 
   it('handles NewCloseFactor event', async function () {

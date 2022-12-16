@@ -13,10 +13,8 @@ query AccountVTokens  {
     }
     enteredMarket
     vTokenBalance
-    totalUnderlyingSupplied
     totalUnderlyingRedeemed
     accountBorrowIndex
-    totalUnderlyingBorrowed
     totalUnderlyingRepaid
     storedBorrowBalance
   }

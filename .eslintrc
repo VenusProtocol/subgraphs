@@ -16,5 +16,6 @@
       }
     ],
     "@typescript-eslint/no-loss-of-precision": "warn",
+    "@typescript-eslint/no-non-null-assertion": 0
   }
 }
