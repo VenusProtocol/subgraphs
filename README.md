@@ -2,9 +2,6 @@
 
 [Venus](https://venus.io/) is an open-source protocol for algorithmic, efficient Money Markets on the Binance Smart Chain. The Subgraphs ingest events sent by the Venus protocol and make the queryable.
 
-## Integration tests were temporarily disabled during CI
-This is due to issues caused when trying to run them using docker containers. For now, we can run the integration tests locally using the steps described below.
-
 ## Networks and Performance
 The following subgraphs are deployed to the BSC mainnet
 [Markets](https://thegraph.com/explorer/subgraph/venusprotocol/venus-subgraph)
@@ -22,11 +19,20 @@ Below are a few ways to show how to query the Venus V2 Subgraph for data. The qu
 You can also see the saved queries on the hosted service for examples.
 
 # Development / Testing
+Unit tests are setup using `matchstick` and can be run with `yarn workspace <WORKSPACE> run test`
 
-## Running in docker
+Integration tests require running IPFS, a graph-node and a hardhat node. They can be run using docker or locally. By default the tests are run in docker.
+
+```
+$ yarn workspace <WORKSPACE> run test:integration
+```
+
+If you'd like to run the integration tests locally include the env `LOCAL=true` and follow instructions run the services locally.
+
+> Integration tests are temporarily disabled during CI, while the docker setup is debugged.
+
+## Running servies locally
 All the required services are networked with a docker-compose and can be brought up using `docker-compose up`.
-
-## Running all servies locally
 ### IPFS local
 First start by initializing ipfs with the test profile and run offline to avoid connecting to the external network. When running the daemon check the port the API server is listening on.
 
