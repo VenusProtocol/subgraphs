@@ -8,7 +8,7 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { DelegateChanged, DelegateVotesChanged } from '../../generated/VenusToken/VenusToken';
+import { DelegateChanged, DelegateVotesChanged } from '../../generated/XVSToken/XVSToken';
 import { GOVERNANCE } from '../../src/constants';
 import { handleDelegateChanged, handleDelegateVotesChanged } from '../../src/mappings/xvsToken';
 import { getGovernanceEntity } from '../../src/operations/get';

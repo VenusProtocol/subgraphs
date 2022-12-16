@@ -1,8 +1,4 @@
-import {
-  DelegateChanged,
-  DelegateVotesChanged,
-  Transfer,
-} from '../../generated/VenusToken/VenusToken';
+import { DelegateChanged, DelegateVotesChanged, Transfer } from '../../generated/XVSToken/XVSToken';
 import { ZERO_ADDRESS } from '../constants';
 import {
   updateDelegateChanged,

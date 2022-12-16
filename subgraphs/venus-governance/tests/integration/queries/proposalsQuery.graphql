@@ -1,0 +1,22 @@
+query Proposals {
+  proposals {
+      id
+      proposer {
+        id
+      }
+      targets
+      values
+      signatures
+      calldatas
+      startBlock
+      endBlock
+      description
+      status
+      executionETA
+      votes {
+        id
+        votes
+        support
+      }
+    }
+}

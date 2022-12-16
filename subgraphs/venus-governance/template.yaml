@@ -117,12 +117,12 @@ dataSources:
         - event: ProposalMaxOperationsUpdated(uint256,uint256)
           handler: handleProposalMaxOperationsUpdated
   - kind: ethereum/contract
-    name: VenusToken
+    name: XVSToken
     network: {{ network }}
     source:
-      address: "{{ venusTokenAddress }}"
-      abi: VenusToken
-      startBlock: {{ venusTokenStartBlock }}
+      address: "{{ xvsTokenAddress }}"
+      abi: XVSToken
+      startBlock: {{ xvsTokenStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -132,8 +132,8 @@ dataSources:
         - Delegate
         - TokenHolder
       abis:
-        - name: VenusToken
-          file: ../../packages/venus-governance-abis/VenusToken.json
+        - name: XVSToken
+          file: ../../packages/venus-governance-abis/XVSToken.json
       eventHandlers:
         - event: DelegateChanged(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged

@@ -78,3 +78,35 @@ export const waitForSubgraphToBeSynced = async (delay: number) =>
     // Periodically check whether the subgraph has synced
     setTimeout(checkSubgraphSynced, delay);
   });
+
+export const deploy = async ({
+  root,
+  packageName,
+  subgraphAccount,
+  subgraphName,
+  syncDelay,
+}: {
+  root: string;
+  packageName: string;
+  subgraphAccount: string;
+  subgraphName: string;
+  syncDelay: number;
+}) => {
+  // Create Subgraph Connection
+  const subgraph = fetchSubgraph(subgraphAccount, subgraphName);
+
+  // Build and Deploy Subgraph
+  console.log('Build and deploy subgraph...');
+  exec(`yarn workspace ${packageName} run prepare:local`, root);
+  exec(`yarn workspace ${packageName} run codegen`, root);
+  exec(`yarn workspace ${packageName} run build:local`, root);
+  exec(`yarn workspace ${packageName} run create:local`, root);
+  exec(
+    `npx graph deploy ${subgraphAccount}/${subgraphName} --debug --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
+    root,
+  );
+  await waitForSubgraphToBeSynced(syncDelay);
+  return { subgraph };
+};
+
+export default deploy;
