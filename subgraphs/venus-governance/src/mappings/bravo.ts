@@ -1,3 +1,4 @@
+import { ProposalCreated as ProposalCreatedV2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import {
   NewAdmin,
   NewGuardian,
@@ -13,7 +14,7 @@ import {
   VotingDelaySet,
   VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { ACTIVE, CANCELLED, PENDING } from '../constants';
+import { ACTIVE, CANCELLED, CRITICAL, FAST_TRACK, NORMAL, PENDING } from '../constants';
 import { createProposal, createVoteBravo } from '../operations/create';
 import { getGovernanceEntity, getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
@@ -26,6 +27,14 @@ import {
 export function handleProposalCreated(event: ProposalCreated): void {
   getOrCreateDelegate(event.params.proposer.toHexString());
   createProposal<ProposalCreated>(event);
+}
+
+export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
+  getOrCreateDelegate(event.params.proposer.toHexString());
+  const proposal = createProposal<ProposalCreatedV2>(event);
+  const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
+  proposal.type = indexProposalTypeConstant[event.params.proposalType];
+  proposal.save();
 }
 
 export function handleProposalCanceled(event: ProposalCanceled): void {

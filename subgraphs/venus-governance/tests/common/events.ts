@@ -66,6 +66,37 @@ export function createProposalCreatedEvent<E>(
   return event;
 }
 
+export function createProposalCreatedV2Event<E>(
+  id: i32,
+  proposer: Address,
+  targets: Address[],
+  values: BigInt[],
+  signatures: string[],
+  calldatas: Bytes[],
+  startBlock: BigInt,
+  endBlock: BigInt,
+  description: string,
+  proposalType: BigInt,
+): E {
+  const event = createProposalCreatedEvent<E>(
+    id,
+    proposer,
+    targets,
+    values,
+    signatures,
+    calldatas,
+    startBlock,
+    endBlock,
+    description,
+  );
+  const proposalTypeParam = new ethereum.EventParam(
+    'proposalType',
+    ethereum.Value.fromUnsignedBigInt(proposalType),
+  );
+  event.parameters.push(proposalTypeParam);
+  return event;
+}
+
 export function createProposalCanceledEvent<E>(id: i32): E {
   const event = changetype<E>(newMockEvent());
   event.parameters = [];
