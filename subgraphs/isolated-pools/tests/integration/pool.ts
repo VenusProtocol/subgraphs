@@ -266,13 +266,28 @@ describe('Pools', function () {
   });
 
   it('handles NewMinLiquidatableCollateral event', async function () {
+    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
+    expect(dataBeforeUpdate).to.not.be.equal(undefined);
+    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
+
+    poolsBeforeUpdate.forEach(p => {
+      expect(p.minLiquidatableCollateral).to.equal('100000000000000000000');
+    });
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeUpdate[0].id);
+
+    const tx = await comptrollerProxy
+      .connect(root)
+      .setMinLiquidatableCollateral('200000000000000000000');
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
     const { data } = await subgraphClient.getPools();
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
-    // @TODO this event is fired from deployment
-    // Could test by refiring event
+
     pools.forEach(p => {
-      expect(p.minLiquidatableCollateral).to.equal('100000000000000000000');
+      expect(p.minLiquidatableCollateral).to.equal('200000000000000000000');
     });
   });
 });
