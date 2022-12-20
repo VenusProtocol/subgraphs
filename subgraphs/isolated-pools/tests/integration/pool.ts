@@ -23,6 +23,7 @@ describe('Pools', function () {
     '0xb267c5f8279a939062a20d29ca9b185b61380f10',
     '0xe73bc5bd4763a3307ab5f8f126634b7e12e3da9b',
   ];
+  const priceOracle = '0x0165878a594ca255338adfa4d48449f69242eb8f';
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
@@ -163,7 +164,27 @@ describe('Pools', function () {
   });
 
   it('handles NewPriceOracle event', async function () {
-    // @TODO
+    const { data } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools } = data!;
+
+    pools.forEach(p => {
+      expect(p.priceOracle).to.equal(priceOracle);
+    });
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', pools[0].id);
+
+    const tx = await comptrollerProxy.setPriceOracle('0x0000000000000000000000000000000000000123');
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: updatedPoolData } = await subgraphClient.getPools();
+    expect(data).to.not.be.equal(undefined);
+    const { pools: updatedPools } = updatedPoolData!;
+
+    updatedPools.forEach(p => {
+      expect(p.priceOracle).to.equal('0x0000000000000000000000000000000000000123');
+    });
   });
 
   it('handles PoolActionPaused event', async function () {
