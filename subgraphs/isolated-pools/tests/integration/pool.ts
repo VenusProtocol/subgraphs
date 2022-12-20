@@ -134,13 +134,26 @@ describe('Pools', function () {
   });
 
   it('handles NewCloseFactor event', async function () {
+    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
+    expect(dataBeforeUpdate).to.not.be.equal(undefined);
+    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
+
+    poolsBeforeUpdate.forEach(p => {
+      expect(p.closeFactor).to.equal('50000000000000000');
+    });
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeUpdate[0].id);
+
+    const tx = await comptrollerProxy.setCloseFactor('10000000000000000');
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
     const { data } = await subgraphClient.getPools();
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
-    // @TODO this event is fired from deployment
-    // Could test by refiring event
+
     pools.forEach(p => {
-      expect(p.closeFactor).to.equal('50000000000000000');
+      expect(p.closeFactor).to.equal('10000000000000000');
     });
   });
 
