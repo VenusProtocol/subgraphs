@@ -1,6 +1,6 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
-import { Signer } from 'ethers';
+import { Contract, Signer } from 'ethers';
 import { ethers } from 'hardhat';
 import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
@@ -10,6 +10,7 @@ import deploy from './utils/deploy';
 describe('Pools', function () {
   let acc1: Signer;
   let root: SignerWithAddress;
+  let accessControlManager: Contract;
 
   const syncDelay = 3000;
 
@@ -33,6 +34,29 @@ describe('Pools', function () {
     [root] = await ethers.getSigners();
     acc1 = signers[1];
     await deploy();
+
+    accessControlManager = await ethers.getContract('AccessControlManager');
+
+    const tx1 = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setMinLiquidatableCollateral(uint256)',
+      root.address,
+    );
+    await tx1.wait();
+
+    const tx2 = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setActionsPaused(address[],uint256[],bool)',
+      root.address,
+    );
+    await tx2.wait();
+
+    const tx3 = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setCollateralFactor(address,uint256,uint256)',
+      root.address,
+    );
+    await tx3.wait();
   });
 
   after(async function () {
