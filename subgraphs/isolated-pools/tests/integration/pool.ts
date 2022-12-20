@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract, Signer } from 'ethers';
 import { ethers } from 'hardhat';
-import { exec, normalizeMantissa, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { normalizeMantissa, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import deploy from './utils/deploy';
@@ -64,14 +64,6 @@ describe('Pools', function () {
       root.address,
     );
     await tx4.wait();
-  });
-
-  after(async function () {
-    process.stdout.write('Clean up, removing subgraph....');
-
-    exec(`yarn remove:local`, __dirname);
-
-    process.stdout.write('Clean up complete.');
   });
 
   it('handles MarketAdded event', async function () {
@@ -248,6 +240,7 @@ describe('Pools', function () {
   });
 
   it('handles NewPriceOracle event', async function () {
+    const newPriceOracle = '0x0000000000000000000000000000000000000123';
     const { data } = await subgraphClient.getPools();
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
@@ -258,7 +251,7 @@ describe('Pools', function () {
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', pools[0].id);
 
-    const tx = await comptrollerProxy.setPriceOracle('0x0000000000000000000000000000000000000123');
+    const tx = await comptrollerProxy.setPriceOracle(newPriceOracle);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
@@ -267,7 +260,7 @@ describe('Pools', function () {
     const { pools: updatedPools } = updatedPoolData!;
 
     updatedPools.forEach(p => {
-      expect(p.priceOracle).to.equal('0x0000000000000000000000000000000000000123');
+      expect(p.priceOracle).to.equal(newPriceOracle);
     });
   });
 
