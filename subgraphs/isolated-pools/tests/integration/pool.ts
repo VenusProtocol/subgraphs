@@ -186,13 +186,26 @@ describe('Pools', function () {
   });
 
   it('handles NewLiquidationIncentive event', async function () {
+    const { data: dataBeforeEvent } = await subgraphClient.getPools();
+    expect(dataBeforeEvent).to.not.be.equal(undefined);
+    const { pools: poolsBeforeEvent } = dataBeforeEvent!;
+
+    poolsBeforeEvent.forEach(p => {
+      expect(p.liquidationIncentive).to.equal('1000000000000000000');
+    });
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeEvent[0].id);
+
+    const tx = await comptrollerProxy.setLiquidationIncentive('2000000000000000000');
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
     const { data } = await subgraphClient.getPools();
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
-    // @TODO this event is fired from deployment
-    // Could test by refiring event
+
     pools.forEach(p => {
-      expect(p.liquidationIncentive).to.equal('1000000000000000000');
+      expect(p.liquidationIncentive).to.equal('2000000000000000000');
     });
   });
 
