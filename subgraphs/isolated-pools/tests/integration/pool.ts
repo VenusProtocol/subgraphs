@@ -175,7 +175,38 @@ describe('Pools', function () {
   });
 
   it('handles NewBorrowCap event', async function () {
-    // @TODO
+    const { data } = await subgraphClient.getMarkets();
+    expect(data).to.not.be.equal(undefined);
+    const { markets: marketsBeforeUpdate } = data!;
+
+    marketsBeforeUpdate.forEach(m => {
+      expect(m.borrowCap).to.equal(
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+      );
+    });
+
+    const vTokens: Array<string> = [];
+    const borrowCaps: Array<string> = [];
+    marketsBeforeUpdate.forEach(m => {
+      vTokens.push(m.id);
+      borrowCaps.push('0');
+    });
+
+    const comptrollerProxy = await ethers.getContractAt(
+      'Comptroller',
+      marketsBeforeUpdate[0].pool.id,
+    );
+
+    const tx = await comptrollerProxy.setMarketBorrowCaps(vTokens, borrowCaps);
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+    markets.forEach(m => {
+      expect(m.borrowCap).to.equal('0');
+    });
   });
 
   it('handles NewMinLiquidatableCollateral event', async function () {
