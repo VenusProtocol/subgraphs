@@ -2,7 +2,7 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract, Signer } from 'ethers';
 import { ethers } from 'hardhat';
-import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { exec, normalizeMantissa, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import deploy from './utils/deploy';
@@ -149,11 +149,16 @@ describe('Pools', function () {
     const { accountVTokenTransactions } = accountVTokensTransactionData!;
     expect(accountVTokenTransactions.length).to.be.equal(2);
 
-    const expectedVTokenTransactionHash =
-      '0xf8f4db1ac7dcf72642f685fdc7904e99930ab16d7d4623b3cecb3b07dc74a093';
     accountVTokenTransactions.forEach((avtt, idx) => {
-      const expectedAccountVTokenTransactionsId = `${account?.id}-${expectedVTokenTransactionHash}-${idx}`;
-      expect(avtt.id).to.equal(expectedAccountVTokenTransactionsId);
+      const idParts = avtt.id.split('-');
+      expect(idParts.length).to.be.equal(3);
+      // account ID
+      expect(idParts[0]).to.be.equal(account?.id);
+      // transaction hash
+      // this is provided by hardhat, so we're asserting the lenght, the actual value changes
+      expect(idParts[1].length).to.be.equal(66);
+      // transaction index
+      expect(idParts[2]).to.be.equal(`${idx}`);
     });
   });
 
@@ -194,7 +199,11 @@ describe('Pools', function () {
       const comptrollerProxy = await ethers.getContractAt('Comptroller', m.pool.id);
       const tx = await comptrollerProxy
         .connect(root)
-        .setCollateralFactor(m.pool.id, '1000000000000000000', '0');
+        .setCollateralFactor(
+          m.id,
+          normalizeMantissa(0.1).toFixed(),
+          normalizeMantissa(0.01).toFixed(),
+        );
       await tx.wait(1);
       await waitForSubgraphToBeSynced(syncDelay);
     });
