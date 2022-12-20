@@ -85,7 +85,7 @@ templates:
         - event: ActionPausedMarket(address,uint8,bool)
           handler: handlePoolActionPaused
         - event: ActionPausedMarket(address,uint8,bool)
-          handler: handleMarketActionPaused
+          handler: handleActionPausedMarket
         - event: NewBorrowCap(indexed address,uint256)
           handler: handleNewBorrowCap
         - event: NewBorrowCapGuardian(address,address)

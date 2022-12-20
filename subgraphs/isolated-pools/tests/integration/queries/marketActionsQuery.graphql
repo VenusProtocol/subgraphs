@@ -1,0 +1,8 @@
+query MarketActions {
+  marketActions {
+    id
+    vToken
+    action
+    pauseState
+  }
+}

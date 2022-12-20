@@ -1,3 +1,4 @@
+import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Signer } from 'ethers';
 import { ethers } from 'hardhat';
@@ -8,6 +9,7 @@ import deploy from './utils/deploy';
 
 describe('Pools', function () {
   let acc1: Signer;
+  let root: SignerWithAddress;
 
   const syncDelay = 3000;
 
@@ -28,6 +30,7 @@ describe('Pools', function () {
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
     const signers = await ethers.getSigners();
+    [root] = await ethers.getSigners();
     acc1 = signers[1];
     await deploy();
   });
@@ -192,7 +195,39 @@ describe('Pools', function () {
   });
 
   it('handles MarketActionPaused event', async function () {
-    // @TODO
+    const { data: dataBeforeEvent } = await subgraphClient.getMarketActions();
+    expect(dataBeforeEvent).to.not.be.equal(undefined);
+    const { marketActions: marketActionsBeforeEvent } = dataBeforeEvent!;
+
+    expect(marketActionsBeforeEvent.length).to.be.equal(0);
+
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+
+    const vTokens: Array<string> = [];
+    const actions: Array<number> = [];
+    markets.forEach(m => {
+      vTokens.push(m.id);
+      actions.push(0);
+    });
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
+
+    const tx = await comptrollerProxy.connect(root).setActionsPaused(vTokens, actions, true);
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data } = await subgraphClient.getMarketActions();
+    expect(data).to.not.be.equal(undefined);
+    const { marketActions } = data!;
+
+    expect(marketActions.length).to.be.equal(vTokens.length);
+    marketActions.forEach((ma, idx) => {
+      expect(ma.vToken).to.be.equal(vTokens[idx]);
+      expect(ma.action).to.be.equal(0);
+      expect(ma.pauseState).to.be.equal(true);
+    });
   });
 
   it('handles NewBorrowCap event', async function () {

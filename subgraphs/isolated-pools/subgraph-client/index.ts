@@ -4,6 +4,7 @@ import {
   AccountByIdDocument,
   AccountVTokenTransactionsDocument,
   AccountVTokensDocument,
+  MarketActionsDocument,
   MarketsDocument,
   PoolsDocument,
 } from './.graphclient';
@@ -40,6 +41,11 @@ class SubgraphClient {
 
   async getAccountVTokensTransactions() {
     const result = await this.urqlClient.query(AccountVTokenTransactionsDocument, {}).toPromise();
+    return result;
+  }
+
+  async getMarketActions() {
+    const result = await this.urqlClient.query(MarketActionsDocument, {}).toPromise();
     return result;
   }
 }
