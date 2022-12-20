@@ -57,6 +57,13 @@ describe('Pools', function () {
       root.address,
     );
     await tx3.wait();
+
+    const tx4 = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setLiquidationIncentive(uint256)',
+      root.address,
+    );
+    await tx4.wait();
   });
 
   after(async function () {
@@ -214,7 +221,7 @@ describe('Pools', function () {
     const { markets } = data!;
 
     markets.forEach(m => {
-      expect(m.collateralFactor).to.equal('1');
+      expect(m.collateralFactor).to.equal('0.1');
     });
   });
 
@@ -229,7 +236,7 @@ describe('Pools', function () {
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeEvent[0].id);
 
-    const tx = await comptrollerProxy.setLiquidationIncentive('2000000000000000000');
+    const tx = await comptrollerProxy.connect(root).setLiquidationIncentive('2000000000000000000');
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
@@ -237,9 +244,7 @@ describe('Pools', function () {
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
 
-    pools.forEach(p => {
-      expect(p.liquidationIncentive).to.equal('2000000000000000000');
-    });
+    expect(pools[0].liquidationIncentive).to.equal('2000000000000000000');
   });
 
   it('handles NewPriceOracle event', async function () {
@@ -266,10 +271,6 @@ describe('Pools', function () {
     });
   });
 
-  it('handles PoolActionPaused event', async function () {
-    // @TODO
-  });
-
   it('handles MarketActionPaused event', async function () {
     const { data: dataBeforeEvent } = await subgraphClient.getMarketActions();
     expect(dataBeforeEvent).to.not.be.equal(undefined);
@@ -285,7 +286,7 @@ describe('Pools', function () {
     const actions: Array<number> = [];
     markets.forEach(m => {
       vTokens.push(m.id);
-      actions.push(0);
+      actions.push(0); // 0 is the MINT action
     });
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
@@ -301,7 +302,7 @@ describe('Pools', function () {
     expect(marketActions.length).to.be.equal(vTokens.length);
     marketActions.forEach((ma, idx) => {
       expect(ma.vToken).to.be.equal(vTokens[idx]);
-      expect(ma.action).to.be.equal(0);
+      expect(ma.action).to.be.equal('MINT');
       expect(ma.pauseState).to.be.equal(true);
     });
   });

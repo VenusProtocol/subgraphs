@@ -83,8 +83,6 @@ templates:
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
         - event: ActionPausedMarket(address,uint8,bool)
-          handler: handlePoolActionPaused
-        - event: ActionPausedMarket(address,uint8,bool)
           handler: handleActionPausedMarket
         - event: NewBorrowCap(indexed address,uint256)
           handler: handleNewBorrowCap
