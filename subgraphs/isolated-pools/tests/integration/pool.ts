@@ -158,13 +158,30 @@ describe('Pools', function () {
   });
 
   it('handles NewCollateralFactor event', async function () {
+    const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
+    expect(dataBeforeEvent).to.not.be.equal(undefined);
+    const { markets: marketsBeforeEvent } = dataBeforeEvent!;
+
+    marketsBeforeEvent.forEach(m => {
+      expect(m.collateralFactor).to.equal('0');
+    });
+
+    const eventPromises = marketsBeforeEvent.map(async m => {
+      const comptrollerProxy = await ethers.getContractAt('Comptroller', m.pool.id);
+      const tx = await comptrollerProxy
+        .connect(root)
+        .setCollateralFactor(m.pool.id, '1000000000000000000', '0');
+      await tx.wait(1);
+      await waitForSubgraphToBeSynced(syncDelay);
+    });
+    await Promise.all(eventPromises);
+
     const { data } = await subgraphClient.getMarkets();
     expect(data).to.not.be.equal(undefined);
     const { markets } = data!;
-    // @TODO this event is fired from deployment
-    // Could test by refiring event
+
     markets.forEach(m => {
-      expect(m.collateralFactor).to.equal('0');
+      expect(m.collateralFactor).to.equal('1');
     });
   });
 
