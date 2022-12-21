@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { exec, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import deploy from './utils/deploy';
@@ -44,11 +44,6 @@ describe('Pool Registry', function () {
     ]);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
-    process.stdout.write('Clean up, removing subgraph....');
-
-    exec(`yarn remove:local`, __dirname);
-
-    process.stdout.write('Clean up complete.');
   });
 
   it('indexes pool registry events', async function () {
