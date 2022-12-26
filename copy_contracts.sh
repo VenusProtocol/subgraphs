@@ -7,3 +7,6 @@ cp -rf ./node_modules/@venusprotocol/isolated-pools/contracts/ ./contracts/isola
 
 mkdir -p ./contracts/oracle
 cp -rf ./node_modules/@venusprotocol/oracle/contracts/ ./contracts/oracle/contracts
+
+mkdir -p ./contracts/protocol
+cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts

@@ -1,13 +1,15 @@
 {
-  "network": "bsc-testnet",
-  "governorAlphaAddress": "0x7df10b2118eb04d9806b15198019f83741a9f8f4",
-  "governorAlphaStartBlock": "8205736",
-  "governorAlpha2Address": "0x7116894ed34FC4B27D5b84f46B70Af48397a6C24",
-  "governorAlpha2StartBlock": "13584539",
+  "network": "bsc",
+  "governorAlphaAddress": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+  "governorAlphaStartBlock": "0",
+  "governorAlpha2Address": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+  "governorAlpha2StartBlock": "0",
   "governorBravoDelegateAddress": "0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2",
   "governorBravoDelegateStartBlock": "16002994",
-  "venusTokenAddress": "0xB9e0E753630434d7863528cc73CB7AC638a7c8ff",
-  "venusTokenStartBlock": "2802593",
-  "xvsVaultAddress": "0xa4Fd54cACdA379FB7CaA783B83Cc846f8ac0Faa6",
-  "xvsVaultStartBlock": "13937802"
+  "governorBravoDelegate2Address": "0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2",
+  "governorBravoDelegate2StartBlock": "16002994",
+  "xvsTokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  "xvsTokenStartBlock": "0",
+  "xvsVaultAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  "xvsVaultStartBlock": "0"
 }

@@ -13,10 +13,10 @@ type TokenHolder @entity {
   "Delegate address of the token holder which will participate in votings. Delegates don't need to hold any tokens and can even be the token holder itself."
   delegate: Delegate
 
-  "Venus Token balance of this address expressed in the smallest unit of the VenusToken"
+  "Venus Token balance of this address expressed in the smallest unit of the XVS Token"
   tokenBalance: BigInt!
 
-  "Total amount of Venus Token ever held by this address expressed in the smallest unit of the VenusToken"
+  "Total amount of Venus Token ever held by this address expressed in the smallest unit of the XVS Token"
   totalTokensHeld: BigInt!
 }
 
@@ -24,7 +24,7 @@ type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
   id: ID!
 
-  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the VenusToken"
+  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the XVS Token"
   delegatedVotes: BigInt!
 
   tokenHoldersRepresentedAmount: Int!
@@ -37,6 +37,12 @@ type Delegate @entity {
 
   "Proposals that the delegate has created"
   proposals: [Proposal!]! @derivedFrom(field: "proposer")
+}
+
+enum PROPOSAL_TYPE {
+  NORMAL
+  FASTRACK
+  CRITICAL
 }
 
 type Proposal @entity {
@@ -75,6 +81,9 @@ type Proposal @entity {
 
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
+
+  "Type of Proposal can be normal fast track or critical"
+  type: PROPOSAL_TYPE!
 }
 
 enum SUPPORT {
@@ -90,7 +99,7 @@ type Vote @entity {
   "Whether the vote is in favour or against the proposal"
   support: SUPPORT!
 
-  "Amount of votes in favour or against expressed in the smallest unit of the VenusToken"
+  "Amount of votes in favour or against expressed in the smallest unit of the XVS Token"
   votes: BigInt!
 
   "Delegate that emitted the vote"

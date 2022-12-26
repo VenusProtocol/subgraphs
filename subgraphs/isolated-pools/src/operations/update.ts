@@ -65,16 +65,12 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
     logIndex,
   );
-  const totalUnderlyingBorrowed = accountVToken.totalUnderlyingBorrowed.plus(
-    borrowAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
-  );
   const storedBorrowBalance = accountBorrows
     .toBigDecimal()
     .div(exponentToBigDecimal(underlyingDecimals))
     .truncate(underlyingDecimals);
   accountVToken.storedBorrowBalance = storedBorrowBalance;
   accountVToken.accountBorrowIndex = borrowIndex;
-  accountVToken.totalUnderlyingBorrowed = totalUnderlyingBorrowed;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -101,16 +97,12 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
     logIndex,
   );
-  const totalUnderlyingBorrowed = accountVToken.totalUnderlyingBorrowed.plus(
-    repayAmount.toBigDecimal().div(exponentToBigDecimal(underlyingDecimals)),
-  );
   const storedBorrowBalance = accountBorrows
     .toBigDecimal()
     .div(exponentToBigDecimal(underlyingDecimals))
     .truncate(underlyingDecimals);
   accountVToken.storedBorrowBalance = storedBorrowBalance;
   accountVToken.accountBorrowIndex = borrowIndex;
-  accountVToken.totalUnderlyingBorrowed = totalUnderlyingBorrowed;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -158,12 +150,7 @@ export const updateAccountVTokenTransferTo = (
   blockNumber: BigInt,
   logIndex: BigInt,
   amount: BigInt,
-  exchangeRate: BigDecimal,
-  underlyingDecimals: i32,
 ): AccountVToken => {
-  const amountUnderlying = exchangeRate.times(amount.toBigDecimal().div(vTokenDecimalsBigDecimal));
-  const amountUnderylingTruncated = amountUnderlying.truncate(underlyingDecimals);
-
   const accountVToken = updateAccountVToken(
     marketAddress,
     marketSymbol,
@@ -177,9 +164,6 @@ export const updateAccountVTokenTransferTo = (
   accountVToken.vTokenBalance = accountVToken.vTokenBalance.plus(
     amount.toBigDecimal().div(vTokenDecimalsBigDecimal).truncate(vTokenDecimals),
   );
-
-  accountVToken.totalUnderlyingSupplied =
-    accountVToken.totalUnderlyingSupplied.plus(amountUnderylingTruncated);
 
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -218,7 +202,6 @@ export const updateMarket = (
 
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
-  market.totalSupply = marketContract.totalSupply().toBigDecimal().div(vTokenDecimalsBigDecimal);
 
   /* Exchange rate explanation
      In Practice
@@ -246,12 +229,6 @@ export const updateMarket = (
 
   market.reserves = marketContract
     .totalReserves()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  market.totalBorrows = marketContract
-    .totalBorrows()
     .toBigDecimal()
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);

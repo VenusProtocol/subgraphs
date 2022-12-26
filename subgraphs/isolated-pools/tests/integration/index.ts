@@ -1,3 +1,2 @@
+import './pool.ts';
 import './poolRegistry.ts';
-
-// import './pool.ts';

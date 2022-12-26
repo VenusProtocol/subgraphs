@@ -1,0 +1,21 @@
+query AccountVTokens  {
+  accountVTokens {
+    id
+    market {
+      id
+    }
+    symbol
+    account {
+      id
+    }
+    transactions { 
+      id
+    }
+    enteredMarket
+    vTokenBalance
+    totalUnderlyingRedeemed
+    accountBorrowIndex
+    totalUnderlyingRepaid
+    storedBorrowBalance
+  }
+}

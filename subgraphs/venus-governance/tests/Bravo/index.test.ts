@@ -8,13 +8,14 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
+import { ProposalCreated as ProposalCreatedV2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import {
   ProposalCanceled,
   ProposalCreated,
   ProposalExecuted,
   ProposalQueued,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { GOVERNANCE } from '../../src/constants';
+import { GOVERNANCE } from '../../src/constants/index';
 import {
   handleNewAdmin,
   handleNewGuardian,
@@ -22,6 +23,7 @@ import {
   handleNewPendingAdmin,
   handleProposalCanceled,
   handleProposalCreated,
+  handleProposalCreatedV2,
   handleProposalExecuted,
   handleProposalMaxOperationsUpdated,
   handleProposalQueued,
@@ -36,6 +38,7 @@ import { user1 } from '../common/constants';
 import {
   createProposalCanceledEvent,
   createProposalCreatedEvent,
+  createProposalCreatedV2Event,
   createProposalExecutedEvent,
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
@@ -121,6 +124,49 @@ describe('Bravo', () => {
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);
     assertProposalDocument('status', 'PENDING');
+  });
+
+  test('create proposal V2', () => {
+    /** setup test */
+    const startBlock = 4563820;
+    const endBlock = 4593820;
+    const description = 'Very creative Proposal';
+    const proposalCreatedEvent = createProposalCreatedV2Event<ProposalCreatedV2>(
+      1,
+      user1,
+      [],
+      [],
+      [],
+      [],
+      BigInt.fromI64(startBlock),
+      BigInt.fromI64(endBlock),
+      description,
+      BigInt.fromI64(2),
+    );
+    handleProposalCreatedV2(proposalCreatedEvent);
+    // Delegate
+    const assertDelegateDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Delegate', user1.toHex(), key, value);
+    };
+    assertDelegateDocument('id', user1.toHexString());
+    assertDelegateDocument('delegatedVotes', '0');
+    assertDelegateDocument('tokenHoldersRepresentedAmount', '0');
+
+    // Proposal
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+    assertProposalDocument('id', '1');
+    assertProposalDocument('proposer', user1.toHexString());
+    assertProposalDocument('targets', '[]');
+    assertProposalDocument('values', '[]');
+    assertProposalDocument('signatures', '[]');
+    assertProposalDocument('calldatas', '[]');
+    assertProposalDocument('startBlock', `${startBlock}`);
+    assertProposalDocument('endBlock', `${endBlock}`);
+    assertProposalDocument('description', description);
+    assertProposalDocument('status', 'PENDING');
+    assertProposalDocument('type', 'CRITICAL');
   });
 
   test('cancel proposal', () => {

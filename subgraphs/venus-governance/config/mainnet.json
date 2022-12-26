@@ -6,8 +6,10 @@
   "governorAlpha2StartBlock": "11934064",
   "governorBravoDelegateAddress": "0x2d56dC077072B53571b8252008C60e945108c75a",
   "governorBravoDelegateStartBlock": "13729317",
-  "venusTokenAddress": "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63",
-  "venusTokenStartBlock": "858561",
+  "governorBravoDelegate2Address": "",
+  "governorBravoDelegate2StartBlock": "",
+  "xvsTokenAddress": "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63",
+  "xvsTokenStartBlock": "858561",
   "xvsVaultAddress": "0x6eF49b4e0772Fe78128F981d42D54172b55eCF9F",
   "xvsVaultStartBlock": "13018718"
 }

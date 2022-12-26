@@ -1,8 +1,9 @@
-export const queryProposalById = (id: string) => `
-{
-    proposal(id: "${id}") {
+query ProposalById($id: ID!) {
+  proposal(id: $id) {
       id
-      proposer
+      proposer {
+        id
+      }
       targets
       values
       signatures
@@ -12,7 +13,10 @@ export const queryProposalById = (id: string) => `
       description
       status
       executionETA
-      votes
+      votes {
+        id
+        votes
+        support
+      }
     }
-  }
-  `;
+}

@@ -141,8 +141,6 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.exchangeRate = zeroBigDecimal;
   market.reserves = zeroBigDecimal;
   market.supplyRate = zeroBigDecimal;
-  market.totalBorrows = zeroBigDecimal;
-  market.totalSupply = zeroBigDecimal;
   market.underlyingPrice = zeroBigDecimal;
   market.accrualBlockNumber = 0;
   market.blockTimestamp = 0;

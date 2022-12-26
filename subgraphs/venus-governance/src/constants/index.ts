@@ -17,3 +17,8 @@ export const GOVERNANCE = 'GOVERNANCE';
 export const FOR = 'FOR';
 export const AGAINST = 'AGAINST';
 export const ABSTAIN = 'ABSTAIN';
+
+// Proposal Type
+export const NORMAL = 'NORMAL';
+export const FAST_TRACK = 'FAST_TRACK';
+export const CRITICAL = 'CRITICAL';

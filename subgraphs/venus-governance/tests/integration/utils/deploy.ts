@@ -1,98 +1,129 @@
-import fs from 'fs';
+import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import Mustache from 'mustache';
-import {
-  deployAndConfigureXvsVault,
-  deployGovernorAlpha,
-  deployGovernorAlpha2,
-  deployGovernorBravoDelegate,
-  deployGovernorBravoDelegator,
-} from 'venus-protocol/script/hardhat';
-import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
-import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
-
-export const deployContracts = async () => {
-  const [root] = await ethers.getSigners();
-
-  const guardianAddress = root.address;
-
-  const contracts = await deployAndConfigureXvsVault();
-  const { timelock, xvs, xvsVault } = contracts;
+const xvsVaultFixture = async () => {
+  const [deployer, acc1] = await ethers.getSigners();
+  const XvsContract = await ethers.getContractFactory('XVS');
+  const xvs = await XvsContract.deploy(deployer.address);
   const xvsAddress = xvs.address;
-  const timelockAddress = timelock.address;
+
+  const xvsVaultFactory = await ethers.getContractFactory('XVSVault');
+  const xvsVault = await xvsVaultFactory.deploy();
+  await xvsVault.deployed();
+
   const xvsVaultAddress = xvsVault.address;
 
-  const governorAlpha = await deployGovernorAlpha({
-    timelockAddress,
-    xvsVaultAddress,
-    guardianAddress,
-  });
-  const governorAlphaAddress = governorAlpha.address;
+  const xvsVaultProxyFactory = await ethers.getContractFactory('XVSVaultProxy');
+  const xvsVaultProxy = await xvsVaultProxyFactory.deploy();
+  await xvsVaultProxy.deployed();
+  const xvsVaultProxyAddress = xvsVaultProxy.address;
 
-  const governorAlpha2 = await deployGovernorAlpha2({
-    timelockAddress,
-    xvsVaultAddress,
-    guardianAddress,
-    lastProposalId: 20,
-  });
-  const governorAlpha2Address = governorAlpha2.address;
+  const xvsStoreFactory = await ethers.getContractFactory('XVSStore');
+  const xvsStore = await xvsStoreFactory.deploy();
+  await xvsStore.deployed();
+  const xvsStoreAddress = xvsStore.address;
+  const txn = await xvsVault.setXvsStore(xvsAddress, xvsStore.address);
+  await txn.wait(1);
 
-  const governorBravoDelegate = await deployGovernorBravoDelegate();
-  const governorBravoDelegateAddress = governorBravoDelegate.address;
+  // Become Implementation of XVSVaultProxy
+  await xvsVaultProxy._setPendingImplementation(xvsVaultAddress);
+  await xvsVault._become(xvsVaultProxyAddress);
 
-  await deployGovernorBravoDelegator({
-    timelockAddress,
-    xvsVaultAddress,
-    guardianAddress,
-    governorBravoDelegateAddress,
-  });
+  // Set implementation for xvs vault proxy
+  await xvsVaultProxy._setPendingImplementation(xvsVaultAddress);
 
-  // Read yaml template
-  const yamlTemplate = await fs.promises.readFile(`${__dirname}/../../../template.yaml`, 'binary');
-  if (yamlTemplate) {
-    const templateValues = {
-      governorAlphaAddress,
-      governorAlpha2Address,
-      governorBravoDelegateAddress,
-      venusTokenAddress: xvsAddress,
-      xvsVaultAddress,
-      governorAlphaStartBlock: 0,
-      governorAlpha2StartBlock: 0,
-      governorBravoDelegateBlock: 0,
-      governorBravoDelegateStartBlock: 0,
-      venusTokenStartBlock: 0,
-      xvsVaultStartBlock: 0,
-      network: 'bsc',
-    };
-    console.log('writing subgraph.yaml', templateValues);
-    const renderedTemplate = Mustache.render(yamlTemplate, templateValues);
-    await fs.writeFileSync(`${__dirname}/../../../subgraph.yaml`, renderedTemplate);
-  } else {
-    throw Error('Unable to write subgraph.yaml from template');
-  }
+  // Set new owner to xvs store
+  await xvsStore.setNewOwner(xvsVaultAddress);
 
-  // Create Subgraph Connection
-  const subgraph = fetchSubgraph(SUBGRAPH_ACCOUNT, SUBGRAPH_NAME);
+  // Set xvs store to xvs vault
+  await xvsVault.setXvsStore(xvsAddress, xvsStoreAddress);
 
-  // Build and Deploy Subgraph
-  console.log('Build and deploy subgraph...');
+  // Delegate voting power to xvs vault
+  await xvsVault.delegate(acc1.address);
 
-  exec('yarn workspace venus-governance run codegen', __dirname);
-  exec('yarn workspace venus-governance run create:local', __dirname);
-  exec(
-    `yarn workspace venus-governance run deploy:integration -l ${Date.now().toString()}`,
-    __dirname,
-  );
+  // Add token pool to xvs vault
+  const _allocPoint = 100;
+  const _token = xvsAddress;
+  const _rewardToken = xvsAddress;
+  const _rewardPerBlock = ethers.BigNumber.from(10).pow(16).toString();
+  const _lockPeriod = 300;
 
-  await waitForSubgraphToBeSynced(SYNC_DELAY);
+  await xvsVault.add(_rewardToken, _allocPoint, _token, _rewardPerBlock, _lockPeriod);
 
+  // Set timelock as admin to xvs store
+  const TimelockContract = await ethers.getContractFactory('Timelock');
+  const timelock = await TimelockContract.deploy(deployer.address, 86400 * 2);
+
+  const timelockAddress = timelock.address;
+
+  // Set timelock as admin to xvs vault proxy
+  await xvsVaultProxy._setPendingAdmin(timelockAddress);
+
+  // approve xvs spending to xvs vault
+  const approvalAmount = ethers.BigNumber.from(ethers.BigNumber.from(10).pow(10))
+    .mul(ethers.BigNumber.from(10).pow(18))
+    .toString();
+  await xvs.approve(xvsVaultAddress, approvalAmount);
+
+  // deposit xvs to xvs vault
+  const amount = ethers.BigNumber.from(ethers.BigNumber.from(7).pow(5))
+    .mul(ethers.BigNumber.from(10).pow(18))
+    .toString();
+  await xvsVault.deposit(xvsAddress, 0, amount);
   return {
-    subgraph,
-    xvs,
     xvsVault,
-    governorAlpha,
-    governorAlpha2,
-    governorBravoDelegate,
+    xvsVaultProxy,
+    xvs,
+    xvsStore,
+    timelock,
   };
 };
+const governorFixture = async ({
+  timelock,
+  xvsVaultAddress,
+}: {
+  timelock: Contract;
+  xvsVaultAddress: string;
+}) => {
+  const [deployer] = await ethers.getSigners();
+  const timelockAddress = timelock.address;
+  const GovernorAlphaDelegateFactory = await ethers.getContractFactory('GovernorAlpha');
+  const governorAlpha = await GovernorAlphaDelegateFactory.deploy(
+    timelockAddress,
+    xvsVaultAddress,
+    deployer.address,
+  );
+  await governorAlpha.deployed();
+
+  const GovernorAlpha2Factory = await ethers.getContractFactory('GovernorAlpha2');
+  const governorAlpha2 = await GovernorAlpha2Factory.deploy(
+    timelockAddress,
+    xvsVaultAddress,
+    deployer.address,
+    20,
+  );
+
+  await governorAlpha2.deployed();
+
+  return {
+    governorAlpha,
+    governorAlpha2,
+  };
+};
+
+async function deploy() {
+  const { timelock, xvsVault, xvs } = await xvsVaultFixture();
+  const { governorAlpha, governorAlpha2 } = await governorFixture({
+    timelock: timelock,
+    xvsVaultAddress: xvsVault.address,
+  });
+  return {
+    governorAlpha,
+    governorAlpha2,
+    timelock,
+    xvs,
+    xvsVault,
+  };
+}
+
+export default deploy;

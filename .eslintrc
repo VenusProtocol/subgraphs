@@ -6,7 +6,7 @@
     "project": ["./.eslinttsconfigrc"]
   },
   "rules": {
-    "@typescript-eslint/no-unused-vars": 2,
+    "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "_" }],
     "@typescript-eslint/ban-types": [
       "error",
       {
@@ -16,5 +16,6 @@
       }
     ],
     "@typescript-eslint/no-loss-of-precision": "warn",
+    "@typescript-eslint/no-non-null-assertion": 0
   }
 }

@@ -2,3 +2,5 @@ node_modules
 build
 generated
 hardhat.config.ts
+/subgraphs/isolated-pools/subgraph-client/.graphclient
+/subgraphs/venus-governance/subgraph-client/.graphclient
