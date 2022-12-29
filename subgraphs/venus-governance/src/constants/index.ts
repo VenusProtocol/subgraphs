@@ -22,3 +22,7 @@ export const ABSTAIN = 'ABSTAIN';
 export const NORMAL = 'NORMAL';
 export const FAST_TRACK = 'FAST_TRACK';
 export const CRITICAL = 'CRITICAL';
+
+// Permission types
+export const GRANTED = 'GRANTED';
+export const REVOKED = 'REVOKED';
