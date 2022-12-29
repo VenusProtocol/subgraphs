@@ -109,6 +109,7 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.borrowCap = BigInt.fromI32(0);
   market.treasuryTotalBorrowsWei = BigInt.fromI32(0);
   market.treasuryTotalSupplyWei = BigInt.fromI32(0);
+  market.supplyCap = BigInt.fromI32(0);
   market.save();
   return market;
 }
