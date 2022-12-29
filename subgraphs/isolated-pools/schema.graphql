@@ -132,6 +132,8 @@ type Market @entity {
     underlyingPriceUsd: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
+    "Supply cap set for market"
+    supplyCap: BigInt!
 }
 
 """

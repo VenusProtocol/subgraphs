@@ -24,5 +24,6 @@ query Markets {
     reserveFactor
     underlyingPriceUsd
     underlyingDecimals
+    supplyCap
   }
 }
