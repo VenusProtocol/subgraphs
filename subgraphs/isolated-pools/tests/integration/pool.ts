@@ -64,6 +64,13 @@ describe('Pools', function () {
       root.address,
     );
     await tx4.wait();
+
+    const tx5 = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setMarketSupplyCaps(address,uint256)',
+      root.address,
+    );
+    await tx5.wait();
   });
 
   it('handles MarketAdded event', async function () {
@@ -358,6 +365,41 @@ describe('Pools', function () {
 
     pools.forEach(p => {
       expect(p.minLiquidatableCollateral).to.equal('200000000000000000000');
+    });
+  });
+
+  it('handles NewSupplyCap event', async function () {
+    const { data } = await subgraphClient.getMarkets();
+    expect(data).to.not.be.equal(undefined);
+    const { markets: marketsBeforeUpdate } = data!;
+
+    marketsBeforeUpdate.forEach(m => {
+      expect(m.supplyCap).to.equal(
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+      );
+    });
+
+    const vTokens: Array<string> = [];
+    const supplyCaps: Array<string> = [];
+    marketsBeforeUpdate.forEach(m => {
+      vTokens.push(m.id);
+      supplyCaps.push('100');
+    });
+
+    const comptrollerProxy = await ethers.getContractAt(
+      'Comptroller',
+      marketsBeforeUpdate[0].pool.id,
+    );
+
+    const tx = await comptrollerProxy.connect(root).setMarketSupplyCaps(vTokens, supplyCaps);
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+    markets.forEach(m => {
+      expect(m.supplyCap).to.equal('100');
     });
   });
 });
