@@ -236,7 +236,7 @@ export function createDelegateVotesChangedEvent<E>(
   return event;
 }
 
-export function createPermissionEvent<E>(
+export function createPermission<E>(
   address: Address,
   contractAddress: Address,
   functionSig: string,

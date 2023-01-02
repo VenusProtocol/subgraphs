@@ -225,10 +225,10 @@ dataSources:
       language: wasm/assemblyscript
       file: ./src/mappings/accessControlManager.ts
       entities:
-        - PermissionEvent
+        - Permission
       abis:
         - name: AccessControlManger
-          file: ../../packages/venus-governance-abis/AccessControlManager.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
       eventHandlers:
         - event: PermissionGranted(address,address,string)
           handler: handlePermissionGranted

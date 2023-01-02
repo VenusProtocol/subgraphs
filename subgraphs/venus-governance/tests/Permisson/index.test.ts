@@ -9,9 +9,9 @@ import {
   handlePermissionGranted,
   handlePermissionRevoked,
 } from '../../src/mappings/accessControlManager';
-import { getPermissionEventId } from '../../src/utils/ids';
+import { getPermissionId } from '../../src/utils/ids';
 import { mockContractAddress, mockFunctionSig, user1 } from '../common/constants';
-import { createPermissionEvent } from '../common/events';
+import { createPermission } from '../common/events';
 
 const cleanup = (): void => {
   clearStore();
@@ -23,7 +23,7 @@ afterEach(() => {
 
 describe('Permission events', () => {
   test('handles permission granted event', () => {
-    const permissionGrantedEvent = createPermissionEvent<PermissionGranted>(
+    const permissionGrantedEvent = createPermission<PermissionGranted>(
       user1,
       mockContractAddress,
       mockFunctionSig,
@@ -31,8 +31,8 @@ describe('Permission events', () => {
     handlePermissionGranted(permissionGrantedEvent);
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
-      const id = getPermissionEventId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('PermissionEvent', id, key, value);
+      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
+      assert.fieldEquals('Permission', id, key, value);
     };
 
     assertPermissionGrantedDocument('type', GRANTED);
@@ -42,7 +42,7 @@ describe('Permission events', () => {
   });
 
   test('handles permission revoked', () => {
-    const permissionRevokedEvent = createPermissionEvent<PermissionRevoked>(
+    const permissionRevokedEvent = createPermission<PermissionRevoked>(
       user1,
       mockContractAddress,
       mockFunctionSig,
@@ -50,8 +50,8 @@ describe('Permission events', () => {
     handlePermissionRevoked(permissionRevokedEvent);
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {
-      const id = getPermissionEventId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('PermissionEvent', id, key, value);
+      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
+      assert.fieldEquals('Permission', id, key, value);
     };
 
     assertPermissionRevokedDocument('type', REVOKED);
@@ -61,7 +61,7 @@ describe('Permission events', () => {
   });
 
   test('handles updating a previously granted permission record', () => {
-    const permissionGrantedEvent = createPermissionEvent<PermissionGranted>(
+    const permissionGrantedEvent = createPermission<PermissionGranted>(
       user1,
       mockContractAddress,
       mockFunctionSig,
@@ -69,8 +69,8 @@ describe('Permission events', () => {
     handlePermissionGranted(permissionGrantedEvent);
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
-      const id = getPermissionEventId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('PermissionEvent', id, key, value);
+      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
+      assert.fieldEquals('Permission', id, key, value);
     };
 
     assertPermissionGrantedDocument('type', GRANTED);
@@ -78,7 +78,7 @@ describe('Permission events', () => {
     assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionGrantedDocument('functionSig', mockFunctionSig);
 
-    const permissionRevokedEvent = createPermissionEvent<PermissionRevoked>(
+    const permissionRevokedEvent = createPermission<PermissionRevoked>(
       user1,
       mockContractAddress,
       mockFunctionSig,
@@ -86,8 +86,8 @@ describe('Permission events', () => {
     handlePermissionRevoked(permissionRevokedEvent);
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {
-      const id = getPermissionEventId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('PermissionEvent', id, key, value);
+      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
+      assert.fieldEquals('Permission', id, key, value);
     };
 
     assertPermissionRevokedDocument('type', REVOKED);

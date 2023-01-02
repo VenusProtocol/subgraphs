@@ -1,24 +1,24 @@
 import { PermissionGranted } from '../../generated/AccessControlManager/AccessControlManger';
-import { PermissionEvent } from '../../generated/schema';
+import { Permission } from '../../generated/schema';
 import { GRANTED, REVOKED } from '../constants';
-import { getPermissionEventId } from '../utils/ids';
+import { getPermissionId } from '../utils/ids';
 
-export function createOrUpdatePermissionEvent<E>(event: E): PermissionEvent {
-  const id = getPermissionEventId(
+export function createOrUpdatePermission<E>(event: E): Permission {
+  const id = getPermissionId(
     event.params.account,
     event.params.contractAddress,
     event.params.functionSig,
   );
-  let permissionEvent = PermissionEvent.load(id);
-  if (!permissionEvent) {
-    permissionEvent = new PermissionEvent(id);
+  let permission = Permission.load(id);
+  if (!permission) {
+    permission = new Permission(id);
   }
-  permissionEvent.type = event instanceof PermissionGranted ? GRANTED : REVOKED;
-  permissionEvent.account = event.params.account;
-  permissionEvent.contractAddress = event.params.contractAddress;
-  permissionEvent.functionSig = event.params.functionSig;
+  permission.type = event instanceof PermissionGranted ? GRANTED : REVOKED;
+  permission.account = event.params.account;
+  permission.contractAddress = event.params.contractAddress;
+  permission.functionSig = event.params.functionSig;
 
-  permissionEvent.save();
+  permission.save();
 
-  return permissionEvent;
+  return permission;
 }

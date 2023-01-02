@@ -168,4 +168,56 @@ describe('Governance', function () {
       expect(proposal.calldatas).to.deep.equal([callData]);
     });
   });
+
+  describe('Permission events', function () {
+    it('indexes permission granted events', async function () {
+      const { data } = await subgraphClient.getPermissions();
+      expect(data).to.not.be.equal(undefined);
+
+      const { permissions } = data!;
+      expect(permissions.length).to.be.equal(7);
+
+      permissions.forEach(pe => {
+        expect(pe.type).to.be.equal('GRANTED');
+      });
+    });
+
+    it('indexes permission revoked events', async function () {
+      const accessControlManager = await ethers.getContract('AccessControlManager');
+      const tx = await accessControlManager.revokeCallPermission(
+        ethers.constants.AddressZero,
+        'setMinLiquidatableCollateral(uint256)',
+        ethers.constants.AddressZero,
+      );
+      await tx.wait();
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const { data } = await subgraphClient.getPermissions();
+      expect(data).to.not.be.equal(undefined);
+
+      const { permissions } = data!;
+      expect(permissions.length).to.be.equal(8);
+
+      expect(permissions[0].type).to.be.equal('REVOKED');
+    });
+
+    it('updates a previously created record with a new permission type', async function () {
+      const accessControlManager = await ethers.getContract('AccessControlManager');
+      const tx = await accessControlManager.giveCallPermission(
+        ethers.constants.AddressZero,
+        'setMinLiquidatableCollateral(uint256)',
+        ethers.constants.AddressZero,
+      );
+      await tx.wait();
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const { data } = await subgraphClient.getPermissions();
+      expect(data).to.not.be.equal(undefined);
+
+      const { permissions } = data!;
+      expect(permissions.length).to.be.equal(8);
+
+      expect(permissions[0].type).to.be.equal('GRANTED');
+    });
+  });
 });

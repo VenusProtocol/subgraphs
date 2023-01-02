@@ -2,12 +2,12 @@ import {
   PermissionGranted,
   PermissionRevoked,
 } from '../../generated/AccessControlManager/AccessControlManger';
-import { createOrUpdatePermissionEvent } from '../operations/createOrUpdate';
+import { createOrUpdatePermission } from '../operations/createOrUpdate';
 
 export function handlePermissionGranted(event: PermissionGranted): void {
-  createOrUpdatePermissionEvent(event);
+  createOrUpdatePermission(event);
 }
 
 export function handlePermissionRevoked(event: PermissionRevoked): void {
-  createOrUpdatePermissionEvent(event);
+  createOrUpdatePermission(event);
 }

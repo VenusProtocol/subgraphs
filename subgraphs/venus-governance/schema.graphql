@@ -160,17 +160,17 @@ type Governance @entity {
 
 }
 
-enum PermissionType {
+enum PermissionStatus {
   GRANTED,
   REVOKED
 }
 
-type PermissionEvent @entity {
-  "ID generated for each PermissionEvent"
+type Permission @entity {
+  "ID generated for each Permission"
   id: ID!
 
   "Indicates if the permission was either GRANTED or REVOKED"
-  type: PermissionType!
+  type: PermissionStatus!
 
   "The target account of the event"
   account: Bytes!

@@ -1,0 +1,9 @@
+query Permissions {
+  permissions {
+    id
+    type
+    account
+    contractAddress
+    functionSig
+  }
+}
