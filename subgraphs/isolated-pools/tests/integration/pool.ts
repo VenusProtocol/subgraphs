@@ -101,7 +101,10 @@ describe('Pools', function () {
       expect(m.underlyingName).to.equal(underlyingNames[idx]);
       expect(m.underlyingPrice).to.equal('0');
       expect(m.underlyingSymbol).to.equal(underlyingSymbols[idx]);
-      expect(m.borrowCap).to.equal(
+      expect(m.borrowCapWei).to.equal(
+        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+      );
+      expect(m.supplyCapWei).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
       expect(m.accrualBlockNumber).to.equal(0);
@@ -313,7 +316,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.borrowCap).to.equal(
+      expect(m.borrowCapWei).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
     });
@@ -338,7 +341,7 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     markets.forEach(m => {
-      expect(m.borrowCap).to.equal('0');
+      expect(m.borrowCapWei).to.equal('0');
     });
   });
 
@@ -374,7 +377,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.supplyCap).to.equal(
+      expect(m.supplyCapWei).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
     });
@@ -399,7 +402,7 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     markets.forEach(m => {
-      expect(m.supplyCap).to.equal('100');
+      expect(m.supplyCapWei).to.equal('100');
     });
   });
 });

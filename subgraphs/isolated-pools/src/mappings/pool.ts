@@ -119,7 +119,7 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
   const market = getMarket(vTokenAddress);
-  market.borrowCap = borrowCap;
+  market.borrowCapWei = borrowCap;
   market.save();
 }
 
@@ -137,6 +137,6 @@ export function handleNewSupplyCap(event: NewSupplyCap): void {
   const vTokenAddress = event.params.vToken;
   const newSupplyCap = event.params.newSupplyCap;
   const market = getMarket(vTokenAddress);
-  market.supplyCap = newSupplyCap;
+  market.supplyCapWei = newSupplyCap;
   market.save();
 }

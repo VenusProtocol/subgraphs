@@ -291,7 +291,7 @@ describe('Pool Events', () => {
     handleNewBorrowCap(newBorrowCapEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCapWei', newBorrowCap.toString());
   });
 
   test('indexes NewMinLiquidatableCollateral event', () => {
@@ -319,6 +319,6 @@ describe('Pool Events', () => {
     handleNewSupplyCap(newSupplyCapEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'supplyCap', newSupplyCap.toString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'supplyCapWei', newSupplyCap.toString());
   });
 });
