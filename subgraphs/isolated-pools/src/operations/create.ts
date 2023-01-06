@@ -2,6 +2,7 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
 import {
+  BadDebtIncreased,
   Borrow,
   LiquidateBorrow,
   Mint,
@@ -9,7 +10,7 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
-import { Account, Market, Pool, Transaction } from '../../generated/schema';
+import { Account, AccountVTokenBadDebt, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
@@ -31,7 +32,7 @@ import {
   getUnderlyingAddress,
 } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
-import { getPoolId, getTransactionEventId } from '../utilities/ids';
+import { getBadDebtEventId, getPoolId, getTransactionEventId } from '../utilities/ids';
 
 export function createPool(comptroller: Address): Pool | null {
   const pool = new Pool(getPoolId(comptroller));
@@ -99,7 +100,7 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.cash = zeroBigDecimal;
   market.collateralFactor = zeroBigDecimal;
   market.exchangeRate = zeroBigDecimal;
-  market.reserves = zeroBigDecimal;
+  market.reservesWei = BigInt.fromI32(0);
   market.supplyRate = zeroBigDecimal;
   market.underlyingPrice = zeroBigDecimal;
   market.accrualBlockNumber = 0;
@@ -109,7 +110,10 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.borrowCapWei = BigInt.fromI32(0);
   market.treasuryTotalBorrowsWei = BigInt.fromI32(0);
   market.treasuryTotalSupplyWei = BigInt.fromI32(0);
+  market.badDebtWei = BigInt.fromI32(0);
+  market.comptroller = comptroller;
   market.supplyCapWei = BigInt.fromI32(0);
+
   market.save();
   return market;
 }
@@ -244,4 +248,15 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
   transaction.save();
+};
+
+export const createAccountVTokenBadDebt = (event: BadDebtIncreased): void => {
+  const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
+
+  const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
+  accountVTokenBadDebt.account = event.params.borrower.toHexString();
+  accountVTokenBadDebt.block = event.block.number;
+  accountVTokenBadDebt.debtHealed = event.params.badDebtDelta;
+  accountVTokenBadDebt.timestamp = event.block.timestamp;
+  accountVTokenBadDebt.save();
 };

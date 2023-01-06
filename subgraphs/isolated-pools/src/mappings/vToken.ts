@@ -1,15 +1,21 @@
 import {
   AccrueInterest,
+  BadDebtIncreased,
   Borrow,
   LiquidateBorrow,
   Mint,
+  NewAccessControlManager,
+  NewComptroller,
   NewMarketInterestRateModel,
   NewReserveFactor,
   Redeem,
   RepayBorrow,
+  ReservesAdded,
+  ReservesReduced,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
 import {
+  createAccountVTokenBadDebt,
   createBorrowTransaction,
   createLiquidateBorrowTransaction,
   createMintTransaction,
@@ -243,5 +249,42 @@ export function handleNewMarketInterestRateModel(event: NewMarketInterestRateMod
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress);
   market.interestRateModelAddress = event.params.newInterestRateModel;
+  market.save();
+}
+
+export function handleBadDebtIncreased(event: BadDebtIncreased): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
+  market.badDebtWei = event.params.badDebtNew;
+  market.save();
+
+  createAccountVTokenBadDebt(event);
+}
+
+export function handleNewComptroller(event: NewComptroller): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
+  market.comptroller = event.params.newComptroller;
+  market.save();
+}
+
+export function handleNewAccessControlManager(event: NewAccessControlManager): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
+  market.accessControlManager = event.params.newAccessControlManager;
+  market.save();
+}
+
+export function handleReservesAdded(event: ReservesAdded): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
+  market.reservesWei = event.params.newTotalReserves;
+  market.save();
+}
+
+export function handleReservesReduced(event: ReservesReduced): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress);
+  market.reservesWei = event.params.newTotalReserves;
   market.save();
 }

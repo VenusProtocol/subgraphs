@@ -99,7 +99,7 @@ type Market @entity {
     "Name of the vToken"
     name: String!
     "Reserves stored in the contract"
-    reserves: BigDecimal!
+    reservesWei: BigInt!
     "Supply rate per block"
     supplyRate: BigDecimal!
     "VToken symbol"
@@ -132,8 +132,15 @@ type Market @entity {
     underlyingPriceUsd: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
+
     "Supply cap set for market"
     supplyCapWei: BigInt!
+    "The amount of bad debt in the market"
+    badDebtWei: BigInt!
+    "Contract address for the inter-vToken operations comptroller"
+    comptroller: Bytes!
+    "Contract address for the Access Control Manager"
+    accessControlManager: Bytes
 }
 
 """
@@ -168,6 +175,8 @@ type AccountVToken @entity {
     account: Account!
     "Transactions data"
     transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"account")
+    "Bad debt data for the account in the market"
+    badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
     "True if user is entered, false if they are exited"
@@ -200,6 +209,21 @@ type AccountVTokenTransaction @entity {
   block: BigInt!
 
   logIndex: BigInt!
+}
+
+"""
+Auxiliary entity for AccountVToken indicating when a certain amount of bad debt was healed
+"""
+type AccountVTokenBadDebt @entity {
+  id: ID!
+
+  account: AccountVToken!
+
+  debtHealed: BigInt!
+
+  timestamp: BigInt!
+
+  block: BigInt!
 }
 
 enum EventType {

@@ -33,3 +33,9 @@ export const getTransactionEventId = (
   transactionHash: Bytes,
   transactionLogIndex: BigInt,
 ): string => joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
+
+export const getApprovedTransferAllowanceId = (owner: Address, spender: Address): string =>
+  joinIds([owner.toHexString(), spender.toString()]);
+
+export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): string =>
+  joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
