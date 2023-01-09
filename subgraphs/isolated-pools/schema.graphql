@@ -113,7 +113,7 @@ type Market @entity {
     "Underlying token symbol"
     underlyingSymbol: String!
     "Max token borrow amount allowed"
-    borrowCap: BigInt!
+    borrowCapWei: BigInt!
     "Total borrowed"
     treasuryTotalBorrowsWei: BigInt!
     "Total supplied"
@@ -132,6 +132,8 @@ type Market @entity {
     underlyingPriceUsd: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
+    "Supply cap set for market"
+    supplyCapWei: BigInt!
 }
 
 """

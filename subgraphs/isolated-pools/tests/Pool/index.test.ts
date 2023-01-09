@@ -21,6 +21,7 @@ import {
   handleNewLiquidationIncentive,
   handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
+  handleNewSupplyCap,
 } from '../../src/mappings/pool';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
@@ -42,6 +43,7 @@ import {
   createNewLiquidationIncentiveEvent,
   createNewMinLiquidatableCollateralEvent,
   createNewPriceOracleEvent,
+  createNewSupplyCapEvent,
 } from './events';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
@@ -289,7 +291,7 @@ describe('Pool Events', () => {
     handleNewBorrowCap(newBorrowCapEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCap', newBorrowCap.toString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCapWei', newBorrowCap.toString());
   });
 
   test('indexes NewMinLiquidatableCollateral event', () => {
@@ -308,5 +310,15 @@ describe('Pool Events', () => {
       'minLiquidatableCollateral',
       newMinLiquidatableCollateral.toString(),
     );
+  });
+
+  test('indexes NewSupplyCap event', () => {
+    const newSupplyCap = BigInt.fromI64(5000000000000000000);
+    const newSupplyCapEvent = createNewSupplyCapEvent(vTokenAddress, newSupplyCap);
+
+    handleNewSupplyCap(newSupplyCapEvent);
+
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'supplyCapWei', newSupplyCap.toString());
   });
 });

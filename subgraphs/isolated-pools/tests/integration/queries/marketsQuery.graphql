@@ -17,12 +17,13 @@ query Markets {
     underlyingName
     underlyingPrice
     underlyingSymbol
-    borrowCap
+    borrowCapWei
     accrualBlockNumber
     blockTimestamp
     borrowIndex
     reserveFactor
     underlyingPriceUsd
     underlyingDecimals
+    supplyCapWei
   }
 }

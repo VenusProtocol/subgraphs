@@ -8,6 +8,7 @@ import {
   NewLiquidationIncentive,
   NewMinLiquidatableCollateral,
   NewPriceOracle,
+  NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
 import { getMarket } from '../operations/get';
@@ -118,7 +119,7 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
   const market = getMarket(vTokenAddress);
-  market.borrowCap = borrowCap;
+  market.borrowCapWei = borrowCap;
   market.save();
 }
 
@@ -130,4 +131,12 @@ export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableColl
     pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
     pool.save();
   }
+}
+
+export function handleNewSupplyCap(event: NewSupplyCap): void {
+  const vTokenAddress = event.params.vToken;
+  const newSupplyCap = event.params.newSupplyCap;
+  const market = getMarket(vTokenAddress);
+  market.supplyCapWei = newSupplyCap;
+  market.save();
 }

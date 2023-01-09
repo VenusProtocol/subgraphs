@@ -11,6 +11,7 @@ import {
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
   NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
+  NewSupplyCap as NewSupplyCapEvent,
 } from '../../generated/PoolRegistry/Comptroller';
 import { MarketAdded as MarketAddedEvent } from '../../generated/PoolRegistry/PoolRegistry';
 
@@ -226,6 +227,25 @@ export const createNewMinLiquidatableCollateralEvent = (
     ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral),
   );
   event.parameters.push(newMinLiquidatableCollateralParam);
+
+  return event;
+};
+
+export const createNewSupplyCapEvent = (
+  vTokenAddress: Address,
+  newSupplyCap: BigInt,
+): NewSupplyCapEvent => {
+  const event = changetype<NewSupplyCapEvent>(newMockEvent());
+  event.parameters = [];
+
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+
+  const newSupplyCapParam = new ethereum.EventParam(
+    'newSupplyCap',
+    ethereum.Value.fromUnsignedBigInt(newSupplyCap),
+  );
+  event.parameters.push(newSupplyCapParam);
 
   return event;
 };
