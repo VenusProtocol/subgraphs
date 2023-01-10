@@ -1,0 +1,11 @@
+query ApprovedTransferAllowances {
+  approvedTransferAllowances {
+    id
+    market {
+      id
+    }
+    owner
+    spender
+    amount
+  }
+}
