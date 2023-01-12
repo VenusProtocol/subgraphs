@@ -75,7 +75,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('exchangeRate', '0');
     assertMarketDocument('interestRateModelAddress', interestRateModelAddress.toHex());
     assertMarketDocument('name', 'Venus USD Coin');
-    assertMarketDocument('reserves', '0');
+    assertMarketDocument('reservesWei', '0');
     assertMarketDocument('supplyRate', '0');
     assertMarketDocument('symbol', 'vUSDC');
     assertMarketDocument('totalBorrows', '0');
@@ -106,7 +106,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('exchangeRate', '0');
     assertMarketDocument('interestRateModelAddress', interestRateModelAddress.toHex());
     assertMarketDocument('name', 'Venus BNB');
-    assertMarketDocument('reserves', '0');
+    assertMarketDocument('reservesWei', '0');
     assertMarketDocument('supplyRate', '0');
     assertMarketDocument('symbol', 'vBNB');
     assertMarketDocument('totalBorrows', '0');
