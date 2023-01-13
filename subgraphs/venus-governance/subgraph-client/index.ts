@@ -1,6 +1,11 @@
 import { Client as UrqlClient, createClient } from 'urql/core';
 
-import { DelegateByIdDocument, ProposalByIdDocument, ProposalsDocument } from './.graphclient';
+import {
+  DelegateByIdDocument,
+  PermissionsDocument,
+  ProposalByIdDocument,
+  ProposalsDocument,
+} from './.graphclient';
 
 class SubgraphClient {
   urqlClient: UrqlClient;
@@ -24,6 +29,11 @@ class SubgraphClient {
 
   async getProposals() {
     const result = await this.urqlClient.query(ProposalsDocument, {}).toPromise();
+    return result;
+  }
+
+  async getPermissions() {
+    const result = await this.urqlClient.query(PermissionsDocument, {}).toPromise();
     return result;
   }
 }

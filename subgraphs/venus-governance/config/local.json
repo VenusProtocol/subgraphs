@@ -1,5 +1,7 @@
 {
   "network": "bsc",
+  "accessControlManagerAddress": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
+  "accessControlManagerStartBlock": "0",
   "governorAlphaAddress": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
   "governorAlphaStartBlock": "0",
   "governorAlpha2Address": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",

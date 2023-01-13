@@ -159,3 +159,25 @@ type Governance @entity {
   proposalMaxOperations: BigInt!
 
 }
+
+enum PermissionStatus {
+  GRANTED,
+  REVOKED
+}
+
+type Permission @entity {
+  "ID generated for each Permission"
+  id: ID!
+
+  "Indicates if the permission was either GRANTED or REVOKED"
+  type: PermissionStatus!
+
+  "The target account of the event"
+  account: Bytes!
+
+  "The target contract for the permission event"
+  contractAddress: Bytes!
+
+  "The function name for the permission event"
+  functionSig: String!
+}
