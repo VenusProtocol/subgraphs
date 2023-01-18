@@ -33,7 +33,6 @@
     "postinstall": "./copy_contracts.sh"
   },
   "devDependencies": {
-    "@defi-wonderland/smock": "^2.2.0",
     "@graphprotocol/client-cli": "^2.2.16",
     "@graphprotocol/graph-cli": "0.33.0",
     "@graphprotocol/graph-ts": "0.27.0",
