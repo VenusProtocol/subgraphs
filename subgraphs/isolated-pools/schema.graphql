@@ -230,6 +230,9 @@ enum EventType {
     MINT
     REDEEM
     BORROW
+    TRANSFER
+    LIQUIDATE
+    REPAY
 }
 
 """

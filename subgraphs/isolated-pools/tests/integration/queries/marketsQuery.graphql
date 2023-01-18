@@ -4,14 +4,14 @@ query Markets {
     pool {
       id
     }
-    badDebt
+    badDebtWei
     borrowRate
     cash
     collateralFactor
     exchangeRate
     interestRateModelAddress
     name
-    reserves
+    reservesWei
     supplyRate
     symbol
     underlyingAddress

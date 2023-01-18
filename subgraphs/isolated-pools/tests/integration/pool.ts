@@ -28,6 +28,11 @@ describe('Pools', function () {
   ];
   const priceOracle = '0x0165878a594ca255338adfa4d48449f69242eb8f';
 
+  const vTokens: Array<string> = [];
+  const actions: Array<number> = [];
+
+  const maxCap = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
     const signers = await ethers.getSigners();
@@ -37,40 +42,74 @@ describe('Pools', function () {
 
     accessControlManager = await ethers.getContract('AccessControlManager');
 
-    const tx1 = await accessControlManager.giveCallPermission(
+    let tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
       'setMinLiquidatableCollateral(uint256)',
       root.address,
     );
-    await tx1.wait();
+    await tx.wait();
 
-    const tx2 = await accessControlManager.giveCallPermission(
+    tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
       'setActionsPaused(address[],uint256[],bool)',
       root.address,
     );
-    await tx2.wait();
+    tx.wait();
 
-    const tx3 = await accessControlManager.giveCallPermission(
+    tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
       'setCollateralFactor(address,uint256,uint256)',
       root.address,
     );
-    await tx3.wait();
+    tx.wait();
 
-    const tx4 = await accessControlManager.giveCallPermission(
+    tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
       'setLiquidationIncentive(uint256)',
       root.address,
     );
-    await tx4.wait();
+    tx.wait();
 
-    const tx5 = await accessControlManager.giveCallPermission(
+    tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
       'setMarketSupplyCaps(address,uint256)',
       root.address,
     );
-    await tx5.wait();
+    tx.wait();
+
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+
+    markets.forEach(m => {
+      vTokens.push(m.id);
+      actions.push(1); // 1 is the REDEEM action
+    });
+  });
+
+  after(async function () {
+    // reverting changes made inside tests
+    const { data: marketsData } = await subgraphClient.getMarkets();
+    expect(marketsData).to.not.be.equal(undefined);
+    const { markets } = marketsData!;
+
+    const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
+
+    // reset price oracle
+    await comptrollerProxy.setPriceOracle(priceOracle);
+
+    // unpause actions
+    await comptrollerProxy.connect(root).setActionsPaused(vTokens, actions, false);
+
+    // reset supply cap
+    let tx = await comptrollerProxy.setMarketSupplyCaps(vTokens, [maxCap, maxCap]);
+    tx.wait(1);
+
+    // reset borrow cap
+    tx = await comptrollerProxy.setMarketBorrowCaps(vTokens, [maxCap, maxCap]);
+    tx.wait(1);
+
+    waitForSubgraphToBeSynced(syncDelay);
   });
 
   it('handles MarketAdded event', async function () {
@@ -94,7 +133,7 @@ describe('Pools', function () {
       expect(m.exchangeRate).to.equal('0');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
       expect(m.name).to.equal(marketNames[idx]);
-      expect(m.reserves).to.equal('0');
+      expect(m.reservesWei).to.equal('0');
       expect(m.supplyRate).to.equal('0');
       expect(m.symbol).to.equal(symbols[idx]);
       expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
@@ -285,13 +324,6 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
 
-    const vTokens: Array<string> = [];
-    const actions: Array<number> = [];
-    markets.forEach(m => {
-      vTokens.push(m.id);
-      actions.push(0); // 0 is the MINT action
-    });
-
     const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
 
     const tx = await comptrollerProxy.connect(root).setActionsPaused(vTokens, actions, true);
@@ -305,7 +337,7 @@ describe('Pools', function () {
     expect(marketActions.length).to.be.equal(vTokens.length);
     marketActions.forEach((ma, idx) => {
       expect(ma.vToken).to.be.equal(vTokens[idx]);
-      expect(ma.action).to.be.equal('MINT');
+      expect(ma.action).to.be.equal('REDEEM');
       expect(ma.pauseState).to.be.equal(true);
     });
   });
