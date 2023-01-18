@@ -632,12 +632,12 @@ describe('VToken', () => {
       'AccountVTokenBadDebt',
       accountVTokenTBadDebtId,
       'account',
-      borrower.toHexString(),
+      getAccountVTokenId(badDebtIncreasedEvent.address, badDebtIncreasedEvent.params.borrower),
     );
     assert.fieldEquals(
       'AccountVTokenBadDebt',
       accountVTokenTBadDebtId,
-      'debtHealed',
+      'amount',
       badDebtDelta.toString(),
     );
     assert.fieldEquals(
@@ -691,7 +691,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
-      'comptroller',
+      'pool',
       newComptroller.toHexString(),
     );
   });

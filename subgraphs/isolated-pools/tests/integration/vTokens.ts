@@ -53,12 +53,14 @@ describe('VToken events', function () {
   });
 
   it('handles BadDebtIncreased event', async function () {
-    let mockPriceOracleFactory = await ethers.getContractFactory(
-      'MockPriceOracleLowUnderlyingPrice',
+    // mocking the price oracle and setting low underlying prices
+    const mockPriceOracleFactory = await ethers.getContractFactory(
+      'MockPriceOracleUnderlyingPrice',
     );
-    let mockPriceOracleContract = await mockPriceOracleFactory.deploy();
+    const mockPriceOracleContract = await mockPriceOracleFactory.deploy();
+    await mockPriceOracleContract.setPrice(vBnxToken.address, convertToUnit(1, 5));
+    await mockPriceOracleContract.setPrice(vBswToken.address, convertToUnit(1, 5));
     await comptroller.setPriceOracle(mockPriceOracleContract.address);
-    await waitForSubgraphToBeSynced(syncDelay);
 
     await comptroller.connect(liquidator).enterMarkets([vBnxToken.address, vBswToken.address]);
     await comptroller.connect(borrower).enterMarkets([vBnxToken.address, vBswToken.address]);
@@ -80,15 +82,12 @@ describe('VToken events', function () {
     await vBswToken.connect(liquidator2).mint(mintAmount);
     await vBnxToken.connect(borrower).mint(mintAmount);
 
-    // borrower takes a VBSW borrow
+    // borrower borrows BSW
     await vBswToken.connect(borrower).borrow(borrowAmount);
-    await waitForSubgraphToBeSynced(syncDelay);
 
-    // mock the price oracle to set new underlying price values
-    mockPriceOracleFactory = await ethers.getContractFactory('MockPriceOracleHighUnderlyingPrice');
-    mockPriceOracleContract = await mockPriceOracleFactory.deploy();
-    await comptroller.setPriceOracle(mockPriceOracleContract.address);
-    await waitForSubgraphToBeSynced(syncDelay);
+    // set higher underlying prices
+    await mockPriceOracleContract.setPrice(vBnxToken.address, convertToUnit(1, 20));
+    await mockPriceOracleContract.setPrice(vBswToken.address, convertToUnit(1, 20));
 
     // add allowance to the liquidator to be used when healing the borrower
     await bswToken.connect(liquidator).faucet(mintAmount);
@@ -108,6 +107,14 @@ describe('VToken events', function () {
     const { markets } = data!;
 
     expect(markets[0].badDebtWei).to.equal('6001');
+
+    const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
+    expect(accountVTokensData).to.not.be.equal(undefined);
+    const { accountVTokens } = accountVTokensData!;
+
+    const accountVBswData = accountVTokens.find(avt => avt.market.id === vBswAddress.toLowerCase());
+    expect(accountVBswData?.badDebt.length).to.be.equal(1);
+    expect(accountVBswData?.badDebt[0].amount).to.be.equal('6001');
   });
 
   it('handles NewAccessControlManager event', async function () {
@@ -139,8 +146,6 @@ describe('VToken events', function () {
 
     expect(marketBeforeEvent?.reservesWei).to.be.equals('0');
 
-    await waitForSubgraphToBeSynced(syncDelay);
-
     await bswToken.connect(liquidator2).faucet(mintAmount);
     await bswToken.connect(liquidator2).approve(vBswToken.address, mintAmount);
 
@@ -163,8 +168,6 @@ describe('VToken events', function () {
 
     expect(marketBeforeEvent?.reservesWei).to.be.equals('123');
 
-    await waitForSubgraphToBeSynced(syncDelay);
-
     const vTokenContract = await ethers.getContractAt('VToken', vBswAddress);
 
     await vTokenContract.connect(liquidator2).reduceReserves(123);
@@ -178,16 +181,19 @@ describe('VToken events', function () {
   });
 
   it('handles NewComptroller event', async function () {
-    const mockNewComptrollerFactory = await ethers.getContractFactory('MockNewComptroller');
-    const mockNewComptrollerContract = await mockNewComptrollerFactory.deploy();
+    const accessControlManager = await ethers.getContract('AccessControlManager');
+    const poolRegistry = await ethers.getContract('PoolRegistry');
+    const mockNewComptrollerFactory = await ethers.getContractFactory('Comptroller');
+    const mockNewComptrollerContract = await mockNewComptrollerFactory.deploy(
+      poolRegistry.address,
+      accessControlManager.address,
+    );
 
     const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
     expect(dataBeforeEvent).to.not.be.equal(undefined);
     const { markets: marketsBeforeUpdate } = dataBeforeEvent!;
 
-    expect(marketsBeforeUpdate[0].comptroller).to.equal(
-      '0x9467a509da43cb50eb332187602534991be1fea4',
-    );
+    expect(marketsBeforeUpdate[0].pool.id).to.equal('0x9467a509da43cb50eb332187602534991be1fea4');
 
     const vTokenContract = await ethers.getContractAt('VToken', marketsBeforeUpdate[0].id);
     await vTokenContract.connect(root).setComptroller(mockNewComptrollerContract.address);
@@ -197,6 +203,6 @@ describe('VToken events', function () {
     expect(dataBeforeEvent).to.not.be.equal(undefined);
     const { markets } = data!;
 
-    expect(markets[0].comptroller).to.equal(mockNewComptrollerContract.address.toLowerCase());
+    expect(markets[0].pool.id).to.equal(mockNewComptrollerContract.address.toLowerCase());
   });
 });

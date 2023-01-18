@@ -11,6 +11,12 @@ query AccountVTokens  {
     transactions { 
       id
     }
+    badDebt {
+      id
+      amount
+      timestamp
+      block
+    }
     enteredMarket
     vTokenBalance
     totalUnderlyingRedeemed

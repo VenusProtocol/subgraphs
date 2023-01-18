@@ -23,7 +23,7 @@ import {
   createRepayBorrowTransaction,
   createTransferTransaction,
 } from '../operations/create';
-import { getMarket } from '../operations/get';
+import { getMarket, getPool } from '../operations/get';
 import { getOrCreateAccount } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
@@ -258,13 +258,19 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   market.badDebtWei = event.params.badDebtNew;
   market.save();
 
-  createAccountVTokenBadDebt(event);
+  createAccountVTokenBadDebt(vTokenAddress, event);
 }
 
 export function handleNewComptroller(event: NewComptroller): void {
-  const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
-  market.comptroller = event.params.newComptroller;
+  const pool = getPool(event.params.oldComptroller);
+  const newComptrollerAddress = event.params.newComptroller.toHexString();
+  if (pool) {
+    pool.id = newComptrollerAddress;
+    pool.save();
+  }
+
+  const market = getMarket(event.address);
+  market.pool = newComptrollerAddress;
   market.save();
 }
 

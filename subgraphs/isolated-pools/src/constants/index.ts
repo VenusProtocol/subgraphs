@@ -1,8 +1,9 @@
-import { BigDecimal } from '@graphprotocol/graph-ts';
+import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
 export const zeroBigDecimal = BigDecimal.fromString('0');
+export const zeroBigInt32 = BigInt.fromString('0');
 
 export const mantissaFactor = 18;
 export const defaultMantissaFactorBigDecimal: BigDecimal = exponentToBigDecimal(mantissaFactor);

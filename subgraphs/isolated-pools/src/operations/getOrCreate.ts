@@ -25,7 +25,7 @@ export const getOrCreateMarket = (comptroller: Address, vTokenAddress: Address):
   return market;
 };
 
-export const getOrCreatePool = (comptroller: Address): Pool | null => {
+export const getOrCreatePool = (comptroller: Address): Pool => {
   let pool = Pool.load(getPoolId(comptroller));
   if (!pool) {
     pool = createPool(comptroller);

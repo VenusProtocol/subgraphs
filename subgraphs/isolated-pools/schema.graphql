@@ -137,8 +137,6 @@ type Market @entity {
     supplyCapWei: BigInt!
     "The amount of bad debt in the market"
     badDebtWei: BigInt!
-    "Contract address for the inter-vToken operations comptroller"
-    comptroller: Bytes!
     "Contract address for the Access Control Manager"
     accessControlManager: Bytes
 }
@@ -219,7 +217,7 @@ type AccountVTokenBadDebt @entity {
 
   account: AccountVToken!
 
-  debtHealed: BigInt!
+  amount: BigInt!
 
   timestamp: BigInt!
 

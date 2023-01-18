@@ -78,7 +78,6 @@ describe('Pools', function () {
     tx.wait();
 
     const { data: marketsData } = await subgraphClient.getMarkets();
-    expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
 
     markets.forEach(m => {
@@ -90,7 +89,6 @@ describe('Pools', function () {
   after(async function () {
     // reverting changes made inside tests
     const { data: marketsData } = await subgraphClient.getMarkets();
-    expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
