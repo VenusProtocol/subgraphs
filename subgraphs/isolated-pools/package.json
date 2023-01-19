@@ -18,7 +18,7 @@
     "build:mainnet": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:local": "LOCAL=true npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://localhost:5001 --node http://localhost:8020/",
     "deploy:docker": "npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://ipfs:5001 --node http://graph-node:8020/",
-    "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools-chapel --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools-chapel --debug --ipfs https://api.thegraph.com/ipfs/ --node http://localhost:8020",
     "deploy:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts",
     "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx mustache config/testnet.json src/constants/config-template > src/constants/config.ts",
