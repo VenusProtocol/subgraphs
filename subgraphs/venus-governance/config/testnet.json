@@ -1,6 +1,6 @@
 {
   "network": "bsc-testnet",
-  "accessControlManagerAddress": "0xef7549b38aa8A4aB658E56f77cB273B2C7E0f621",
+  "accessControlManagerAddress": "0x86951FD87308c6d767E82b3dBC9d2cBE232d0840",
   "accessControlManagerStartBlock": "24711629",
   "governorAlphaAddress": "0x7df10b2118eb04d9806b15198019f83741a9f8f4",
   "governorAlphaStartBlock": "8205736",
