@@ -33,3 +33,6 @@ export const getTransactionEventId = (
   transactionHash: Bytes,
   transactionLogIndex: BigInt,
 ): string => joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
+
+export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): string =>
+  joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);

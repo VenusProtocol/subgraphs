@@ -24,29 +24,40 @@ import { vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
+  handleBadDebtIncreased,
   handleBorrow,
   handleLiquidateBorrow,
   handleMint,
+  handleNewAccessControlManager,
+  handleNewComptroller,
   handleNewMarketInterestRateModel,
   handleNewReserveFactor,
   handleRedeem,
   handleRepayBorrow,
+  handleReservesAdded,
+  handleReservesReduced,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
+import { getBadDebtEventId } from '../../src/utilities/ids';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketAddedEvent } from '../Pool/events';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import {
   createAccrueInterestEvent,
+  createBadDebtIncreasedEvent,
   createBorrowEvent,
   createLiquidateBorrowEvent,
   createMintEvent,
+  createNewAccessControlManagerEvent,
+  createNewComptrollerEvent,
   createNewMarketInterestRateModelEvent,
   createNewReserveFactorEvent,
   createRedeemEvent,
   createRepayBorrowEvent,
+  createReservesAddedEvent,
+  createReservesReducedEvent,
   createTransferEvent,
 } from './events';
 import { createPoolRegistryMock } from './mocks';
@@ -425,7 +436,7 @@ describe('VToken', () => {
     assertMarketDocument('treasuryTotalSupplyWei', '36504567163409');
     assertMarketDocument('exchangeRate', '0.000000000320502536');
     assertMarketDocument('borrowIndex', '4.852094820647174144');
-    assertMarketDocument('reserves', '5.128924555022289393');
+    assertMarketDocument('reservesWei', '5128924555022289393');
     assertMarketDocument('treasuryTotalBorrowsWei', '2641234234636158123');
     assertMarketDocument('cash', '1.418171344423412457');
     assertMarketDocument('borrowRate', '0.000000000012678493');
@@ -588,6 +599,142 @@ describe('VToken', () => {
       aaaTokenAddress.toHex(),
       'interestRateModelAddress',
       newInterestRateModel.toHexString(),
+    );
+  });
+
+  test('registers bad debt increased', () => {
+    const borrower = Address.fromString('0x0000000000000000000000000000000000000111');
+    const badDebtDelta = BigInt.fromI64(300);
+    const badDebtOld = BigInt.fromI64(1000);
+    const badDebtNew = BigInt.fromI64(700);
+
+    const badDebtIncreasedEvent = createBadDebtIncreasedEvent(
+      aaaTokenAddress,
+      borrower,
+      badDebtDelta,
+      badDebtOld,
+      badDebtNew,
+    );
+
+    const accountVTokenTBadDebtId = getBadDebtEventId(
+      badDebtIncreasedEvent.transaction.hash,
+      badDebtIncreasedEvent.transaction.index,
+    );
+
+    handleBadDebtIncreased(badDebtIncreasedEvent);
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHexString(),
+      'badDebtWei',
+      badDebtNew.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVTokenBadDebt',
+      accountVTokenTBadDebtId,
+      'account',
+      getAccountVTokenId(badDebtIncreasedEvent.address, badDebtIncreasedEvent.params.borrower),
+    );
+    assert.fieldEquals(
+      'AccountVTokenBadDebt',
+      accountVTokenTBadDebtId,
+      'amount',
+      badDebtDelta.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVTokenBadDebt',
+      accountVTokenTBadDebtId,
+      'timestamp',
+      badDebtIncreasedEvent.block.timestamp.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVTokenBadDebt',
+      accountVTokenTBadDebtId,
+      'block',
+      badDebtIncreasedEvent.block.number.toString(),
+    );
+  });
+
+  test('market registers its new access control manager', () => {
+    const oldAccessControlManager = Address.fromString(
+      '0x0000000000000000000000000000000000000aaa',
+    );
+    const newAccessControlManager = Address.fromString(
+      '0x0000000000000000000000000000000000000bbb',
+    );
+
+    const newAccessControlManagerEvent = createNewAccessControlManagerEvent(
+      aaaTokenAddress,
+      oldAccessControlManager,
+      newAccessControlManager,
+    );
+
+    handleNewAccessControlManager(newAccessControlManagerEvent);
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHexString(),
+      'accessControlManager',
+      newAccessControlManager.toHexString(),
+    );
+  });
+
+  test('market registers its new comptroller', () => {
+    const oldComptroller = Address.fromString('0x0000000000000000000000000000000000000ccc');
+    const newComptroller = Address.fromString('0x0000000000000000000000000000000000000ddd');
+
+    const newComptrollerEvent = createNewComptrollerEvent(
+      aaaTokenAddress,
+      oldComptroller,
+      newComptroller,
+    );
+
+    handleNewComptroller(newComptrollerEvent);
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHexString(),
+      'pool',
+      newComptroller.toHexString(),
+    );
+  });
+
+  test('registers market reserve increase', () => {
+    const benefactor = Address.fromString('0x0000000000000000000000000000000000000b00');
+    const addAmount = BigInt.fromI64(112233445566778899);
+    const newTotalReserves = BigInt.fromI64(2222334455667788990);
+
+    const reservesAddedEvent = createReservesAddedEvent(
+      aaaTokenAddress,
+      benefactor,
+      addAmount,
+      newTotalReserves,
+    );
+
+    handleReservesAdded(reservesAddedEvent);
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHexString(),
+      'reservesWei',
+      newTotalReserves.toString(),
+    );
+  });
+
+  test('registers market reserve decrease', () => {
+    const benefactor = Address.fromString('0x0000000000000000000000000000000000000b00');
+    const reduceAmount = BigInt.fromI64(100000000000000000);
+    const newTotalReserves = BigInt.fromI64(9111222333444555666);
+
+    const reservesReducedEvent = createReservesReducedEvent(
+      aaaTokenAddress,
+      benefactor,
+      reduceAmount,
+      newTotalReserves,
+    );
+
+    handleReservesReduced(reservesReducedEvent);
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHexString(),
+      'reservesWei',
+      '9111222333444555666',
     );
   });
 });

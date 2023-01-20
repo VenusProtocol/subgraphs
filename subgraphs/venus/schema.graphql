@@ -32,7 +32,7 @@ type Market @entity {
     "Name of the vToken"
     name: String!
     "Reserves stored in the contract"
-    reserves: BigDecimal!
+    reservesWei: BigInt!
     "Supply rate per block"
     supplyRate: BigDecimal!
     "VToken symbol"

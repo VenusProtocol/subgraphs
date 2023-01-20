@@ -3,13 +3,19 @@ import { newMockEvent } from 'matchstick-as';
 
 import {
   AccrueInterest as AccrueInterestEvent,
+  Approval as ApprovalEvent,
+  BadDebtIncreased as BadDebtIncreasedEvent,
   Borrow as BorrowEvent,
   LiquidateBorrow as LiquidateBorrowEvent,
   Mint as MintEvent,
+  NewAccessControlManager as NewAccessControlManagerEvent,
+  NewComptroller as NewComptrollerEvent,
   NewMarketInterestRateModel as NewMarketInterestRateModelEvent,
   NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEvent,
   RepayBorrow as RepayBorrowEvent,
+  ReservesAdded as ReservesAddedEvent,
+  ReservesReduced as ReservesReducedEvent,
   Transfer as TransferEvent,
 } from '../../generated/PoolRegistry/VToken';
 
@@ -301,6 +307,173 @@ export const createNewMarketInterestRateModelEvent = (
     ethereum.Value.fromAddress(newInterestRateModel),
   );
   event.parameters.push(newInterestRateModelParam);
+
+  return event;
+};
+
+export const createApprovalEvent = (
+  vTokenAddress: Address,
+  owner: Address,
+  spender: Address,
+  amount: BigInt,
+): ApprovalEvent => {
+  const event = changetype<ApprovalEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const ownerParam = new ethereum.EventParam('owner', ethereum.Value.fromAddress(owner));
+  event.parameters.push(ownerParam);
+
+  const spenderParam = new ethereum.EventParam('spender', ethereum.Value.fromAddress(spender));
+  event.parameters.push(spenderParam);
+
+  const amountParam = new ethereum.EventParam('amount', ethereum.Value.fromUnsignedBigInt(amount));
+  event.parameters.push(amountParam);
+
+  return event;
+};
+
+export const createBadDebtIncreasedEvent = (
+  vTokenAddress: Address,
+  borrower: Address,
+  badDebtDelta: BigInt,
+  badDebtOld: BigInt,
+  badDebtNew: BigInt,
+): BadDebtIncreasedEvent => {
+  const event = changetype<BadDebtIncreasedEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const borrowerParam = new ethereum.EventParam('borrower', ethereum.Value.fromAddress(borrower));
+  event.parameters.push(borrowerParam);
+
+  const badDebtDeltaParam = new ethereum.EventParam(
+    'badDebtDelta',
+    ethereum.Value.fromUnsignedBigInt(badDebtDelta),
+  );
+  event.parameters.push(badDebtDeltaParam);
+
+  const badDebtOldParam = new ethereum.EventParam(
+    'badDebtOld',
+    ethereum.Value.fromUnsignedBigInt(badDebtOld),
+  );
+  event.parameters.push(badDebtOldParam);
+
+  const badDebtNewParam = new ethereum.EventParam(
+    'badDebtNew',
+    ethereum.Value.fromUnsignedBigInt(badDebtNew),
+  );
+  event.parameters.push(badDebtNewParam);
+
+  return event;
+};
+
+export const createNewAccessControlManagerEvent = (
+  vTokenAddress: Address,
+  oldAccessControlManager: Address,
+  newAccessControlManager: Address,
+): NewAccessControlManagerEvent => {
+  const event = changetype<NewAccessControlManagerEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const oldAccessControlManagerParam = new ethereum.EventParam(
+    'oldAccessControlManager',
+    ethereum.Value.fromAddress(oldAccessControlManager),
+  );
+  event.parameters.push(oldAccessControlManagerParam);
+
+  const newAccessControlManagerParam = new ethereum.EventParam(
+    'newAccessControlManager',
+    ethereum.Value.fromAddress(newAccessControlManager),
+  );
+  event.parameters.push(newAccessControlManagerParam);
+
+  return event;
+};
+
+export const createNewComptrollerEvent = (
+  vTokenAddress: Address,
+  oldComptroller: Address,
+  newComptroller: Address,
+): NewComptrollerEvent => {
+  const event = changetype<NewComptrollerEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const oldComptrollerParam = new ethereum.EventParam(
+    'oldComptroller',
+    ethereum.Value.fromAddress(oldComptroller),
+  );
+  event.parameters.push(oldComptrollerParam);
+
+  const newComptrollerParam = new ethereum.EventParam(
+    'newComptroller',
+    ethereum.Value.fromAddress(newComptroller),
+  );
+  event.parameters.push(newComptrollerParam);
+
+  return event;
+};
+
+export const createReservesAddedEvent = (
+  vTokenAddress: Address,
+  benefactor: Address,
+  addAmount: BigInt,
+  newTotalReserves: BigInt,
+): ReservesAddedEvent => {
+  const event = changetype<ReservesAddedEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const benefactorParam = new ethereum.EventParam(
+    'benefactor',
+    ethereum.Value.fromAddress(benefactor),
+  );
+  event.parameters.push(benefactorParam);
+
+  const addAmountParam = new ethereum.EventParam(
+    'addAmount',
+    ethereum.Value.fromUnsignedBigInt(addAmount),
+  );
+  event.parameters.push(addAmountParam);
+
+  const newTotalReservesParam = new ethereum.EventParam(
+    'newTotalReserves',
+    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
+  );
+  event.parameters.push(newTotalReservesParam);
+
+  return event;
+};
+
+export const createReservesReducedEvent = (
+  vTokenAddress: Address,
+  benefactor: Address,
+  reduceAmount: BigInt,
+  newTotalReserves: BigInt,
+): ReservesReducedEvent => {
+  const event = changetype<ReservesReducedEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const benefactorParam = new ethereum.EventParam(
+    'benefactor',
+    ethereum.Value.fromAddress(benefactor),
+  );
+  event.parameters.push(benefactorParam);
+
+  const reduceAmountParam = new ethereum.EventParam(
+    'reduceAmount',
+    ethereum.Value.fromUnsignedBigInt(reduceAmount),
+  );
+  event.parameters.push(reduceAmountParam);
+
+  const newTotalReservesParam = new ethereum.EventParam(
+    'newTotalReserves',
+    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
+  );
+  event.parameters.push(newTotalReservesParam);
 
   return event;
 };

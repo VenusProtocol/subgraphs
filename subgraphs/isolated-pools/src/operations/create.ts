@@ -2,6 +2,7 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
 import {
+  BadDebtIncreased,
   Borrow,
   LiquidateBorrow,
   Mint,
@@ -9,7 +10,7 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
-import { Account, Market, Pool, Transaction } from '../../generated/schema';
+import { Account, AccountVTokenBadDebt, Market, Pool, Transaction } from '../../generated/schema';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
@@ -23,6 +24,7 @@ import {
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
+  zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
@@ -31,9 +33,14 @@ import {
   getUnderlyingAddress,
 } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
-import { getPoolId, getTransactionEventId } from '../utilities/ids';
+import {
+  getAccountVTokenId,
+  getBadDebtEventId,
+  getPoolId,
+  getTransactionEventId,
+} from '../utilities/ids';
 
-export function createPool(comptroller: Address): Pool | null {
+export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
@@ -66,9 +73,8 @@ export function createPool(comptroller: Address): Pool | null {
     pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
     // Note: we don't index vTokens here because when a pool is created it has no markets
     pool.save();
-    return pool;
   }
-  return null;
+  return pool;
 }
 
 export function createAccount(accountAddress: Address): Account {
@@ -99,17 +105,19 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.cash = zeroBigDecimal;
   market.collateralFactor = zeroBigDecimal;
   market.exchangeRate = zeroBigDecimal;
-  market.reserves = zeroBigDecimal;
+  market.reservesWei = zeroBigInt32;
   market.supplyRate = zeroBigDecimal;
   market.underlyingPrice = zeroBigDecimal;
   market.accrualBlockNumber = 0;
   market.blockTimestamp = 0;
   market.borrowIndex = zeroBigDecimal;
   market.reserveFactor = getReserveFactorMantissa(vTokenContract);
-  market.borrowCapWei = BigInt.fromI32(0);
-  market.treasuryTotalBorrowsWei = BigInt.fromI32(0);
-  market.treasuryTotalSupplyWei = BigInt.fromI32(0);
-  market.supplyCapWei = BigInt.fromI32(0);
+  market.borrowCapWei = zeroBigInt32;
+  market.treasuryTotalBorrowsWei = zeroBigInt32;
+  market.treasuryTotalSupplyWei = zeroBigInt32;
+  market.badDebtWei = zeroBigInt32;
+  market.supplyCapWei = zeroBigInt32;
+
   market.save();
   return market;
 }
@@ -244,4 +252,19 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
   transaction.save();
+};
+
+export const createAccountVTokenBadDebt = (
+  marketAddress: Address,
+  event: BadDebtIncreased,
+): void => {
+  const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
+
+  const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
+  const accountVTokenId = getAccountVTokenId(marketAddress, event.params.borrower);
+  accountVTokenBadDebt.account = accountVTokenId;
+  accountVTokenBadDebt.block = event.block.number;
+  accountVTokenBadDebt.amount = event.params.badDebtDelta;
+  accountVTokenBadDebt.timestamp = event.block.timestamp;
+  accountVTokenBadDebt.save();
 };

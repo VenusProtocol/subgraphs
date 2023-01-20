@@ -227,11 +227,7 @@ export const updateMarket = (
     .div(defaultMantissaFactorBigDecimal)
     .truncate(mantissaFactor);
 
-  market.reserves = marketContract
-    .totalReserves()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  market.reservesWei = marketContract.totalReserves();
 
   market.cash = marketContract
     .getCash()

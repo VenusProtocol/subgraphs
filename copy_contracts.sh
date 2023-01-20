@@ -10,3 +10,6 @@ cp -rf ./node_modules/@venusprotocol/oracle/contracts/ ./contracts/oracle/contra
 
 mkdir -p ./contracts/protocol
 cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts
+
+mkdir -p ./contracts/mocks
+cp -rf ./mocks/ ./contracts/mocks/contracts

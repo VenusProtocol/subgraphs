@@ -7,13 +7,17 @@ import { getPool } from '../operations/get';
 
 const getBnbPriceInUsd = (poolAddress: Address): BigDecimal => {
   const comptroller = getPool(poolAddress);
+  let bnbPriceInUsd = BigDecimal.fromString('0');
 
-  const priceOracleAddress = Address.fromBytes(comptroller.priceOracle);
-  const priceOracle = PriceOracle.bind(priceOracleAddress);
-  const bnbPriceInUsd = priceOracle
-    .getUnderlyingPrice(vBnbAddress)
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal);
+  if (comptroller) {
+    const priceOracleAddress = Address.fromBytes(comptroller.priceOracle);
+    const priceOracle = PriceOracle.bind(priceOracleAddress);
+    bnbPriceInUsd = priceOracle
+      .getUnderlyingPrice(vBnbAddress)
+      .toBigDecimal()
+      .div(defaultMantissaFactorBigDecimal);
+  }
+
   return bnbPriceInUsd;
 };
 

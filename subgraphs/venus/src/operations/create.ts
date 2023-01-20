@@ -86,7 +86,7 @@ export const createMarket = (marketAddress: string): Market => {
     ? nullAddress
     : interestRateModelAddress.value;
   market.name = contract.name();
-  market.reserves = zeroBD;
+  market.reservesWei = BigInt.fromI32(0);
   market.supplyRate = zeroBD;
   market.symbol = contract.symbol();
   market.totalBorrows = zeroBD;

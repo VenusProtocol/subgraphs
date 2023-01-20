@@ -1,5 +1,5 @@
-query Markets {
-  markets {
+query MarketById($id: ID!) {
+  market(id: $id) {
     id
     pool {
       id
@@ -19,13 +19,12 @@ query Markets {
     underlyingPrice
     underlyingSymbol
     borrowCapWei
+    supplyCapWei
     accrualBlockNumber
     blockTimestamp
     borrowIndex
     reserveFactor
     underlyingPriceUsd
     underlyingDecimals
-    supplyCapWei
-    accessControlManager
   }
 }
