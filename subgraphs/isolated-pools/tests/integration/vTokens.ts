@@ -13,12 +13,16 @@ describe('VToken events', function () {
   let root: SignerWithAddress;
   let liquidator: SignerWithAddress;
   let liquidator2: SignerWithAddress;
+  let supplier1: SignerWithAddress;
+  let supplier2: SignerWithAddress;
   let borrower: SignerWithAddress;
+  let borrower2: SignerWithAddress;
   let comptroller: Contract;
   let bnxToken: Contract;
   let vBnxToken: Contract;
   let bswToken: Contract;
   let vBswToken: Contract;
+  let mockPriceOracleContract: Contract;
 
   const comptrollerAddress = '0x9467A509DA43CB50EB332187602534991Be1fEa4';
   let vBnxAddress: string;
@@ -37,7 +41,7 @@ describe('VToken events', function () {
     await deploy();
 
     const signers = await ethers.getSigners();
-    [root, liquidator, borrower, liquidator2] = signers;
+    [root, liquidator, borrower, liquidator2, borrower2, supplier1, supplier2] = signers;
 
     bnxToken = await ethers.getContract('MockBNX');
     bswToken = await ethers.getContract('MockBSW');
@@ -50,14 +54,13 @@ describe('VToken events', function () {
 
     vBnxToken = await ethers.getContractAt('VToken', vBnxAddress);
     vBswToken = await ethers.getContractAt('VToken', vBswAddress);
-  });
 
-  it('handles BadDebtIncreased event', async function () {
     // mocking the price oracle and setting low underlying prices
     const mockPriceOracleFactory = await ethers.getContractFactory(
       'MockPriceOracleUnderlyingPrice',
     );
-    const mockPriceOracleContract = await mockPriceOracleFactory.deploy();
+
+    mockPriceOracleContract = await mockPriceOracleFactory.deploy();
     await mockPriceOracleContract.setPrice(vBnxToken.address, convertToUnit(1, 5));
     await mockPriceOracleContract.setPrice(vBswToken.address, convertToUnit(1, 5));
     await comptroller.setPriceOracle(mockPriceOracleContract.address);
@@ -65,9 +68,11 @@ describe('VToken events', function () {
     await comptroller.connect(liquidator).enterMarkets([vBnxToken.address, vBswToken.address]);
     await comptroller.connect(borrower).enterMarkets([vBnxToken.address, vBswToken.address]);
 
-    // add collateral for the borrower
+    // add collateral for the borrowers
     await bnxToken.connect(borrower).faucet(borrowAmount);
     await bnxToken.connect(borrower).approve(vBnxToken.address, borrowAmount);
+    await bnxToken.connect(borrower2).faucet(borrowAmount);
+    await bnxToken.connect(borrower2).approve(vBnxToken.address, borrowAmount);
 
     // add collateral for the liquidator
     await bswToken.connect(liquidator).faucet(mintAmount);
@@ -81,7 +86,101 @@ describe('VToken events', function () {
     await vBswToken.connect(liquidator).mint(mintAmount);
     await vBswToken.connect(liquidator2).mint(mintAmount);
     await vBnxToken.connect(borrower).mint(mintAmount);
+    await vBnxToken.connect(borrower2).mint(mintAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+  });
 
+  it('updates the supplierCount for the market', async function () {
+    const { data: initialData } = await subgraphClient.getMarkets();
+    expect(initialData).to.not.be.equal(undefined);
+    const { markets: initialMarketsQuery } = initialData!;
+
+    // liquidator1 and liquidator2 are supplying BSW
+    expect(initialMarketsQuery[0].supplierCount).to.equal('2');
+
+    // adding two new suppliers
+    await comptroller.connect(supplier1).enterMarkets([vBnxToken.address, vBswToken.address]);
+    await bswToken.connect(supplier1).faucet(mintAmount);
+    await bswToken.connect(supplier1).approve(vBswToken.address, mintAmount);
+    await vBswToken.connect(supplier1).mint(mintAmount);
+
+    await comptroller.connect(supplier2).enterMarkets([vBnxToken.address, vBswToken.address]);
+    await bswToken.connect(supplier2).faucet(mintAmount);
+    await bswToken.connect(supplier2).approve(vBswToken.address, mintAmount);
+    await vBswToken.connect(supplier2).mint(mintAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: dataWithNewSupplier } = await subgraphClient.getMarkets();
+    expect(dataWithNewSupplier).to.not.be.equal(undefined);
+    const { markets: marketsQueryAfterNewSupplier } = dataWithNewSupplier!;
+
+    expect(marketsQueryAfterNewSupplier[0].supplierCount).to.equal('4');
+
+    // removing supplier
+    await vBswToken.connect(supplier1).redeem(mintAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: dataWithoutNewSupplier } = await subgraphClient.getMarkets();
+    expect(dataWithoutNewSupplier).to.not.be.equal(undefined);
+    const { markets: marketsQueryAfterRemovingSupplier } = dataWithoutNewSupplier!;
+
+    expect(marketsQueryAfterRemovingSupplier[0].supplierCount).to.equal('3');
+
+    // partially redeeming should not decrease count
+    const halfMintAmount = convertToUnit(0.5, 4);
+    await vBswToken.connect(supplier2).redeem(halfMintAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: dataAfterHalfRedeem } = await subgraphClient.getMarkets();
+    expect(dataAfterHalfRedeem).to.not.be.equal(undefined);
+    const { markets: marketsAfterHalfRedeem } = dataAfterHalfRedeem!;
+
+    expect(marketsAfterHalfRedeem[0].supplierCount).to.equal('3');
+
+    // now redeem remaining amount and remove supplier
+    await vBswToken.connect(supplier2).redeem(halfMintAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data } = await subgraphClient.getMarkets();
+    expect(data).to.not.be.equal(undefined);
+    const { markets } = data!;
+
+    expect(markets[0].supplierCount).to.equal('2');
+  });
+
+  it('updates the borrowerCount for the market', async function () {
+    const { data: initialData } = await subgraphClient.getMarkets();
+    expect(initialData).to.not.be.equal(undefined);
+    const { markets: marketsBeforeData } = initialData!;
+
+    expect(marketsBeforeData[0].borrowerCount).to.equal('0');
+
+    // borrowing adds to count
+    await bswToken.connect(borrower2).faucet(borrowAmount);
+    await bswToken.connect(borrower2).approve(vBswToken.address, borrowAmount);
+    await vBswToken.connect(borrower2).borrow(borrowAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: dataAfterBorrow } = await subgraphClient.getMarkets();
+    expect(dataAfterBorrow).to.not.be.equal(undefined);
+    const { markets: marketAfterBorrow } = dataAfterBorrow!;
+
+    expect(marketAfterBorrow[0].borrowerCount).to.equal('1');
+
+    // completely repaying the borrow should decrease the count
+    await bswToken.connect(borrower2).faucet(borrowAmount);
+    await bswToken.connect(borrower2).approve(vBswToken.address, borrowAmount);
+    await vBswToken.connect(borrower2).repayBorrow(borrowAmount);
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data } = await subgraphClient.getMarkets();
+    expect(data).to.not.be.equal(undefined);
+    const { markets } = data!;
+
+    expect(markets[0].borrowerCount).to.equal('0');
+  });
+
+  it('handles BadDebtIncreased event', async function () {
     // borrower borrows BSW
     await vBswToken.connect(borrower).borrow(borrowAmount);
 
@@ -112,7 +211,9 @@ describe('VToken events', function () {
     expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
 
-    const accountVBswData = accountVTokens.find(avt => avt.market.id === vBswAddress.toLowerCase());
+    const accountVBswData = accountVTokens.find(avt =>
+      avt.id.includes(borrower.address.toLowerCase()),
+    );
     expect(accountVBswData?.badDebt.length).to.be.equal(1);
     expect(accountVBswData?.badDebt[0].amount).to.be.equal('6001');
   });

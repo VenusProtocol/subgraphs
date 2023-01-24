@@ -27,5 +27,7 @@ query Markets {
     underlyingDecimals
     supplyCapWei
     accessControlManager
+    supplierCount
+    borrowerCount
   }
 }
