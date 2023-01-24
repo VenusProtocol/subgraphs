@@ -13,7 +13,9 @@ import {
   ReservesAdded,
   ReservesReduced,
   Transfer,
+  VToken,
 } from '../../generated/PoolRegistry/VToken';
+import { oneBigInt, zeroBigInt32 } from '../constants/index';
 import {
   createAccountVTokenBadDebt,
   createBorrowTransaction,
@@ -51,6 +53,15 @@ export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress);
   createMintTransaction(event, market.underlyingDecimals);
+
+  // we read the current total amount of supplied tokens by this account in the market
+  const vTokenContract = VToken.bind(vTokenAddress);
+  const suppliedTotal = vTokenContract.balanceOf(event.params.minter);
+  if (suppliedTotal == event.params.mintTokens) {
+    // and if they are the same, it means it's a new supplier
+    market.supplierCount = market.supplierCount.plus(oneBigInt);
+    market.save();
+  }
 }
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
@@ -69,6 +80,15 @@ export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress);
   createRedeemTransaction(event, market.underlyingDecimals);
+
+  // we read the account's balance and...
+  const vTokenContract = VToken.bind(vTokenAddress);
+  const currentBalance = vTokenContract.balanceOf(event.params.redeemer);
+  if (currentBalance == zeroBigInt32) {
+    // if the current balance is 0 then the user has withdrawn all their assets from this market
+    market.supplierCount = market.supplierCount.minus(oneBigInt);
+    market.save();
+  }
 }
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
@@ -99,6 +119,12 @@ export function handleBorrow(event: Borrow): void {
   );
 
   createBorrowTransaction(event, market.underlyingDecimals);
+
+  if (event.params.accountBorrows == event.params.borrowAmount) {
+    // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
+    market.borrowerCount = market.borrowerCount.plus(oneBigInt);
+    market.save();
+  }
 }
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
@@ -134,6 +160,11 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   );
 
   createRepayBorrowTransaction(event, market.underlyingDecimals);
+
+  if (event.params.accountBorrows == zeroBigInt32) {
+    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+    market.save();
+  }
 }
 
 /*
