@@ -19,6 +19,7 @@ import {
   TRANSFER,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
+  zeroBigInt32,
 } from '../../src/constants';
 import { vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
@@ -60,7 +61,7 @@ import {
   createReservesReducedEvent,
   createTransferEvent,
 } from './events';
-import { createPoolRegistryMock } from './mocks';
+import { createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
 import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
@@ -103,6 +104,9 @@ beforeAll(() => {
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
     ],
   ]);
+
+  createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, zeroBigInt32);
+  createAccountVTokenBalanceOfMock(aaaTokenAddress, user2Address, zeroBigInt32);
 });
 
 beforeEach(() => {
@@ -736,5 +740,125 @@ describe('VToken', () => {
       'reservesWei',
       '9111222333444555666',
     );
+  });
+
+  test('registers increase and decrease in the market supplier count', () => {
+    const market = getMarket(aaaTokenAddress);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '0');
+
+    const actualMintAmount = BigInt.fromI64(12);
+    const halfActualMintAmount = actualMintAmount.div(BigInt.fromI64(2));
+    const mintTokens = BigInt.fromI64(10);
+    const halfMintTokens = mintTokens.div(BigInt.fromI64(2));
+
+    const supplier01 = user1Address;
+    let mintEvent = createMintEvent(aaaTokenAddress, supplier01, actualMintAmount, mintTokens);
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, mintTokens);
+
+    handleMint(mintEvent);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '1');
+
+    const supplier02 = user2Address;
+    mintEvent = createMintEvent(aaaTokenAddress, supplier02, actualMintAmount, mintTokens);
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, mintTokens);
+
+    handleMint(mintEvent);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '2');
+
+    let redeemEvent = createRedeemEvent(aaaTokenAddress, supplier02, actualMintAmount, mintTokens);
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, zeroBigInt32);
+
+    handleRedeem(redeemEvent);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '1');
+
+    redeemEvent = createRedeemEvent(
+      aaaTokenAddress,
+      supplier01,
+      halfActualMintAmount,
+      halfMintTokens,
+    );
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, halfMintTokens);
+
+    handleRedeem(redeemEvent);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '1');
+
+    redeemEvent = createRedeemEvent(
+      aaaTokenAddress,
+      supplier01,
+      halfActualMintAmount,
+      halfMintTokens,
+    );
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, zeroBigInt32);
+
+    handleRedeem(redeemEvent);
+    assert.fieldEquals('Market', market.id, 'supplierCount', '0');
+  });
+
+  test('registers increase and decrease in the market borrower count', () => {
+    const market = getMarket(aaaTokenAddress);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '0');
+
+    const borrowAmount = BigInt.fromI64(10);
+    const halfBorrowAmountTokens = borrowAmount.div(BigInt.fromI64(2));
+
+    const borrower01 = user1Address;
+    let borrowEvent = createBorrowEvent(
+      aaaTokenAddress,
+      borrower01,
+      borrowAmount,
+      borrowAmount,
+      borrowAmount,
+    );
+
+    handleBorrow(borrowEvent);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '1');
+
+    const borrower02 = user2Address;
+    borrowEvent = createBorrowEvent(
+      aaaTokenAddress,
+      borrower02,
+      borrowAmount,
+      borrowAmount,
+      borrowAmount,
+    );
+
+    handleBorrow(borrowEvent);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '2');
+
+    let repayEvent = createRepayBorrowEvent(
+      aaaTokenAddress,
+      borrower02,
+      borrower02,
+      borrowAmount,
+      zeroBigInt32,
+      zeroBigInt32,
+    );
+
+    handleRepayBorrow(repayEvent);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '1');
+
+    repayEvent = createRepayBorrowEvent(
+      aaaTokenAddress,
+      borrower01,
+      borrower01,
+      halfBorrowAmountTokens,
+      halfBorrowAmountTokens,
+      halfBorrowAmountTokens,
+    );
+
+    handleRepayBorrow(repayEvent);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '1');
+
+    repayEvent = createRepayBorrowEvent(
+      aaaTokenAddress,
+      borrower01,
+      borrower01,
+      halfBorrowAmountTokens,
+      zeroBigInt32,
+      zeroBigInt32,
+    );
+
+    handleRepayBorrow(repayEvent);
+    assert.fieldEquals('Market', market.id, 'borrowerCount', '0');
   });
 });

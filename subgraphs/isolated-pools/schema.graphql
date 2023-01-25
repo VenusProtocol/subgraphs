@@ -139,6 +139,11 @@ type Market @entity {
     badDebtWei: BigInt!
     "Contract address for the Access Control Manager"
     accessControlManager: Bytes
+
+    "Number of accounts currently supplying to this market"
+    supplierCount: BigInt!
+    "Number of accounts currently borrowing from this market"
+    borrowerCount: BigInt!
 }
 
 """

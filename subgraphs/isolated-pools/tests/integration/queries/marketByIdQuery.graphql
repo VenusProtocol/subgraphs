@@ -26,5 +26,7 @@ query MarketById($id: ID!) {
     reserveFactor
     underlyingPriceUsd
     underlyingDecimals
+    supplierCount
+    borrowerCount
   }
 }

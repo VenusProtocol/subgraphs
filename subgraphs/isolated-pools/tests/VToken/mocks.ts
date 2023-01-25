@@ -168,3 +168,13 @@ export const createPriceOracleMock = (tokens: Array<Array<ethereum.Value>>): voi
       .returns([token[1]]);
   });
 };
+
+export const createAccountVTokenBalanceOfMock = (
+  vTokenAddress: Address,
+  accountAddress: Address,
+  balance: BigInt,
+): void => {
+  createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    .withArgs([ethereum.Value.fromAddress(accountAddress)])
+    .returns([ethereum.Value.fromSignedBigInt(balance)]);
+};
