@@ -399,6 +399,12 @@
         "internalType": "uint256",
         "name": "mintTokens",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "accountBalance",
+        "type": "uint256"
       }
     ],
     "name": "Mint",
@@ -537,6 +543,12 @@
         "indexed": false,
         "internalType": "uint256",
         "name": "redeemTokens",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "accountBalance",
         "type": "uint256"
       }
     ],

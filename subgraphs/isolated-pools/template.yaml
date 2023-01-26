@@ -35,7 +35,7 @@ dataSources:
       eventHandlers:
         - event: PoolRegistered(indexed address,(string,address,address,uint256,uint256))
           handler: handlePoolRegistered
-        - event: PoolNameSet(indexed address,string)
+        - event: PoolNameSet(indexed address,string,string)
           handler: handlePoolNameSet
         - event: MarketAdded(indexed address,address)
           handler: handleMarketAdded
@@ -118,9 +118,9 @@ templates:
         - name: PoolLens
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
       eventHandlers:
-        - event: Mint(address,uint256,uint256)
+        - event: Mint(address,uint256,uint256,uint256)
           handler: handleMint
-        - event: Redeem(address,uint256,uint256)
+        - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
         - event: Borrow(address,uint256,uint256,uint256)
           handler: handleBorrow

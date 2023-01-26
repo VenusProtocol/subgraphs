@@ -129,7 +129,14 @@ describe('VToken', () => {
     const minter = user1Address;
     const actualMintAmount = BigInt.fromI64(124620530798726345);
     const mintTokens = BigInt.fromI64(37035970026454);
-    const mintEvent = createMintEvent(aaaTokenAddress, minter, actualMintAmount, mintTokens);
+    const accountBalance = mintTokens;
+    const mintEvent = createMintEvent(
+      aaaTokenAddress,
+      minter,
+      actualMintAmount,
+      mintTokens,
+      accountBalance,
+    );
     const market = getMarket(aaaTokenAddress);
 
     handleMint(mintEvent);
@@ -162,11 +169,13 @@ describe('VToken', () => {
     const redeemer = user2Address;
     const actualRedeemAmount = BigInt.fromI64(124620530798726345);
     const redeemTokens = BigInt.fromI64(37035970026454);
+    const accountBalance = redeemTokens;
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
       redeemer,
       actualRedeemAmount,
       redeemTokens,
+      accountBalance,
     );
     const market = getMarket(aaaTokenAddress);
 
@@ -749,23 +758,42 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromI64(12);
     const halfActualMintAmount = actualMintAmount.div(BigInt.fromI64(2));
     const mintTokens = BigInt.fromI64(10);
+    const accountBalance = mintTokens;
     const halfMintTokens = mintTokens.div(BigInt.fromI64(2));
 
     const supplier01 = user1Address;
-    let mintEvent = createMintEvent(aaaTokenAddress, supplier01, actualMintAmount, mintTokens);
+    let mintEvent = createMintEvent(
+      aaaTokenAddress,
+      supplier01,
+      actualMintAmount,
+      mintTokens,
+      accountBalance,
+    );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', market.id, 'supplierCount', '1');
 
     const supplier02 = user2Address;
-    mintEvent = createMintEvent(aaaTokenAddress, supplier02, actualMintAmount, mintTokens);
+    mintEvent = createMintEvent(
+      aaaTokenAddress,
+      supplier02,
+      actualMintAmount,
+      mintTokens,
+      accountBalance,
+    );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', market.id, 'supplierCount', '2');
 
-    let redeemEvent = createRedeemEvent(aaaTokenAddress, supplier02, actualMintAmount, mintTokens);
+    let redeemEvent = createRedeemEvent(
+      aaaTokenAddress,
+      supplier02,
+      actualMintAmount,
+      mintTokens,
+      zeroBigInt32,
+    );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, zeroBigInt32);
 
     handleRedeem(redeemEvent);
@@ -775,6 +803,7 @@ describe('VToken', () => {
       aaaTokenAddress,
       supplier01,
       halfActualMintAmount,
+      halfMintTokens,
       halfMintTokens,
     );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, halfMintTokens);
@@ -787,6 +816,7 @@ describe('VToken', () => {
       supplier01,
       halfActualMintAmount,
       halfMintTokens,
+      zeroBigInt32,
     );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, zeroBigInt32);
 

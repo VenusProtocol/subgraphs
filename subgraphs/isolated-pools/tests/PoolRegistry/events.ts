@@ -34,7 +34,8 @@ export const createPoolRegisteredEvent = (comptrollerAddress: Address): PoolRegi
 
 export const createPoolNameSetEvent = (
   comptrollerAddress: Address,
-  name: string,
+  oldName: string,
+  newName: string,
 ): PoolNameSetEvent => {
   const event = changetype<PoolNameSetEvent>(newMockEvent());
 
@@ -45,7 +46,12 @@ export const createPoolNameSetEvent = (
     ethereum.Value.fromAddress(comptrollerAddress),
   );
   event.parameters.push(indexParam);
-  const nameParam = new ethereum.EventParam('name', ethereum.Value.fromString(name));
-  event.parameters.push(nameParam);
+
+  const oldNameParam = new ethereum.EventParam('oldName', ethereum.Value.fromString(oldName));
+  event.parameters.push(oldNameParam);
+
+  const newNameParam = new ethereum.EventParam('newName', ethereum.Value.fromString(newName));
+  event.parameters.push(newNameParam);
+
   return event;
 };

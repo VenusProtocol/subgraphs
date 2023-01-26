@@ -91,7 +91,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "comptroller",
         "type": "address"
@@ -99,7 +99,13 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "name",
+        "name": "oldName",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "newName",
         "type": "string"
       }
     ],

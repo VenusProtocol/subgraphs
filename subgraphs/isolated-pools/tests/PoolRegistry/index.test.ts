@@ -76,7 +76,11 @@ describe('Pool Registry', () => {
     const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
-    const poolNameSetEvent = createPoolNameSetEvent(comptrollerAddress, 'Summer Pool');
+    const poolNameSetEvent = createPoolNameSetEvent(
+      comptrollerAddress,
+      'Winter Pool',
+      'Summer Pool',
+    );
 
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000025', key, value);

@@ -3495,7 +3495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts-upgradeable@npm:^4.6.0, @openzeppelin/contracts-upgradeable@npm:^4.7.3, @openzeppelin/contracts-upgradeable@npm:^4.8.0":
+"@openzeppelin/contracts-upgradeable@npm:^4.7.3, @openzeppelin/contracts-upgradeable@npm:^4.8.0":
   version: 4.8.0
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.8.0"
   checksum: c39f3a719830c068d0ae413a8beee4072fa19f777b55bf6155fe21023414eab0633a641318845ac50929837b71848de1efbd00d4c181ddd6d8b735ceb0a82070
@@ -3506,6 +3506,50 @@ __metadata:
   version: 4.8.0
   resolution: "@openzeppelin/contracts@npm:4.8.0"
   checksum: dfab51a7f91735cfb1e94dd5074736b0dac0207e4ebf26eb46b32defd3b67adce5a36b248daa7b841c21be74863c1e37cf92ed194a9c36d3f8c5326d1a24242a
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/contracts@npm:^4.8.0":
+  version: 4.8.1
+  resolution: "@openzeppelin/contracts@npm:4.8.1"
+  checksum: 99acefde1ae42c2d935ec9b4ebd327e786c499a4ec76b9582eb9adb0ff94a77c48047332fba44fb97b82b5a46d80e74d3e5d8cf73d5defa7f746f2a67f070281
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/hardhat-upgrades@npm:^1.21.0":
+  version: 1.22.1
+  resolution: "@openzeppelin/hardhat-upgrades@npm:1.22.1"
+  dependencies:
+    "@openzeppelin/upgrades-core": ^1.20.0
+    chalk: ^4.1.0
+    debug: ^4.1.1
+    proper-lockfile: ^4.1.1
+  peerDependencies:
+    "@nomiclabs/hardhat-ethers": ^2.0.0
+    "@nomiclabs/hardhat-etherscan": ^3.1.0
+    ethers: ^5.0.5
+    hardhat: ^2.0.2
+  peerDependenciesMeta:
+    "@nomiclabs/harhdat-etherscan":
+      optional: true
+  bin:
+    migrate-oz-cli-project: dist/scripts/migrate-oz-cli-project.js
+  checksum: d9849e30002d41787460a6c20096c2c6a5f4672e608d3088ca927d7c2f5a14c2901b61eb94c6aafe5ed5981699c38fabbc1e7c0392d99e802eeabf32949df773
+  languageName: node
+  linkType: hard
+
+"@openzeppelin/upgrades-core@npm:^1.20.0":
+  version: 1.21.0
+  resolution: "@openzeppelin/upgrades-core@npm:1.21.0"
+  dependencies:
+    cbor: ^8.0.0
+    chalk: ^4.1.0
+    compare-versions: ^5.0.0
+    debug: ^4.1.1
+    ethereumjs-util: ^7.0.3
+    proper-lockfile: ^4.1.1
+    solidity-ast: ^0.4.15
+  checksum: 4cb9bfd92a406cbcc3433545064c7e53776e7bfce2f2f02848fd0cb73da939bd3d8e18a746b38f62a2bebf69d5ee2379a6a4f3de95cfe143134328643f2a59d0
   languageName: node
   linkType: hard
 
@@ -4237,16 +4281,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:^0.0.14":
-  version: 0.0.14
-  resolution: "@venusprotocol/isolated-pools@npm:0.0.14"
+"@venusprotocol/isolated-pools@npm:^0.0.18-develop.1":
+  version: 0.0.18-develop.1
+  resolution: "@venusprotocol/isolated-pools@npm:0.0.18-develop.1"
   dependencies:
-    "@openzeppelin/contracts": ^4.6.0
-    "@openzeppelin/contracts-upgradeable": ^4.6.0
+    "@openzeppelin/contracts": ^4.8.0
+    "@openzeppelin/contracts-upgradeable": ^4.8.0
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
     "@solidity-parser/parser": ^0.13.2
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
-  checksum: 2d2f4b8c409e9a7af248ae2ca06c41eb10f2ce1bede297b78f4aa1d484365153bed7c84db1e2c977db624042a1bb36e3dbd08547eb53eb9731ad5f7c84b1020e
+  checksum: 14e5d25538f56539a3927d63d8f931c4ffd62aed89c98df6f7bd18763359db85525cac716db04c3821ab68ad0b40795db2c83e1179c929d3094ebf4e4651e176
   languageName: node
   linkType: hard
 
@@ -4273,15 +4318,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/venus-protocol@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@venusprotocol/venus-protocol@npm:0.5.0"
+"@venusprotocol/venus-protocol@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@venusprotocol/venus-protocol@npm:0.6.0"
   dependencies:
     "@openzeppelin/contracts-upgradeable": ^4.8.0
     dotenv: ^16.0.1
   peerDependencies:
     hardhat: ^2.10.1
-  checksum: 628e7fdb24dd245d2ccada3036a1b18cdcb1ac3bb0abf491d8fc1cf52c6217e273205dd80e3eda0a7419ffef35677894479f605a149c2340734106fc5920f197
+  checksum: e05bf173d0320560b64bda12dfc32c1d2c205dd997ea1ca327d91e3b78dc03094f4a81bab4a84499c780d599e1574f70370becad0b3abb5b563d4154ba91668a
   languageName: node
   linkType: hard
 
@@ -5717,7 +5762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cbor@npm:^8.1.0":
+"cbor@npm:^8.0.0, cbor@npm:^8.1.0":
   version: 8.1.0
   resolution: "cbor@npm:8.1.0"
   dependencies:
@@ -6232,6 +6277,13 @@ __metadata:
   version: 1.8.2
   resolution: "common-tags@npm:1.8.2"
   checksum: 767a6255a84bbc47df49a60ab583053bb29a7d9687066a18500a516188a062c4e4cd52de341f22de0b07062e699b1b8fe3cfa1cb55b241cb9301aeb4f45b4dff
+  languageName: node
+  linkType: hard
+
+"compare-versions@npm:^5.0.0":
+  version: 5.0.3
+  resolution: "compare-versions@npm:5.0.3"
+  checksum: f66a4bb6ef8ff32031cc92c04dea4bbead039e72a7f6c7df7ef05f5a42ddca9202f8875b7449add54181e73b89f039662a8760c8db0ab036c4e8f653a7cd29c1
   languageName: node
   linkType: hard
 
@@ -7640,7 +7692,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-util@npm:^7.0.10, ethereumjs-util@npm:^7.1.0, ethereumjs-util@npm:^7.1.4, ethereumjs-util@npm:^7.1.5":
+"ethereumjs-util@npm:^7.0.10, ethereumjs-util@npm:^7.0.3, ethereumjs-util@npm:^7.1.0, ethereumjs-util@npm:^7.1.4, ethereumjs-util@npm:^7.1.5":
   version: 7.1.5
   resolution: "ethereumjs-util@npm:7.1.5"
   dependencies:
@@ -8822,7 +8874,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.6":
+"graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6":
   version: 4.2.10
   resolution: "graceful-fs@npm:4.2.10"
   checksum: 3f109d70ae123951905d85032ebeae3c2a5a7a997430df00ea30df0e3a6c60cf6689b109654d6fdacd28810a053348c4d14642da1d075049e6be1ba5216218da
@@ -12975,6 +13027,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proper-lockfile@npm:^4.1.1":
+  version: 4.1.2
+  resolution: "proper-lockfile@npm:4.1.2"
+  dependencies:
+    graceful-fs: ^4.2.4
+    retry: ^0.12.0
+    signal-exit: ^3.0.2
+  checksum: 00078ee6a61c216a56a6140c7d2a98c6c733b3678503002dc073ab8beca5d50ca271de4c85fca13b9b8ee2ff546c36674d1850509b84a04a5d0363bcb8638939
+  languageName: node
+  linkType: hard
+
 "protocol-buffers-schema@npm:^3.3.1":
   version: 3.6.0
   resolution: "protocol-buffers-schema@npm:3.6.0"
@@ -14213,6 +14276,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"solidity-ast@npm:^0.4.15":
+  version: 0.4.43
+  resolution: "solidity-ast@npm:0.4.43"
+  checksum: e002d09e0b2a033cd6eed8effa13de926a8525c9eb8634c83e3ac61354fbf9adde43b124e90ef567e6a877bdee9566d3fa686145205695f8ed20706a943d56c0
+  languageName: node
+  linkType: hard
+
 "solidity-coverage@npm:^0.7.21":
   version: 0.7.22
   resolution: "solidity-coverage@npm:0.7.22"
@@ -14641,9 +14711,9 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": ^0.0.14
+    "@venusprotocol/isolated-pools": ^0.0.18-develop.1
     "@venusprotocol/oracle": ^1.4.1
-    "@venusprotocol/venus-protocol": ^0.5.0
+    "@venusprotocol/venus-protocol": ^0.6.0
     assemblyscript: 0.19.23
     chai: ^4.3.6
     eslint: ^8.25.0
