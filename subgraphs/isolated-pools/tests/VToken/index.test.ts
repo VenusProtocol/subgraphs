@@ -127,8 +127,8 @@ afterEach(() => {
 describe('VToken', () => {
   test('registers mint event', () => {
     const minter = user1Address;
-    const actualMintAmount = BigInt.fromI64(124620530798726345);
-    const mintTokens = BigInt.fromI64(37035970026454);
+    const actualMintAmount = BigInt.fromString('124620530798726345');
+    const mintTokens = BigInt.fromString('37035970026454');
     const accountBalance = mintTokens;
     const mintEvent = createMintEvent(
       aaaTokenAddress,
@@ -167,8 +167,8 @@ describe('VToken', () => {
 
   test('registers redeem event', () => {
     const redeemer = user2Address;
-    const actualRedeemAmount = BigInt.fromI64(124620530798726345);
-    const redeemTokens = BigInt.fromI64(37035970026454);
+    const actualRedeemAmount = BigInt.fromString('124620530798726345');
+    const redeemTokens = BigInt.fromString('37035970026454');
     const accountBalance = redeemTokens;
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
@@ -208,10 +208,10 @@ describe('VToken', () => {
   test('registers borrow event', () => {
     /** Constants */
     const borrower = user1Address;
-    const borrowAmount = BigInt.fromI64(1246205398726345);
-    const accountBorrows = BigInt.fromI64(35970026454);
-    const totalBorrows = BigInt.fromI64(37035970026454);
-    const balanceOf = BigInt.fromI64(9937035970026454);
+    const borrowAmount = BigInt.fromString('1246205398726345');
+    const accountBorrows = BigInt.fromString('35970026454');
+    const totalBorrows = BigInt.fromString('37035970026454');
+    const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
     const borrowEvent = createBorrowEvent(
@@ -282,10 +282,10 @@ describe('VToken', () => {
     /** Constants */
     const borrower = user1Address;
     const payer = user1Address;
-    const repayAmount = BigInt.fromI64(1246205398726345);
-    const accountBorrows = BigInt.fromI64(35970026454);
-    const totalBorrows = BigInt.fromI64(37035970026454);
-    const balanceOf = BigInt.fromI64(9937035970026454);
+    const repayAmount = BigInt.fromString('1246205398726345');
+    const accountBorrows = BigInt.fromString('35970026454');
+    const totalBorrows = BigInt.fromString('37035970026454');
+    const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
     const repayBorrowEvent = createRepayBorrowEvent(
@@ -362,8 +362,8 @@ describe('VToken', () => {
     /** Constants */
     const borrower = user1Address;
     const liquidator = user1Address;
-    const repayAmount = BigInt.fromI64(1246205398726345);
-    const seizeTokens = BigInt.fromI64(37035970026454);
+    const repayAmount = BigInt.fromString('1246205398726345');
+    const seizeTokens = BigInt.fromString('37035970026454');
     const vTokenCollateral = tokenAddress;
 
     /** Setup test */
@@ -423,10 +423,10 @@ describe('VToken', () => {
 
   test('registers accrue interest event', () => {
     /** Constants */
-    const cashPrior = BigInt.fromI64(1246205398726345);
-    const interestAccumulated = BigInt.fromI64(26454);
+    const cashPrior = BigInt.fromString('1246205398726345');
+    const interestAccumulated = BigInt.fromI32(26454);
     const borrowIndex = BigInt.fromI32(1);
-    const totalBorrows = BigInt.fromI64(62197468301);
+    const totalBorrows = BigInt.fromString('62197468301');
 
     /** Setup test */
     const accrueInterestEvent = createAccrueInterestEvent(
@@ -447,8 +447,8 @@ describe('VToken', () => {
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
     assertMarketDocument('treasuryTotalSupplyWei', '36504567163409');
-    assertMarketDocument('exchangeRate', '0.000000000320502536');
-    assertMarketDocument('borrowIndex', '4.852094820647174144');
+    assertMarketDocument('exchangeRate', '0.00003650458235');
+    assertMarketDocument('borrowIndex', '300');
     assertMarketDocument('reservesWei', '5128924555022289393');
     assertMarketDocument('treasuryTotalBorrowsWei', '2641234234636158123');
     assertMarketDocument('cash', '1.418171344423412457');
@@ -479,8 +479,8 @@ describe('VToken', () => {
     /** Constants */
     const from = user1Address; // 101
     const to = aaaTokenAddress;
-    const amount = BigInt.fromI64(1246205398726345);
-    const balanceOf = BigInt.fromI64(262059874253345);
+    const amount = BigInt.fromString('1246205398726345');
+    const balanceOf = BigInt.fromString('262059874253345');
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -535,7 +535,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'totalUnderlyingRedeemed',
-      '0.003994119906686847',
+      '454.92207602820446167',
     );
   });
 
@@ -711,8 +711,8 @@ describe('VToken', () => {
 
   test('registers market reserve increase', () => {
     const benefactor = Address.fromString('0x0000000000000000000000000000000000000b00');
-    const addAmount = BigInt.fromI64(112233445566778899);
-    const newTotalReserves = BigInt.fromI64(2222334455667788990);
+    const addAmount = BigInt.fromString('112233445566778899');
+    const newTotalReserves = BigInt.fromString('2222334455667788990');
 
     const reservesAddedEvent = createReservesAddedEvent(
       aaaTokenAddress,
@@ -732,8 +732,8 @@ describe('VToken', () => {
 
   test('registers market reserve decrease', () => {
     const benefactor = Address.fromString('0x0000000000000000000000000000000000000b00');
-    const reduceAmount = BigInt.fromI64(100000000000000000);
-    const newTotalReserves = BigInt.fromI64(9111222333444555666);
+    const reduceAmount = BigInt.fromString('100000000000000000');
+    const newTotalReserves = BigInt.fromString('9111222333444555666');
 
     const reservesReducedEvent = createReservesReducedEvent(
       aaaTokenAddress,

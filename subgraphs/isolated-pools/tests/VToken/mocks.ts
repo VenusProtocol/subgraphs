@@ -13,19 +13,19 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     // address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
     const vTokenData = changetype<ethereum.Tuple>([
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
       ethereum.Value.fromBoolean(true),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
     ]);
 
     // string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,uint256
@@ -33,17 +33,17 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       pool[0], // name
       pool[1], // creator
       pool[2], // comptroller
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(100)), // blockPosted
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(1662990421)), // timestampPosted
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(100)), // blockPosted
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1662990421')), // timestampPosted
       ethereum.Value.fromI32(1), // riskRating
       ethereum.Value.fromString('Games'), // category
       ethereum.Value.fromString('/logo.png'), // logoURL
       ethereum.Value.fromString('Game related tokens'), // description
       ethereum.Value.fromAddress(priceOracleAddress), // priceOracle
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5)), // closeFactor
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(7)), // liquidationIncentive
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(6)), // minLiquidatableCollateral
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(10)), // maxAssets
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateral
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(10)), // maxAssets
       ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
     ];
     const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
@@ -118,29 +118,29 @@ export const createMarketMock = (marketAddress: Address): void => {
   ).returns([ethereum.Value.fromI32(999)]);
 
   createMockedFunction(marketAddress, 'totalSupply', 'totalSupply():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(36504567163409)),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('36504567163409')),
   ]);
 
   createMockedFunction(
     marketAddress,
     'exchangeRateStored',
     'exchangeRateStored():(uint256)',
-  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(365045823500000000000000))]);
+  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('365045823500000000000000'))]);
 
   createMockedFunction(marketAddress, 'borrowIndex', 'borrowIndex():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(300000000000000000000)),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('300000000000000000000')),
   ]);
 
   createMockedFunction(marketAddress, 'totalReserves', 'totalReserves():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(5128924555022289393)),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('5128924555022289393')),
   ]);
 
   createMockedFunction(marketAddress, 'totalBorrows', 'totalBorrows():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(2641234234636158123)),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('2641234234636158123')),
   ]);
 
   createMockedFunction(marketAddress, 'getCash', 'getCash():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI64(1418171344423412457)),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1418171344423412457')),
   ]);
 
   createMockedFunction(
