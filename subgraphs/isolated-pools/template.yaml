@@ -86,8 +86,6 @@ templates:
           handler: handleActionPausedMarket
         - event: NewBorrowCap(indexed address,uint256)
           handler: handleNewBorrowCap
-        - event: NewBorrowCapGuardian(address,address)
-          handler: handleNewBorrowCapGuardian
         - event: NewMinLiquidatableCollateral(uint256,uint256)
           handler: handleNewMinLiquidatableCollateral
         - event: NewSupplyCap(indexed address,uint256)
