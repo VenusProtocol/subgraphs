@@ -13,7 +13,6 @@ import {
   ReservesAdded,
   ReservesReduced,
   Transfer,
-  VToken,
 } from '../../generated/PoolRegistry/VToken';
 import { oneBigInt, zeroBigInt32 } from '../constants/index';
 import {
@@ -55,8 +54,7 @@ export function handleMint(event: Mint): void {
   createMintTransaction(event, market.underlyingDecimals);
 
   // we read the current total amount of supplied tokens by this account in the market
-  const vTokenContract = VToken.bind(vTokenAddress);
-  const suppliedTotal = vTokenContract.balanceOf(event.params.minter);
+  const suppliedTotal = event.params.accountBalance;
   if (suppliedTotal == event.params.mintTokens) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
@@ -82,8 +80,7 @@ export function handleRedeem(event: Redeem): void {
   createRedeemTransaction(event, market.underlyingDecimals);
 
   // we read the account's balance and...
-  const vTokenContract = VToken.bind(vTokenAddress);
-  const currentBalance = vTokenContract.balanceOf(event.params.redeemer);
+  const currentBalance = event.params.accountBalance;
   if (currentBalance == zeroBigInt32) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);

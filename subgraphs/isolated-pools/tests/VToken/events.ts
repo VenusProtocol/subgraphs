@@ -24,6 +24,7 @@ export const createMintEvent = (
   minterAddress: Address,
   mintAmount: BigInt,
   mintTokens: BigInt,
+  accountBalance: BigInt,
 ): MintEvent => {
   const event = changetype<MintEvent>(newMockEvent());
   event.address = vTokenAddress;
@@ -44,6 +45,12 @@ export const createMintEvent = (
   );
   event.parameters.push(mintTokensParam);
 
+  const accountBalanceParam = new ethereum.EventParam(
+    'accountBalance',
+    ethereum.Value.fromUnsignedBigInt(accountBalance),
+  );
+  event.parameters.push(accountBalanceParam);
+
   return event;
 };
 
@@ -52,6 +59,7 @@ export const createRedeemEvent = (
   redeemerAddress: Address,
   redeemAmount: BigInt,
   redeemTokens: BigInt,
+  accountBalance: BigInt,
 ): RedeemEvent => {
   const event = changetype<RedeemEvent>(newMockEvent());
   event.address = vTokenAddress;
@@ -74,6 +82,12 @@ export const createRedeemEvent = (
     ethereum.Value.fromUnsignedBigInt(redeemTokens),
   );
   event.parameters.push(redeemTokensParam);
+
+  const accountBalanceParam = new ethereum.EventParam(
+    'accountBalance',
+    ethereum.Value.fromUnsignedBigInt(accountBalance),
+  );
+  event.parameters.push(accountBalanceParam);
 
   return event;
 };

@@ -21,7 +21,7 @@ export function handlePoolNameSet(event: PoolNameSet): void {
   const comptroller = event.params.comptroller;
   const pool = Pool.load(comptroller.toHexString());
   if (pool) {
-    pool.name = event.params.name;
+    pool.name = event.params.newName;
     pool.save();
   } else {
     log.critical('Unable to fetch pool with comptroller: {}', [

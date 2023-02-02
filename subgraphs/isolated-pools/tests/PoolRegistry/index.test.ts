@@ -72,16 +72,21 @@ describe('Pool Registry', () => {
   });
 
   test('updates pool name correctly', () => {
-    const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000025');
+    const comptrollerAddressString = '0x0000000000000000000000000000000000000025';
+    const comptrollerAddress = Address.fromString(comptrollerAddressString);
     const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
-    const poolNameSetEvent = createPoolNameSetEvent(comptrollerAddress, 'Summer Pool');
+    const poolNameSetEvent = createPoolNameSetEvent(
+      comptrollerAddress,
+      'Gamer Pool1',
+      'Summer Pool',
+    );
 
     const assertPoolDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Pool', '0x0000000000000000000000000000000000000025', key, value);
+      assert.fieldEquals('Pool', comptrollerAddressString, key, value);
     };
-    assertPoolDocument('id', comptrollerAddress.toHex());
+    assertPoolDocument('id', comptrollerAddress.toHex().toLowerCase());
     assertPoolDocument('name', 'Gamer Pool2');
     handlePoolNameSet(poolNameSetEvent);
     assertPoolDocument('name', 'Summer Pool');
