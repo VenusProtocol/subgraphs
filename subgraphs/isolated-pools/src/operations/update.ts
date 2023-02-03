@@ -7,7 +7,6 @@ import {
   RiskRatings,
   defaultMantissaFactorBigDecimal,
   mantissaFactor,
-  vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
@@ -54,7 +53,6 @@ export const updateAccountVTokenBorrow = (
   borrowAmount: BigInt,
   accountBorrows: BigInt,
   borrowIndex: BigDecimal,
-  underlyingDecimals: i32,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -65,11 +63,7 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
     logIndex,
   );
-  const storedBorrowBalance = accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-  accountVToken.storedBorrowBalance = storedBorrowBalance;
+  accountVToken.userBorrowBalanceWei = accountBorrows;
   accountVToken.accountBorrowIndex = borrowIndex;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -86,7 +80,6 @@ export const updateAccountVTokenRepayBorrow = (
   repayAmount: BigInt,
   accountBorrows: BigInt,
   borrowIndex: BigDecimal,
-  underlyingDecimals: i32,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -97,11 +90,7 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
     logIndex,
   );
-  const storedBorrowBalance = accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-  accountVToken.storedBorrowBalance = storedBorrowBalance;
+  accountVToken.userBorrowBalanceWei = accountBorrows;
   accountVToken.accountBorrowIndex = borrowIndex;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -131,9 +120,7 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.vTokenBalance = accountVToken.vTokenBalance.minus(
-    amount.toBigDecimal().div(vTokenDecimalsBigDecimal).truncate(vTokenDecimals),
-  );
+  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.minus(amount);
 
   accountVToken.totalUnderlyingRedeemed =
     accountVToken.totalUnderlyingRedeemed.plus(amountUnderylingTruncated);
@@ -161,9 +148,7 @@ export const updateAccountVTokenTransferTo = (
     logIndex,
   );
 
-  accountVToken.vTokenBalance = accountVToken.vTokenBalance.plus(
-    amount.toBigDecimal().div(vTokenDecimalsBigDecimal).truncate(vTokenDecimals),
-  );
+  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

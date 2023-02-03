@@ -17,6 +17,7 @@ import {
   REDEEM,
   REPAY,
   TRANSFER,
+  oneBigInt,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigInt32,
@@ -211,7 +212,6 @@ describe('VToken', () => {
     const borrowAmount = BigInt.fromString('1246205398726345');
     const accountBorrows = BigInt.fromString('35970026454');
     const totalBorrows = BigInt.fromString('37035970026454');
-    const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
     const borrowEvent = createBorrowEvent(
@@ -222,9 +222,18 @@ describe('VToken', () => {
       totalBorrows,
     );
 
-    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
       .withArgs([ethereum.Value.fromAddress(borrower)])
-      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
 
     /** Fire Event */
     handleBorrow(borrowEvent);
@@ -235,11 +244,6 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
-    const underlyingDecimals = market.underlyingDecimals;
-    const storedBorrowBalance = accountBorrows
-      .toBigDecimal()
-      .div(exponentToBigDecimal(underlyingDecimals))
-      .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', BORROW);
@@ -267,8 +271,8 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'storedBorrowBalance',
-      storedBorrowBalance.toString(),
+      'userBorrowBalanceWei',
+      accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
@@ -297,9 +301,18 @@ describe('VToken', () => {
       totalBorrows,
     );
 
-    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
       .withArgs([ethereum.Value.fromAddress(borrower)])
-      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(balanceOf),
+        ethereum.Value.fromSignedBigInt(accountBorrows),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
 
     /** Fire Event */
     handleRepayBorrow(repayBorrowEvent);
@@ -310,11 +323,6 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
-    const underlyingDecimals = market.underlyingDecimals;
-    const storedBorrowBalance = accountBorrows
-      .toBigDecimal()
-      .div(exponentToBigDecimal(underlyingDecimals))
-      .truncate(underlyingDecimals);
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', REPAY);
@@ -347,8 +355,8 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'storedBorrowBalance',
-      storedBorrowBalance.toString(),
+      'userBorrowBalanceWei',
+      accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
@@ -479,14 +487,24 @@ describe('VToken', () => {
     /** Constants */
     const from = user1Address; // 101
     const to = aaaTokenAddress;
-    const amount = BigInt.fromString('1246205398726345');
+    const amount = BigInt.fromString('146205398726345');
     const balanceOf = BigInt.fromString('262059874253345');
+    const expectedFinalBalanceWei = balanceOf.minus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
       .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(balanceOf),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -527,30 +545,40 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'vTokenBalance',
-      '262059861791291.01273655',
+      'userSupplyBalanceWei',
+      expectedFinalBalanceWei.toString(),
     );
 
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
       'totalUnderlyingRedeemed',
-      '454.92207602820446167',
+      '53.37167017820446167',
     );
   });
 
   test('registers transfer to event', () => {
     /** Constants */
-    const amount = BigInt.fromI64(5246205398726345);
+    const amount = BigInt.fromString('5246205398726345');
     const from = aaaTokenAddress;
     const to = user2Address;
-    const balanceOf = BigInt.fromI64(262059874253345);
+    const balanceOf = BigInt.fromString('262059874253345');
+    const expectedFinalBalanceWei = balanceOf.plus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createMockedFunction(aaaTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
       .withArgs([ethereum.Value.fromAddress(to)])
-      .returns([ethereum.Value.fromSignedBigInt(balanceOf)]);
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(balanceOf),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -591,8 +619,8 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'vTokenBalance',
-      '262059926715398.98726345',
+      'userSupplyBalanceWei',
+      expectedFinalBalanceWei.toString(),
     );
   });
 

@@ -78,6 +78,8 @@ templates:
           handler: handleNewCloseFactor
         - event: NewCollateralFactor(address,uint256,uint256)
           handler: handleNewCollateralFactor
+        - event: NewLiquidationThreshold(address,uint256,uint256)
+          handler: handleNewLiquidationThreshold
         - event: NewLiquidationIncentive(uint256,uint256)
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)

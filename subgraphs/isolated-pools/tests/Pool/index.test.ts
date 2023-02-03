@@ -10,7 +10,11 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { defaultMantissaFactorBigDecimal } from '../../src/constants/index';
+import {
+  defaultMantissaFactorBigDecimal,
+  oneBigInt,
+  zeroBigInt32,
+} from '../../src/constants/index';
 import {
   handleActionPausedMarket,
   handleMarketEntered,
@@ -61,6 +65,7 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
+  const balanceOfAccount = BigInt.fromI32(100);
   createVBep20AndUnderlyingMock(
     vTokenAddress,
     tokenAddress,
@@ -68,13 +73,22 @@ beforeAll(() => {
     'B0B Coin',
     'B0B',
     BigInt.fromI32(18),
-    BigInt.fromI32(100),
+    balanceOfAccount,
     interestRateModelAddress,
   );
 
-  createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+  createMockedFunction(
+    vTokenAddress,
+    'getAccountSnapshot',
+    'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+  )
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
-    .returns([ethereum.Value.fromI32(100)]);
+    .returns([
+      ethereum.Value.fromSignedBigInt(zeroBigInt32),
+      ethereum.Value.fromSignedBigInt(balanceOfAccount),
+      ethereum.Value.fromSignedBigInt(zeroBigInt32),
+      ethereum.Value.fromSignedBigInt(oneBigInt),
+    ]);
 
   createPoolRegistryMock([
     [
@@ -133,7 +147,7 @@ describe('Pool Events', () => {
       accountVTokenTransactionId,
     );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'isCollateralOfUser', 'true');
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
@@ -166,7 +180,7 @@ describe('Pool Events', () => {
       accountVTokenTransactionId,
     );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'false');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'isCollateralOfUser', 'false');
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
