@@ -147,6 +147,9 @@ type Market @entity {
 
     "Multiplier representing the collateralization after which the borrow is eligible for liquidation"
     liquidationThreshold: BigInt!
+
+    "Accounts who participate in this market"
+    accounts: [AccountVToken!]! @derivedFrom(field:"market")
 }
 
 """

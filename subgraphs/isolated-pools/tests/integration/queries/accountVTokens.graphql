@@ -17,11 +17,11 @@ query AccountVTokens  {
       timestamp
       block
     }
-    enteredMarket
-    vTokenBalance
+    isCollateralOfUser
+    userSupplyBalanceWei
+    userBorrowBalanceWei
     totalUnderlyingRedeemed
     accountBorrowIndex
     totalUnderlyingRepaid
-    storedBorrowBalance
   }
 }

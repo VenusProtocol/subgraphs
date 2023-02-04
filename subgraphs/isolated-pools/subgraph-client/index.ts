@@ -2,6 +2,7 @@ import { Client as UrqlClient, createClient } from 'urql/core';
 
 import {
   AccountByIdDocument,
+  AccountFromMarketDocument,
   AccountVTokenTransactionsDocument,
   AccountVTokensDocument,
   MarketActionsDocument,
@@ -52,6 +53,13 @@ class SubgraphClient {
 
   async getMarketActions() {
     const result = await this.urqlClient.query(MarketActionsDocument, {}).toPromise();
+    return result;
+  }
+
+  async getAccountFromMarket(marketId: string, accountId: string) {
+    const result = await this.urqlClient
+      .query(AccountFromMarketDocument, { marketId, accountId })
+      .toPromise();
     return result;
   }
 }

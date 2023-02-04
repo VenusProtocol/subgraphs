@@ -1,0 +1,21 @@
+query AccountFromMarket($marketId: ID!, $accountId: ID!){
+  market(id: $marketId) {
+    accounts(where: {id: $accountId}) {
+      transactions { 
+        id
+      }
+      badDebt {
+        id
+        amount
+        timestamp
+        block
+      }
+      isCollateralOfUser
+      userSupplyBalanceWei
+      userBorrowBalanceWei
+      totalUnderlyingRedeemed
+      accountBorrowIndex
+      totalUnderlyingRepaid
+    }
+  }
+}
