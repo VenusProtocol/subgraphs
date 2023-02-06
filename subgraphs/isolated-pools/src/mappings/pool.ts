@@ -6,6 +6,7 @@ import {
   NewCloseFactor,
   NewCollateralFactor,
   NewLiquidationIncentive,
+  NewLiquidationThreshold,
   NewMinLiquidatableCollateral,
   NewPriceOracle,
   NewSupplyCap,
@@ -87,6 +88,14 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
+  market.save();
+}
+
+export function handleNewLiquidationThreshold(event: NewLiquidationThreshold): void {
+  const poolAddress = event.address;
+  const vTokenAddress = event.params.vToken;
+  const market = getOrCreateMarket(poolAddress, vTokenAddress);
+  market.liquidationThreshold = event.params.newLiquidationThresholdMantissa;
   market.save();
 }
 

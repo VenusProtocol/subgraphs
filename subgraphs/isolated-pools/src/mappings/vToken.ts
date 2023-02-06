@@ -112,7 +112,6 @@ export function handleBorrow(event: Borrow): void {
     event.params.borrowAmount,
     event.params.accountBorrows,
     market.borrowIndex,
-    market.underlyingDecimals,
   );
 
   createBorrowTransaction(event, market.underlyingDecimals);
@@ -153,7 +152,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
     event.params.repayAmount,
     event.params.accountBorrows,
     market.borrowIndex,
-    market.underlyingDecimals,
   );
 
   createRepayBorrowTransaction(event, market.underlyingDecimals);

@@ -119,6 +119,7 @@ export function createMarket(comptroller: Address, vTokenAddress: Address): Mark
   market.supplyCapWei = zeroBigInt32;
   market.supplierCount = zeroBigInt32;
   market.borrowerCount = zeroBigInt32;
+  market.liquidationThreshold = zeroBigInt32;
 
   market.save();
   return market;

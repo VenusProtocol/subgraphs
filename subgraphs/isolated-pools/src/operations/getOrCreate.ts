@@ -1,6 +1,6 @@
-import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
-import { BEP20 } from '../../generated/PoolRegistry/BEP20';
+import { VToken } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
   AccountVToken,
@@ -81,17 +81,20 @@ export const getOrCreateAccountVToken = (
     accountVToken.symbol = marketSymbol;
     accountVToken.account = accountAddress.toHexString();
     accountVToken.market = marketAddress.toHexString();
-    accountVToken.enteredMarket = enteredMarket;
+    accountVToken.isCollateralOfUser = enteredMarket;
     accountVToken.accrualBlockNumber = BigInt.fromI32(0);
     // we need to set an initial real onchain value to this otherwise it will never
     // be accurate
-    const vTokenContract = BEP20.bind(marketAddress);
-    accountVToken.vTokenBalance = new BigDecimal(vTokenContract.balanceOf(accountAddress));
+    const vTokenContract = VToken.bind(marketAddress);
+    const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
+    const suppliedAmountWei = accountSnapshot.value1;
+    const borrowedAmountWei = accountSnapshot.value2;
+    accountVToken.userSupplyBalanceWei = suppliedAmountWei;
+    accountVToken.userBorrowBalanceWei = borrowedAmountWei;
 
     accountVToken.totalUnderlyingRedeemed = zeroBigDecimal;
     accountVToken.accountBorrowIndex = zeroBigDecimal;
     accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
-    accountVToken.storedBorrowBalance = zeroBigDecimal;
   }
   return accountVToken;
 };

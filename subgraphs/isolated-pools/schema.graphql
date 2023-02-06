@@ -144,6 +144,12 @@ type Market @entity {
     supplierCount: BigInt!
     "Number of accounts currently borrowing from this market"
     borrowerCount: BigInt!
+
+    "Multiplier representing the collateralization after which the borrow is eligible for liquidation"
+    liquidationThreshold: BigInt!
+
+    "Accounts who participate in this market"
+    accounts: [AccountVToken!]! @derivedFrom(field:"market")
 }
 
 """
@@ -182,19 +188,20 @@ type AccountVToken @entity {
     badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
+    
+    "Amount of tokens supplied to the market"
+    userSupplyBalanceWei: BigInt!
+    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+    userBorrowBalanceWei: BigInt!
     "True if user is entered, false if they are exited"
-    enteredMarket: Boolean!
+    isCollateralOfUser: Boolean!
 
-    "VToken balance of the user"
-    vTokenBalance: BigDecimal!
     "Total amount of underling redeemed"
     totalUnderlyingRedeemed: BigDecimal!
     "The value of the borrow index upon users last interaction"
     accountBorrowIndex: BigDecimal!
     "Total amount underlying repaid"
     totalUnderlyingRepaid: BigDecimal!
-    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    storedBorrowBalance: BigDecimal!
 }
 
 """
