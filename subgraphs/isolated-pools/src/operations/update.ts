@@ -108,8 +108,9 @@ export const updateAccountVTokenTransferFrom = (
   exchangeRate: BigDecimal,
   underlyingDecimals: i32,
 ): AccountVToken => {
-  const amountUnderlying = exchangeRate.times(amount.toBigDecimal().div(vTokenDecimalsBigDecimal));
-  const amountUnderylingTruncated = amountUnderlying.truncate(underlyingDecimals);
+  const amountUnderlying = exchangeRate
+    .times(exponentToBigDecimal(underlyingDecimals))
+    .times(amount.toBigDecimal());
 
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -122,8 +123,8 @@ export const updateAccountVTokenTransferFrom = (
   );
   accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.minus(amount);
 
-  accountVToken.totalUnderlyingRedeemed =
-    accountVToken.totalUnderlyingRedeemed.plus(amountUnderylingTruncated);
+  accountVToken.totalUnderlyingRedeemedWei =
+    accountVToken.totalUnderlyingRedeemedWei.plus(amountUnderlying);
   accountVToken.save();
   return accountVToken as AccountVToken;
 };

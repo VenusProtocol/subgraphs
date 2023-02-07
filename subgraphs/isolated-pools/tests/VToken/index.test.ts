@@ -552,8 +552,8 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'totalUnderlyingRedeemed',
-      '53.37167017820446167',
+      'totalUnderlyingRedeemedWei',
+      '5337167017820446167010750000',
     );
   });
 
