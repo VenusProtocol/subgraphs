@@ -137,6 +137,10 @@ describe('VToken', () => {
       accountBalance,
     );
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
 
     handleMint(mintEvent);
     const id = getTransactionEventId(mintEvent.transaction.hash, mintEvent.transactionLogIndex);
@@ -177,6 +181,10 @@ describe('VToken', () => {
       accountBalance,
     );
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
 
     handleRedeem(redeemEvent);
     const id = getTransactionEventId(redeemEvent.transaction.hash, redeemEvent.transactionLogIndex);
@@ -242,6 +250,10 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', BORROW);
@@ -321,6 +333,10 @@ describe('VToken', () => {
     );
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', REPAY);
@@ -390,6 +406,10 @@ describe('VToken', () => {
       liquidateBorrowEvent.transactionLogIndex,
     );
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
 
     const underlyingDecimals = market.underlyingDecimals;
     const underlyingRepayAmount = liquidateBorrowEvent.params.repayAmount
@@ -760,6 +780,10 @@ describe('VToken', () => {
 
   test('registers increase and decrease in the market supplier count', () => {
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
     assert.fieldEquals('Market', market.id, 'supplierCount', '0');
 
     const actualMintAmount = BigInt.fromI64(12);
@@ -833,6 +857,10 @@ describe('VToken', () => {
 
   test('registers increase and decrease in the market borrower count', () => {
     const market = getMarket(aaaTokenAddress);
+    assert.assertNotNull(market);
+    if (!market) {
+      return;
+    }
     assert.fieldEquals('Market', market.id, 'borrowerCount', '0');
 
     const borrowAmount = BigInt.fromI64(10);

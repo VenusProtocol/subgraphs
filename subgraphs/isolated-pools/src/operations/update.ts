@@ -13,7 +13,7 @@ import {
 import { vBnbAddress } from '../constants/addresses';
 import { exponentToBigDecimal } from '../utilities';
 import { getBnbPriceInUsd, getTokenPriceInUsd } from '../utilities';
-import { getMarket } from './get';
+import { getOrCreateMarket } from './getOrCreate';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
@@ -160,7 +160,7 @@ export const updateMarket = (
   blockNumber: i32,
   blockTimestamp: i32,
 ): Market => {
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
 
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber === blockNumber) {
