@@ -32,6 +32,8 @@ dataSources:
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
           file: ../../packages/isolated-pools-abis/PoolLens.json
+        - name: RewardsDistributor
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
         - event: PoolRegistered(indexed address,(string,address,address,uint256,uint256))
           handler: handlePoolRegistered
@@ -92,6 +94,8 @@ templates:
           handler: handleNewMinLiquidatableCollateral
         - event: NewSupplyCap(indexed address,uint256)
           handler: handleNewSupplyCap
+        - event: NewRewardsDistributor(indexed address)
+          handler: handleNewRewardsDistributor
   - name: VToken
     kind: ethereum/contract
     network: {{ network }}
@@ -144,3 +148,24 @@ templates:
           handler: handleReservesAdded
         - event: ReservesReduced(address,uint256,uint256)
           handler: handleReservesReduced
+  - name: RewardsDistributor
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: RewardsDistributor
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/rewardsDistributor.ts
+      entities:
+        - RewardsDistributor
+        - AccountRewards
+      abis:
+        - name: RewardsDistributor
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
+      eventHandlers:
+        - event: RewardTokenBorrowSpeedUpdated(indexed address,uint256)
+          handler: handleRewardTokenBorrowSpeedUpdated
+        - event: RewardTokenSupplySpeedUpdated(indexed address,uint256)
+          handler: handleRewardTokenSupplySpeedUpdated

@@ -9,9 +9,12 @@ import {
   NewLiquidationThreshold,
   NewMinLiquidatableCollateral,
   NewPriceOracle,
+  NewRewardsDistributor,
   NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
+import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
 import { defaultMantissaFactorBigDecimal } from '../constants';
+import { createRewardDistributor } from '../operations/create';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
@@ -148,4 +151,9 @@ export function handleNewSupplyCap(event: NewSupplyCap): void {
   const market = getOrCreateMarket(vTokenAddress, poolAddress);
   market.supplyCapWei = newSupplyCap;
   market.save();
+}
+
+export function handleNewRewardsDistributor(event: NewRewardsDistributor): void {
+  RewardsDistributorDataSource.create(event.params.rewardsDistributor);
+  createRewardDistributor(event.params.rewardsDistributor, event.address);
 }

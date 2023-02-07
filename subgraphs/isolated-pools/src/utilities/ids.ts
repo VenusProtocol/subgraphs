@@ -36,3 +36,11 @@ export const getTransactionEventId = (
 
 export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): string =>
   joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
+
+export const getRewardsDistributorId = (rewardsDistributor: Address): string =>
+  joinIds([rewardsDistributor.toHexString()]);
+
+export const getRewardSpeedId = (
+  rewardsDistributorAddress: Address,
+  marketAddress: Address,
+): string => joinIds([rewardsDistributorAddress.toHexString(), marketAddress.toHexString()]);

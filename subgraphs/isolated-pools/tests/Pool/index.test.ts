@@ -8,13 +8,9 @@ import {
   clearStore,
   describe,
   test,
-} from 'matchstick-as/assembly/index';
+} from 'matchstick-as/assembly';
 
-import {
-  defaultMantissaFactorBigDecimal,
-  oneBigInt,
-  zeroBigInt32,
-} from '../../src/constants/index';
+import { defaultMantissaFactorBigDecimal, oneBigInt, zeroBigInt32 } from '../../src/constants';
 import {
   handleActionPausedMarket,
   handleMarketEntered,
@@ -25,6 +21,7 @@ import {
   handleNewLiquidationIncentive,
   handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
+  handleNewRewardsDistributor,
   handleNewSupplyCap,
 } from '../../src/mappings/pool';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
@@ -34,8 +31,8 @@ import {
   getMarketActionId,
 } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
-import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
-import { createPoolRegistryMock } from '../VToken/mocks';
+import { createRewardsDistributorMock } from '../RewardsDistributor/mocks';
+import { createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import {
   createActionPausedMarketEvent,
   createMarketAddedEvent,
@@ -47,6 +44,7 @@ import {
   createNewLiquidationIncentiveEvent,
   createNewMinLiquidatableCollateralEvent,
   createNewPriceOracleEvent,
+  createNewRewardsDistributor,
   createNewSupplyCapEvent,
 } from './events';
 
@@ -59,6 +57,8 @@ const newAddress = Address.fromString('0x0000000000000000000000000000000000000e0
 const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
+
+const rewardsDistributorAddress = Address.fromString('0x082F27894f3E3CbC2790899AEe82D6f149521AFa');
 
 const cleanup = (): void => {
   clearStore();
@@ -99,6 +99,8 @@ beforeAll(() => {
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
     ],
   ]);
+
+  createRewardsDistributorMock(rewardsDistributorAddress, tokenAddress);
 });
 
 beforeEach(() => {
@@ -334,5 +336,34 @@ describe('Pool Events', () => {
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'supplyCapWei', newSupplyCap.toString());
+  });
+
+  test('indexes NewRewardsDistributor event', () => {
+    const newRewardsDistributorEvent = createNewRewardsDistributor(
+      comptrollerAddress,
+      rewardsDistributorAddress,
+    );
+
+    handleNewRewardsDistributor(newRewardsDistributorEvent);
+
+    assert.fieldEquals(
+      'RewardsDistributor',
+      rewardsDistributorAddress.toHex(),
+      'id',
+      rewardsDistributorAddress.toHexString(),
+    );
+    assert.fieldEquals(
+      'RewardsDistributor',
+      rewardsDistributorAddress.toHex(),
+      'pool',
+      comptrollerAddress.toHexString(),
+    );
+
+    assert.fieldEquals(
+      'Pool',
+      comptrollerAddress.toHex(),
+      'rewardsDistributors',
+      `[${rewardsDistributorAddress.toHexString()}]`,
+    );
   });
 });

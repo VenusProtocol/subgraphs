@@ -10,7 +10,15 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
-import { Account, AccountVTokenBadDebt, Market, Pool, Transaction } from '../../generated/schema';
+import {
+  Account,
+  AccountVTokenBadDebt,
+  Market,
+  Pool,
+  RewardsDistributor,
+  Transaction,
+} from '../../generated/schema';
+import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
@@ -37,6 +45,7 @@ import {
   getAccountVTokenId,
   getBadDebtEventId,
   getPoolId,
+  getRewardsDistributorId,
   getTransactionEventId,
 } from '../utilities/ids';
 
@@ -270,4 +279,17 @@ export const createAccountVTokenBadDebt = (
   accountVTokenBadDebt.amount = event.params.badDebtDelta;
   accountVTokenBadDebt.timestamp = event.block.timestamp;
   accountVTokenBadDebt.save();
+};
+
+export const createRewardDistributor = (
+  rewardsDistributorAddress: Address,
+  comptrollerAddress: Address,
+): void => {
+  const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
+  const rewardToken = rewardDistributorContract.rewardToken();
+  const id = getRewardsDistributorId(rewardsDistributorAddress);
+  const rewardsDistributor = new RewardsDistributor(id);
+  rewardsDistributor.pool = comptrollerAddress.toHexString();
+  rewardsDistributor.reward = rewardToken;
+  rewardsDistributor.save();
 };
