@@ -8,6 +8,7 @@ import {
   AccountVTokenTransaction,
   Market,
   Pool,
+  RewardSpeed,
 } from '../../generated/schema';
 import { zeroBigDecimal, zeroBigInt32 } from '../constants';
 import {
@@ -15,6 +16,7 @@ import {
   getAccountVTokenTransactionId,
   getMarketId,
   getPoolId,
+  getRewardSpeedId,
 } from '../utilities/ids';
 import { createAccount, createMarket, createPool } from './create';
 
@@ -105,4 +107,21 @@ export const getOrCreateAccountVToken = (
     accountVToken.totalUnderlyingRepaidWei = zeroBigDecimal;
   }
   return accountVToken;
+};
+
+export const getOrCreateRewardSpeed = (
+  rewardsDistributorAddress: Address,
+  marketAddress: Address,
+): RewardSpeed => {
+  const id = getRewardSpeedId(rewardsDistributorAddress, marketAddress);
+  let rewardSpeed = RewardSpeed.load(id);
+  if (!rewardSpeed) {
+    rewardSpeed = new RewardSpeed(id);
+    rewardSpeed.rewardsDistributor = rewardsDistributorAddress.toHexString();
+    rewardSpeed.market = marketAddress.toHexString();
+    rewardSpeed.borrowSpeedPerBlockWei = zeroBigInt32;
+    rewardSpeed.supplySpeedPerBlockWei = zeroBigInt32;
+    rewardSpeed.save();
+  }
+  return rewardSpeed;
 };

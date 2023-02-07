@@ -11,6 +11,7 @@ import {
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
   NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
+  NewRewardsDistributor as NewRewardsDistributorEvent,
   NewSupplyCap as NewSupplyCapEvent,
 } from '../../generated/PoolRegistry/Comptroller';
 import { MarketAdded as MarketAddedEvent } from '../../generated/PoolRegistry/PoolRegistry';
@@ -246,6 +247,24 @@ export const createNewSupplyCapEvent = (
     ethereum.Value.fromUnsignedBigInt(newSupplyCap),
   );
   event.parameters.push(newSupplyCapParam);
+
+  return event;
+};
+
+export const createNewRewardsDistributor = (
+  comptrollerAddress: Address,
+  rewardsDistributor: Address,
+): NewRewardsDistributorEvent => {
+  const event = changetype<NewRewardsDistributorEvent>(newMockEvent());
+  event.address = comptrollerAddress;
+
+  event.parameters = [];
+
+  const rewardsDistributorParam = new ethereum.EventParam(
+    'rewardsDistributor',
+    ethereum.Value.fromAddress(rewardsDistributor),
+  );
+  event.parameters.push(rewardsDistributorParam);
 
   return event;
 };

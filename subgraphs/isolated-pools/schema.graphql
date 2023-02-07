@@ -62,6 +62,9 @@ type Pool @entity {
     maxAssets: BigInt!
     "Markets associated to this pool"
     markets: [Market!]! @derivedFrom(field: "pool")
+
+    "Reward distributors distributing rewards for markets in this pool"
+    rewardsDistributors: [RewardsDistributor!]! @derivedFrom(field: "pool")
 }
 
 """
@@ -270,4 +273,34 @@ type Transaction @entity {
     accountBorrows: BigDecimal
     "LIQUIATION: Underlying vToken amount that was repaid by liquidator"
     underlyingRepayAmount: BigDecimal
+}
+
+"""
+A interface for rewards distributor that distribute rewards to isolated pools
+"""
+type RewardsDistributor @entity {
+    "Address of the rewards distributor"
+    id: ID!
+    "Address of the pool"
+    pool: Pool!
+    "Address of the reward distributed"
+    reward: Bytes!
+    "Distribution rate for suppliers"
+    rewardSpeeds: [RewardSpeed!]! @derivedFrom(field:"rewardsDistributor")
+}
+
+"""
+A interface for rewards distributor that distribute rewards to isolated pools
+"""
+type RewardSpeed @entity {
+    "ID created from the reward distributor and market this speed applies to"
+    id: ID!
+    "Address of rewards distributor"
+    rewardsDistributor: RewardsDistributor!
+    "Address of the market this speed applies to"
+    market: Market!
+    "Distribution rate for borrowers"
+    borrowSpeedPerBlockWei: BigInt
+    "Distribution rate for suppliers"
+    supplySpeedPerBlockWei: BigInt
 }
