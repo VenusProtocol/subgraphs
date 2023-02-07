@@ -5,7 +5,6 @@ import {
   LiquidateBorrow,
   Mint,
   NewAccessControlManager,
-  NewComptroller,
   NewMarketInterestRateModel,
   NewReserveFactor,
   Redeem,
@@ -24,7 +23,7 @@ import {
   createRepayBorrowTransaction,
   createTransferTransaction,
 } from '../operations/create';
-import { getMarket, getPool } from '../operations/get';
+import { getMarket } from '../operations/get';
 import { getOrCreateAccount } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
@@ -285,19 +284,6 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   market.save();
 
   createAccountVTokenBadDebt(vTokenAddress, event);
-}
-
-export function handleNewComptroller(event: NewComptroller): void {
-  const pool = getPool(event.params.oldComptroller);
-  const newComptrollerAddress = event.params.newComptroller.toHexString();
-  if (pool) {
-    pool.id = newComptrollerAddress;
-    pool.save();
-  }
-
-  const market = getMarket(event.address);
-  market.pool = newComptrollerAddress;
-  market.save();
 }
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {

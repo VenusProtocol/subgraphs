@@ -31,7 +31,6 @@ import {
   handleLiquidateBorrow,
   handleMint,
   handleNewAccessControlManager,
-  handleNewComptroller,
   handleNewMarketInterestRateModel,
   handleNewReserveFactor,
   handleRedeem,
@@ -53,7 +52,6 @@ import {
   createLiquidateBorrowEvent,
   createMintEvent,
   createNewAccessControlManagerEvent,
-  createNewComptrollerEvent,
   createNewMarketInterestRateModelEvent,
   createNewReserveFactorEvent,
   createRedeemEvent,
@@ -715,25 +713,6 @@ describe('VToken', () => {
       aaaTokenAddress.toHexString(),
       'accessControlManager',
       newAccessControlManager.toHexString(),
-    );
-  });
-
-  test('market registers its new comptroller', () => {
-    const oldComptroller = Address.fromString('0x0000000000000000000000000000000000000ccc');
-    const newComptroller = Address.fromString('0x0000000000000000000000000000000000000ddd');
-
-    const newComptrollerEvent = createNewComptrollerEvent(
-      aaaTokenAddress,
-      oldComptroller,
-      newComptroller,
-    );
-
-    handleNewComptroller(newComptrollerEvent);
-    assert.fieldEquals(
-      'Market',
-      aaaTokenAddress.toHexString(),
-      'pool',
-      newComptroller.toHexString(),
     );
   });
 
