@@ -12,7 +12,6 @@ import {
   NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
 import { defaultMantissaFactorBigDecimal } from '../constants';
-import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
@@ -26,10 +25,11 @@ import {
 import Box from '../utilities/box';
 
 export function handleMarketEntered(event: MarketEntered): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -52,7 +52,7 @@ export function handleMarketExited(event: MarketExited): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(
@@ -84,7 +84,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getOrCreateMarket(poolAddress, vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   market.collateralFactor = newCollateralFactorMantissa
     .toBigDecimal()
     .div(defaultMantissaFactorBigDecimal);
@@ -94,7 +94,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
 export function handleNewLiquidationThreshold(event: NewLiquidationThreshold): void {
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
-  const market = getOrCreateMarket(poolAddress, vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   market.liquidationThreshold = event.params.newLiquidationThresholdMantissa;
   market.save();
 }
@@ -125,9 +125,10 @@ export function handleActionPausedMarket(event: ActionPausedMarket): void {
 }
 
 export function handleNewBorrowCap(event: NewBorrowCap): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   market.borrowCapWei = borrowCap;
   market.save();
 }
@@ -136,16 +137,15 @@ export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableColl
   const poolAddress = event.address;
   const newMinLiquidatableCollateral = event.params.newMinLiquidatableCollateral;
   const pool = getOrCreatePool(poolAddress);
-  if (pool) {
-    pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
-    pool.save();
-  }
+  pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
+  pool.save();
 }
 
 export function handleNewSupplyCap(event: NewSupplyCap): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const newSupplyCap = event.params.newSupplyCap;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   market.supplyCapWei = newSupplyCap;
   market.save();
 }

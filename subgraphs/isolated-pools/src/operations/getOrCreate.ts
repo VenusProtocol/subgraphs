@@ -1,6 +1,7 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { VToken } from '../../generated/PoolRegistry/VToken';
+import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
   AccountVToken,
@@ -17,10 +18,17 @@ import {
 } from '../utilities/ids';
 import { createAccount, createMarket, createPool } from './create';
 
-export const getOrCreateMarket = (comptroller: Address, vTokenAddress: Address): Market => {
+export const getOrCreateMarket = (
+  vTokenAddress: Address,
+  comptrollerAddress: Address | null = null,
+): Market => {
   let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
-    market = createMarket(comptroller, vTokenAddress);
+    const vTokenContract = VTokenContract.bind(vTokenAddress);
+    if (!comptrollerAddress) {
+      comptrollerAddress = vTokenContract.comptroller();
+    }
+    market = createMarket(comptrollerAddress, vTokenAddress);
   }
   return market;
 };

@@ -23,8 +23,7 @@ import {
   createRepayBorrowTransaction,
   createTransferTransaction,
 } from '../operations/create';
-import { getMarket } from '../operations/get';
-import { getOrCreateAccount } from '../operations/getOrCreate';
+import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
   updateAccountVTokenRepayBorrow,
@@ -49,7 +48,7 @@ import {
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress, null);
   createMintTransaction(event, market.underlyingDecimals);
 
   // we read the current total amount of supplied tokens by this account in the market
@@ -75,7 +74,7 @@ export function handleMint(event: Mint): void {
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   createRedeemTransaction(event, market.underlyingDecimals);
 
   // we read the account's balance and...
@@ -98,7 +97,7 @@ export function handleRedeem(event: Redeem): void {
  */
 export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenBorrow(
     vTokenAddress,
@@ -138,7 +137,7 @@ export function handleBorrow(event: Borrow): void {
  */
 export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenRepayBorrow(
     vTokenAddress,
@@ -179,7 +178,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   const liquidator = getOrCreateAccount(event.params.liquidator);
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
@@ -197,7 +196,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.reserveFactor = event.params.newReserveFactorMantissa;
   market.save();
 }
@@ -222,7 +221,7 @@ export function handleTransfer(event: Transfer): void {
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
 
-  let market = getMarket(vTokenAddress);
+  let market = getOrCreateMarket(vTokenAddress);
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   if (market.accrualBlockNumber != event.block.number.toI32()) {
@@ -272,14 +271,14 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
 }
 
 export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.badDebtWei = event.params.badDebtNew;
   market.save();
 
@@ -288,21 +287,21 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.accessControlManager = event.params.newAccessControlManager;
   market.save();
 }
 
 export function handleReservesAdded(event: ReservesAdded): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.reservesWei = event.params.newTotalReserves;
   market.save();
 }
 
 export function handleReservesReduced(event: ReservesReduced): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress);
+  const market = getOrCreateMarket(vTokenAddress);
   market.reservesWei = event.params.newTotalReserves;
   market.save();
 }
