@@ -13,9 +13,9 @@ query AccountFromMarket($marketId: ID!, $accountId: ID!){
       isCollateralOfUser
       userSupplyBalanceWei
       userBorrowBalanceWei
-      totalUnderlyingRedeemed
+      totalUnderlyingRedeemedWei
       accountBorrowIndex
-      totalUnderlyingRepaid
+      totalUnderlyingRepaidWei
     }
   }
 }

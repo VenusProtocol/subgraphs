@@ -197,11 +197,11 @@ type AccountVToken @entity {
     isCollateralOfUser: Boolean!
 
     "Total amount of underling redeemed"
-    totalUnderlyingRedeemed: BigDecimal!
+    totalUnderlyingRedeemedWei: BigDecimal!
     "The value of the borrow index upon users last interaction"
     accountBorrowIndex: BigDecimal!
     "Total amount underlying repaid"
-    totalUnderlyingRepaid: BigDecimal!
+    totalUnderlyingRepaidWei: BigDecimal!
 }
 
 """

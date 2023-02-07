@@ -20,8 +20,8 @@ query AccountVTokens  {
     isCollateralOfUser
     userSupplyBalanceWei
     userBorrowBalanceWei
-    totalUnderlyingRedeemed
+    totalUnderlyingRedeemedWei
     accountBorrowIndex
-    totalUnderlyingRepaid
+    totalUnderlyingRepaidWei
   }
 }

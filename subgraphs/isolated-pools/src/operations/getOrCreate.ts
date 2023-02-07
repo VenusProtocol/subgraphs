@@ -8,7 +8,7 @@ import {
   Market,
   Pool,
 } from '../../generated/schema';
-import { zeroBigDecimal } from '../constants';
+import { zeroBigDecimal, zeroBigInt32 } from '../constants';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
@@ -82,7 +82,7 @@ export const getOrCreateAccountVToken = (
     accountVToken.account = accountAddress.toHexString();
     accountVToken.market = marketAddress.toHexString();
     accountVToken.isCollateralOfUser = enteredMarket;
-    accountVToken.accrualBlockNumber = BigInt.fromI32(0);
+    accountVToken.accrualBlockNumber = zeroBigInt32;
     // we need to set an initial real onchain value to this otherwise it will never
     // be accurate
     const vTokenContract = VToken.bind(marketAddress);
@@ -92,9 +92,9 @@ export const getOrCreateAccountVToken = (
     accountVToken.userSupplyBalanceWei = suppliedAmountWei;
     accountVToken.userBorrowBalanceWei = borrowedAmountWei;
 
-    accountVToken.totalUnderlyingRedeemed = zeroBigDecimal;
+    accountVToken.totalUnderlyingRedeemedWei = zeroBigDecimal;
     accountVToken.accountBorrowIndex = zeroBigDecimal;
-    accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
+    accountVToken.totalUnderlyingRepaidWei = zeroBigDecimal;
   }
   return accountVToken;
 };

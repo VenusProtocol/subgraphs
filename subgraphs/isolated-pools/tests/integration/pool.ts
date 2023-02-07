@@ -182,9 +182,9 @@ describe('Pools', function () {
       expect(avt.transactions.length).to.equal(0);
       expect(avt.enteredMarket).to.equal(true);
       expect(avt.vTokenBalance).to.equal('0');
-      expect(avt.totalUnderlyingRedeemed).to.equal('0');
+      expect(avt.totalUnderlyingRedeemedWei).to.equal('0');
       expect(avt.accountBorrowIndex).to.equal('0');
-      expect(avt.totalUnderlyingRepaid).to.equal('0');
+      expect(avt.totalUnderlyingRepaidWei).to.equal('0');
       expect(avt.storedBorrowBalance).to.equal('0');
     });
 
