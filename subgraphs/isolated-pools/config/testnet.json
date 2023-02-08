@@ -2,7 +2,5 @@
   "network": "chapel",
   "poolRegistryAddress": "0x05e4C8f3dbb6c2eaD4eB1f28611FA7180e79f428",
   "poolLensAddress": "0xbe0c84d910894D35BdE8A03bF1fFC521d4239E48",
-  "vXVSAddress": "0x6d6f697e34145bb95c54e77482d97cc261dc237e",
-  "vBNBAddress": "0x2e7222e51c0f6e98610a1543aa3836e092cde62c",
   "startBlock": "24711657"
 }

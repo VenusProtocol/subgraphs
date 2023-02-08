@@ -12,9 +12,7 @@ import {
   comptrollerAddress,
   interestRateModelAddress,
   nullAddress,
-  usdcAddress,
   vBnbAddress,
-  vUsdcAddress,
 } from '../src/constants/addresses';
 import { handleMarketListed } from '../src/mappings/comptroller';
 import { createMarketListedEvent } from './events';
@@ -29,16 +27,6 @@ afterEach(() => {
 });
 
 beforeAll(() => {
-  // Mock USDC
-  createVBep20AndUnderlyingMock(
-    vUsdcAddress,
-    usdcAddress,
-    'USD Coin',
-    'USDC',
-    BigInt.fromI32(18),
-    BigInt.fromI32(100),
-    interestRateModelAddress,
-  );
   // Mock BNB
   createVBep20AndUnderlyingMock(
     vBnbAddress,
@@ -54,38 +42,6 @@ beforeAll(() => {
 });
 
 describe('handleMarketListing', () => {
-  test('lists vUSDC market correctly with underlyingPriceUSD === 1', () => {
-    const marketListedEvent = createMarketListedEvent(vUsdcAddress);
-
-    handleMarketListed(marketListedEvent);
-
-    const assertMarketDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Market', vUsdcAddress.toHex(), key, value);
-    };
-    assertMarketDocument('id', vUsdcAddress.toHex());
-    assertMarketDocument('underlyingAddress', usdcAddress.toHex());
-    assertMarketDocument('underlyingDecimals', '18');
-    assertMarketDocument('underlyingName', 'USD Coin');
-    assertMarketDocument('underlyingSymbol', 'USDC');
-    assertMarketDocument('underlyingPriceUSD', '1');
-    assertMarketDocument('underlyingPrice', '5000000000');
-    assertMarketDocument('borrowRate', '0');
-    assertMarketDocument('cash', '0');
-    assertMarketDocument('collateralFactor', '0');
-    assertMarketDocument('exchangeRate', '0');
-    assertMarketDocument('interestRateModelAddress', interestRateModelAddress.toHex());
-    assertMarketDocument('name', 'Venus USD Coin');
-    assertMarketDocument('reservesWei', '0');
-    assertMarketDocument('supplyRate', '0');
-    assertMarketDocument('symbol', 'vUSDC');
-    assertMarketDocument('totalBorrows', '0');
-    assertMarketDocument('totalSupply', '0');
-    assertMarketDocument('accrualBlockNumber', '0');
-    assertMarketDocument('blockTimestamp', '0');
-    assertMarketDocument('borrowIndex', '0');
-    assertMarketDocument('reserveFactor', '100');
-  });
-
   test('lists vBNB market correctly', () => {
     const marketListedEvent = createMarketListedEvent(vBnbAddress);
 

@@ -10,9 +10,8 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigDecimal,
 } from '../constants';
-import { vBnbAddress } from '../constants/addresses';
 import { exponentToBigDecimal } from '../utilities';
-import { getBnbPriceInUsd, getTokenPriceInUsd } from '../utilities';
+import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
   getOrCreateAccount,
@@ -168,23 +167,12 @@ export const updateMarket = (
   }
   const marketContract = VToken.bind(vTokenAddress);
 
-  const bnbPriceInUsd = getBnbPriceInUsd(marketContract.comptroller());
-
-  // if vBNB, we only update USD price
-  if (market.id == vBnbAddress.toHexString()) {
-    market.underlyingPriceUsd = bnbPriceInUsd.truncate(market.underlyingDecimals);
-  } else {
-    const tokenPriceUsd = getTokenPriceInUsd(
-      marketContract.comptroller(),
-      vTokenAddress,
-      market.underlyingDecimals,
-    );
-    if (bnbPriceInUsd.equals(BigDecimal.zero())) {
-      market.underlyingPrice = BigDecimal.zero();
-    } else {
-      market.underlyingPrice = tokenPriceUsd.div(bnbPriceInUsd).truncate(market.underlyingDecimals);
-    }
-  }
+  const tokenPriceUsd = getTokenPriceInUsd(
+    marketContract.comptroller(),
+    vTokenAddress,
+    market.underlyingDecimals,
+  );
+  market.underlyingPrice = tokenPriceUsd.truncate(market.underlyingDecimals);
 
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
