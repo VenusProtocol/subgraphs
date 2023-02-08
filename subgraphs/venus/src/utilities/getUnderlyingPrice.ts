@@ -19,10 +19,5 @@ export function getUnderlyingPrice(
   underlyingPrice = getTokenPrice(contractAddress, underlyingDecimals);
   underlyingPriceUsd = underlyingPrice.truncate(underlyingDecimals);
 
-  // if USDC, we only update BNB price
-  if (address == vUsdcAddress.toHexString()) {
-    underlyingPriceUsd = BigDecimal.fromString('1');
-  }
-
   return { underlyingPrice, underlyingPriceUsd };
 }
