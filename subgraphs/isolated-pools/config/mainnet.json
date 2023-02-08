@@ -2,6 +2,5 @@
   "network": "bsc",
   "poolRegistryAddress": "0x6e8813dD1a5714182C700A6ba3A05a482b36dEdf",
   "poolLensAddress": "0x525FAEcE436cF0702b399A9Ef48EAb358E43A671",
-  "vXVSAddress": "0x6d6f697e34145bb95c54e77482d97cc261dc237e",
   "startBlock": "24711657"
 }
