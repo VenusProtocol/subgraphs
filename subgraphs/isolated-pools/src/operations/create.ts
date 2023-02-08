@@ -18,6 +18,7 @@ import {
   RewardsDistributor,
   Transaction,
 } from '../../generated/schema';
+import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
@@ -29,15 +30,17 @@ import {
   REPAY,
   RiskRatings,
   TRANSFER,
+  defaultMantissaFactorBigDecimal,
+  mantissaFactor,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
-  zeroBigDecimal,
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import {
   getInterestRateModelAddress,
   getReserveFactorMantissa,
+  getTokenPriceInUsd,
   getUnderlyingAddress,
 } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
@@ -95,40 +98,88 @@ export function createAccount(accountAddress: Address): Account {
   return account;
 }
 
-export function createMarket(comptroller: Address, vTokenAddress: Address): Market {
+export function createMarket(
+  comptroller: Address,
+  vTokenAddress: Address,
+  blockTimestamp: BigInt,
+): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
+  const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = getUnderlyingAddress(vTokenContract);
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress.toHexString());
+
   market.pool = comptroller.toHexString();
+
   market.name = vTokenContract.name();
   market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
   market.symbol = vTokenContract.symbol();
+
+  const underlyingDecimals = underlyingContract.decimals();
+  const underlyingValue = getTokenPriceInUsd(comptroller, vTokenAddress, underlyingDecimals);
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceUsd = zeroBigDecimal;
-  market.underlyingDecimals = underlyingContract.decimals();
+  market.underlyingPriceUsd = underlyingValue;
+  market.underlyingDecimals = underlyingDecimals;
 
-  market.borrowRate = zeroBigDecimal;
-  market.cash = zeroBigDecimal;
-  market.collateralFactor = zeroBigDecimal;
-  market.exchangeRate = zeroBigDecimal;
-  market.reservesWei = zeroBigInt32;
-  market.supplyRate = zeroBigDecimal;
-  market.underlyingPrice = zeroBigDecimal;
-  market.accrualBlockNumber = 0;
-  market.blockTimestamp = 0;
-  market.borrowIndex = zeroBigDecimal;
+  market.borrowRate = vTokenContract
+    .borrowRatePerBlock()
+    .toBigDecimal()
+    .div(defaultMantissaFactorBigDecimal)
+    .truncate(mantissaFactor);
+
+  market.cash = vTokenContract
+    .getCash()
+    .toBigDecimal()
+    .div(exponentToBigDecimal(market.underlyingDecimals))
+    .truncate(market.underlyingDecimals);
+
+  market.exchangeRate = vTokenContract
+    .exchangeRateStored()
+    .toBigDecimal()
+    .div(exponentToBigDecimal(market.underlyingDecimals))
+    .times(vTokenDecimalsBigDecimal)
+    .div(defaultMantissaFactorBigDecimal)
+    .truncate(mantissaFactor);
+
+  market.reservesWei = vTokenContract.totalReserves();
+  market.supplyRate = vTokenContract
+    .supplyRatePerBlock()
+    .toBigDecimal()
+    .div(defaultMantissaFactorBigDecimal)
+    .truncate(mantissaFactor);
+
+  market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
+
+  market.blockTimestamp = blockTimestamp.toI32();
+
+  market.borrowIndex = vTokenContract
+    .borrowIndex()
+    .toBigDecimal()
+    .div(defaultMantissaFactorBigDecimal)
+    .truncate(mantissaFactor);
+
   market.reserveFactor = getReserveFactorMantissa(vTokenContract);
-  market.borrowCapWei = zeroBigInt32;
-  market.treasuryTotalBorrowsWei = zeroBigInt32;
-  market.treasuryTotalSupplyWei = zeroBigInt32;
-  market.badDebtWei = zeroBigInt32;
-  market.supplyCapWei = zeroBigInt32;
+
+  market.treasuryTotalBorrowsWei = vTokenContract.totalBorrows();
+  market.treasuryTotalSupplyWei = vTokenContract.totalSupply();
+
+  market.badDebtWei = vTokenContract.badDebt();
+
+  market.supplyCapWei = poolComptroller.supplyCaps(vTokenAddress);
+  market.borrowCapWei = poolComptroller.borrowCaps(vTokenAddress);
+
+  // suppliers and borrowers have to be counted through events
   market.supplierCount = zeroBigInt32;
   market.borrowerCount = zeroBigInt32;
-  market.liquidationThreshold = zeroBigInt32;
+
+  market.collateralFactorMantissa = poolComptroller
+    .markets(vTokenAddress)
+    .getCollateralFactorMantissa();
+  market.liquidationThreshold = poolComptroller
+    .markets(vTokenAddress)
+    .getLiquidationThresholdMantissa();
 
   market.save();
   return market;

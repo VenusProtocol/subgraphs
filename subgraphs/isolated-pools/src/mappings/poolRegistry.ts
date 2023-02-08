@@ -35,7 +35,7 @@ export function handleMarketAdded(event: MarketAdded): void {
   const vTokenAddress = event.params.vTokenAddress;
   const comptroller = event.params.comptroller;
   VTokenDataSource.create(vTokenAddress);
-  createMarket(comptroller, vTokenAddress);
+  createMarket(comptroller, vTokenAddress, event.block.timestamp);
 }
 
 export function handlePoolMetadataUpdated(event: PoolMetadataUpdated): void {

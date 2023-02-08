@@ -13,7 +13,6 @@ import {
   NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
 import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
-import { defaultMantissaFactorBigDecimal } from '../constants';
 import { createRewardDistributor } from '../operations/create';
 import {
   getOrCreateAccount,
@@ -88,9 +87,8 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
   const market = getOrCreateMarket(vTokenAddress, poolAddress);
-  market.collateralFactor = newCollateralFactorMantissa
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal);
+  market.collateralFactorMantissa = newCollateralFactorMantissa;
+
   market.save();
 }
 

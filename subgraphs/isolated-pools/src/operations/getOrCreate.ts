@@ -23,6 +23,7 @@ import { createAccount, createMarket, createPool } from './create';
 export const getOrCreateMarket = (
   vTokenAddress: Address,
   comptrollerAddress: Address | null = null,
+  blockTimestamp: BigInt = BigInt.fromI32(0),
 ): Market => {
   let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
@@ -30,7 +31,7 @@ export const getOrCreateMarket = (
     if (!comptrollerAddress) {
       comptrollerAddress = vTokenContract.comptroller();
     }
-    market = createMarket(comptrollerAddress, vTokenAddress);
+    market = createMarket(comptrollerAddress, vTokenAddress, blockTimestamp);
   }
   return market;
 };

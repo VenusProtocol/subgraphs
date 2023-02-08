@@ -172,7 +172,7 @@ export const updateMarket = (
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPrice = tokenPriceUsd.truncate(market.underlyingDecimals);
+  market.underlyingPriceUsd = tokenPriceUsd.truncate(market.underlyingDecimals);
 
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
