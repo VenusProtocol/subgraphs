@@ -2,5 +2,3 @@
 
 export const poolRegistryAddress = '{{ poolRegistryAddress }}';
 export const poolLensAddress = '{{ poolLensAddress }}';
-export const vXVSAddress = '{{ vXVSAddress }}';
-export const vBNBAddress = '{{ vBNBAddress }}'

@@ -3,15 +3,9 @@ import { Address } from '@graphprotocol/graph-ts';
 import {
   poolLensAddress as poolLensAddressString,
   poolRegistryAddress as poolRegistryAddressString,
-  vBNBAddress as vBNBAddressString,
-  vXVSAddress as vXVSAddressString,
 } from './config';
 
 export const poolRegistryAddress = Address.fromString(poolRegistryAddressString);
-
-export const vBnbAddress = Address.fromString(vBNBAddressString);
-
-export const vXVSAddress = Address.fromString(vXVSAddressString);
 
 export const poolLensAddress = Address.fromString(poolLensAddressString);
 

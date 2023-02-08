@@ -22,7 +22,6 @@ import {
   vTokenDecimalsBigDecimal,
   zeroBigInt32,
 } from '../../src/constants';
-import { vBnbAddress } from '../../src/constants/addresses';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
@@ -90,7 +89,6 @@ beforeAll(() => {
   createMarketMock(aaaTokenAddress);
 
   createPriceOracleMock([
-    [ethereum.Value.fromAddress(vBnbAddress), ethereum.Value.fromI32(326)],
     [ethereum.Value.fromAddress(aaaTokenAddress), ethereum.Value.fromI32(99)],
   ]);
 
