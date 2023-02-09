@@ -70,6 +70,8 @@ const aaaTokenAddress = Address.fromString('0x0000000000000000000000000000000000
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
+const underlyingPrice = BigInt.fromString('15000000000000000');
+
 const cleanup = (): void => {
   clearStore();
 };
@@ -84,6 +86,7 @@ beforeAll(() => {
     BigInt.fromI32(18),
     BigInt.fromI32(100),
     interestRateModelAddress,
+    underlyingPrice,
   );
 
   createMarketMock(aaaTokenAddress);

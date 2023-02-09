@@ -127,7 +127,7 @@ describe('Pools', function () {
       expect(m.pool.id).to.equal(pool.id);
       expect(m.borrowRate).to.equal('0');
       expect(m.cash).to.equal('0');
-      expect(m.collateralFactor).to.equal('0');
+      expect(m.collateralFactorMantissa).to.equal('0');
       expect(m.exchangeRate).to.equal('0');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
       expect(m.name).to.equal(marketNames[idx]);
@@ -238,7 +238,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeEvent } = dataBeforeEvent!;
 
     marketsBeforeEvent.forEach(m => {
-      expect(m.collateralFactor).to.equal('0');
+      expect(m.collateralFactorMantissa).to.equal('0');
     });
 
     const eventPromises = marketsBeforeEvent.map(async m => {
@@ -260,7 +260,7 @@ describe('Pools', function () {
     const { markets } = data!;
 
     markets.forEach(m => {
-      expect(m.collateralFactor).to.equal('0.1');
+      expect(m.collateralFactorMantissa).to.equal('0.1');
     });
   });
 

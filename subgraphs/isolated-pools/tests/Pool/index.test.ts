@@ -10,7 +10,7 @@ import {
   test,
 } from 'matchstick-as/assembly';
 
-import { defaultMantissaFactorBigDecimal, oneBigInt, zeroBigInt32 } from '../../src/constants';
+import { oneBigInt, zeroBigInt32 } from '../../src/constants';
 import {
   handleActionPausedMarket,
   handleMarketEntered,
@@ -60,6 +60,8 @@ const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424
 
 const rewardsDistributorAddress = Address.fromString('0x082F27894f3E3CbC2790899AEe82D6f149521AFa');
 
+const underlyingPrice = BigInt.fromString('15000000000000000');
+
 const cleanup = (): void => {
   clearStore();
 };
@@ -75,6 +77,7 @@ beforeAll(() => {
     BigInt.fromI32(18),
     balanceOfAccount,
     interestRateModelAddress,
+    underlyingPrice,
   );
 
   createMockedFunction(
@@ -233,10 +236,7 @@ describe('Pool Events', () => {
     };
 
     assertMarketDocument('id', vTokenAddress.toHexString());
-    assertMarketDocument(
-      'collateralFactor',
-      newCollateralFactorMantissa.toBigDecimal().div(defaultMantissaFactorBigDecimal).toString(),
-    );
+    assertMarketDocument('collateralFactorMantissa', newCollateralFactorMantissa.toString());
   });
 
   test('indexes NewLiquidationIncentive event', () => {

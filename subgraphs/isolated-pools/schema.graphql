@@ -94,7 +94,7 @@ type Market @entity {
     "The vToken contract balance of BEP20 or BNB"
     cash: BigDecimal!
     "Collateral factor determining how much one can borrow"
-    collateralFactor: BigDecimal!
+    collateralFactorMantissa: BigInt!
     "Exchange rate of tokens / vTokens"
     exchangeRate:  BigDecimal!
     "Address of the interest rate model"
@@ -111,8 +111,6 @@ type Market @entity {
     underlyingAddress: Bytes!
     "Underlying token name"
     underlyingName: String!
-    "Underlying price of token in BNB (ex. 0.007 DAI)"
-    underlyingPrice: BigDecimal!
     "Underlying token symbol"
     underlyingSymbol: String!
     "Max token borrow amount allowed"
