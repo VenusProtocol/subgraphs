@@ -71,6 +71,8 @@ templates:
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
           file: ../../packages/isolated-pools-abis/PoolLens.json
+        - name: PriceOracle
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
       eventHandlers:
         - event: MarketEntered(address,address)
           handler: handleMarketEntered
