@@ -195,7 +195,7 @@ type AccountVToken @entity {
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     userBorrowBalanceWei: BigInt!
     "True if user is entered, false if they are exited"
-    isCollateralOfUser: Boolean!
+    enteredMarket: Boolean!
 
     "Total amount of underling redeemed"
     totalUnderlyingRedeemedWei: BigDecimal!

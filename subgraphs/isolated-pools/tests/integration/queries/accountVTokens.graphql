@@ -17,7 +17,7 @@ query AccountVTokens  {
       timestamp
       block
     }
-    isCollateralOfUser
+    enteredMarket
     userSupplyBalanceWei
     userBorrowBalanceWei
     totalUnderlyingRedeemedWei
