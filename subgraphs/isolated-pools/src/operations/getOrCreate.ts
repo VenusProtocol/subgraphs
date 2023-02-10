@@ -92,7 +92,7 @@ export const getOrCreateAccountVToken = (
     accountVToken.symbol = marketSymbol;
     accountVToken.account = accountAddress.toHexString();
     accountVToken.market = marketAddress.toHexString();
-    accountVToken.isCollateralOfUser = enteredMarket;
+    accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;
     // we need to set an initial real onchain value to this otherwise it will never
     // be accurate

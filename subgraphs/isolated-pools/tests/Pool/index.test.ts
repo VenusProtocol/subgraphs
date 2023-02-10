@@ -152,7 +152,7 @@ describe('Pool Events', () => {
       accountVTokenTransactionId,
     );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'isCollateralOfUser', 'true');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
@@ -185,7 +185,7 @@ describe('Pool Events', () => {
       accountVTokenTransactionId,
     );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'isCollateralOfUser', 'false');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'false');
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
