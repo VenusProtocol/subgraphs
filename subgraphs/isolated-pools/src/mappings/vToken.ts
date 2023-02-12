@@ -107,7 +107,6 @@ export function handleBorrow(event: Borrow): void {
     event.block.timestamp,
     event.block.number,
     event.logIndex,
-    event.params.borrowAmount,
     event.params.accountBorrows,
     market.borrowIndex,
   );
@@ -147,7 +146,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
     event.block.timestamp,
     event.block.number,
     event.logIndex,
-    event.params.repayAmount,
     event.params.accountBorrows,
     market.borrowIndex,
   );
