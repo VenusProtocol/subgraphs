@@ -1,11 +1,11 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import {
-  poolLensAddress,
-  poolRegistryAddress,
-  priceOracleAddress,
-} from '../../src/constants/addresses';
+import { poolLensAddress, poolRegistryAddress } from '../../src/constants/addresses';
+
+export const mockPriceOracleAddress = Address.fromString(
+  '0xb0b0000000000000000000000000000000000000',
+);
 
 // type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
@@ -39,7 +39,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromString('Games'), // category
       ethereum.Value.fromString('/logo.png'), // logoURL
       ethereum.Value.fromString('Game related tokens'), // description
-      ethereum.Value.fromAddress(priceOracleAddress), // priceOracle
+      ethereum.Value.fromAddress(mockPriceOracleAddress), // priceOracle
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateralMantissa
@@ -110,7 +110,7 @@ export const createVBep20AndUnderlyingMock = (
     ethereum.Value.fromString(symbol),
   ]);
   createMockedFunction(
-    priceOracleAddress,
+    mockPriceOracleAddress,
     'getUnderlyingPrice',
     'getUnderlyingPrice(address):(uint256)',
   )
@@ -219,7 +219,7 @@ export const createMarketMock = (marketAddress: Address): void => {
 export const createPriceOracleMock = (tokens: Array<Array<ethereum.Value>>): void => {
   tokens.forEach((token): void => {
     createMockedFunction(
-      priceOracleAddress,
+      mockPriceOracleAddress,
       'getUnderlyingPrice',
       'getUnderlyingPrice(address):(uint256)',
     )

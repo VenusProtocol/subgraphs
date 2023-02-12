@@ -8,9 +8,8 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { priceOracleAddress } from '../../src/constants/addresses';
 import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import { createPoolRegistryMock } from '../VToken/mocks';
+import { createPoolRegistryMock, mockPriceOracleAddress } from '../VToken/mocks';
 import { createPoolNameSetEvent, createPoolRegisteredEvent } from './events';
 
 const cleanup = (): void => {
@@ -65,7 +64,7 @@ describe('Pool Registry', () => {
     assertPoolDocument('category', 'Games');
     assertPoolDocument('logoUrl', '/logo.png');
     assertPoolDocument('description', 'Game related tokens');
-    assertPoolDocument('priceOracle', priceOracleAddress.toHex());
+    assertPoolDocument('priceOracleAddress', mockPriceOracleAddress.toHex());
     assertPoolDocument('closeFactorMantissa', '5');
     assertPoolDocument('liquidationIncentiveMantissa', '7');
     assertPoolDocument('maxAssets', '10');
