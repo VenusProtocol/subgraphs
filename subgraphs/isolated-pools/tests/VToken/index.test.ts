@@ -17,6 +17,8 @@ import {
   REDEEM,
   REPAY,
   TRANSFER,
+  UNDERLYING_AMOUNT,
+  UNDERLYING_REPAY_AMOUNT,
   oneBigInt,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
@@ -157,10 +159,11 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'to', minter.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', mintEvent.block.number.toString());
     assert.fieldEquals('Transaction', id, 'blockTime', mintEvent.block.timestamp.toString());
+    assert.fieldEquals('TransactionParams', id, 'key', UNDERLYING_AMOUNT);
     assert.fieldEquals(
-      'Transaction',
+      'TransactionParams',
       id,
-      'underlyingAmount',
+      'value',
       actualMintAmount
         .toBigDecimal()
         .div(exponentToBigDecimal(market.underlyingDecimals))
@@ -201,10 +204,11 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'to', redeemer.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', redeemEvent.block.number.toString());
     assert.fieldEquals('Transaction', id, 'blockTime', redeemEvent.block.timestamp.toString());
+    assert.fieldEquals('TransactionParams', id, 'key', UNDERLYING_AMOUNT);
     assert.fieldEquals(
-      'Transaction',
+      'TransactionParams',
       id,
-      'underlyingAmount',
+      'value',
       actualRedeemAmount
         .toBigDecimal()
         .div(exponentToBigDecimal(market.underlyingDecimals))
@@ -440,10 +444,12 @@ describe('VToken', () => {
       liquidateBorrowEvent.block.timestamp.toString(),
     );
 
+    assert.fieldEquals('TransactionParams', transactionId, 'key', UNDERLYING_REPAY_AMOUNT);
+
     assert.fieldEquals(
-      'Transaction',
+      'TransactionParams',
       transactionId,
-      'underlyingRepayAmount',
+      'value',
       underlyingRepayAmount.toString(),
     );
   });

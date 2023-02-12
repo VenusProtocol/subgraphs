@@ -17,12 +17,14 @@ import {
   Pool,
   RewardsDistributor,
   Transaction,
+  TransactionParams,
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import {
+  ACCOUNT_BORROWS,
   BORROW,
   LIQUIDATE,
   MINT,
@@ -30,6 +32,8 @@ import {
   REPAY,
   RiskRatings,
   TRANSFER,
+  UNDERLYING_AMOUNT,
+  UNDERLYING_REPAY_AMOUNT,
   defaultMantissaFactorBigDecimal,
   mantissaFactor,
   vTokenDecimals,
@@ -199,12 +203,18 @@ export const createMintTransaction = (event: Mint, underlyingDecimals: i32): voi
 
   const transaction = new Transaction(id);
   transaction.type = MINT;
+
+  const transactionParams = new TransactionParams(id);
+  transactionParams.key = UNDERLYING_AMOUNT;
+  transactionParams.value = underlyingAmount.toString();
+  transactionParams.save();
+
+  transaction.params = transactionParams.id;
   transaction.amount = vTokenAmount;
   transaction.to = event.params.minter;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
-  transaction.underlyingAmount = underlyingAmount;
   transaction.save();
 };
 
@@ -222,12 +232,18 @@ export const createRedeemTransaction = (event: Redeem, underlyingDecimals: i32):
 
   const transaction = new Transaction(id);
   transaction.type = REDEEM;
+
+  const transactionParams = new TransactionParams(id);
+  transactionParams.key = UNDERLYING_AMOUNT;
+  transactionParams.value = underlyingAmount.toString();
+  transactionParams.save();
+
+  transaction.params = transactionParams.id;
   transaction.amount = vTokenAmount;
   transaction.to = event.params.redeemer;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
-  transaction.underlyingAmount = underlyingAmount;
   transaction.save();
 };
 
@@ -245,12 +261,19 @@ export const createBorrowTransaction = (event: Borrow, underlyingDecimals: i32):
 
   const transaction = new Transaction(id);
   transaction.type = BORROW;
+
+  const transactionParams = new TransactionParams(id);
+  transactionParams.key = ACCOUNT_BORROWS;
+  transactionParams.value = accountBorrows.toString();
+  transactionParams.save();
+
+  transaction.params = transactionParams.id;
   transaction.amount = borrowAmount;
   transaction.to = event.params.borrower;
-  transaction.accountBorrows = accountBorrows;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
+
   transaction.save();
 };
 
@@ -268,9 +291,15 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
 
   const transaction = new Transaction(id);
   transaction.type = REPAY;
+
+  const transactionParams = new TransactionParams(id);
+  transactionParams.key = ACCOUNT_BORROWS;
+  transactionParams.value = accountBorrows.toString();
+  transactionParams.save();
+
+  transaction.params = transactionParams.id;
   transaction.amount = repayAmount;
   transaction.to = event.params.borrower;
-  transaction.accountBorrows = accountBorrows;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
@@ -294,9 +323,15 @@ export const createLiquidateBorrowTransaction = (
 
   const transaction = new Transaction(id);
   transaction.type = LIQUIDATE;
+
+  const transactionParams = new TransactionParams(id);
+  transactionParams.key = UNDERLYING_REPAY_AMOUNT;
+  transactionParams.value = underlyingRepayAmount.toString();
+  transactionParams.save();
+
+  transaction.params = transactionParams.id;
   transaction.amount = amount;
   transaction.to = event.params.borrower;
-  transaction.underlyingRepayAmount = underlyingRepayAmount;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
   transaction.blockTime = event.block.timestamp.toI32();
