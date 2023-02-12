@@ -53,11 +53,11 @@ type Pool @entity {
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
-    closeFactor: BigInt!
+    closeFactorMantissa: BigInt!
     "The percent bonus liquidators get for liquidating"
-    liquidationIncentive: BigInt!
+    liquidationIncentiveMantissa: BigInt!
     "Min Liquidable Amount allowed"
-    minLiquidatableCollateral: BigInt!
+    minLiquidatableCollateralMantissa: BigInt!
     "Max assets a single user can enter"
     maxAssets: BigInt!
     "Markets associated to this pool"
@@ -90,21 +90,21 @@ type Market @entity {
     pool: Pool!
     #Fields that match Venus API
     "Borrow rate per block"
-    borrowRate: BigDecimal!
+    borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
     cash: BigDecimal!
     "Collateral factor determining how much one can borrow"
     collateralFactorMantissa: BigInt!
     "Exchange rate of tokens / vTokens"
-    exchangeRate:  BigDecimal!
+    exchangeRateMantissa:  BigInt!
     "Address of the interest rate model"
     interestRateModelAddress: Bytes!
     "Name of the vToken"
     name: String!
     "Reserves stored in the contract"
-    reservesWei: BigInt!
+    reservesMantissa: BigInt!
     "Supply rate per block"
-    supplyRate: BigDecimal!
+    supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
     "Underlying token address"
@@ -114,11 +114,11 @@ type Market @entity {
     "Underlying token symbol"
     underlyingSymbol: String!
     "Max token borrow amount allowed"
-    borrowCapWei: BigInt!
+    borrowCapMantissa: BigInt!
     "Total borrowed"
-    treasuryTotalBorrowsWei: BigInt!
+    treasuryTotalBorrowsMantissa: BigInt!
     "Total supplied"
-    treasuryTotalSupplyWei: BigInt!
+    treasuryTotalSupplyMantissa: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"
@@ -126,20 +126,20 @@ type Market @entity {
     "Timestamp the market was most recently updated"
     blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndex: BigDecimal!
+    borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
-    reserveFactor: BigInt!
+    reserveFactorMantissa: BigInt!
     "Underlying token price in USD"
     underlyingPriceUsd: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
 
     "Supply cap set for market"
-    supplyCapWei: BigInt!
+    supplyCapMantissa: BigInt!
     "The amount of bad debt in the market"
-    badDebtWei: BigInt!
+    badDebtMantissa: BigInt!
     "Contract address for the Access Control Manager"
-    accessControlManager: Bytes
+    accessControlManagerAddress: Bytes
 
     "Number of accounts currently supplying to this market"
     supplierCount: BigInt!
@@ -147,7 +147,7 @@ type Market @entity {
     borrowerCount: BigInt!
 
     "Multiplier representing the collateralization after which the borrow is eligible for liquidation"
-    liquidationThreshold: BigInt!
+    liquidationThresholdMantissa: BigInt!
 
     "Accounts who participate in this market"
     accounts: [AccountVToken!]! @derivedFrom(field:"market")
@@ -191,18 +191,18 @@ type AccountVToken @entity {
     accrualBlockNumber: BigInt!
     
     "Amount of tokens supplied to the market"
-    userSupplyBalanceWei: BigInt!
+    userSupplyBalanceMantissa: BigInt!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    userBorrowBalanceWei: BigInt!
+    userBorrowBalanceMantissa: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
 
     "Total amount of underling redeemed"
-    totalUnderlyingRedeemedWei: BigDecimal!
+    totalUnderlyingRedeemedMantissa: BigDecimal!
     "The value of the borrow index upon users last interaction"
-    accountBorrowIndex: BigDecimal!
+    accountBorrowIndexMantissa: BigInt!
     "Total amount underlying repaid"
-    totalUnderlyingRepaidWei: BigDecimal!
+    totalUnderlyingRepaidMantissa: BigDecimal!
 }
 
 """
@@ -298,7 +298,7 @@ type RewardSpeed @entity {
     "Address of the market this speed applies to"
     market: Market!
     "Distribution rate for borrowers"
-    borrowSpeedPerBlockWei: BigInt
+    borrowSpeedPerBlockMantissa: BigInt
     "Distribution rate for suppliers"
-    supplySpeedPerBlockWei: BigInt
+    supplySpeedPerBlockMantissa: BigInt
 }

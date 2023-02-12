@@ -98,14 +98,14 @@ export const getOrCreateAccountVToken = (
     // be accurate
     const vTokenContract = VToken.bind(marketAddress);
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
-    const suppliedAmountWei = accountSnapshot.value1;
-    const borrowedAmountWei = accountSnapshot.value2;
-    accountVToken.userSupplyBalanceWei = suppliedAmountWei;
-    accountVToken.userBorrowBalanceWei = borrowedAmountWei;
+    const suppliedAmountMantissa = accountSnapshot.value1;
+    const borrowedAmountMantissa = accountSnapshot.value2;
+    accountVToken.userSupplyBalanceMantissa = suppliedAmountMantissa;
+    accountVToken.userBorrowBalanceMantissa = borrowedAmountMantissa;
 
-    accountVToken.totalUnderlyingRedeemedWei = zeroBigDecimal;
-    accountVToken.accountBorrowIndex = zeroBigDecimal;
-    accountVToken.totalUnderlyingRepaidWei = zeroBigDecimal;
+    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigDecimal;
+    accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
+    accountVToken.totalUnderlyingRepaidMantissa = zeroBigDecimal;
   }
   return accountVToken;
 };
@@ -120,8 +120,8 @@ export const getOrCreateRewardSpeed = (
     rewardSpeed = new RewardSpeed(id);
     rewardSpeed.rewardsDistributor = rewardsDistributorAddress.toHexString();
     rewardSpeed.market = marketAddress.toHexString();
-    rewardSpeed.borrowSpeedPerBlockWei = zeroBigInt32;
-    rewardSpeed.supplySpeedPerBlockWei = zeroBigInt32;
+    rewardSpeed.borrowSpeedPerBlockMantissa = zeroBigInt32;
+    rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.save();
   }
   return rewardSpeed;

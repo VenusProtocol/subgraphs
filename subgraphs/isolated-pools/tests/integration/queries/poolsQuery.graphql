@@ -12,7 +12,7 @@ query Pools {
     priceOracle
     closeFactor
     liquidationIncentive
-    minLiquidatableCollateral
+    minLiquidatableCollateralMantissa
     maxAssets
     markets {
       id

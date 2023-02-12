@@ -1,16 +1,10 @@
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import {
-  RiskRatings,
-  defaultMantissaFactorBigDecimal,
-  mantissaFactor,
-  vTokenDecimalsBigDecimal,
-  zeroBigDecimal,
-} from '../constants';
-import { exponentToBigDecimal } from '../utilities';
+import { RiskRatings, zeroBigInt32 } from '../constants';
+import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
@@ -51,7 +45,7 @@ export const updateAccountVTokenBorrow = (
   logIndex: BigInt,
   borrowAmount: BigInt,
   accountBorrows: BigInt,
-  borrowIndex: BigDecimal,
+  borrowIndexMantissa: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -62,8 +56,8 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceWei = accountBorrows;
-  accountVToken.accountBorrowIndex = borrowIndex;
+  accountVToken.userBorrowBalanceMantissa = accountBorrows;
+  accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -78,7 +72,7 @@ export const updateAccountVTokenRepayBorrow = (
   logIndex: BigInt,
   repayAmount: BigInt,
   accountBorrows: BigInt,
-  borrowIndex: BigDecimal,
+  borrowIndexMantissa: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -89,8 +83,8 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceWei = accountBorrows;
-  accountVToken.accountBorrowIndex = borrowIndex;
+  accountVToken.userBorrowBalanceMantissa = accountBorrows;
+  accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -104,10 +98,11 @@ export const updateAccountVTokenTransferFrom = (
   blockNumber: BigInt,
   logIndex: BigInt,
   amount: BigInt,
-  exchangeRate: BigDecimal,
+  exchangeRate: BigInt,
   underlyingDecimals: i32,
 ): AccountVToken => {
-  const amountUnderlying = exchangeRate
+  const exchangeRateBigDecimal = getExchangeRateBigDecimal(exchangeRate, underlyingDecimals);
+  const amountUnderlyingMantissa = exchangeRateBigDecimal
     .times(exponentToBigDecimal(underlyingDecimals))
     .times(amount.toBigDecimal());
 
@@ -120,10 +115,10 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.minus(amount);
+  accountVToken.userSupplyBalanceMantissa = accountVToken.userSupplyBalanceMantissa.minus(amount);
 
-  accountVToken.totalUnderlyingRedeemedWei =
-    accountVToken.totalUnderlyingRedeemedWei.plus(amountUnderlying);
+  accountVToken.totalUnderlyingRedeemedMantissa =
+    accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -148,7 +143,7 @@ export const updateAccountVTokenTransferTo = (
     logIndex,
   );
 
-  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.plus(amount);
+  accountVToken.userSupplyBalanceMantissa = accountVToken.userSupplyBalanceMantissa.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -177,31 +172,11 @@ export const updateMarket = (
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
 
-  /* Exchange rate explanation
-     In Practice
-      - If you call the vDAI contract on bscscan it comes back (2.0 * 10^26)
-      - If you call the vUSDC contract on bscscan it comes back (2.0 * 10^14)
-      - The real value is ~0.02. So vDAI is off by 10^28, and vUSDC 10^16
-     How to calculate for tokens with different decimals
-      - Must div by tokenDecimals, 10^market.underlyingDecimals
-      - Must multiply by vtokenDecimals, 10^8
-      - Must div by mantissa, 10^18
-   */
-  market.exchangeRate = marketContract
-    .exchangeRateStored()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .times(vTokenDecimalsBigDecimal)
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.exchangeRateMantissa = marketContract.exchangeRateStored();
 
-  market.borrowIndex = marketContract
-    .borrowIndex()
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.borrowIndexMantissa = marketContract.borrowIndex();
 
-  market.reservesWei = marketContract.totalReserves();
+  market.reservesMantissa = marketContract.totalReserves();
 
   market.cash = marketContract
     .getCash()
@@ -210,27 +185,20 @@ export const updateMarket = (
     .truncate(market.underlyingDecimals);
 
   // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
-  market.borrowRate = marketContract
-    .borrowRatePerBlock()
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.borrowRateMantissa = marketContract.borrowRatePerBlock();
 
   // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
   // So we handle it like this.
   const supplyRatePerBlock = marketContract.try_supplyRatePerBlock();
   if (supplyRatePerBlock.reverted) {
     log.info('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-    market.supplyRate = zeroBigDecimal;
+    market.supplyRateMantissa = zeroBigInt32;
   } else {
-    market.supplyRate = supplyRatePerBlock.value
-      .toBigDecimal()
-      .div(defaultMantissaFactorBigDecimal)
-      .truncate(mantissaFactor);
+    market.supplyRateMantissa = supplyRatePerBlock.value;
   }
 
-  market.treasuryTotalBorrowsWei = marketContract.totalBorrows();
-  market.treasuryTotalSupplyWei = marketContract.totalSupply();
+  market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
+  market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
 
   market.save();
   return market as Market;

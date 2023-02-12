@@ -131,17 +131,17 @@ describe('Pools', function () {
       expect(m.exchangeRate).to.equal('0');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
       expect(m.name).to.equal(marketNames[idx]);
-      expect(m.reservesWei).to.equal('0');
+      expect(m.reservesMantissa).to.equal('0');
       expect(m.supplyRate).to.equal('0');
       expect(m.symbol).to.equal(symbols[idx]);
       expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
       expect(m.underlyingName).to.equal(underlyingNames[idx]);
       expect(m.underlyingPrice).to.equal('0');
       expect(m.underlyingSymbol).to.equal(underlyingSymbols[idx]);
-      expect(m.borrowCapWei).to.equal(
+      expect(m.borrowCapMantissa).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
-      expect(m.supplyCapWei).to.equal(
+      expect(m.supplyCapMantissa).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
       expect(m.accrualBlockNumber).to.equal(0);
@@ -182,9 +182,9 @@ describe('Pools', function () {
       expect(avt.transactions.length).to.equal(0);
       expect(avt.enteredMarket).to.equal(true);
       expect(avt.vTokenBalance).to.equal('0');
-      expect(avt.totalUnderlyingRedeemedWei).to.equal('0');
-      expect(avt.accountBorrowIndex).to.equal('0');
-      expect(avt.totalUnderlyingRepaidWei).to.equal('0');
+      expect(avt.totalUnderlyingRedeemedMantissa).to.equal('0');
+      expect(avt.accountBorrowIndexMantissa).to.equal('0');
+      expect(avt.totalUnderlyingRepaidMantissa).to.equal('0');
       expect(avt.storedBorrowBalance).to.equal('0');
     });
 
@@ -346,7 +346,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.borrowCapWei).to.equal(
+      expect(m.borrowCapMantissa).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
     });
@@ -371,7 +371,7 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     markets.forEach(m => {
-      expect(m.borrowCapWei).to.equal('0');
+      expect(m.borrowCapMantissa).to.equal('0');
     });
   });
 
@@ -381,7 +381,7 @@ describe('Pools', function () {
     const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
 
     poolsBeforeUpdate.forEach(p => {
-      expect(p.minLiquidatableCollateral).to.equal('100000000000000000000');
+      expect(p.minLiquidatableCollateralMantissa).to.equal('100000000000000000000');
     });
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeUpdate[0].id);
@@ -397,7 +397,7 @@ describe('Pools', function () {
     const { pools } = data!;
 
     pools.forEach(p => {
-      expect(p.minLiquidatableCollateral).to.equal('200000000000000000000');
+      expect(p.minLiquidatableCollateralMantissa).to.equal('200000000000000000000');
     });
   });
 
@@ -407,7 +407,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.supplyCapWei).to.equal(
+      expect(m.supplyCapMantissa).to.equal(
         '115792089237316195423570985008687907853269984665640564039457584007913129639935',
       );
     });
@@ -432,7 +432,7 @@ describe('Pools', function () {
     expect(marketsData).to.not.be.equal(undefined);
     const { markets } = marketsData!;
     markets.forEach(m => {
-      expect(m.supplyCapWei).to.equal('100');
+      expect(m.supplyCapMantissa).to.equal('100');
     });
   });
 });

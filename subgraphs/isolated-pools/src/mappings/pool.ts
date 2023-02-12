@@ -77,7 +77,7 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
   const poolAddress = event.address;
   const pool = getOrCreatePool(poolAddress);
   if (pool) {
-    pool.closeFactor = event.params.newCloseFactorMantissa;
+    pool.closeFactorMantissa = event.params.newCloseFactorMantissa;
     pool.save();
   }
 }
@@ -96,7 +96,7 @@ export function handleNewLiquidationThreshold(event: NewLiquidationThreshold): v
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const market = getOrCreateMarket(vTokenAddress, poolAddress);
-  market.liquidationThreshold = event.params.newLiquidationThresholdMantissa;
+  market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
   market.save();
 }
 
@@ -104,7 +104,7 @@ export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): v
   const poolAddress = event.address;
   const pool = getOrCreatePool(poolAddress);
   if (pool) {
-    pool.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
+    pool.liquidationIncentiveMantissa = event.params.newLiquidationIncentiveMantissa;
     pool.save();
   }
 }
@@ -130,7 +130,7 @@ export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
   const market = getOrCreateMarket(vTokenAddress, poolAddress);
-  market.borrowCapWei = borrowCap;
+  market.borrowCapMantissa = borrowCap;
   market.save();
 }
 
@@ -138,7 +138,7 @@ export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableColl
   const poolAddress = event.address;
   const newMinLiquidatableCollateral = event.params.newMinLiquidatableCollateral;
   const pool = getOrCreatePool(poolAddress);
-  pool.minLiquidatableCollateral = newMinLiquidatableCollateral;
+  pool.minLiquidatableCollateralMantissa = newMinLiquidatableCollateral;
   pool.save();
 }
 
@@ -147,7 +147,7 @@ export function handleNewSupplyCap(event: NewSupplyCap): void {
   const vTokenAddress = event.params.vToken;
   const newSupplyCap = event.params.newSupplyCap;
   const market = getOrCreateMarket(vTokenAddress, poolAddress);
-  market.supplyCapWei = newSupplyCap;
+  market.supplyCapMantissa = newSupplyCap;
   market.save();
 }
 

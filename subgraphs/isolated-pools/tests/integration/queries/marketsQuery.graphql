@@ -4,29 +4,29 @@ query Markets {
     pool {
       id
     }
-    badDebtWei
+    badDebtMantissa
     borrowRate
     cash
     collateralFactor
     exchangeRate
     interestRateModelAddress
     name
-    reservesWei
+    reservesMantissa
     supplyRate
     symbol
     underlyingAddress
     underlyingName
     underlyingPrice
     underlyingSymbol
-    borrowCapWei
+    borrowCapMantissa
     accrualBlockNumber
     blockTimestamp
     borrowIndex
     reserveFactor
     underlyingPriceUsd
     underlyingDecimals
-    supplyCapWei
-    accessControlManager
+    supplyCapMantissa
+    accessControlManagerAddress
     supplierCount
     borrowerCount
   }

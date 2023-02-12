@@ -282,14 +282,14 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userBorrowBalanceWei',
+      'userBorrowBalanceMantissa',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowIndex',
-      market.borrowIndex.toString(),
+      'accountBorrowIndexMantissa',
+      market.borrowIndexMantissa.toString(),
     );
   });
 
@@ -370,14 +370,14 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userBorrowBalanceWei',
+      'userBorrowBalanceMantissa',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowIndex',
-      market.borrowIndex.toString(),
+      'accountBorrowIndexMantissa',
+      market.borrowIndexMantissa.toString(),
     );
   });
 
@@ -473,14 +473,14 @@ describe('VToken', () => {
 
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
-    assertMarketDocument('treasuryTotalSupplyWei', '36504567163409');
-    assertMarketDocument('exchangeRate', '0.00003650458235');
-    assertMarketDocument('borrowIndex', '300');
-    assertMarketDocument('reservesWei', '5128924555022289393');
-    assertMarketDocument('treasuryTotalBorrowsWei', '2641234234636158123');
+    assertMarketDocument('treasuryTotalSupplyMantissa', '36504567163409');
+    assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
+    assertMarketDocument('borrowIndexMantissa', '300000000000000000000');
+    assertMarketDocument('reservesMantissa', '5128924555022289393');
+    assertMarketDocument('treasuryTotalBorrowsMantissa', '2641234234636158123');
     assertMarketDocument('cash', '1.418171344423412457');
-    assertMarketDocument('borrowRate', '0.000000000012678493');
-    assertMarketDocument('supplyRate', '0.000000000012678493');
+    assertMarketDocument('borrowRateMantissa', '12678493');
+    assertMarketDocument('supplyRateMantissa', '12678493');
   });
 
   test('registers new reserve factor', () => {
@@ -497,7 +497,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHex(),
-      'reserveFactor',
+      'reserveFactorMantissa',
       newReserveFactor.toString(),
     );
   });
@@ -508,7 +508,7 @@ describe('VToken', () => {
     const to = aaaTokenAddress;
     const amount = BigInt.fromString('146205398726345');
     const balanceOf = BigInt.fromString('262059874253345');
-    const expectedFinalBalanceWei = balanceOf.minus(amount);
+    const expectedFinalBalanceMantissa = balanceOf.minus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -559,19 +559,19 @@ describe('VToken', () => {
       transferEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndex', '0');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
 
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userSupplyBalanceWei',
-      expectedFinalBalanceWei.toString(),
+      'userSupplyBalanceMantissa',
+      expectedFinalBalanceMantissa.toString(),
     );
 
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'totalUnderlyingRedeemedWei',
+      'totalUnderlyingRedeemedMantissa',
       '5337167017820446167010750000',
     );
   });
@@ -582,7 +582,7 @@ describe('VToken', () => {
     const from = aaaTokenAddress;
     const to = user2Address;
     const balanceOf = BigInt.fromString('262059874253345');
-    const expectedFinalBalanceWei = balanceOf.plus(amount);
+    const expectedFinalBalanceMantissa = balanceOf.plus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -633,13 +633,13 @@ describe('VToken', () => {
       transferEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndex', '0');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
 
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userSupplyBalanceWei',
-      expectedFinalBalanceWei.toString(),
+      'userSupplyBalanceMantissa',
+      expectedFinalBalanceMantissa.toString(),
     );
   });
 
@@ -685,7 +685,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
-      'badDebtWei',
+      'badDebtMantissa',
       badDebtNew.toString(),
     );
     assert.fieldEquals(
@@ -732,7 +732,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
-      'accessControlManager',
+      'accessControlManagerAddress',
       newAccessControlManager.toHexString(),
     );
   });
@@ -753,7 +753,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
-      'reservesWei',
+      'reservesMantissa',
       newTotalReserves.toString(),
     );
   });
@@ -774,7 +774,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
-      'reservesWei',
+      'reservesMantissa',
       '9111222333444555666',
     );
   });
