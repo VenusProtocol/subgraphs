@@ -43,7 +43,6 @@ export const updateAccountVTokenBorrow = (
   timestamp: BigInt,
   blockNumber: BigInt,
   logIndex: BigInt,
-  borrowAmount: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
@@ -70,7 +69,6 @@ export const updateAccountVTokenRepayBorrow = (
   timestamp: BigInt,
   blockNumber: BigInt,
   logIndex: BigInt,
-  repayAmount: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
