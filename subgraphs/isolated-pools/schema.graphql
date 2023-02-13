@@ -104,7 +104,7 @@ type Market @entity {
     "Reserves stored in the contract"
     reservesWei: BigInt!
     "Supply rate per block"
-    supplyRate: BigDecimal!
+    supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
     "Underlying token address"

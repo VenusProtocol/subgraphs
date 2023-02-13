@@ -1,4 +1,4 @@
-import { Address, BigDecimal, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
@@ -8,7 +8,6 @@ import {
   defaultMantissaFactorBigDecimal,
   mantissaFactor,
   vTokenDecimalsBigDecimal,
-  zeroBigDecimal,
 } from '../constants';
 import { exponentToBigDecimal } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
@@ -216,18 +215,7 @@ export const updateMarket = (
     .div(defaultMantissaFactorBigDecimal)
     .truncate(mantissaFactor);
 
-  // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
-  // So we handle it like this.
-  const supplyRatePerBlock = marketContract.try_supplyRatePerBlock();
-  if (supplyRatePerBlock.reverted) {
-    log.info('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-    market.supplyRate = zeroBigDecimal;
-  } else {
-    market.supplyRate = supplyRatePerBlock.value
-      .toBigDecimal()
-      .div(defaultMantissaFactorBigDecimal)
-      .truncate(mantissaFactor);
-  }
+  market.supplyRateMantissa = marketContract.supplyRatePerBlock();
 
   market.treasuryTotalBorrowsWei = marketContract.totalBorrows();
   market.treasuryTotalSupplyWei = marketContract.totalSupply();
