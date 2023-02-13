@@ -55,7 +55,7 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceMantissa = accountBorrows;
+  accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -81,7 +81,7 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceMantissa = accountBorrows;
+  accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -113,7 +113,7 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userSupplyBalanceMantissa = accountVToken.userSupplyBalanceMantissa.minus(amount);
+  accountVToken.accountSupplyBalanceMantissa = accountVToken.accountSupplyBalanceMantissa.minus(amount);
 
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
@@ -141,7 +141,7 @@ export const updateAccountVTokenTransferTo = (
     logIndex,
   );
 
-  accountVToken.userSupplyBalanceMantissa = accountVToken.userSupplyBalanceMantissa.plus(amount);
+  accountVToken.accountSupplyBalanceMantissa = accountVToken.accountSupplyBalanceMantissa.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

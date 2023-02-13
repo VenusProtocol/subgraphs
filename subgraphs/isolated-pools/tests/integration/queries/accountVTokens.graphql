@@ -18,8 +18,8 @@ query AccountVTokens  {
       block
     }
     enteredMarket
-    userSupplyBalanceMantissa
-    userBorrowBalanceMantissa
+    accountSupplyBalanceMantissa
+    accountBorrowBalanceMantissa
     totalUnderlyingRedeemedMantissa
     accountBorrowIndexMantissa
     totalUnderlyingRepaidMantissa

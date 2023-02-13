@@ -100,8 +100,8 @@ export const getOrCreateAccountVToken = (
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
-    accountVToken.userSupplyBalanceMantissa = suppliedAmountMantissa;
-    accountVToken.userBorrowBalanceMantissa = borrowedAmountMantissa;
+    accountVToken.accountSupplyBalanceMantissa = suppliedAmountMantissa;
+    accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigDecimal;
     accountVToken.accountBorrowIndexMantissa = zeroBigInt32;

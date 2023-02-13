@@ -191,9 +191,9 @@ type AccountVToken @entity {
     accrualBlockNumber: BigInt!
     
     "Amount of tokens supplied to the market"
-    userSupplyBalanceMantissa: BigInt!
+    accountSupplyBalanceMantissa: BigInt!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    userBorrowBalanceMantissa: BigInt!
+    accountBorrowBalanceMantissa: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
 
