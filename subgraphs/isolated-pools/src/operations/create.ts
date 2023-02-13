@@ -37,12 +37,7 @@ import {
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
-import {
-  getInterestRateModelAddress,
-  getReserveFactorMantissa,
-  getTokenPriceInUsd,
-  getUnderlyingAddress,
-} from '../utilities';
+import { getTokenPriceInUsd } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import {
   getAccountVTokenId,
@@ -105,14 +100,14 @@ export function createMarket(
 ): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
-  const underlyingAddress = getUnderlyingAddress(vTokenContract);
+  const underlyingAddress = vTokenContract.underlying();
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress.toHexString());
 
   market.pool = comptroller.toHexString();
 
   market.name = vTokenContract.name();
-  market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
+  market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
 
   const underlyingDecimals = underlyingContract.decimals();
@@ -160,7 +155,7 @@ export function createMarket(
     .div(defaultMantissaFactorBigDecimal)
     .truncate(mantissaFactor);
 
-  market.reserveFactor = getReserveFactorMantissa(vTokenContract);
+  market.reserveFactor = vTokenContract.reserveFactorMantissa();
 
   market.treasuryTotalBorrowsWei = vTokenContract.totalBorrows();
   market.treasuryTotalSupplyWei = vTokenContract.totalSupply();
