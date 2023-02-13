@@ -18,8 +18,8 @@ query AccountVTokens  {
       block
     }
     enteredMarket
-    userSupplyBalanceWei
-    userBorrowBalanceWei
+    accountSupplyBalanceWei
+    accountBorrowBalanceWei
     totalUnderlyingRedeemedWei
     accountBorrowIndex
     totalUnderlyingRepaidWei

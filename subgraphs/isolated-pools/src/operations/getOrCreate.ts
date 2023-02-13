@@ -100,8 +100,8 @@ export const getOrCreateAccountVToken = (
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
     const suppliedAmountWei = accountSnapshot.value1;
     const borrowedAmountWei = accountSnapshot.value2;
-    accountVToken.userSupplyBalanceWei = suppliedAmountWei;
-    accountVToken.userBorrowBalanceWei = borrowedAmountWei;
+    accountVToken.accountSupplyBalanceWei = suppliedAmountWei;
+    accountVToken.accountBorrowBalanceWei = borrowedAmountWei;
 
     accountVToken.totalUnderlyingRedeemedWei = zeroBigDecimal;
     accountVToken.accountBorrowIndex = zeroBigDecimal;
