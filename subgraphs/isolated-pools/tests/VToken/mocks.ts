@@ -42,7 +42,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromAddress(mockPriceOracleAddress), // priceOracle
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateral
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateralMantissa
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(10)), // maxAssets
       ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
     ];

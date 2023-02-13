@@ -61,7 +61,7 @@ describe('Pool Registry', function () {
     expect(pool.category).to.be.equal('');
     expect(pool.logoUrl).to.be.equal('');
     expect(pool.description).to.be.equal('');
-    expect(pool.priceOracle).to.be.equal('0x0165878a594ca255338adfa4d48449f69242eb8f');
+    expect(pool.priceOracleAddress).to.be.equal('0x0165878a594ca255338adfa4d48449f69242eb8f');
     expect(pool.closeFactor).to.be.equal('10000000000000000');
     expect(pool.liquidationIncentive).to.be.equal('2000000000000000000');
     expect(pool.maxAssets).to.be.equal('0');

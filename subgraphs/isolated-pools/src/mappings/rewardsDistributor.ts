@@ -6,12 +6,12 @@ import { getOrCreateRewardSpeed } from '../operations/getOrCreate';
 
 export function handleRewardTokenBorrowSpeedUpdated(event: RewardTokenBorrowSpeedUpdated): void {
   const rewardSpeed = getOrCreateRewardSpeed(event.address, event.params.vToken);
-  rewardSpeed.borrowSpeedPerBlockWei = event.params.newSpeed;
+  rewardSpeed.borrowSpeedPerBlockMantissa = event.params.newSpeed;
   rewardSpeed.save();
 }
 
 export function handleRewardTokenSupplySpeedUpdated(event: RewardTokenSupplySpeedUpdated): void {
   const rewardSpeed = getOrCreateRewardSpeed(event.address, event.params.vToken);
-  rewardSpeed.supplySpeedPerBlockWei = event.params.newSpeed;
+  rewardSpeed.supplySpeedPerBlockMantissa = event.params.newSpeed;
   rewardSpeed.save();
 }

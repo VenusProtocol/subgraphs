@@ -196,7 +196,7 @@ describe('VToken events', function () {
     expect(dataBeforeEvent).to.not.be.equal(undefined);
     const { markets: marketsBeforeUpdate } = dataBeforeEvent!;
 
-    expect(marketsBeforeUpdate[0].badDebtWei).to.equal('0');
+    expect(marketsBeforeUpdate[0].badDebtMantissa).to.equal('0');
 
     await comptroller.connect(liquidator).healAccount(borrower.address);
     await waitForSubgraphToBeSynced(syncDelay);
@@ -205,7 +205,7 @@ describe('VToken events', function () {
     expect(dataBeforeEvent).to.not.be.equal(undefined);
     const { markets } = data!;
 
-    expect(markets[0].badDebtWei).to.equal('6001');
+    expect(markets[0].badDebtMantissa).to.equal('6001');
 
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
     expect(accountVTokensData).to.not.be.equal(undefined);
@@ -245,7 +245,7 @@ describe('VToken events', function () {
     const { market: marketBeforeEvent } = dataBeforeEvent!;
     expect(marketBeforeEvent).to.not.be.equal(undefined);
 
-    expect(marketBeforeEvent?.reservesWei).to.be.equals('0');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('0');
 
     await bswToken.connect(liquidator2).faucet(mintAmount);
     await bswToken.connect(liquidator2).approve(vBswToken.address, mintAmount);
@@ -258,7 +258,7 @@ describe('VToken events', function () {
     expect(data).to.not.be.equal(undefined);
     const { market } = data!;
 
-    expect(market?.reservesWei).to.be.equal('123');
+    expect(market?.reservesMantissa).to.be.equal('123');
   });
 
   it('handles ReservesReduced event', async function () {
@@ -267,7 +267,7 @@ describe('VToken events', function () {
     const { market: marketBeforeEvent } = dataBeforeEvent!;
     expect(marketBeforeEvent).to.not.be.equal(undefined);
 
-    expect(marketBeforeEvent?.reservesWei).to.be.equals('123');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('123');
 
     const vTokenContract = await ethers.getContractAt('VToken', vBswAddress);
 
@@ -278,7 +278,7 @@ describe('VToken events', function () {
     expect(data).to.not.be.equal(undefined);
     const { market } = data!;
 
-    expect(market?.reservesWei).to.be.equal('0');
+    expect(market?.reservesMantissa).to.be.equal('0');
   });
 
   it('handles NewComptroller event', async function () {

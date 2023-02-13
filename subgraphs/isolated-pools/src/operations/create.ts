@@ -34,8 +34,6 @@ import {
   TRANSFER,
   UNDERLYING_AMOUNT,
   UNDERLYING_REPAY_AMOUNT,
-  defaultMantissaFactorBigDecimal,
-  mantissaFactor,
   vTokenDecimals,
   vTokenDecimalsBigDecimal,
   zeroBigInt32,
@@ -75,10 +73,12 @@ export function createPool(comptroller: Address): Pool {
     pool.category = poolDataFromLens.category;
     pool.logoUrl = poolDataFromLens.logoURL;
     pool.description = poolDataFromLens.description;
-    pool.priceOracle = poolDataFromLens.priceOracle;
-    pool.closeFactor = poolDataFromLens.closeFactor ? poolDataFromLens.closeFactor : new BigInt(0);
-    pool.minLiquidatableCollateral = BigInt.fromI32(0);
-    pool.liquidationIncentive = poolDataFromLens.liquidationIncentive
+    pool.priceOracleAddress = poolDataFromLens.priceOracle;
+    pool.closeFactorMantissa = poolDataFromLens.closeFactor
+      ? poolDataFromLens.closeFactor
+      : new BigInt(0);
+    pool.minLiquidatableCollateralMantissa = poolDataFromLens.minLiquidatableCollateral;
+    pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
       ? poolDataFromLens.liquidationIncentive
       : new BigInt(0);
     pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
@@ -122,11 +122,7 @@ export function createMarket(
   market.underlyingPriceUsd = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
 
-  market.borrowRate = vTokenContract
-    .borrowRatePerBlock()
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
   market.cash = vTokenContract
     .getCash()
@@ -134,36 +130,26 @@ export function createMarket(
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
 
-  market.exchangeRate = vTokenContract
-    .exchangeRateStored()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .times(vTokenDecimalsBigDecimal)
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.exchangeRateMantissa = vTokenContract.exchangeRateStored();
 
-  market.reservesWei = vTokenContract.totalReserves();
+  market.reservesMantissa = vTokenContract.totalReserves();
   market.supplyRateMantissa = vTokenContract.supplyRatePerBlock();
 
   market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
 
   market.blockTimestamp = blockTimestamp.toI32();
 
-  market.borrowIndex = vTokenContract
-    .borrowIndex()
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.borrowIndexMantissa = vTokenContract.borrowIndex();
 
-  market.reserveFactor = vTokenContract.reserveFactorMantissa();
+  market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
-  market.treasuryTotalBorrowsWei = vTokenContract.totalBorrows();
-  market.treasuryTotalSupplyWei = vTokenContract.totalSupply();
+  market.treasuryTotalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.treasuryTotalSupplyMantissa = vTokenContract.totalSupply();
 
-  market.badDebtWei = vTokenContract.badDebt();
+  market.badDebtMantissa = vTokenContract.badDebt();
 
-  market.supplyCapWei = poolComptroller.supplyCaps(vTokenAddress);
-  market.borrowCapWei = poolComptroller.borrowCaps(vTokenAddress);
+  market.supplyCapMantissa = poolComptroller.supplyCaps(vTokenAddress);
+  market.borrowCapMantissa = poolComptroller.borrowCaps(vTokenAddress);
 
   // suppliers and borrowers have to be counted through events
   market.supplierCount = zeroBigInt32;
@@ -172,7 +158,7 @@ export function createMarket(
   market.collateralFactorMantissa = poolComptroller
     .markets(vTokenAddress)
     .getCollateralFactorMantissa();
-  market.liquidationThreshold = poolComptroller
+  market.liquidationThresholdMantissa = poolComptroller
     .markets(vTokenAddress)
     .getLiquidationThresholdMantissa();
 

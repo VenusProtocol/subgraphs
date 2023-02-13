@@ -18,10 +18,10 @@ query AccountVTokens  {
       block
     }
     enteredMarket
-    accountSupplyBalanceWei
-    accountBorrowBalanceWei
-    totalUnderlyingRedeemedWei
-    accountBorrowIndex
-    totalUnderlyingRepaidWei
+    accountSupplyBalanceMantissa
+    accountBorrowBalanceMantissa
+    totalUnderlyingRedeemedMantissa
+    accountBorrowIndexMantissa
+    totalUnderlyingRepaidMantissa
   }
 }

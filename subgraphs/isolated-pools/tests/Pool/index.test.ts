@@ -213,7 +213,7 @@ describe('Pool Events', () => {
     };
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('closeFactor', newCloseFactorMantissa.toString());
+    assertPoolDocument('closeFactorMantissa', newCloseFactorMantissa.toString());
   });
 
   test('indexes NewCollateralFactor event', () => {
@@ -259,7 +259,7 @@ describe('Pool Events', () => {
     };
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('liquidationIncentive', newLiquidationIncentiveMantissa.toString());
+    assertPoolDocument('liquidationIncentiveMantissa', newLiquidationIncentiveMantissa.toString());
   });
 
   test('indexes NewPriceOracle event', () => {
@@ -278,7 +278,7 @@ describe('Pool Events', () => {
     };
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('priceOracle', newPriceOracle.toHexString());
+    assertPoolDocument('priceOracleAddress', newPriceOracle.toHexString());
   });
 
   test('indexes MarketPauseAction event', () => {
@@ -307,7 +307,12 @@ describe('Pool Events', () => {
     handleNewBorrowCap(newBorrowCapEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'borrowCapWei', newBorrowCap.toString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'borrowCapMantissa',
+      newBorrowCap.toString(),
+    );
   });
 
   test('indexes NewMinLiquidatableCollateral event', () => {
@@ -323,7 +328,7 @@ describe('Pool Events', () => {
     assert.fieldEquals(
       'Pool',
       comptrollerAddress.toHex(),
-      'minLiquidatableCollateral',
+      'minLiquidatableCollateralMantissa',
       newMinLiquidatableCollateral.toString(),
     );
   });
@@ -335,7 +340,12 @@ describe('Pool Events', () => {
     handleNewSupplyCap(newSupplyCapEvent);
 
     assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
-    assert.fieldEquals('Market', vTokenAddress.toHex(), 'supplyCapWei', newSupplyCap.toString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'supplyCapMantissa',
+      newSupplyCap.toString(),
+    );
   });
 
   test('indexes NewRewardsDistributor event', () => {

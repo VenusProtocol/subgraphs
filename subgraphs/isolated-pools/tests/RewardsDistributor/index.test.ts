@@ -66,8 +66,8 @@ describe('Rewards Distributor', () => {
       'rewardsDistributor',
       rewardsDistributorAddress.toHexString(),
     );
-    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockWei', '0');
-    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockWei', newBorrowRate);
+    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', '0');
+    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', newBorrowRate);
 
     assert.fieldEquals(
       'RewardsDistributor',
@@ -96,8 +96,8 @@ describe('Rewards Distributor', () => {
       'rewardsDistributor',
       rewardsDistributorAddress.toHexString(),
     );
-    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockWei', newSupplyRate);
-    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockWei', '0');
+    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', newSupplyRate);
+    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', '0');
 
     assert.fieldEquals(
       'RewardsDistributor',

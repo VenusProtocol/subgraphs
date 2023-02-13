@@ -64,9 +64,9 @@ describe('Pool Registry', () => {
     assertPoolDocument('category', 'Games');
     assertPoolDocument('logoUrl', '/logo.png');
     assertPoolDocument('description', 'Game related tokens');
-    assertPoolDocument('priceOracle', mockPriceOracleAddress.toHex());
-    assertPoolDocument('closeFactor', '5');
-    assertPoolDocument('liquidationIncentive', '7');
+    assertPoolDocument('priceOracleAddress', mockPriceOracleAddress.toHex());
+    assertPoolDocument('closeFactorMantissa', '5');
+    assertPoolDocument('liquidationIncentiveMantissa', '7');
     assertPoolDocument('maxAssets', '10');
   });
 

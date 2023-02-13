@@ -11,11 +11,11 @@ query AccountFromMarket($marketId: ID!, $accountId: ID!){
         block
       }
       enteredMarket
-      accountSupplyBalanceWei
-      accountBorrowBalanceWei
-      totalUnderlyingRedeemedWei
-      accountBorrowIndex
-      totalUnderlyingRepaidWei
+      accountSupplyBalanceMantissa
+      accountBorrowBalanceMantissa
+      totalUnderlyingRedeemedMantissa
+      accountBorrowIndexMantissa
+      totalUnderlyingRepaidMantissa
     }
   }
 }
