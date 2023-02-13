@@ -254,7 +254,7 @@ type Transaction @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "enum of event type"
-    type: EventType
+    type: EventType!
     "The account that sent the tokens, usually vToken"
     from: Bytes!
     "count of vTokens transferred"
@@ -265,16 +265,30 @@ type Transaction @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Underlying token amount transferred"
-    underlyingAmount: BigDecimal
-    "Total borrows of this asset the account has"
-    accountBorrows: BigDecimal
-    "LIQUIATION: Underlying vToken amount that was repaid by liquidator"
-    underlyingRepayAmount: BigDecimal
+    "Optional parameters for the transaction"
+    params: TransactionParams
+}
+
+enum TransactionParamKey {
+    UNDERLYING_AMOUNT
+    ACCOUNT_BORROWS
+    UNDERLYING_REPAY_AMOUNT
 }
 
 """
-A interface for rewards distributor that distribute rewards to isolated pools
+TransactionParams hold extra information about a Transaction depending on the type of the transacton
+"""
+type TransactionParams @entity {
+    "Transaction hash concatenated with log index"
+    id: ID!
+    "Name of the field"
+    key: TransactionParamKey!
+    "Value of the field"
+    value: String!
+}
+
+"""
+An interface for rewards distributor that distribute rewards to isolated pools
 """
 type RewardsDistributor @entity {
     "Address of the rewards distributor"
