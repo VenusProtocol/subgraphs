@@ -12,7 +12,7 @@ query MarketById($id: ID!) {
     interestRateModelAddress
     name
     reservesMantissa
-    supplyRate
+    supplyRateMantissa
     symbol
     underlyingAddress
     underlyingName

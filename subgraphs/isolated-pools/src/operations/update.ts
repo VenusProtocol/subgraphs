@@ -1,9 +1,9 @@
-import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { RiskRatings, zeroBigInt32 } from '../constants';
+import { RiskRatings } from '../constants';
 import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
@@ -185,15 +185,7 @@ export const updateMarket = (
   // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
   market.borrowRateMantissa = marketContract.borrowRatePerBlock();
 
-  // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
-  // So we handle it like this.
-  const supplyRatePerBlock = marketContract.try_supplyRatePerBlock();
-  if (supplyRatePerBlock.reverted) {
-    log.info('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-    market.supplyRateMantissa = zeroBigInt32;
-  } else {
-    market.supplyRateMantissa = supplyRatePerBlock.value;
-  }
+  market.supplyRateMantissa = marketContract.supplyRatePerBlock();
 
   market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
   market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
