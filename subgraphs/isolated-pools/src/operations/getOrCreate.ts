@@ -98,6 +98,7 @@ export const getOrCreateAccountVToken = (
     // be accurate
     const vTokenContract = VToken.bind(marketAddress);
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
+
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
     accountVToken.accountSupplyBalanceMantissa = suppliedAmountMantissa;
