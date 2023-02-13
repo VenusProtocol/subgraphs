@@ -282,7 +282,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userBorrowBalanceWei',
+      'accountBorrowBalanceWei',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
@@ -370,7 +370,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userBorrowBalanceWei',
+      'accountBorrowBalanceWei',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
@@ -564,7 +564,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userSupplyBalanceWei',
+      'accountSupplyBalanceWei',
       expectedFinalBalanceWei.toString(),
     );
 
@@ -638,7 +638,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'userSupplyBalanceWei',
+      'accountSupplyBalanceWei',
       expectedFinalBalanceWei.toString(),
     );
   });

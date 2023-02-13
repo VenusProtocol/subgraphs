@@ -61,7 +61,7 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceWei = accountBorrows;
+  accountVToken.accountBorrowBalanceWei = accountBorrows;
   accountVToken.accountBorrowIndex = borrowIndex;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -87,7 +87,7 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userBorrowBalanceWei = accountBorrows;
+  accountVToken.accountBorrowBalanceWei = accountBorrows;
   accountVToken.accountBorrowIndex = borrowIndex;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -118,7 +118,7 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.minus(amount);
+  accountVToken.accountSupplyBalanceWei = accountVToken.accountSupplyBalanceWei.minus(amount);
 
   accountVToken.totalUnderlyingRedeemedWei =
     accountVToken.totalUnderlyingRedeemedWei.plus(amountUnderlying);
@@ -146,7 +146,7 @@ export const updateAccountVTokenTransferTo = (
     logIndex,
   );
 
-  accountVToken.userSupplyBalanceWei = accountVToken.userSupplyBalanceWei.plus(amount);
+  accountVToken.accountSupplyBalanceWei = accountVToken.accountSupplyBalanceWei.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

@@ -11,8 +11,8 @@ query AccountFromMarket($marketId: ID!, $accountId: ID!){
         block
       }
       enteredMarket
-      userSupplyBalanceWei
-      userBorrowBalanceWei
+      accountSupplyBalanceWei
+      accountBorrowBalanceWei
       totalUnderlyingRedeemedWei
       accountBorrowIndex
       totalUnderlyingRepaidWei
