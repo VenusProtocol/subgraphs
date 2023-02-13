@@ -12,8 +12,8 @@ const getTokenPrice = (
 ): BigDecimal => {
   const pool = getPool(poolAddress);
   let underlyingPrice = BigDecimal.zero();
-  if (pool && pool.priceOracle) {
-    const oracleAddress = Address.fromBytes(pool.priceOracle);
+  if (pool && pool.priceOracleAddress) {
+    const oracleAddress = Address.fromBytes(pool.priceOracleAddress);
     /* PriceOracle2 is used from starting of Comptroller.
      * This must use the vToken address.
      *

@@ -113,7 +113,7 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
   const poolAddress = event.address;
   const pool = getOrCreatePool(poolAddress);
   if (pool) {
-    pool.priceOracle = event.params.newPriceOracle;
+    pool.priceOracleAddress = event.params.newPriceOracle;
     pool.save();
   }
 }

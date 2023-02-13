@@ -278,7 +278,7 @@ describe('Pool Events', () => {
     };
 
     assertPoolDocument('id', comptrollerAddress.toHexString());
-    assertPoolDocument('priceOracle', newPriceOracle.toHexString());
+    assertPoolDocument('priceOracleAddress', newPriceOracle.toHexString());
   });
 
   test('indexes MarketPauseAction event', () => {
