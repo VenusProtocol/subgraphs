@@ -35,12 +35,7 @@ import {
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
-import {
-  getInterestRateModelAddress,
-  getReserveFactorMantissa,
-  getTokenPriceInUsd,
-  getUnderlyingAddress,
-} from '../utilities';
+import { getTokenPriceInUsd } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import {
   getAccountVTokenId,
@@ -74,7 +69,7 @@ export function createPool(comptroller: Address): Pool {
     pool.category = poolDataFromLens.category;
     pool.logoUrl = poolDataFromLens.logoURL;
     pool.description = poolDataFromLens.description;
-    pool.priceOracle = poolDataFromLens.priceOracle;
+    pool.priceOracleAddress = poolDataFromLens.priceOracle;
     pool.closeFactorMantissa = poolDataFromLens.closeFactor
       ? poolDataFromLens.closeFactor
       : new BigInt(0);
@@ -105,14 +100,14 @@ export function createMarket(
 ): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
-  const underlyingAddress = getUnderlyingAddress(vTokenContract);
+  const underlyingAddress = vTokenContract.underlying();
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress.toHexString());
 
   market.pool = comptroller.toHexString();
 
   market.name = vTokenContract.name();
-  market.interestRateModelAddress = getInterestRateModelAddress(vTokenContract);
+  market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
 
   const underlyingDecimals = underlyingContract.decimals();
@@ -142,7 +137,7 @@ export function createMarket(
 
   market.borrowIndexMantissa = vTokenContract.borrowIndex();
 
-  market.reserveFactorMantissa = getReserveFactorMantissa(vTokenContract);
+  market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
   market.treasuryTotalBorrowsMantissa = vTokenContract.totalBorrows();
   market.treasuryTotalSupplyMantissa = vTokenContract.totalSupply();
