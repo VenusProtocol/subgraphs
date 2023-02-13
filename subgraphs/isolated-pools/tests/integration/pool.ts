@@ -132,7 +132,7 @@ describe('Pools', function () {
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
       expect(m.name).to.equal(marketNames[idx]);
       expect(m.reservesWei).to.equal('0');
-      expect(m.supplyRate).to.equal('0');
+      expect(m.supplyRateMantissa).to.equal('0');
       expect(m.symbol).to.equal(symbols[idx]);
       expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
       expect(m.underlyingName).to.equal(underlyingNames[idx]);

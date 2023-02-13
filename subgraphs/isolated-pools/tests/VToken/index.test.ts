@@ -480,7 +480,7 @@ describe('VToken', () => {
     assertMarketDocument('treasuryTotalBorrowsWei', '2641234234636158123');
     assertMarketDocument('cash', '1.418171344423412457');
     assertMarketDocument('borrowRate', '0.000000000012678493');
-    assertMarketDocument('supplyRate', '0.000000000012678493');
+    assertMarketDocument('supplyRateMantissa', '12678493');
   });
 
   test('registers new reserve factor', () => {

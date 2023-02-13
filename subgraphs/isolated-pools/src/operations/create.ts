@@ -139,11 +139,7 @@ export function createMarket(
     .truncate(mantissaFactor);
 
   market.reservesWei = vTokenContract.totalReserves();
-  market.supplyRate = vTokenContract
-    .supplyRatePerBlock()
-    .toBigDecimal()
-    .div(defaultMantissaFactorBigDecimal)
-    .truncate(mantissaFactor);
+  market.supplyRateMantissa = vTokenContract.supplyRatePerBlock();
 
   market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
 
