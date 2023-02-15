@@ -5,24 +5,23 @@ query Markets {
       id
     }
     badDebtMantissa
-    borrowRate
+    borrowRateMantissa
     cash
-    collateralFactor
-    exchangeRate
+    collateralFactorMantissa
+    exchangeRateMantissa
     interestRateModelAddress
     name
     reservesMantissa
-    supplyRate
+    supplyRateMantissa
     symbol
     underlyingAddress
     underlyingName
-    underlyingPrice
     underlyingSymbol
     borrowCapMantissa
     accrualBlockNumber
     blockTimestamp
-    borrowIndex
-    reserveFactor
+    borrowIndexMantissa
+    reserveFactorMantissa
     underlyingPriceUsd
     underlyingDecimals
     supplyCapMantissa

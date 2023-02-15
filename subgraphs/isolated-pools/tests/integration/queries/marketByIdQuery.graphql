@@ -5,10 +5,10 @@ query MarketById($id: ID!) {
       id
     }
     badDebtMantissa
-    borrowRate
+    borrowRateMantissa
     cash
-    collateralFactor
-    exchangeRate
+    collateralFactorMantissa
+    exchangeRateMantissa
     interestRateModelAddress
     name
     reservesMantissa
@@ -16,14 +16,14 @@ query MarketById($id: ID!) {
     symbol
     underlyingAddress
     underlyingName
-    underlyingPrice
+    underlyingPriceUsd
     underlyingSymbol
     borrowCapMantissa
     supplyCapMantissa
     accrualBlockNumber
     blockTimestamp
-    borrowIndex
-    reserveFactor
+    borrowIndexMantissa
+    reserveFactorMantissa
     underlyingPriceUsd
     underlyingDecimals
     supplierCount
