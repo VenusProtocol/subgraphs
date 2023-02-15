@@ -9,9 +9,9 @@ query Pools {
     category
     logoUrl
     description
-    priceOracle
-    closeFactor
-    liquidationIncentive
+    priceOracleAddress
+    closeFactorMantissa
+    liquidationIncentiveMantissa
     minLiquidatableCollateralMantissa
     maxAssets
     markets {
