@@ -18,15 +18,17 @@ describe('Pools', function () {
   const marketNames = ['Venus BSW', 'Venus BNX'];
   const underlyingNames = ['Biswap', 'BinaryX'];
   const underlyingAddresses = [
-    '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
     '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+    '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
   ];
   const underlyingSymbols = ['BSW', 'BNX'];
+  const underlyingPricesUSD = ['0.208', '159.99'];
   const interestRateModelAddresses = [
-    '0xb267c5f8279a939062a20d29ca9b185b61380f10',
-    '0xe73bc5bd4763a3307ab5f8f126634b7e12e3da9b',
+    '0xbf5a316f4303e13ae92c56d2d8c9f7629bef5c6e',
+    '0xb955b6c65ff69bfe07a557aa385055282b8a5ea3',
   ];
-  const priceOracle = '0x0165878a594ca255338adfa4d48449f69242eb8f';
+  const priceOracleAddress = '0xa513e6e4b8f2a923d98304ec87f64353c4d5c853';
+  const accrualBlockNumbers = [82, 79];
 
   const vTokens: Array<string> = [];
   const actions: Array<number> = [];
@@ -72,7 +74,14 @@ describe('Pools', function () {
 
     tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
-      'setMarketSupplyCaps(address,uint256)',
+      'setMarketBorrowCaps(address[],uint256[])',
+      root.address,
+    );
+    tx.wait();
+
+    tx = await accessControlManager.giveCallPermission(
+      ethers.constants.AddressZero,
+      'setMarketSupplyCaps(address[],uint256[])',
       root.address,
     );
     tx.wait();
@@ -94,7 +103,7 @@ describe('Pools', function () {
     const comptrollerProxy = await ethers.getContractAt('Comptroller', markets[0].pool.id);
 
     // reset price oracle
-    await comptrollerProxy.setPriceOracle(priceOracle);
+    await comptrollerProxy.setPriceOracle(priceOracleAddress);
 
     // unpause actions
     await comptrollerProxy.connect(root).setActionsPaused(vTokens, actions, false);
@@ -104,7 +113,7 @@ describe('Pools', function () {
     tx.wait(1);
 
     // reset borrow cap
-    tx = await comptrollerProxy.setMarketBorrowCaps(vTokens, [maxCap, maxCap]);
+    tx = await comptrollerProxy.connect(root).setMarketBorrowCaps(vTokens, [maxCap, maxCap]);
     tx.wait(1);
 
     waitForSubgraphToBeSynced(syncDelay);
@@ -125,10 +134,10 @@ describe('Pools', function () {
 
     markets.forEach((m, idx) => {
       expect(m.pool.id).to.equal(pool.id);
-      expect(m.borrowRate).to.equal('0');
-      expect(m.cash).to.equal('0');
-      expect(m.collateralFactorMantissa).to.equal('0');
-      expect(m.exchangeRate).to.equal('0');
+      expect(m.borrowRateMantissa).to.equal('0');
+      expect(m.cash).to.equal('1');
+      expect(m.collateralFactorMantissa).to.equal('700000000000000000');
+      expect(m.exchangeRateMantissa).to.equal('10000000000000000000000000000');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
       expect(m.name).to.equal(marketNames[idx]);
       expect(m.reservesMantissa).to.equal('0');
@@ -136,19 +145,14 @@ describe('Pools', function () {
       expect(m.symbol).to.equal(symbols[idx]);
       expect(m.underlyingAddress).to.equal(underlyingAddresses[idx]);
       expect(m.underlyingName).to.equal(underlyingNames[idx]);
-      expect(m.underlyingPrice).to.equal('0');
       expect(m.underlyingSymbol).to.equal(underlyingSymbols[idx]);
-      expect(m.borrowCapMantissa).to.equal(
-        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-      );
-      expect(m.supplyCapMantissa).to.equal(
-        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-      );
-      expect(m.accrualBlockNumber).to.equal(0);
-      expect(m.blockTimestamp).to.equal(0);
-      expect(m.borrowIndex).to.equal('0');
-      expect(m.reserveFactor).to.equal('0');
-      expect(m.underlyingPriceUsd).to.equal('0');
+      expect(m.borrowCapMantissa).to.equal('10000000000000000000000');
+      expect(m.supplyCapMantissa).to.equal('10000000000000000000000');
+      expect(m.accrualBlockNumber).to.equal(accrualBlockNumbers[idx]);
+      expect(m.blockTimestamp).to.not.be.equal('0');
+      expect(m.borrowIndexMantissa).to.equal('1000000000000000000');
+      expect(m.reserveFactorMantissa).to.equal('0');
+      expect(m.underlyingPriceUsd).to.equal(underlyingPricesUSD[idx]);
       expect(m.underlyingDecimals).to.equal(18);
     });
   });
@@ -169,7 +173,9 @@ describe('Pools', function () {
 
     // check accountVTokens
     // const accountVTokenId = `${account?.tokens[0].id}-${account1Address}`;
-    const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
+    const { data: accountVTokensData } = await subgraphClient.getAccountVTokensByAccountId(
+      account1Address.toLowerCase(),
+    );
     expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
 
@@ -179,32 +185,17 @@ describe('Pools', function () {
       expect(avt.market.id).to.equal(expectedMarketId);
       expect(avt.symbol).to.equal(symbols[idx]);
       expect(avt.account.id).to.equal(account?.id);
-      expect(avt.transactions.length).to.equal(0);
+      // check accountVTokenTransaction
+      expect(avt.transactions.length).to.equal(1);
+      expect(avt.transactions[0].block).to.not.be.equal(0);
+      expect(avt.transactions[0].timestamp).to.not.be.equal(0);
+
       expect(avt.enteredMarket).to.equal(true);
-      expect(avt.vTokenBalance).to.equal('0');
+      expect(avt.accountSupplyBalanceMantissa).to.equal('0');
       expect(avt.totalUnderlyingRedeemedMantissa).to.equal('0');
       expect(avt.accountBorrowIndexMantissa).to.equal('0');
       expect(avt.totalUnderlyingRepaidMantissa).to.equal('0');
-      expect(avt.storedBorrowBalance).to.equal('0');
-    });
-
-    // check accountVTokenTransaction
-    const { data: accountVTokensTransactionData } =
-      await subgraphClient.getAccountVTokensTransactions();
-    expect(accountVTokensTransactionData).to.not.be.equal(undefined);
-    const { accountVTokenTransactions } = accountVTokensTransactionData!;
-    expect(accountVTokenTransactions.length).to.be.equal(2);
-
-    accountVTokenTransactions.forEach((avtt, idx) => {
-      const idParts = avtt.id.split('-');
-      expect(idParts.length).to.be.equal(3);
-      // account ID
-      expect(idParts[0]).to.be.equal(account?.id);
-      // transaction hash
-      // this is provided by hardhat, so we're asserting the lenght, the actual value changes
-      expect(idParts[1].length).to.be.equal(66);
-      // transaction index
-      expect(idParts[2]).to.be.equal(`${idx}`);
+      expect(avt.accountBorrowBalanceMantissa).to.equal('0');
     });
   });
 
@@ -214,7 +205,7 @@ describe('Pools', function () {
     const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
 
     poolsBeforeUpdate.forEach(p => {
-      expect(p.closeFactor).to.equal('50000000000000000');
+      expect(p.closeFactorMantissa).to.equal('50000000000000000');
     });
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeUpdate[0].id);
@@ -228,7 +219,7 @@ describe('Pools', function () {
     const { pools } = data!;
 
     pools.forEach(p => {
-      expect(p.closeFactor).to.equal('10000000000000000');
+      expect(p.closeFactorMantissa).to.equal('10000000000000000');
     });
   });
 
@@ -238,7 +229,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeEvent } = dataBeforeEvent!;
 
     marketsBeforeEvent.forEach(m => {
-      expect(m.collateralFactorMantissa).to.equal('0');
+      expect(m.collateralFactorMantissa).to.equal('700000000000000000');
     });
 
     const eventPromises = marketsBeforeEvent.map(async m => {
@@ -260,7 +251,7 @@ describe('Pools', function () {
     const { markets } = data!;
 
     markets.forEach(m => {
-      expect(m.collateralFactorMantissa).to.equal('0.1');
+      expect(m.collateralFactorMantissa).to.equal('100000000000000000');
     });
   });
 
@@ -270,7 +261,7 @@ describe('Pools', function () {
     const { pools: poolsBeforeEvent } = dataBeforeEvent!;
 
     poolsBeforeEvent.forEach(p => {
-      expect(p.liquidationIncentive).to.equal('1000000000000000000');
+      expect(p.liquidationIncentiveMantissa).to.equal('1000000000000000000');
     });
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', poolsBeforeEvent[0].id);
@@ -283,7 +274,7 @@ describe('Pools', function () {
     expect(data).to.not.be.equal(undefined);
     const { pools } = data!;
 
-    expect(pools[0].liquidationIncentive).to.equal('2000000000000000000');
+    expect(pools[0].liquidationIncentiveMantissa).to.equal('2000000000000000000');
   });
 
   it('handles NewPriceOracle event', async function () {
@@ -293,7 +284,7 @@ describe('Pools', function () {
     const { pools } = data!;
 
     pools.forEach(p => {
-      expect(p.priceOracle).to.equal(priceOracle);
+      expect(p.priceOracleAddress).to.equal(priceOracleAddress);
     });
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', pools[0].id);
@@ -307,7 +298,7 @@ describe('Pools', function () {
     const { pools: updatedPools } = updatedPoolData!;
 
     updatedPools.forEach(p => {
-      expect(p.priceOracle).to.equal(newPriceOracle);
+      expect(p.priceOracleAddress).to.equal(newPriceOracle);
     });
   });
 
@@ -346,9 +337,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.borrowCapMantissa).to.equal(
-        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-      );
+      expect(m.borrowCapMantissa).to.equal('10000000000000000000000');
     });
 
     const vTokens: Array<string> = [];
@@ -363,7 +352,7 @@ describe('Pools', function () {
       marketsBeforeUpdate[0].pool.id,
     );
 
-    const tx = await comptrollerProxy.setMarketBorrowCaps(vTokens, borrowCaps);
+    const tx = await comptrollerProxy.connect(root).setMarketBorrowCaps(vTokens, borrowCaps);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
@@ -407,9 +396,7 @@ describe('Pools', function () {
     const { markets: marketsBeforeUpdate } = data!;
 
     marketsBeforeUpdate.forEach(m => {
-      expect(m.supplyCapMantissa).to.equal(
-        '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-      );
+      expect(m.supplyCapMantissa).to.equal('10000000000000000000000');
     });
 
     const vTokens: Array<string> = [];

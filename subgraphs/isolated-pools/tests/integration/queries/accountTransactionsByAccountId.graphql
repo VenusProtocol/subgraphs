@@ -1,0 +1,12 @@
+query AccountVTokenTransactionsByAccountId($accountVTokenId: String!) {
+  accountVTokenTransactions(where: { accountVToken: $accountVTokenId }) {
+    id
+    accountVToken {
+      id
+    }
+    block
+    txHash
+    timestamp
+    logIndex
+  }
+}

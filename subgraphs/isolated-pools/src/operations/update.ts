@@ -30,7 +30,14 @@ const updateAccountVToken = (
     marketAddress,
     false,
   );
-  getOrCreateAccountVTokenTransaction(accountAddress, txHash, timestamp, blockNumber, logIndex);
+  getOrCreateAccountVTokenTransaction(
+    accountAddress,
+    txHash,
+    timestamp,
+    blockNumber,
+    logIndex,
+    marketAddress,
+  );
   accountVToken.accrualBlockNumber = blockNumber;
   return accountVToken as AccountVToken;
 };
@@ -113,7 +120,8 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.accountSupplyBalanceMantissa = accountVToken.accountSupplyBalanceMantissa.minus(amount);
+  accountVToken.accountSupplyBalanceMantissa =
+    accountVToken.accountSupplyBalanceMantissa.minus(amount);
 
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
@@ -141,7 +149,8 @@ export const updateAccountVTokenTransferTo = (
     logIndex,
   );
 
-  accountVToken.accountSupplyBalanceMantissa = accountVToken.accountSupplyBalanceMantissa.plus(amount);
+  accountVToken.accountSupplyBalanceMantissa =
+    accountVToken.accountSupplyBalanceMantissa.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

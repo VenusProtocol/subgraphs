@@ -47,6 +47,7 @@ export function handleMarketEntered(event: MarketEntered): void {
     event.block.timestamp,
     event.block.number,
     event.logIndex,
+    vTokenAddress,
   );
 }
 
@@ -70,6 +71,7 @@ export function handleMarketExited(event: MarketExited): void {
     event.block.timestamp,
     event.block.number,
     event.logIndex,
+    vTokenAddress,
   );
 }
 

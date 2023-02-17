@@ -184,7 +184,7 @@ type AccountVToken @entity {
     "Relation to user"
     account: Account!
     "Transactions data"
-    transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"account")
+    transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"accountVToken")
     "Bad debt data for the account in the market"
     badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
@@ -209,16 +209,22 @@ type AccountVToken @entity {
 Auxiliary entity for AccountVToken
 """
 type AccountVTokenTransaction @entity {
+  "Concatenation of the transaction hash and the log index"
   id: ID!
 
-  account: AccountVToken!
+  "ID of the corresponding account and VToken"
+  accountVToken: AccountVToken!
 
+  "Transaction Hash"
   txHash: Bytes!
 
+  "Transaction timestamp"
   timestamp: BigInt!
 
+  "Transaction block"
   block: BigInt!
 
+  "Index of the log in the block logs"
   logIndex: BigInt!
 }
 
