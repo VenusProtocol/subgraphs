@@ -1,5 +1,5 @@
-query AccountVTokens  {
-  accountVTokens {
+query AccountVTokenByAccountId($accountId: String!) {
+  accountVTokens(where: { account: $accountId }) {
     id
     market {
       id

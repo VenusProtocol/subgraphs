@@ -58,6 +58,7 @@ export const getOrCreateAccountVTokenTransaction = (
   timestamp: BigInt,
   block: BigInt,
   logIndex: BigInt,
+  marketId: Address,
 ): AccountVTokenTransaction => {
   const accountVTokenTransactionId = getAccountVTokenTransactionId(
     accountAddress,
@@ -67,8 +68,9 @@ export const getOrCreateAccountVTokenTransaction = (
   let transaction = AccountVTokenTransaction.load(accountVTokenTransactionId.toString());
 
   if (transaction == null) {
+    const accountVTokenId = getAccountVTokenId(marketId, accountAddress);
     transaction = new AccountVTokenTransaction(accountVTokenTransactionId);
-    transaction.account = accountAddress.toHexString();
+    transaction.accountVToken = accountVTokenId;
     transaction.txHash = txHash;
     transaction.timestamp = timestamp;
     transaction.block = block;
