@@ -4281,9 +4281,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:^0.0.18-develop.1":
-  version: 0.0.18-develop.1
-  resolution: "@venusprotocol/isolated-pools@npm:0.0.18-develop.1"
+"@venusprotocol/isolated-pools@npm:^0.0.18-develop.2":
+  version: 0.0.18-develop.2
+  resolution: "@venusprotocol/isolated-pools@npm:0.0.18-develop.2"
   dependencies:
     "@openzeppelin/contracts": ^4.8.0
     "@openzeppelin/contracts-upgradeable": ^4.8.0
@@ -4291,7 +4291,7 @@ __metadata:
     "@solidity-parser/parser": ^0.13.2
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
-  checksum: 14e5d25538f56539a3927d63d8f931c4ffd62aed89c98df6f7bd18763359db85525cac716db04c3821ab68ad0b40795db2c83e1179c929d3094ebf4e4651e176
+  checksum: 4df671ee793568d6d387c45b9f4f04d53a0defcd9cfc5dca3590627ac99c94d45b13f57612c5cda7723aaeef4f865614e613d3b98f78e8255a1ce79f7427d20c
   languageName: node
   linkType: hard
 
@@ -14778,7 +14778,7 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": ^0.0.18-develop.1
+    "@venusprotocol/isolated-pools": ^0.0.18-develop.2
     "@venusprotocol/oracle": ^1.4.1
     "@venusprotocol/venus-protocol": ^0.6.0
     assemblyscript: 0.19.23

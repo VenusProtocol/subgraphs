@@ -31,7 +31,7 @@ dataSources:
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../packages/isolated-pools-abis/PoolLens.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
@@ -70,7 +70,7 @@ templates:
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../packages/isolated-pools-abis/PoolLens.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
       eventHandlers:
