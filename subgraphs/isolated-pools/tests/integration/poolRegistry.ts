@@ -15,7 +15,6 @@ const DEFAULT_POOL = {
   priceOracle: '0x0165878a594ca255338adfa4d48449f69242eb8f',
   closeFactor: '10000000000000000',
   liquidationIncentive: '2000000000000000000',
-  maxAssets: '0',
 };
 
 describe('Pool Registry', function () {
@@ -64,7 +63,6 @@ describe('Pool Registry', function () {
     expect(pool.priceOracleAddress).to.be.equal('0x0165878a594ca255338adfa4d48449f69242eb8f');
     expect(pool.closeFactor).to.be.equal('10000000000000000');
     expect(pool.liquidationIncentive).to.be.equal('2000000000000000000');
-    expect(pool.maxAssets).to.be.equal('0');
   });
 
   it('updates and returns metadata from the pool', async function () {

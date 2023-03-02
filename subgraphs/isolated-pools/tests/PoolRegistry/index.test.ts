@@ -67,7 +67,6 @@ describe('Pool Registry', () => {
     assertPoolDocument('priceOracleAddress', mockPriceOracleAddress.toHex());
     assertPoolDocument('closeFactorMantissa', '5');
     assertPoolDocument('liquidationIncentiveMantissa', '7');
-    assertPoolDocument('maxAssets', '10');
   });
 
   test('updates pool name correctly', () => {

@@ -13,7 +13,6 @@ query Pools {
     closeFactorMantissa
     liquidationIncentiveMantissa
     minLiquidatableCollateralMantissa
-    maxAssets
     markets {
       id
       pool {

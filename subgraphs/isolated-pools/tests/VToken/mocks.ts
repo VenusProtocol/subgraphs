@@ -43,7 +43,6 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateralMantissa
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(10)), // maxAssets
       ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
     ];
     const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
@@ -52,7 +51,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     createMockedFunction(
       poolLensAddress,
       'getPoolByComptroller',
-      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
+      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
     )
       .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
       .returns([lensTupleValue]);

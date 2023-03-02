@@ -81,7 +81,6 @@ export function createPool(comptroller: Address): Pool {
     pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
       ? poolDataFromLens.liquidationIncentive
       : new BigInt(0);
-    pool.maxAssets = poolDataFromLens.maxAssets ? poolDataFromLens.maxAssets : new BigInt(0);
     // Note: we don't index vTokens here because when a pool is created it has no markets
     pool.save();
   }
