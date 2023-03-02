@@ -58,8 +58,6 @@ type Pool @entity {
     liquidationIncentiveMantissa: BigInt!
     "Min Liquidable Amount allowed"
     minLiquidatableCollateralMantissa: BigInt!
-    "Max assets a single user can enter"
-    maxAssets: BigInt!
     "Markets associated to this pool"
     markets: [Market!]! @derivedFrom(field: "pool")
 
