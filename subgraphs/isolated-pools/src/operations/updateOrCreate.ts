@@ -24,6 +24,7 @@ export const updateOrCreateAccountVToken = (
     marketAddress,
     enteredMarketBool,
   );
+  accountVToken.enteredMarket = enteredMarketBool;
   accountVToken.accrualBlockNumber = blockNumber;
   accountVToken.save();
 
