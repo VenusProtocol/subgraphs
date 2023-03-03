@@ -25,7 +25,7 @@ dataSources:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
         - name: VToken
-          file: ../../packages/isolated-pools-abis/VToken.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
@@ -66,7 +66,7 @@ templates:
         - name: PoolRegistry
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Pool/PoolRegistry.sol/PoolRegistry.json
         - name: VToken
-          file: ../../packages/isolated-pools-abis/VToken.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
@@ -116,7 +116,7 @@ templates:
         - VTokenInfo
       abis:
         - name: VToken
-          file: ../../packages/isolated-pools-abis/VToken.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
         - name: BEP20
@@ -126,15 +126,15 @@ templates:
         - name: PoolLens
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
       eventHandlers:
-        - event: Mint(address,uint256,uint256,uint256)
+        - event: Mint(indexed address,uint256,uint256,uint256)
           handler: handleMint
-        - event: Redeem(address,uint256,uint256,uint256)
+        - event: Redeem(indexed address,uint256,uint256,uint256)
           handler: handleRedeem
-        - event: Borrow(address,uint256,uint256,uint256)
+        - event: Borrow(indexed address,uint256,uint256,uint256)
           handler: handleBorrow
-        - event: RepayBorrow(address,address,uint256,uint256,uint256)
+        - event: RepayBorrow(indexed address,indexed address,uint256,uint256,uint256)
           handler: handleRepayBorrow
-        - event: LiquidateBorrow(address,address,uint256,address,uint256)
+        - event: LiquidateBorrow(indexed address,indexed address,uint256,indexed address,uint256)
           handler: handleLiquidateBorrow
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
@@ -142,15 +142,15 @@ templates:
           handler: handleNewReserveFactor
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
-        - event: NewMarketInterestRateModel(address,address)
+        - event: NewMarketInterestRateModel(indexed address,indexed address)
           handler: handleNewMarketInterestRateModel
-        - event: BadDebtIncreased(address,uint256,uint256,uint256)
+        - event: BadDebtIncreased(indexed address,uint256,uint256,uint256)
           handler: handleBadDebtIncreased
-        - event: NewAccessControlManager(address,address)
+        - event: NewAccessControlManager(indexed address,indexed address)
           handler: handleNewAccessControlManager
-        - event: ReservesAdded(address,uint256,uint256)
+        - event: ReservesAdded(indexed address,uint256,uint256)
           handler: handleReservesAdded
-        - event: ReservesReduced(address,uint256,uint256)
+        - event: ReservesReduced(indexed address,uint256,uint256)
           handler: handleReservesReduced
   - name: RewardsDistributor
     kind: ethereum/contract
