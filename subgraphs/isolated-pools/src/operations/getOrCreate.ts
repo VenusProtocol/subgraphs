@@ -9,7 +9,10 @@ import {
   Market,
   Pool,
   RewardSpeed,
+  RewardsDistributor,
 } from '../../generated/schema';
+import { Comptroller } from '../../generated/templates/Pool/Comptroller';
+import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigDecimal, zeroBigInt32 } from '../constants';
 import {
   getAccountVTokenId,
@@ -17,6 +20,7 @@ import {
   getMarketId,
   getPoolId,
   getRewardSpeedId,
+  getRewardsDistributorId,
 } from '../utilities/ids';
 import { createAccount, createMarket, createPool } from './create';
 
@@ -128,4 +132,41 @@ export const getOrCreateRewardSpeed = (
     rewardSpeed.save();
   }
   return rewardSpeed;
+};
+
+export const getOrCreateRewardDistributor = (
+  rewardsDistributorAddress: Address,
+  comptrollerAddress: Address,
+): RewardsDistributor => {
+  const id = getRewardsDistributorId(rewardsDistributorAddress);
+  let rewardsDistributor = RewardsDistributor.load(id);
+
+  if (!rewardsDistributor) {
+    const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
+    const poolAddress = comptrollerAddress.toHexString();
+    const rewardToken = rewardDistributorContract.rewardToken();
+    rewardsDistributor = new RewardsDistributor(id);
+    rewardsDistributor.pool = poolAddress;
+    rewardsDistributor.reward = rewardToken;
+    rewardsDistributor.save();
+
+    // we get the current speeds for all known markets at this point in time
+    const comptroller = Comptroller.bind(comptrollerAddress);
+    const marketAddresses = comptroller.getAllMarkets();
+
+    if (marketAddresses !== null) {
+      for (let i = 0; i < marketAddresses.length; i++) {
+        const marketAddress = marketAddresses[i];
+
+        const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
+        rewardSpeed.borrowSpeedPerBlockMantissa =
+          rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
+        rewardSpeed.supplySpeedPerBlockMantissa =
+          rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
+        rewardSpeed.save();
+      }
+    }
+  }
+
+  return rewardsDistributor;
 };

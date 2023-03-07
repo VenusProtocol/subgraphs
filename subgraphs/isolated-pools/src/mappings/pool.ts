@@ -13,12 +13,12 @@ import {
   NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
 import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
-import { createRewardDistributor } from '../operations/create';
 import {
   getOrCreateAccount,
   getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
   getOrCreatePool,
+  getOrCreateRewardDistributor,
 } from '../operations/getOrCreate';
 import {
   updateOrCreateAccountVToken,
@@ -155,5 +155,5 @@ export function handleNewSupplyCap(event: NewSupplyCap): void {
 
 export function handleNewRewardsDistributor(event: NewRewardsDistributor): void {
   RewardsDistributorDataSource.create(event.params.rewardsDistributor);
-  createRewardDistributor(event.params.rewardsDistributor, event.address);
+  getOrCreateRewardDistributor(event.params.rewardsDistributor, event.address);
 }

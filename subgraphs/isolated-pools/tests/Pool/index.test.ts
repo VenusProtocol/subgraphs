@@ -103,6 +103,10 @@ beforeAll(() => {
     ],
   ]);
 
+  createMockedFunction(comptrollerAddress, 'getAllMarkets', 'getAllMarkets():(address[])').returns([
+    ethereum.Value.fromArray([]),
+  ]);
+
   createRewardsDistributorMock(rewardsDistributorAddress, tokenAddress);
 });
 
