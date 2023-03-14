@@ -22,10 +22,12 @@ const getTokenPrice = (
      */
     const mantissaDecimalFactor = exponentToBigDecimal(36 - underlyingDecimals);
     const priceOracle = PriceOracle.bind(oracleAddress);
-    underlyingPrice = priceOracle
-      .getUnderlyingPrice(eventAddress)
-      .toBigDecimal()
-      .div(mantissaDecimalFactor);
+    // Calling getUnderlyingPrice might revert if the pyth price pusher is unfunded
+    // On revert we will return 0
+    const underlyingPriceResult = priceOracle.try_getUnderlyingPrice(eventAddress);
+    if (!underlyingPriceResult.reverted) {
+      underlyingPrice = underlyingPriceResult.value.toBigDecimal().div(mantissaDecimalFactor);
+    }
   }
 
   return underlyingPrice;
