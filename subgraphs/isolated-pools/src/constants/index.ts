@@ -45,3 +45,12 @@ export const Actions = [
   ENTER_MARKET,
   EXIT_MARKET,
 ];
+
+export const AUCTION_STARTED = 'STARTED';
+export const AUCTION_ENDED = 'ENDED';
+export const AUCTION_NOT_STARTED = 'NOT_STARTED';
+
+export const AUCTION_LARGE_POOL_DEBT = 'LARGE_POOL_DEBT';
+export const AUCTION_LARGE_RISK_FUND = 'LARGE_RISK_FUND';
+
+export const AuctionTypes = [AUCTION_LARGE_POOL_DEBT, AUCTION_LARGE_RISK_FUND];

@@ -44,3 +44,6 @@ export const getRewardSpeedId = (
   rewardsDistributorAddress: Address,
   marketAddress: Address,
 ): string => joinIds([rewardsDistributorAddress.toHexString(), marketAddress.toHexString()]);
+
+export const getAuctionId = (comptrollerAddress: Bytes): string =>
+  joinIds([comptrollerAddress.toHexString()]);

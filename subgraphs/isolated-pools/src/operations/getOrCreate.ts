@@ -6,14 +6,22 @@ import {
   Account,
   AccountVToken,
   AccountVTokenTransaction,
+  Auction,
   Market,
   Pool,
   RewardSpeed,
 } from '../../generated/schema';
-import { zeroBigDecimal, zeroBigInt32 } from '../constants';
+import {
+  AUCTION_LARGE_POOL_DEBT,
+  AUCTION_NOT_STARTED,
+  AUCTION_STARTED,
+  zeroBigDecimal,
+  zeroBigInt32,
+} from '../constants';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
+  getAuctionId,
   getMarketId,
   getPoolId,
   getRewardSpeedId,
@@ -128,4 +136,21 @@ export const getOrCreateRewardSpeed = (
     rewardSpeed.save();
   }
   return rewardSpeed;
+};
+
+export const getOrCreateAuction = (comptrollerAddress: Address): Auction => {
+  const auctionId = getAuctionId(comptrollerAddress);
+  let auction = Auction.load(auctionId);
+  if (!auction) {
+    auction = new Auction(auctionId);
+    auction.status = AUCTION_NOT_STARTED;
+    auction.type = AUCTION_LARGE_POOL_DEBT;
+    auction.startBlock = zeroBigInt32;
+    auction.seizedRiskFund = zeroBigInt32;
+    auction.startBidBps = zeroBigInt32;
+    auction.markets = [];
+    auction.marketsDebt = [];
+    auction.save();
+  }
+  return auction;
 };

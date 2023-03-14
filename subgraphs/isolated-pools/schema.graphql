@@ -320,3 +320,39 @@ type RewardSpeed @entity {
     "Distribution rate for suppliers"
     supplySpeedPerBlockMantissa: BigInt
 }
+
+enum AuctionStatus {
+    NOT_STARTED,
+    STARTED,
+    ENDED
+}
+
+enum AuctionType {
+    LARGE_POOL_DEBT,
+    LARGE_RISK_FUND
+}
+
+type Auction @entity {
+    "Comptroller address of the auction"
+    id: ID!
+    "Indicates wheter the auction has started/ended"
+    status: AuctionStatus!
+    "Auction's type"
+    type: AuctionType!
+    "The block where the auction started"
+    startBlock: BigInt!
+    "Account that made the highest bid"
+    highestBidder: Bytes
+    "Basis points of the highest bid"
+    highestBidBps: BigInt
+    "Block number of the highest bid"
+    highestBidBlock: BigInt
+    "Seized risk fund in the auction"
+    seizedRiskFund: BigInt!
+    "Initial bid percent of the risk fund or bad debt depending on auction type"
+    startBidBps: BigInt!
+    "Markets involved in the auction"
+    markets: [Bytes!]
+    "Debts of the markets in the auction"
+    marketsDebt: [BigInt!]
+}

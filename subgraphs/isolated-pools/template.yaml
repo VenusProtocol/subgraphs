@@ -173,3 +173,27 @@ templates:
           handler: handleRewardTokenBorrowSpeedUpdated
         - event: RewardTokenSupplySpeedUpdated(indexed address,uint256)
           handler: handleRewardTokenSupplySpeedUpdated
+  - name: Shortfall
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: Shortfall
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/shortfall.ts
+      entities:
+        - Auction
+      abis:
+        - name: Shortfall
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Shortfall/Shortfall.sol/Shortfall.json
+      eventHandlers:
+        - event: AuctionStarted(indexed address,uint256,uint8,address[],uint256[],uint256,uint256)
+          handler: handleAuctionStarted
+        - event: AuctionRestarted(indexed address)
+          handler: handleAuctionRestarted
+        - event: AuctionClosed(indexed address,indexed address,uint256,uint256,address[],uint256[])
+          handler: handleAuctionClosed
+        - event: BidPlaced(indexed address,uint256,indexed address)
+          handler: handleBidPlaced
