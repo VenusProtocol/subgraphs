@@ -1,7 +1,9 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { createMockedFunction } from 'matchstick-as';
 import {
   afterEach,
   assert,
+  beforeAll,
   beforeEach,
   clearStore,
   describe,
@@ -30,6 +32,12 @@ const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000
 const cleanup = (): void => {
   clearStore();
 };
+
+beforeAll(() => {
+  createMockedFunction(comptrollerAddress, 'getAllMarkets', 'getAllMarkets():(address[])').returns([
+    ethereum.Value.fromArray([]),
+  ]);
+});
 
 beforeEach(() => {
   createRewardsDistributorMock(rewardsDistributorAddress, tokenAddress);
