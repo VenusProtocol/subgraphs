@@ -146,7 +146,7 @@ templates:
           handler: handleNewMarketInterestRateModel
         - event: BadDebtIncreased(indexed address,uint256,uint256,uint256)
           handler: handleBadDebtIncreased
-        - event: NewAccessControlManager(indexed address,indexed address)
+        - event: NewAccessControlManager(address,address)
           handler: handleNewAccessControlManager
         - event: ReservesAdded(indexed address,uint256,uint256)
           handler: handleReservesAdded
