@@ -30,7 +30,6 @@ import {
   MINT,
   REDEEM,
   REPAY,
-  RiskRatings,
   TRANSFER,
   UNDERLYING_AMOUNT,
   UNDERLYING_REPAY_AMOUNT,
@@ -69,7 +68,6 @@ export function createPool(comptroller: Address): Pool {
     pool.creator = poolDataFromLens.creator;
     pool.blockPosted = poolDataFromLens.blockPosted;
     pool.timestampPosted = poolDataFromLens.timestampPosted;
-    pool.riskRating = RiskRatings[poolDataFromLens.riskRating];
     pool.category = poolDataFromLens.category;
     pool.logoUrl = poolDataFromLens.logoURL;
     pool.description = poolDataFromLens.description;

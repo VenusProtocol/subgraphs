@@ -5,7 +5,6 @@ query Pools {
     creator
     blockPosted
     timestampPosted
-    riskRating
     category
     logoUrl
     description
