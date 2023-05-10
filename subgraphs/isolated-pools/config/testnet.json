@@ -1,6 +1,6 @@
 {
   "network": "chapel",
-  "poolRegistryAddress": "0x1aF50D1Ee859Bb972384F1f96F3cFCccfC5Ac210",
-  "poolLensAddress": "0x7d6A1a595dCa742B4FF4Fb8684e3F018C3c0bEC0",
-  "startBlock": "28205600"
+  "poolRegistryAddress": "0xF57fdd25224807B1113f40E4F95c5f625fB458E2",
+  "poolLensAddress": "0x73Ac8216b93597264e2bf233B92a8F8cf413D609",
+  "startBlock": "29520000"
 }

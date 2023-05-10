@@ -41,7 +41,7 @@ dataSources:
           handler: handlePoolNameSet
         - event: MarketAdded(indexed address,address)
           handler: handleMarketAdded
-        - event: PoolMetadataUpdated(indexed address,(uint8,string,string,string),(uint8,string,string,string))
+        - event: PoolMetadataUpdated(indexed address,(string,string,string),(string,string,string))
           handler: handlePoolMetadataUpdated
 
 templates:
