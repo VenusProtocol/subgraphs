@@ -22,15 +22,12 @@ import {
   Transfer,
 } from '../../generated/templates/VToken/VToken';
 import { nullAddress } from '../constants/addresses';
+import { vTokenDecimals } from '../constants';
 import { createAccount } from '../operations/create';
 import { createMarket } from '../operations/create';
 import { updateCommonVTokenStats } from '../operations/update';
 import { updateMarket } from '../operations/update';
-import {
-  exponentToBigDecimal,
-  vTokenDecimals,
-  vTokenDecimalsBD,
-} from '../utilities/exponentToBigDecimal';
+import { exponentToBigDecimal, vTokenDecimalsBD } from '../utilities/exponentToBigDecimal';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
