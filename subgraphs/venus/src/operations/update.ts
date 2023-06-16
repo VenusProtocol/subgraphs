@@ -2,35 +2,30 @@ import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
 
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
+import { zeroBigInt32 } from '../constants';
 import { createMarket } from '../operations/create';
-import {
-  exponentToBigDecimal,
-  mantissaFactor,
-  mantissaFactorBD,
-  vTokenDecimalsBD,
-  zeroBD,
-} from '../utilities/exponentToBigDecimal';
+import { exponentToBigDecimal } from '../utilities/exponentToBigDecimal';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { createAccountVToken } from './create';
 import { getOrCreateAccountVTokenTransaction } from './getOrCreate';
 
 export const updateCommonVTokenStats = (
-  marketID: string,
+  marketId: string,
   marketSymbol: string,
-  accountID: string,
+  accountId: string,
   txHash: Bytes,
   timestamp: BigInt,
   blockNumber: BigInt,
   logIndex: BigInt,
 ): AccountVToken => {
-  const vTokenStatsID = marketID.concat('-').concat(accountID);
-  let vTokenStats = AccountVToken.load(vTokenStatsID);
-  if (vTokenStats == null) {
-    vTokenStats = createAccountVToken(vTokenStatsID, marketSymbol, accountID, marketID);
+  const accountVTokenId = marketId.concat('-').concat(accountId);
+  let accountVToken = AccountVToken.load(accountVTokenId);
+  if (accountVToken == null) {
+    accountVToken = createAccountVToken(accountVTokenId, marketSymbol, accountId, marketId);
   }
-  getOrCreateAccountVTokenTransaction(vTokenStatsID, txHash, timestamp, blockNumber, logIndex);
-  vTokenStats.accrualBlockNumber = blockNumber;
-  return vTokenStats as AccountVToken;
+  getOrCreateAccountVTokenTransaction(accountVTokenId, txHash, timestamp, blockNumber, logIndex);
+  accountVToken.accrualBlockNumber = blockNumber;
+  return accountVToken as AccountVToken;
 };
 
 export const updateMarket = (
@@ -38,18 +33,18 @@ export const updateMarket = (
   blockNumber: i32,
   blockTimestamp: i32,
 ): Market => {
-  const marketID = marketAddress.toHexString();
-  let market = Market.load(marketID);
+  const marketId = marketAddress.toHexString();
+  let market = Market.load(marketId) as Market;
   if (market == null) {
     log.debug('[updateMarket] market null: {}, creating...', [marketAddress.toHexString()]);
-    market = createMarket(marketID);
+    market = createMarket(marketId);
   }
 
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber != blockNumber) {
     const contractAddress = Address.fromString(market.id);
     const contract = VToken.bind(contractAddress);
-
+    const vTokenDecimals = market.vTokenDecimals;
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
     market.blockTimestamp = blockTimestamp;
 
@@ -57,7 +52,10 @@ export const updateMarket = (
     market.underlyingPrice = underlyingValue.underlyingPrice;
     market.underlyingPriceUSD = underlyingValue.underlyingPriceUsd;
 
-    market.totalSupply = contract.totalSupply().toBigDecimal().div(vTokenDecimalsBD);
+    market.totalSupplyMantissa = contract
+      .totalSupply()
+      .toBigDecimal()
+      .div(exponentToBigDecimal(vTokenDecimals));
 
     /* Exchange rate explanation
        In Practice
@@ -72,27 +70,15 @@ export const updateMarket = (
     const exchangeRateStored = contract.try_exchangeRateStored();
     if (exchangeRateStored.reverted) {
       log.error('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-      market.exchangeRate = zeroBD;
+      market.exchangeRateMantissa = zeroBigInt32;
     } else {
-      market.exchangeRate = exchangeRateStored.value
-        .toBigDecimal()
-        .div(exponentToBigDecimal(market.underlyingDecimals))
-        .times(vTokenDecimalsBD)
-        .div(mantissaFactorBD)
-        .truncate(mantissaFactor);
+      market.exchangeRateMantissa = exchangeRateStored.value;
     }
-    market.borrowIndex = contract
-      .borrowIndex()
-      .toBigDecimal()
-      .div(mantissaFactorBD)
-      .truncate(mantissaFactor);
+    market.borrowIndexMantissa = contract.borrowIndex();
 
-    market.reservesWei = contract.totalReserves();
-    market.totalBorrows = contract
-      .totalBorrows()
-      .toBigDecimal()
-      .div(exponentToBigDecimal(market.underlyingDecimals))
-      .truncate(market.underlyingDecimals);
+    market.reservesMantissa = contract.totalReserves();
+    market.totalBorrowsMantissa = contract.totalBorrows();
+
     market.cash = contract
       .getCash()
       .toBigDecimal()
@@ -103,12 +89,9 @@ export const updateMarket = (
     const borrowRatePerBlock = contract.try_borrowRatePerBlock();
     if (borrowRatePerBlock.reverted) {
       log.error('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-      market.exchangeRate = zeroBD;
+      market.exchangeRateMantissa = zeroBigInt32;
     } else {
-      market.borrowRate = borrowRatePerBlock.value
-        .toBigDecimal()
-        .div(mantissaFactorBD)
-        .truncate(mantissaFactor);
+      market.borrowRateMantissa = borrowRatePerBlock.value;
     }
 
     // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
@@ -116,12 +99,9 @@ export const updateMarket = (
     const supplyRatePerBlock = contract.try_supplyRatePerBlock();
     if (supplyRatePerBlock.reverted) {
       log.info('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-      market.supplyRate = zeroBD;
+      market.supplyRateMantissa = zeroBigInt32;
     } else {
-      market.supplyRate = supplyRatePerBlock.value
-        .toBigDecimal()
-        .div(mantissaFactorBD)
-        .truncate(mantissaFactor);
+      market.supplyRateMantissa = supplyRatePerBlock.value;
     }
     market.save();
   }

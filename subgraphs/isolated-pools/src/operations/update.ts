@@ -205,12 +205,8 @@ export const updateMarket = (
     marketContract.try_supplyRatePerBlock(),
   );
 
-  market.treasuryTotalBorrowsMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_totalBorrows(),
-  );
-  market.treasuryTotalSupplyMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_totalSupply(),
-  );
+  market.totalBorrowsMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalBorrows());
+  market.totalSupplyMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalSupply());
 
   market.save();
   return market as Market;

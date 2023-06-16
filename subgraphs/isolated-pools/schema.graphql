@@ -102,9 +102,9 @@ type Market @entity {
     "Max token borrow amount allowed"
     borrowCapMantissa: BigInt!
     "Total borrowed"
-    treasuryTotalBorrowsMantissa: BigInt!
+    totalBorrowsMantissa: BigInt!
     "Total supplied"
-    treasuryTotalSupplyMantissa: BigInt!
+    totalSupplyMantissa: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"

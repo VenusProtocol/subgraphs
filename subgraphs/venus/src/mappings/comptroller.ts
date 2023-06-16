@@ -18,7 +18,7 @@ import { createAccount, createMarket } from '../operations/create';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { updateCommonVTokenStats } from '../operations/update';
 import { ensureComptrollerSynced } from '../utilities';
-import { mantissaFactorBD } from '../utilities/exponentToBigDecimal';
+import { mantissaFactorBigDecimal } from '../constants';
 
 export const handleMarketListed = (event: MarketListed): void => {
   // Dynamically index all new listed tokens
@@ -112,7 +112,7 @@ export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
   if (market != null) {
     market.collateralFactor = event.params.newCollateralFactorMantissa
       .toBigDecimal()
-      .div(mantissaFactorBD);
+      .div(mantissaFactorBigDecimal);
     market.save();
   }
 };

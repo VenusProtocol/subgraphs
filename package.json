@@ -51,7 +51,7 @@
     "@venusprotocol/governance-contracts": "^1.0.0",
     "@venusprotocol/isolated-pools": "1.0.0",
     "@venusprotocol/oracle": "^1.4.1",
-    "@venusprotocol/venus-protocol": "^0.6.0",
+    "@venusprotocol/venus-protocol": "^3.0.0-dev.7",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",

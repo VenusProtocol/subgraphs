@@ -72,9 +72,9 @@ templates:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
       eventHandlers:
-        - event: Mint(address,uint256,uint256)
+        - event: Mint(address,uint256,uint256,uint256)
           handler: handleMint
-        - event: Redeem(address,uint256,uint256)
+        - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
         - event: Borrow(address,uint256,uint256,uint256)
           handler: handleBorrow

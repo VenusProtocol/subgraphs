@@ -37,6 +37,10 @@ export const createVBep20AndUnderlyingMock = (
     'reserveFactorMantissa():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(reserveFactorMantissa)]);
 
+  createMockedFunction(contractAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromUnsignedBigInt(decimals),
+  ]);
+
   // Underlying
   createMockedFunction(underlyingAddress, 'decimals', 'decimals():(uint8)').returns([
     ethereum.Value.fromUnsignedBigInt(decimals),

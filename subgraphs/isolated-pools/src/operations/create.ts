@@ -129,8 +129,8 @@ export function createMarket(
 
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
-  market.treasuryTotalBorrowsMantissa = vTokenContract.totalBorrows();
-  market.treasuryTotalSupplyMantissa = vTokenContract.totalSupply();
+  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.totalSupplyMantissa = vTokenContract.totalSupply();
 
   market.badDebtMantissa = vTokenContract.badDebt();
 

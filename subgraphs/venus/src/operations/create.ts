@@ -2,50 +2,52 @@ import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Account, AccountVToken, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
+import { VBep20Storage } from '../../generated/templates/VToken/VBep20Storage';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigInt32, zeroBigDecimal } from '../constants';
+import { zeroBigDecimal, zeroBigInt32 } from '../constants';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 
-export const createAccountVToken = (
-  vTokenStatsID: string,
+export function createAccountVToken(
+  accountVTokenId: string,
   symbol: string,
   account: string,
-  marketID: string,
-): AccountVToken => {
-  const vTokenStats = new AccountVToken(vTokenStatsID);
-  vTokenStats.symbol = symbol;
-  vTokenStats.market = marketID;
-  vTokenStats.account = account;
-  vTokenStats.accrualBlockNumber = BigInt.fromI32(0);
-  // we need to set an initial real onchain value to this otherwise it will never
-  // be accurate
-  const vTokenContract = BEP20.bind(Address.fromString(marketID));
-  vTokenStats.vTokenBalance = new BigDecimal(vTokenContract.balanceOf(Address.fromString(account)));
-  // log.debug('[createAccountVToken] vTokenBalance: {}, account: {}, vToken: {}', [vTokenStats.vTokenBalance.toString(), account, marketID]);
+  marketId: string,
+): AccountVToken {
+  const accountVToken = new AccountVToken(accountVTokenId);
+  accountVToken.symbol = symbol;
+  accountVToken.market = marketId;
+  accountVToken.account = account;
+  accountVToken.accrualBlockNumber = BigInt.fromI32(0);
+  // we need to set an initial real onchain value to this otherwise it will never be accurate
+  const vTokenContract = BEP20.bind(Address.fromString(marketId));
+  accountVToken.vTokenBalance = new BigDecimal(
+    vTokenContract.balanceOf(Address.fromString(account)),
+  );
 
-  vTokenStats.totalUnderlyingSupplied = zeroBigDecimal;
-  vTokenStats.totalUnderlyingRedeemed = zeroBigDecimal;
-  vTokenStats.accountBorrowIndex = zeroBigDecimal;
-  vTokenStats.totalUnderlyingBorrowed = zeroBigDecimal;
-  vTokenStats.totalUnderlyingRepaid = zeroBigDecimal;
-  vTokenStats.storedBorrowBalance = zeroBigDecimal;
-  vTokenStats.enteredMarket = false;
-  return vTokenStats;
-};
+  accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;
+  accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
+  accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
+  accountVToken.totalUnderlyingBorrowed = zeroBigDecimal;
+  accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
+  accountVToken.storedBorrowBalance = zeroBigDecimal;
+  accountVToken.enteredMarket = false;
+  return accountVToken;
+}
 
-export const createAccount = (accountID: string): Account => {
-  const account = new Account(accountID);
+export function createAccount(accountId: string): Account {
+  const account = new Account(accountId);
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
   account.save();
   return account;
-};
+}
 
-export const createMarket = (marketAddress: string): Market => {
+export function createMarket(marketAddress: string): Market {
   let market: Market;
   const contract = VToken.bind(Address.fromString(marketAddress));
+  const marketBep20Storage = VBep20Storage.bind(Address.fromString(marketAddress));
 
   log.debug('[createMarket] market address: {}', [marketAddress]);
 
@@ -61,7 +63,7 @@ export const createMarket = (marketAddress: string): Market => {
     // It is all other VBEP20 contracts
   } else {
     market = new Market(marketAddress);
-    market.underlyingAddress = contract.underlying();
+    market.underlyingAddress = marketBep20Storage.underlying();
     log.debug('[createMarket] market underlying address: {}', [
       market.underlyingAddress.toHexString(),
     ]);
@@ -75,28 +77,30 @@ export const createMarket = (marketAddress: string): Market => {
     market.underlyingPriceUSD = underlyingValue.underlyingPriceUsd;
   }
 
+  market.vTokenDecimals = contract.decimals();
+
   const interestRateModelAddress = contract.try_interestRateModel();
   const reserveFactor = contract.try_reserveFactorMantissa();
 
-  market.borrowRate = zeroBigDecimal;
+  market.borrowRateMantissa = zeroBigInt32;
   market.cash = zeroBigDecimal;
   market.collateralFactor = zeroBigDecimal;
-  market.exchangeRate = zeroBigDecimal;
+  market.exchangeRateMantissa = zeroBigInt32;
   market.interestRateModelAddress = interestRateModelAddress.reverted
     ? nullAddress
     : interestRateModelAddress.value;
   market.name = contract.name();
-  market.reservesWei = BigInt.fromI32(0);
-  market.supplyRate = zeroBigDecimal;
+  market.reservesMantissa = BigInt.fromI32(0);
+  market.supplyRateMantissa = zeroBigInt32;
   market.symbol = contract.symbol();
-  market.totalBorrows = zeroBigDecimal;
-  market.totalSupply = zeroBigDecimal;
+  market.totalBorrowsMantissa = zeroBigInt32;
+  market.totalSupplyMantissa = zeroBigInt32;
 
   market.accrualBlockNumber = 0;
   market.blockTimestamp = 0;
-  market.borrowIndex = zeroBigDecimal;
+  market.borrowIndexMantissa = zeroBigInt32;
   market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
   market.totalXvsDistributedMantissa = zeroBigInt32;
 
   return market;
-};
+}
