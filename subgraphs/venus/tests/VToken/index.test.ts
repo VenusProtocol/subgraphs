@@ -23,7 +23,7 @@ import {
   handleRedeem,
   handleRepayBorrow,
   handleTransfer,
-} from '../../src/mappings/vtoken';
+} from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
 import { getAccountVTokenId } from '../../src/utilities/ids';
 import {

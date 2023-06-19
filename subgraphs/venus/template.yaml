@@ -57,7 +57,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/vtoken.ts
+      file: ./src/mappings/vToken.ts
       entities:
         - User
         - Market

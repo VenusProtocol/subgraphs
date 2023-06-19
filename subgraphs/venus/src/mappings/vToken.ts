@@ -362,9 +362,7 @@ export const handleTransfer = (event: Transfer): void => {
     market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
   }
   let vTokenDecimals = market.vTokenDecimals;
-  let amountUnderlying = market.exchangeRateMantissa.times(
-    event.params.amount,
-  );
+  let amountUnderlying = market.exchangeRateMantissa.times(event.params.amount);
   // const exchangeRateBigDecimal = getExchangeRateBigDecimal(exchangeRate, underlyingDecimals);
   // const amountUnderlyingMantissa = exchangeRateBigDecimal
   //   .times(exponentToBigDecimal(underlyingDecimals))
@@ -392,7 +390,10 @@ export const handleTransfer = (event: Transfer): void => {
     );
 
     vTokenStatsFrom.vTokenBalance = vTokenStatsFrom.vTokenBalance.minus(
-      event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals)).truncate(vTokenDecimals),
+      event.params.amount
+        .toBigDecimal()
+        .div(exponentToBigDecimal(vTokenDecimals))
+        .truncate(vTokenDecimals),
     );
 
     vTokenStatsFrom.totalUnderlyingRedeemedMantissa =
@@ -424,7 +425,10 @@ export const handleTransfer = (event: Transfer): void => {
     );
 
     vTokenStatsTo.vTokenBalance = vTokenStatsTo.vTokenBalance.plus(
-      event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals)).truncate(vTokenDecimals),
+      event.params.amount
+        .toBigDecimal()
+        .div(exponentToBigDecimal(vTokenDecimals))
+        .truncate(vTokenDecimals),
     );
 
     vTokenStatsTo.totalUnderlyingSuppliedMantissa =
