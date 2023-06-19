@@ -363,10 +363,6 @@ export const handleTransfer = (event: Transfer): void => {
   }
   let vTokenDecimals = market.vTokenDecimals;
   let amountUnderlying = market.exchangeRateMantissa.times(event.params.amount);
-  // const exchangeRateBigDecimal = getExchangeRateBigDecimal(exchangeRate, underlyingDecimals);
-  // const amountUnderlyingMantissa = exchangeRateBigDecimal
-  //   .times(exponentToBigDecimal(underlyingDecimals))
-  //   .times(amount.toBigDecimal());
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations

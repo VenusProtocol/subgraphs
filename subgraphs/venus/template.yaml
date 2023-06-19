@@ -65,6 +65,8 @@ templates:
       abis:
         - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
+        - name: VBep20Storage
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VTokenInterfaces.sol/VBep20Storage.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: BEP20
