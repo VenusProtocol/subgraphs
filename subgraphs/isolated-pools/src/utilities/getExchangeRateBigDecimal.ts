@@ -1,15 +1,12 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 
-import {
-  defaultMantissaFactorBigDecimal,
-  mantissaFactor,
-  vTokenDecimalsBigDecimal,
-} from '../constants/index';
+import { defaultMantissaFactorBigDecimal, mantissaFactor } from '../constants/index';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
 const getExchangeRateBigDecimal = (
   exchangeRateMantissa: BigInt,
   underlyingDecimals: i32,
+  vTokenDecimals: i32,
 ): BigDecimal => {
   /* Exchange rate explanation
     In Practice
@@ -24,7 +21,7 @@ const getExchangeRateBigDecimal = (
   const exchangeRate = exchangeRateMantissa
     .toBigDecimal()
     .div(exponentToBigDecimal(underlyingDecimals))
-    .times(vTokenDecimalsBigDecimal)
+    .times(exponentToBigDecimal(vTokenDecimals))
     .div(defaultMantissaFactorBigDecimal)
     .truncate(mantissaFactor);
 

@@ -9,9 +9,6 @@ export const oneBigInt = BigInt.fromString('1');
 export const mantissaFactor = 18;
 export const defaultMantissaFactorBigDecimal: BigDecimal = exponentToBigDecimal(mantissaFactor);
 
-export const vTokenDecimals = 8;
-export const vTokenDecimalsBigDecimal: BigDecimal = exponentToBigDecimal(vTokenDecimals);
-
 export const BORROW = 'BORROW';
 export const MINT = 'MINT';
 export const REDEEM = 'REDEEM';

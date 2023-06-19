@@ -34,8 +34,6 @@ import {
   TRANSFER,
   UNDERLYING_AMOUNT,
   UNDERLYING_REPAY_AMOUNT,
-  vTokenDecimals,
-  vTokenDecimalsBigDecimal,
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
@@ -121,6 +119,7 @@ export function createMarket(
   market.underlyingSymbol = underlyingContract.symbol();
   market.underlyingPriceUsd = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
+  market.vTokenDecimals = vTokenContract.decimals();
 
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
@@ -166,7 +165,11 @@ export function createMarket(
   return market;
 }
 
-export const createMintTransaction = (event: Mint, underlyingDecimals: i32): void => {
+export const createMintTransaction = (
+  event: Mint,
+  underlyingDecimals: i32,
+  vTokenDecimals: i32,
+): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
   const underlyingAmount = event.params.mintAmount
     .toBigDecimal()
@@ -175,7 +178,7 @@ export const createMintTransaction = (event: Mint, underlyingDecimals: i32): voi
 
   const vTokenAmount = event.params.mintTokens
     .toBigDecimal()
-    .div(vTokenDecimalsBigDecimal)
+    .div(exponentToBigDecimal(vTokenDecimals))
     .truncate(vTokenDecimals);
 
   const transaction = new Transaction(id);
@@ -195,7 +198,11 @@ export const createMintTransaction = (event: Mint, underlyingDecimals: i32): voi
   transaction.save();
 };
 
-export const createRedeemTransaction = (event: Redeem, underlyingDecimals: i32): void => {
+export const createRedeemTransaction = (
+  event: Redeem,
+  underlyingDecimals: i32,
+  vTokenDecimals: i32,
+): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
   const underlyingAmount = event.params.redeemAmount
     .toBigDecimal()
@@ -204,7 +211,7 @@ export const createRedeemTransaction = (event: Redeem, underlyingDecimals: i32):
 
   const vTokenAmount = event.params.redeemTokens
     .toBigDecimal()
-    .div(vTokenDecimalsBigDecimal)
+    .div(exponentToBigDecimal(vTokenDecimals))
     .truncate(vTokenDecimals);
 
   const transaction = new Transaction(id);
@@ -286,6 +293,7 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
 export const createLiquidateBorrowTransaction = (
   event: LiquidateBorrow,
   underlyingDecimals: i32,
+  vTokenDecimals: i32,
 ): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
   const amount = event.params.seizeTokens
@@ -315,7 +323,7 @@ export const createLiquidateBorrowTransaction = (
   transaction.save();
 };
 
-export const createTransferTransaction = (event: Transfer): void => {
+export const createTransferTransaction = (event: Transfer, vTokenDecimals: i32): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
   const amount = event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals));
 
