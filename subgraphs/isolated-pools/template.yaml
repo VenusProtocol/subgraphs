@@ -39,7 +39,7 @@ dataSources:
           handler: handlePoolRegistered
         - event: PoolNameSet(indexed address,string,string)
           handler: handlePoolNameSet
-        - event: MarketAdded(indexed address,address)
+        - event: MarketAdded(indexed address,indexed address)
           handler: handleMarketAdded
         - event: PoolMetadataUpdated(indexed address,(string,string,string),(string,string,string))
           handler: handlePoolMetadataUpdated
@@ -76,9 +76,9 @@ templates:
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
-        - event: MarketEntered(address,address)
+        - event: MarketEntered(indexed address,indexed address)
           handler: handleMarketEntered
-        - event: MarketExited(address,address)
+        - event: MarketExited(indexed address,indexed address)
           handler: handleMarketExited
         - event: NewCloseFactor(uint256,uint256)
           handler: handleNewCloseFactor
