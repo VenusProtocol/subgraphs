@@ -32,8 +32,6 @@ export const MEDIUM_RISK = 'MEDIUM_RISK';
 export const LOW_RISK = 'LOW_RISK';
 export const MINIMAL_RISK = 'MINIMAL_RISK';
 
-export const RiskRatings = [VERY_HIGH_RISK, HIGH_RISK, MEDIUM_RISK, LOW_RISK, MINIMAL_RISK];
-
 export const Actions = [
   MINT,
   REDEEM,

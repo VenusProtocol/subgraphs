@@ -3502,6 +3502,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openzeppelin/contracts-upgradeable@npm:^4.8.3":
+  version: 4.9.0
+  resolution: "@openzeppelin/contracts-upgradeable@npm:4.9.0"
+  checksum: c94eb8fc6761e17a245cee586eeaa74a098200f8508c56eda5ccbe1612fbe754f42f91ef1fea768f49295e1507dcb9cb72d33682949d84659ef63846cf83e26b
+  languageName: node
+  linkType: hard
+
 "@openzeppelin/contracts@npm:^4.6.0, @openzeppelin/contracts@npm:^4.7.3":
   version: 4.8.0
   resolution: "@openzeppelin/contracts@npm:4.8.0"
@@ -3509,10 +3516,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.8.0":
-  version: 4.8.1
-  resolution: "@openzeppelin/contracts@npm:4.8.1"
-  checksum: 99acefde1ae42c2d935ec9b4ebd327e786c499a4ec76b9582eb9adb0ff94a77c48047332fba44fb97b82b5a46d80e74d3e5d8cf73d5defa7f746f2a67f070281
+"@openzeppelin/contracts@npm:^4.8.3":
+  version: 4.9.0
+  resolution: "@openzeppelin/contracts@npm:4.9.0"
+  checksum: aa1499897f85821f9184497f5201152a4a272b05749c85c209e9e553d734467a78557bcd2efe35f07994d6e14f30c545b239a4f63622f27f808182efb3103658
   languageName: node
   linkType: hard
 
@@ -4281,17 +4288,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:0.1.0-develop.3":
-  version: 0.1.0-develop.3
-  resolution: "@venusprotocol/isolated-pools@npm:0.1.0-develop.3"
+"@venusprotocol/isolated-pools@npm:1.0.0":
+  version: 1.0.0
+  resolution: "@venusprotocol/isolated-pools@npm:1.0.0"
   dependencies:
-    "@openzeppelin/contracts": ^4.8.0
-    "@openzeppelin/contracts-upgradeable": ^4.8.0
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
     "@openzeppelin/hardhat-upgrades": ^1.21.0
     "@solidity-parser/parser": ^0.13.2
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
-  checksum: a30684e99ae9db993abeb9c673300febdd47cbf55b7568859fe5be5458b6d901aa2be126e862cd01423f00161a5cbe12c4d9dc50c0bdeeb2d3de1cc0e9bcef70
+    module-alias: ^2.2.2
+  checksum: 113533052d71fd3af7a3b6dac6bbc56c7b979bde9e7811cbe0cc92638ed1e7de5f46ede878b2a345c094a9cfea25ef3e2fd06c572987c67019ba4ce260ac7cd9
   languageName: node
   linkType: hard
 
@@ -14778,7 +14786,7 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/isolated-pools": 0.1.0-develop.3
+    "@venusprotocol/isolated-pools": 1.0.0
     "@venusprotocol/oracle": ^1.4.1
     "@venusprotocol/venus-protocol": ^0.6.0
     assemblyscript: 0.19.23

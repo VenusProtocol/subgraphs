@@ -3,7 +3,6 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { RiskRatings } from '../constants';
 import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
@@ -209,7 +208,6 @@ export function updatePoolMetadata(
 ): void {
   const pool = getOrCreatePool(comptroller);
   if (pool) {
-    pool.riskRating = RiskRatings[newMetadata.riskRating];
     pool.category = newMetadata.category;
     pool.logoUrl = newMetadata.logoURL;
     pool.description = newMetadata.description;

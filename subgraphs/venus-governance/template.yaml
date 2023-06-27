@@ -228,7 +228,7 @@ dataSources:
         - Permission
       abis:
         - name: AccessControlManger
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/@venusprotocol/governance-contracts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
       eventHandlers:
         - event: PermissionGranted(address,address,string)
           handler: handlePermissionGranted

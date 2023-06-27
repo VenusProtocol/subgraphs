@@ -60,7 +60,6 @@ describe('Pool Registry', () => {
     assertPoolDocument('creator', '0x0000000000000000000000000000000000000072');
     assertPoolDocument('blockPosted', '100');
     assertPoolDocument('timestampPosted', '1662990421');
-    assertPoolDocument('riskRating', 'HIGH_RISK');
     assertPoolDocument('category', 'Games');
     assertPoolDocument('logoUrl', '/logo.png');
     assertPoolDocument('description', 'Game related tokens');

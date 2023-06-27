@@ -6,16 +6,6 @@ type PoolRegistry @entity {
     id: ID!
 }
 
-
-enum RiskRating {
-    VERY_HIGH_RISK
-    HIGH_RISK
-    MEDIUM_RISK
-    LOW_RISK
-    MINIMAL_RISK
-}
-
-
 enum PoolActionType {
   Transfer
   Seize
@@ -42,8 +32,6 @@ type Pool @entity {
     blockPosted: BigInt!
     "Timestamp of market creation"
     timestampPosted: BigInt!
-    "Rating of the pools risk level"
-    riskRating: RiskRating!
     "Category that the pool belongs too"
     category: String!
     "Url for pool logo"
