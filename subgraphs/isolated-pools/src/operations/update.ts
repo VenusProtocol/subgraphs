@@ -187,14 +187,16 @@ export const updateMarket = (
   market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
   market.blockTimestamp = blockTimestamp;
 
-  market.exchangeRateMantissa = marketContract.exchangeRateStored();
+  market.exchangeRateMantissa = valueOrBigIntZeroIfReverted(
+    marketContract.try_exchangeRateStored(),
+  );
 
-  market.borrowIndexMantissa = marketContract.borrowIndex();
+  market.borrowIndexMantissa = valueOrBigIntZeroIfReverted(marketContract.try_borrowIndex());
 
-  market.reservesMantissa = marketContract.totalReserves();
+  market.reservesMantissa = valueOrBigIntZeroIfReverted(marketContract.try_totalReserves());
 
-  market.cash = marketContract
-    .getCash()
+  const cashBigInt = valueOrBigIntZeroIfReverted(marketContract.try_getCash());
+  market.cash = cashBigInt
     .toBigDecimal()
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
@@ -203,8 +205,12 @@ export const updateMarket = (
   market.borrowRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_borrowRatePerBlock());
   market.supplyRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_supplyRatePerBlock());
 
-  market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
-  market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
+  market.treasuryTotalBorrowsMantissa = valueOrBigIntZeroIfReverted(
+    marketContract.try_totalBorrows(),
+  );
+  market.treasuryTotalSupplyMantissa = valueOrBigIntZeroIfReverted(
+    marketContract.try_totalSupply(),
+  );
 
   market.save();
   return market as Market;
