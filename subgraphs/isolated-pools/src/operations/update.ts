@@ -3,6 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
+import { zeroBigInt32 } from '../constants';
 import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
@@ -190,10 +191,20 @@ export const updateMarket = (
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
 
-  // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
-  market.borrowRateMantissa = marketContract.borrowRatePerBlock();
+  // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
+  const borrowRatePerBlockResult = marketContract.try_borrowRatePerBlock();
+  if (borrowRatePerBlockResult.reverted) {
+    market.borrowRateMantissa = zeroBigInt32;
+  } else {
+    market.borrowRateMantissa = borrowRatePerBlockResult.value;
+  }
 
-  market.supplyRateMantissa = marketContract.supplyRatePerBlock();
+  const supplyRatePerBlockResult = marketContract.try_supplyRatePerBlock();
+  if (supplyRatePerBlockResult.reverted) {
+    market.supplyRateMantissa = zeroBigInt32;
+  } else {
+    market.supplyRateMantissa = supplyRatePerBlockResult.value;
+  }
 
   market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
   market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
