@@ -6,7 +6,7 @@ import { VToken } from '../../generated/templates/VToken/VToken';
 import {
   exponentToBigDecimal,
   getExchangeRateBigDecimal,
-  valueOrBigIntZeroIfReverted,
+  valueOrNotAvailableIntIfReverted,
 } from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
@@ -184,31 +184,37 @@ export const updateMarket = (
   );
   market.underlyingPriceUsd = tokenPriceUsd.truncate(market.underlyingDecimals);
 
-  market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
+  market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
+    marketContract.try_accrualBlockNumber(),
+  ).toI32();
   market.blockTimestamp = blockTimestamp;
 
-  market.exchangeRateMantissa = valueOrBigIntZeroIfReverted(
+  market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
     marketContract.try_exchangeRateStored(),
   );
 
-  market.borrowIndexMantissa = valueOrBigIntZeroIfReverted(marketContract.try_borrowIndex());
+  market.borrowIndexMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_borrowIndex());
 
-  market.reservesMantissa = valueOrBigIntZeroIfReverted(marketContract.try_totalReserves());
+  market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
-  const cashBigInt = valueOrBigIntZeroIfReverted(marketContract.try_getCash());
+  const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
   market.cash = cashBigInt
     .toBigDecimal()
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
 
   // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
-  market.borrowRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_borrowRatePerBlock());
-  market.supplyRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_supplyRatePerBlock());
+  market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_borrowRatePerBlock(),
+  );
+  market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_supplyRatePerBlock(),
+  );
 
-  market.treasuryTotalBorrowsMantissa = valueOrBigIntZeroIfReverted(
+  market.treasuryTotalBorrowsMantissa = valueOrNotAvailableIntIfReverted(
     marketContract.try_totalBorrows(),
   );
-  market.treasuryTotalSupplyMantissa = valueOrBigIntZeroIfReverted(
+  market.treasuryTotalSupplyMantissa = valueOrNotAvailableIntIfReverted(
     marketContract.try_totalSupply(),
   );
 
