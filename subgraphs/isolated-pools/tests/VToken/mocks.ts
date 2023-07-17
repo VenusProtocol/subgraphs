@@ -83,6 +83,10 @@ export const createVBep20AndUnderlyingMock = (
     ethereum.Value.fromString(`v${symbol}`),
   ]);
 
+  createMockedFunction(contractAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromI32(18),
+  ]);
+
   createMockedFunction(
     contractAddress,
     'interestRateModel',

@@ -104,8 +104,13 @@ export const updateAccountVTokenTransferFrom = (
   amount: BigInt,
   exchangeRate: BigInt,
   underlyingDecimals: i32,
+  vTokenDecimals: i32,
 ): AccountVToken => {
-  const exchangeRateBigDecimal = getExchangeRateBigDecimal(exchangeRate, underlyingDecimals);
+  const exchangeRateBigDecimal = getExchangeRateBigDecimal(
+    exchangeRate,
+    underlyingDecimals,
+    vTokenDecimals,
+  );
   const amountUnderlyingMantissa = exchangeRateBigDecimal
     .times(exponentToBigDecimal(underlyingDecimals))
     .times(amount.toBigDecimal());

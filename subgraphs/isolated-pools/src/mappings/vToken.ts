@@ -49,7 +49,7 @@ import {
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress, null);
-  createMintTransaction(event, market.underlyingDecimals);
+  createMintTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
@@ -75,7 +75,7 @@ export function handleMint(event: Mint): void {
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
-  createRedeemTransaction(event, market.underlyingDecimals);
+  createRedeemTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
 
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
@@ -185,7 +185,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   borrower.countLiquidated = borrower.countLiquidated + 1;
   borrower.save();
 
-  createLiquidateBorrowTransaction(event, market.underlyingDecimals);
+  createLiquidateBorrowTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
@@ -242,6 +242,7 @@ export function handleTransfer(event: Transfer): void {
       event.params.amount,
       market.exchangeRateMantissa,
       market.underlyingDecimals,
+      market.vTokenDecimals,
     );
   }
 
@@ -264,7 +265,7 @@ export function handleTransfer(event: Transfer): void {
     );
   }
 
-  createTransferTransaction(event);
+  createTransferTransaction(event, market.vTokenDecimals);
 }
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {

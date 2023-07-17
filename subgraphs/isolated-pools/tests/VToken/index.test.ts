@@ -20,8 +20,6 @@ import {
   UNDERLYING_AMOUNT,
   UNDERLYING_REPAY_AMOUNT,
   oneBigInt,
-  vTokenDecimals,
-  vTokenDecimalsBigDecimal,
   zeroBigInt32,
 } from '../../src/constants';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
@@ -154,7 +152,7 @@ describe('VToken', () => {
       'Transaction',
       id,
       'amount',
-      mintTokens.toBigDecimal().div(vTokenDecimalsBigDecimal).truncate(vTokenDecimals).toString(),
+      mintTokens.toBigDecimal().div(exponentToBigDecimal(18)).truncate(18).toString(),
     );
     assert.fieldEquals('Transaction', id, 'to', minter.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', mintEvent.block.number.toString());
@@ -199,7 +197,7 @@ describe('VToken', () => {
       'Transaction',
       id,
       'amount',
-      redeemTokens.toBigDecimal().div(vTokenDecimalsBigDecimal).truncate(vTokenDecimals).toString(),
+      redeemTokens.toBigDecimal().div(exponentToBigDecimal(18)).truncate(18).toString(),
     );
     assert.fieldEquals('Transaction', id, 'to', redeemer.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', redeemEvent.block.number.toString());
@@ -578,7 +576,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'totalUnderlyingRedeemedMantissa',
-      '5337167017820446167010750000',
+      '53371670178204461670107500000000000000',
     );
   });
 
