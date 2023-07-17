@@ -3,8 +3,11 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigInt32 } from '../constants';
-import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
+import {
+  exponentToBigDecimal,
+  getExchangeRateBigDecimal,
+  valueOrBigIntZeroIfReverted,
+} from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
@@ -197,19 +200,8 @@ export const updateMarket = (
     .truncate(market.underlyingDecimals);
 
   // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
-  const borrowRatePerBlockResult = marketContract.try_borrowRatePerBlock();
-  if (borrowRatePerBlockResult.reverted) {
-    market.borrowRateMantissa = zeroBigInt32;
-  } else {
-    market.borrowRateMantissa = borrowRatePerBlockResult.value;
-  }
-
-  const supplyRatePerBlockResult = marketContract.try_supplyRatePerBlock();
-  if (supplyRatePerBlockResult.reverted) {
-    market.supplyRateMantissa = zeroBigInt32;
-  } else {
-    market.supplyRateMantissa = supplyRatePerBlockResult.value;
-  }
+  market.borrowRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_borrowRatePerBlock());
+  market.supplyRateMantissa = valueOrBigIntZeroIfReverted(marketContract.try_supplyRatePerBlock());
 
   market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
   market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
