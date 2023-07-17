@@ -1,4 +1,4 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
 import {
@@ -50,36 +50,26 @@ export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
   const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  const getPoolByComptrollerResult = poolLensContract.try_getPoolByComptroller(
-    poolRegistryAddress,
-    comptroller,
-  );
+  const poolDataFromLens = poolLensContract.getPoolByComptroller(poolRegistryAddress, comptroller);
 
-  if (getPoolByComptrollerResult.reverted) {
-    log.error('Unable to fetch pool info for {} with lens {}', [
-      comptroller.toHexString(),
-      poolLensAddress.toHexString(),
-    ]);
-  } else {
-    const poolDataFromLens = getPoolByComptrollerResult.value;
-    pool.name = poolDataFromLens.name;
-    pool.creator = poolDataFromLens.creator;
-    pool.blockPosted = poolDataFromLens.blockPosted;
-    pool.timestampPosted = poolDataFromLens.timestampPosted;
-    pool.category = poolDataFromLens.category;
-    pool.logoUrl = poolDataFromLens.logoURL;
-    pool.description = poolDataFromLens.description;
-    pool.priceOracleAddress = poolDataFromLens.priceOracle;
-    pool.closeFactorMantissa = poolDataFromLens.closeFactor
-      ? poolDataFromLens.closeFactor
-      : new BigInt(0);
-    pool.minLiquidatableCollateralMantissa = poolDataFromLens.minLiquidatableCollateral;
-    pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
-      ? poolDataFromLens.liquidationIncentive
-      : new BigInt(0);
-    // Note: we don't index vTokens here because when a pool is created it has no markets
-    pool.save();
-  }
+  pool.name = poolDataFromLens.name;
+  pool.creator = poolDataFromLens.creator;
+  pool.blockPosted = poolDataFromLens.blockPosted;
+  pool.timestampPosted = poolDataFromLens.timestampPosted;
+  pool.category = poolDataFromLens.category;
+  pool.logoUrl = poolDataFromLens.logoURL;
+  pool.description = poolDataFromLens.description;
+  pool.priceOracleAddress = poolDataFromLens.priceOracle;
+  pool.closeFactorMantissa = poolDataFromLens.closeFactor
+    ? poolDataFromLens.closeFactor
+    : new BigInt(0);
+  pool.minLiquidatableCollateralMantissa = poolDataFromLens.minLiquidatableCollateral;
+  pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
+    ? poolDataFromLens.liquidationIncentive
+    : new BigInt(0);
+  // Note: we don't index vTokens here because when a pool is created it has no markets
+  pool.save();
+
   return pool;
 }
 
