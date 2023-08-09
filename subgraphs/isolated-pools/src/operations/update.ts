@@ -3,8 +3,11 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigInt32 } from '../constants';
-import { exponentToBigDecimal, getExchangeRateBigDecimal } from '../utilities';
+import {
+  exponentToBigDecimal,
+  getExchangeRateBigDecimal,
+  valueOrNotAvailableIntIfReverted,
+} from '../utilities';
 import { getTokenPriceInUsd } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
@@ -175,38 +178,39 @@ export const updateMarket = (
   );
   market.underlyingPriceUsd = tokenPriceUsd.truncate(market.underlyingDecimals);
 
-  market.accrualBlockNumber = marketContract.accrualBlockNumber().toI32();
+  market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
+    marketContract.try_accrualBlockNumber(),
+  ).toI32();
   market.blockTimestamp = blockTimestamp;
 
-  market.exchangeRateMantissa = marketContract.exchangeRateStored();
+  market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_exchangeRateStored(),
+  );
 
-  market.borrowIndexMantissa = marketContract.borrowIndex();
+  market.borrowIndexMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_borrowIndex());
 
-  market.reservesMantissa = marketContract.totalReserves();
+  market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
-  market.cash = marketContract
-    .getCash()
+  const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
+  market.cash = cashBigInt
     .toBigDecimal()
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
 
   // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
-  const borrowRatePerBlockResult = marketContract.try_borrowRatePerBlock();
-  if (borrowRatePerBlockResult.reverted) {
-    market.borrowRateMantissa = zeroBigInt32;
-  } else {
-    market.borrowRateMantissa = borrowRatePerBlockResult.value;
-  }
+  market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_borrowRatePerBlock(),
+  );
+  market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_supplyRatePerBlock(),
+  );
 
-  const supplyRatePerBlockResult = marketContract.try_supplyRatePerBlock();
-  if (supplyRatePerBlockResult.reverted) {
-    market.supplyRateMantissa = zeroBigInt32;
-  } else {
-    market.supplyRateMantissa = supplyRatePerBlockResult.value;
-  }
-
-  market.treasuryTotalBorrowsMantissa = marketContract.totalBorrows();
-  market.treasuryTotalSupplyMantissa = marketContract.totalSupply();
+  market.treasuryTotalBorrowsMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_totalBorrows(),
+  );
+  market.treasuryTotalSupplyMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_totalSupply(),
+  );
 
   market.save();
   return market as Market;
