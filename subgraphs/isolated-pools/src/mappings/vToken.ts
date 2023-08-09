@@ -261,7 +261,6 @@ export function handleTransfer(event: Transfer): void {
       event.block.timestamp,
       event.block.number,
       event.logIndex,
-      event.params.amount,
     );
   }
 

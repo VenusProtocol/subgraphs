@@ -125,8 +125,6 @@ export const updateAccountVTokenTransferFrom = (
     blockNumber,
     logIndex,
   );
-  accountVToken.accountSupplyBalanceMantissa =
-    accountVToken.accountSupplyBalanceMantissa.minus(amount);
 
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
@@ -142,7 +140,6 @@ export const updateAccountVTokenTransferTo = (
   timestamp: BigInt,
   blockNumber: BigInt,
   logIndex: BigInt,
-  amount: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
@@ -153,9 +150,6 @@ export const updateAccountVTokenTransferTo = (
     blockNumber,
     logIndex,
   );
-
-  accountVToken.accountSupplyBalanceMantissa =
-    accountVToken.accountSupplyBalanceMantissa.plus(amount);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

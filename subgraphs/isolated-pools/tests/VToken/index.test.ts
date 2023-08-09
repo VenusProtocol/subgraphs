@@ -512,7 +512,6 @@ describe('VToken', () => {
     const to = aaaTokenAddress;
     const amount = BigInt.fromString('146205398726345');
     const balanceOf = BigInt.fromString('262059874253345');
-    const expectedFinalBalanceMantissa = balanceOf.minus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -568,13 +567,6 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountSupplyBalanceMantissa',
-      expectedFinalBalanceMantissa.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
       'totalUnderlyingRedeemedMantissa',
       '53371670178204461670107500000000000000',
     );
@@ -586,7 +578,6 @@ describe('VToken', () => {
     const from = aaaTokenAddress;
     const to = user2Address;
     const balanceOf = BigInt.fromString('262059874253345');
-    const expectedFinalBalanceMantissa = balanceOf.plus(amount);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -638,13 +629,6 @@ describe('VToken', () => {
     );
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accountSupplyBalanceMantissa',
-      expectedFinalBalanceMantissa.toString(),
-    );
   });
 
   test('registers new interest rate model', () => {
