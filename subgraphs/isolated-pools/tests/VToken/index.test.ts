@@ -593,6 +593,18 @@ describe('VToken', () => {
         ethereum.Value.fromSignedBigInt(zeroBigInt32),
         ethereum.Value.fromSignedBigInt(oneBigInt),
       ]);
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
+      .withArgs([ethereum.Value.fromAddress(from)])
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(balanceOf),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
 
     /** Fire Event */
     handleTransfer(transferEvent);

@@ -21,6 +21,7 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/templates/VToken/VToken';
+import { nullAddress } from '../constants/addresses';
 import { createAccount } from '../operations/create';
 import { createMarket } from '../operations/create';
 import { updateCommonVTokenStats } from '../operations/update';
@@ -370,7 +371,7 @@ export const handleTransfer = (event: Transfer): void => {
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
   let accountFromID = event.params.from.toHex();
-  if (accountFromID != marketID) {
+  if (accountFromID != nullAddress.toHex()) {
     let accountFrom = Account.load(accountFromID);
     if (accountFrom == null) {
       createAccount(accountFromID);
