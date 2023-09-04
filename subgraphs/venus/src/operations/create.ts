@@ -3,6 +3,7 @@ import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
 import { Account, AccountVToken, Market } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
+import { zeroBigInt32 } from '../constants';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
 import { zeroBD } from '../utilities/exponentToBigDecimal';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
@@ -96,6 +97,7 @@ export const createMarket = (marketAddress: string): Market => {
   market.blockTimestamp = 0;
   market.borrowIndex = zeroBD;
   market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
+  market.totalXvsDistributedMantissa = zeroBigInt32;
 
   return market;
 };

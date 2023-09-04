@@ -1,6 +1,6 @@
 import { Address, BigDecimal, log } from '@graphprotocol/graph-ts';
 
-import { PriceOracle2 } from '../../generated/templates/VToken/PriceOracle2';
+import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { exponentToBigDecimal } from './exponentToBigDecimal';
 
@@ -21,7 +21,7 @@ export function getTokenPrice(eventAddress: Address, underlyingDecimals: i32): B
    */
   const mantissaDecimalFactor = 18 - underlyingDecimals + 18;
   const bdFactor = exponentToBigDecimal(mantissaDecimalFactor);
-  const oracle2 = PriceOracle2.bind(oracleAddress);
+  const oracle2 = PriceOracle.bind(oracleAddress);
   const oracleUnderlyingPrice = oracle2.getUnderlyingPrice(eventAddress).toBigDecimal();
   if (oracleUnderlyingPrice.equals(BigDecimal.zero())) {
     return oracleUnderlyingPrice;
