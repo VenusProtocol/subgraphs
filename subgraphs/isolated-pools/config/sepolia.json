@@ -1,0 +1,6 @@
+{
+  "network": "sepolia",
+  "poolRegistryAddress": "0xe7CE0296D5B0a26fB183ceBf800ECC918eBBD738",
+  "poolLensAddress": "0x57E0b52dBcC63F5c23fEd947e634aF06Fc20C70b",
+  "startBlock": "3930059"
+}

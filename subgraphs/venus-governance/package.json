@@ -27,7 +27,7 @@
     "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^2.2.16",
+    "@graphprotocol/client-cli": "^3.0.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "urql": "^3.0.3",

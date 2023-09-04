@@ -33,8 +33,8 @@
     "postinstall": "patch-package && ./copy_contracts.sh"
   },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^2.2.16",
-    "@graphprotocol/graph-cli": "0.33.0",
+    "@graphprotocol/client-cli": "^3.0.0",
+    "@graphprotocol/graph-cli": "0.55.0",
     "@graphprotocol/graph-ts": "0.27.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
@@ -48,6 +48,7 @@
     "@types/mustache": "^4.2.1",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
+    "@venusprotocol/governance-contracts": "^1.0.0",
     "@venusprotocol/isolated-pools": "1.0.0",
     "@venusprotocol/oracle": "^1.4.1",
     "@venusprotocol/venus-protocol": "^0.6.0",
