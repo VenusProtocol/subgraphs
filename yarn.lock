@@ -2112,9 +2112,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:0.55.0":
-  version: 0.55.0
-  resolution: "@graphprotocol/graph-cli@npm:0.55.0"
+"@graphprotocol/graph-cli@npm:0.56.0":
+  version: 0.56.0
+  resolution: "@graphprotocol/graph-cli@npm:0.56.0"
   dependencies:
     "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
     "@oclif/core": 2.8.6
@@ -2144,7 +2144,7 @@ __metadata:
     yaml: 1.10.2
   bin:
     graph: bin/run
-  checksum: b46a53fd92910e13c93ad114b5f615fee81bedbbfda65bdb928c6720ff14f1a47035a7e2b78e9dfd7b9cbbeaf443e2c1d20a2d03b12cf373ab27b66346bfd43a
+  checksum: 485eadfbbda06096cbca1573cf28a786dc9f4b5cc899475ea9b3b5ad8c2e3b477415257d885631bdb958a13cd753230ebf49bdcf2748c37005121b660ab5efba
   languageName: node
   linkType: hard
 
@@ -14900,7 +14900,7 @@ __metadata:
   resolution: "subgraphs@workspace:."
   dependencies:
     "@graphprotocol/client-cli": ^3.0.0
-    "@graphprotocol/graph-cli": 0.55.0
+    "@graphprotocol/graph-cli": 0.56.0
     "@graphprotocol/graph-ts": 0.27.0
     "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
     "@nomicfoundation/hardhat-network-helpers": ^1.0.4
@@ -15972,12 +15972,6 @@ __metadata:
   checksum: ae0123222c6df65b437669d63dfa8c36cee20a504101b2fcd97b8bf76f91259c17f9f2b4d70a1e3c6bbcee7f51b28392833adb6b2770b23b01abec84e369660b
   languageName: node
   linkType: hard
-
-"venus-abis@workspace:packages/venus-abis":
-  version: 0.0.0-use.local
-  resolution: "venus-abis@workspace:packages/venus-abis"
-  languageName: unknown
-  linkType: soft
 
 "venus-governance-abis@workspace:packages/venus-governance-abis":
   version: 0.0.0-use.local
