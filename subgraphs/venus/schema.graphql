@@ -65,6 +65,8 @@ type Market @entity {
     underlyingPriceUSD: BigDecimal!
     "Underlying token decimal length"
     underlyingDecimals: Int!
+    "Total XVS Distributed for this market"
+    totalXvsDistributedMantissa: BigInt!
 }
 
 """

@@ -43,6 +43,10 @@ dataSources:
           handler: handleNewLiquidationIncentive
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
+        - event: DistributedBorrowerVenus(indexed address,indexed address,uint256,uint256)
+          handler: handleXvsDistributed
+        - event: DistributedSupplierVenus(indexed address,indexed address,uint256,uint256)
+          handler: handleXvsDistributed
 templates:
   - name: VToken
     kind: ethereum/contract
