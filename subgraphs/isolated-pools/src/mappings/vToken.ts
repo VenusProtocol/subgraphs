@@ -13,6 +13,7 @@ import {
   ReservesReduced,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
+import { nullAddress } from '../constants/addresses';
 import { oneBigInt, zeroBigInt32 } from '../constants/index';
 import {
   createAccountVTokenBadDebt,
@@ -228,7 +229,7 @@ export function handleTransfer(event: Transfer): void {
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
-  if (accountFromAddress.toHex() != vTokenAddress.toHex()) {
+  if (accountFromAddress.toHex() != nullAddress.toHex()) {
     getOrCreateAccount(accountFromAddress);
 
     updateAccountVTokenTransferFrom(
