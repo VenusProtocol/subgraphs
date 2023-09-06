@@ -18,10 +18,13 @@
     "deploy:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx mustache config/chapel.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-isolated-pools-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-isolated-pools --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:sepolia": "prepare:sepolia && npx graph deploy --studio venus-isolated-pools-sepolia",
     "prepare:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts",
     "prepare:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx mustache config/chapel.json src/constants/config-template > src/constants/config.ts",
     "prepare:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts",
+    "prepare:sepolia": "NETWORK=sepolia npx ts-node config/index.ts",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
+    "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
   },
