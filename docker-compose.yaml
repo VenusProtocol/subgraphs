@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node:v0.29.0
+    image: graphprotocol/graph-node:v0.32.0
     ports:
       - 8000:8000
       - 8001:8001
@@ -9,16 +9,19 @@ services:
       - 8030:8030
       - 8040:8040
     depends_on:
-      - hardhat
-      - ipfs
-      - postgres
+      hardhat:
+        condition: service_healthy
+      ipfs:
+        condition: service_started
+      postgres:
+        condition: service_started
     environment:
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: ipfs:5001
-      ethereum: hardhat:archive,full:http://hardhat:8545
+      ethereum: hardhat:http://hardhat:8545
   hardhat:
     container_name: subgraph-hardhat-node
     build:
@@ -30,7 +33,8 @@ services:
       - sh
       - -c
       - |
-        PACKAGE=isolated-pools yarn workspace isolated-pools-subgraph run hardhat node --hostname 0.0.0.0
+        yarn &&PACKAGE=isolated-pools yarn workspace isolated-pools-subgraph run hardhat node --hostname 0.0.0.0
+# Installing again to link workspaces
     ports:
       - 8545:8545
     volumes:
@@ -59,3 +63,4 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'

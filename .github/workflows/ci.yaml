@@ -48,18 +48,25 @@ jobs:
       - name: Run Matchstick tests
         run: yarn test
 
-  # integration-test:
-  #   runs-on: ubuntu-20.04
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+  integration-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  #     - name: Start containers
-  #       run: docker-compose up -d --build
+      - name: Start containers
+        run: docker-compose up -d
 
-  #     - name: Run integration tests
-  #       run: docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration
+      - name: Generate graphql types
+        run: |
+          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run generate-subgraph-types
       
-  #     - name: Stop containers
-  #       if: always()
-  #       run: docker-compose down -v
+      - name: Run integration tests
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker-compose down -v
+          docker system prune -f -a --volumes

@@ -27,7 +27,7 @@ dataSources:
         - name: VToken
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: PriceOracle
-          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
@@ -72,7 +72,7 @@ templates:
         - name: PoolLens
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
         - name: PriceOracle
-          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
@@ -98,7 +98,7 @@ templates:
           handler: handleNewMinLiquidatableCollateral
         - event: NewSupplyCap(indexed address,uint256)
           handler: handleNewSupplyCap
-        - event: NewRewardsDistributor(indexed address)
+        - event: NewRewardsDistributor(indexed address,indexed address)
           handler: handleNewRewardsDistributor
   - name: VToken
     kind: ethereum/contract
@@ -118,7 +118,7 @@ templates:
         - name: VToken
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: PriceOracle
-          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/PriceOracle.sol/PriceOracle.json
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: Comptroller

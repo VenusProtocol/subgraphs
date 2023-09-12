@@ -1,4 +1,4 @@
-FROM node:16.14.2-alpine3.14
+FROM node:18-alpine3.17
 
 RUN apk add g++ make py3-pip git openssh;
 
@@ -11,6 +11,7 @@ COPY package.json /usr/app/package.json
 COPY yarn.lock /usr/app/yarn.lock
 COPY .yarn /usr/app/.yarn
 COPY .yarnrc.yml /usr/app/.yarnrc.yml
+COPY mocks /usr/app/mocks
 COPY copy_contracts.sh /usr/app/copy_contracts.sh
 
 WORKDIR /usr/app

@@ -5,7 +5,7 @@
  */
 async function healthCheck() {
   const ethers = require('ethers');
-  const localProvider = new ethers.providers.JsonRpcProvider(`http://localhost:8545`)
+  const localProvider = new ethers.providers.JsonRpcProvider(`http://hardhat:8545`)
   localBlockNum = await localProvider.getBlockNumber();
 }
 
