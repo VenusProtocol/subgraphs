@@ -55,13 +55,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Start containers
-        run: |
-          docker-compose up -d
+        run: docker-compose up -d
+      
+      - name: Sleep to allow graph-node to become accessible
+        shell: bash
+        run: sleep 45s
 
       - name: Generate graphql types
         run: |
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run create:docker
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run deploy:docker
+          sleep 5s
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run generate-subgraph-types
       
       - name: Run integration tests
