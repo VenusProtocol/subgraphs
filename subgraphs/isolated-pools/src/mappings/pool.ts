@@ -27,20 +27,12 @@ import {
 import Box from '../utilities/box';
 
 export function handleMarketEntered(event: MarketEntered): void {
-  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress, poolAddress);
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
-    accountAddress,
-    vTokenAddress,
-    market.symbol,
-    event.block.number,
-    new Box(true),
-  );
+  updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(true));
   getOrCreateAccountVTokenTransaction(
     accountAddress,
     event.transaction.hash,
@@ -55,16 +47,9 @@ export function handleMarketExited(event: MarketExited): void {
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
-  const market = getOrCreateMarket(vTokenAddress);
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
-    accountAddress,
-    vTokenAddress,
-    market.symbol,
-    event.block.number,
-    new Box(false),
-  );
+  updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(false));
   getOrCreateAccountVTokenTransaction(
     accountAddress,
     event.transaction.hash,

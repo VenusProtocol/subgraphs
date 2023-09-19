@@ -19,7 +19,6 @@ import { getOrCreatePool } from './getOrCreate';
 
 const updateAccountVToken = (
   marketAddress: Address,
-  marketSymbol: string,
   accountAddress: Address,
   txHash: Bytes,
   timestamp: BigInt,
@@ -27,12 +26,7 @@ const updateAccountVToken = (
   logIndex: BigInt,
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
-  const accountVToken = getOrCreateAccountVToken(
-    marketSymbol,
-    accountAddress,
-    marketAddress,
-    false,
-  );
+  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress, false);
   getOrCreateAccountVTokenTransaction(
     accountAddress,
     txHash,
@@ -45,9 +39,30 @@ const updateAccountVToken = (
   return accountVToken as AccountVToken;
 };
 
+export const updateAccountVTokenSupply = (
+  marketAddress: Address,
+  accountAddress: Address,
+  txHash: Bytes,
+  timestamp: BigInt,
+  blockNumber: BigInt,
+  logIndex: BigInt,
+  accountSupplyBalanceMantissa: BigInt,
+): AccountVToken => {
+  const accountVToken = updateAccountVToken(
+    marketAddress,
+    accountAddress,
+    txHash,
+    timestamp,
+    blockNumber,
+    logIndex,
+  );
+  accountVToken.accountSupplyBalanceMantissa = accountSupplyBalanceMantissa;
+  accountVToken.save();
+  return accountVToken as AccountVToken;
+};
+
 export const updateAccountVTokenBorrow = (
   marketAddress: Address,
-  marketSymbol: string,
   accountAddress: Address,
   txHash: Bytes,
   timestamp: BigInt,
@@ -58,7 +73,6 @@ export const updateAccountVTokenBorrow = (
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
-    marketSymbol,
     accountAddress,
     txHash,
     timestamp,
@@ -73,7 +87,6 @@ export const updateAccountVTokenBorrow = (
 
 export const updateAccountVTokenRepayBorrow = (
   marketAddress: Address,
-  marketSymbol: string,
   accountAddress: Address,
   txHash: Bytes,
   timestamp: BigInt,
@@ -84,7 +97,6 @@ export const updateAccountVTokenRepayBorrow = (
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
-    marketSymbol,
     accountAddress,
     txHash,
     timestamp,
@@ -99,7 +111,6 @@ export const updateAccountVTokenRepayBorrow = (
 
 export const updateAccountVTokenTransferFrom = (
   marketAddress: Address,
-  marketSymbol: string,
   accountAddress: Address,
   txHash: Bytes,
   timestamp: BigInt,
@@ -121,7 +132,6 @@ export const updateAccountVTokenTransferFrom = (
 
   const accountVToken = updateAccountVToken(
     marketAddress,
-    marketSymbol,
     accountAddress,
     txHash,
     timestamp,
@@ -137,7 +147,6 @@ export const updateAccountVTokenTransferFrom = (
 
 export const updateAccountVTokenTransferTo = (
   marketAddress: Address,
-  marketSymbol: string,
   accountAddress: Address,
   txHash: Bytes,
   timestamp: BigInt,
@@ -146,7 +155,6 @@ export const updateAccountVTokenTransferTo = (
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(
     marketAddress,
-    marketSymbol,
     accountAddress,
     txHash,
     timestamp,

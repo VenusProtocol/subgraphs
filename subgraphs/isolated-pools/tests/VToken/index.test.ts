@@ -137,6 +137,19 @@ describe('VToken', () => {
       mintTokens,
       accountBalance,
     );
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
+      .withArgs([ethereum.Value.fromAddress(minter)])
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(mintTokens),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
+
     const market = getMarket(aaaTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -168,13 +181,47 @@ describe('VToken', () => {
         .truncate(market.underlyingDecimals)
         .toString(),
     );
+    // AccountVToken
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, minter);
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'account', minter.toHexString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      oneBigInt.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountSupplyBalanceMantissa',
+      accountBalance.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowBalanceMantissa',
+      zeroBigInt32.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingRedeemedMantissa',
+      zeroBigInt32.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowIndexMantissa',
+      zeroBigInt32.toString(),
+    );
   });
 
   test('registers redeem event', () => {
     const redeemer = user2Address;
     const actualRedeemAmount = BigInt.fromString('124620530798726345');
     const redeemTokens = BigInt.fromString('37035970026454');
-    const accountBalance = redeemTokens;
+    const accountBalance = zeroBigInt32;
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
       redeemer,
@@ -182,6 +229,18 @@ describe('VToken', () => {
       redeemTokens,
       accountBalance,
     );
+    createMockedFunction(
+      aaaTokenAddress,
+      'getAccountSnapshot',
+      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+    )
+      .withArgs([ethereum.Value.fromAddress(redeemer)])
+      .returns([
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(zeroBigInt32),
+        ethereum.Value.fromSignedBigInt(oneBigInt),
+      ]);
     const market = getMarket(aaaTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -212,6 +271,40 @@ describe('VToken', () => {
         .div(exponentToBigDecimal(market.underlyingDecimals))
         .truncate(market.underlyingDecimals)
         .toString(),
+    );
+    // AccountVToken
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, redeemer);
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'account', redeemer.toHexString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      oneBigInt.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountSupplyBalanceMantissa',
+      zeroBigInt32.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowBalanceMantissa',
+      zeroBigInt32.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingRedeemedMantissa',
+      zeroBigInt32.toString(),
+    );
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accountBorrowIndexMantissa',
+      zeroBigInt32.toString(),
     );
   });
 

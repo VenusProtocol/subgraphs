@@ -4,7 +4,6 @@ query AccountVTokens  {
     market {
       id
     }
-    symbol
     account {
       id
     }
