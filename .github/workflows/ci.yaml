@@ -55,7 +55,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Start containers
-        run: docker-compose up -d
+        run: |
+          docker-compose up -d
 
       - name: Generate graphql types
         run: |

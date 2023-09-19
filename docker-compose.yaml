@@ -15,6 +15,11 @@ services:
         condition: service_started
       postgres:
         condition: service_started
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:8000"]
+        interval: 30s
+        timeout: 12s
+        retries: 10
     environment:
       postgres_host: postgres
       postgres_user: graph-node
