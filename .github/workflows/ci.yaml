@@ -63,6 +63,8 @@ jobs:
 
       - name: Generate graphql types
         run: |
+          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run codegen
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run create:docker
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run deploy:docker
           sleep 5s
