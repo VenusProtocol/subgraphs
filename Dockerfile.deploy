@@ -23,4 +23,4 @@ ARG DEPLOY_KEY
 
 RUN yarn graph auth --product hosted-service $DEPLOY_KEY
 
-RUN yarn workspace $SUBGRAPH run deploy:testnet --version $VERSION
+RUN yarn workspace $SUBGRAPH run deploy:testnet --version-label $VERSION

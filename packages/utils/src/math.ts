@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js';
 
-export const normalizeMantissa = (num: number | string, scale = 1e18): BigNumber => {
-  if (num < 0) return new BigNumber(2).pow(256).plus(num);
-  return new BigNumber(num).times(scale);
+export const normalizeMantissa = (num: number | string, decimals = 18): BigNumber => {
+  return new BigNumber(num).div(new BigNumber(10).pow(decimals));
+};
+
+export const scaleValue = (num: number | string, decimals = 18): BigNumber => {
+  return new BigNumber(num).times(new BigNumber(10).pow(decimals));
 };

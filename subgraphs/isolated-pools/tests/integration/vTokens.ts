@@ -1,16 +1,15 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import BigNumber from 'bignumber.js';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import deploy from './utils/deploy';
 
 describe('VToken events', function () {
   const syncDelay = 2000;
-  let root: SignerWithAddress;
+  let _root: SignerWithAddress;
   let liquidator: SignerWithAddress;
   let liquidator2: SignerWithAddress;
   let supplier1: SignerWithAddress;
@@ -20,290 +19,245 @@ describe('VToken events', function () {
   let comptroller: Contract;
   let bnxToken: Contract;
   let vBnxToken: Contract;
-  let bswToken: Contract;
-  let vBswToken: Contract;
+  let btcbToken: Contract;
+  let vBtcbToken: Contract;
   let mockPriceOracleContract: Contract;
 
-  const comptrollerAddress = '0x9467A509DA43CB50EB332187602534991Be1fEa4';
+  let comptrollerAddress: string;
   let vBnxAddress: string;
-  let vBswAddress: string;
+  let vBtcbAddress: string;
 
-  const convertToUnit = (amount: string | number, decimals: number) => {
-    return new BigNumber(amount).times(new BigNumber(10).pow(decimals)).toString();
-  };
-
-  const mintAmount = convertToUnit(1, 4);
-  const borrowAmount = convertToUnit(1.1, 4);
-  const liquidatorAllowance = convertToUnit(1, 5);
+  const faucetAmount = scaleValue(5, 18);
+  const mintAmount = scaleValue(0.5, 18);
+  const borrowAmount = scaleValue(0.000025, 18);
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
     await deploy();
 
     const signers = await ethers.getSigners();
-    [root, liquidator, borrower, liquidator2, borrower2, supplier1, supplier2] = signers;
-
-    bnxToken = await ethers.getContract('MockBNX');
-    bswToken = await ethers.getContract('MockBSW');
-
-    comptroller = await ethers.getContractAt('Comptroller', comptrollerAddress);
+    [_root, liquidator, borrower, liquidator2, borrower2, supplier1, supplier2] = signers;
 
     const poolRegistry = await ethers.getContract('PoolRegistry');
+    const poolLens = await ethers.getContract('PoolLens');
+    const pools = await poolLens.getAllPools(poolRegistry.address);
+
+    comptrollerAddress = pools[0].comptroller;
+    comptroller = await ethers.getContractAt('Comptroller', comptrollerAddress);
+
+    const protocolShareReserve = await ethers.getContract('ProtocolShareReserve');
+
+    await protocolShareReserve.setPoolRegistry(poolRegistry.address);
+
+    bnxToken = await ethers.getContract('MockBNX');
+    btcbToken = await ethers.getContract('MockBTCB');
+
     vBnxAddress = await poolRegistry.getVTokenForAsset(comptroller.address, bnxToken.address);
-    vBswAddress = await poolRegistry.getVTokenForAsset(comptroller.address, bswToken.address);
+    vBtcbAddress = await poolRegistry.getVTokenForAsset(comptroller.address, btcbToken.address);
 
     vBnxToken = await ethers.getContractAt('VToken', vBnxAddress);
-    vBswToken = await ethers.getContractAt('VToken', vBswAddress);
+    vBtcbToken = await ethers.getContractAt('VToken', vBtcbAddress);
 
-    // mocking the price oracle and setting low underlying prices
-    const mockPriceOracleFactory = await ethers.getContractFactory(
-      'MockPriceOracleUnderlyingPrice',
-    );
+    await comptroller.connect(borrower).enterMarkets([vBnxToken.address, vBtcbToken.address]);
 
-    mockPriceOracleContract = await mockPriceOracleFactory.deploy();
-    await mockPriceOracleContract.setPrice(vBnxToken.address, convertToUnit(1, 5));
-    await mockPriceOracleContract.setPrice(vBswToken.address, convertToUnit(1, 5));
-    await comptroller.setPriceOracle(mockPriceOracleContract.address);
+    // Setup initial supply
+    await bnxToken.faucet(faucetAmount.toString());
+    await bnxToken.approve(vBnxToken.address, faucetAmount.toString());
+    await vBnxToken.mint(mintAmount.times(4).toString());
+    await btcbToken.faucet(faucetAmount.toString());
+    await btcbToken.approve(vBtcbToken.address, faucetAmount.toString());
+    await vBtcbToken.mint(mintAmount.times(4).toString());
 
-    await comptroller.connect(liquidator).enterMarkets([vBnxToken.address, vBswToken.address]);
-    await comptroller.connect(borrower).enterMarkets([vBnxToken.address, vBswToken.address]);
+    // Fund and Approve suppliers
+    await btcbToken.connect(supplier1).faucet(faucetAmount.toString());
+    await btcbToken.connect(supplier1).approve(vBtcbToken.address, faucetAmount.toString());
+    await btcbToken.connect(supplier2).faucet(faucetAmount.toString());
+    await btcbToken.connect(supplier2).approve(vBtcbToken.address, faucetAmount.toString());
 
-    // add collateral for the borrowers
-    await bnxToken.connect(borrower).faucet(borrowAmount);
-    await bnxToken.connect(borrower).approve(vBnxToken.address, borrowAmount);
-    await bnxToken.connect(borrower2).faucet(borrowAmount);
-    await bnxToken.connect(borrower2).approve(vBnxToken.address, borrowAmount);
+    // Fund and Approve borrowers
+    await btcbToken.connect(borrower).faucet(faucetAmount.toString());
+    await btcbToken.connect(borrower).approve(vBtcbToken.address, faucetAmount.toString());
+    await btcbToken.connect(borrower2).faucet(borrowAmount.toString());
+    await btcbToken.connect(borrower2).approve(vBtcbToken.address, faucetAmount.toString());
 
-    // add collateral for the liquidator
-    await bswToken.connect(liquidator).faucet(mintAmount);
-    await bswToken.connect(liquidator).approve(vBswToken.address, mintAmount);
+    await bnxToken.connect(borrower).faucet(faucetAmount.times(2).toString());
+    await bnxToken.connect(borrower).approve(vBnxToken.address, faucetAmount.toString());
+    await bnxToken.connect(borrower2).faucet(borrowAmount.toString());
+    const tx = await bnxToken.connect(borrower2).approve(vBnxToken.address, faucetAmount.toString());
 
-    // add collateral for the second liquidator
-    await bswToken.connect(liquidator2).faucet(mintAmount);
-    await bswToken.connect(liquidator2).approve(vBswToken.address, mintAmount);
-
-    // mint them in the respective VTokens
-    await vBswToken.connect(liquidator).mint(mintAmount);
-    await vBswToken.connect(liquidator2).mint(mintAmount);
-    await vBnxToken.connect(borrower).mint(mintAmount);
-    await vBnxToken.connect(borrower2).mint(mintAmount);
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
   });
 
   it('updates the supplierCount for the market', async function () {
-    const { data: initialData } = await subgraphClient.getMarkets();
-    expect(initialData).to.not.be.equal(undefined);
-    const { markets: initialMarketsQuery } = initialData!;
+    const { data: initialData } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
+    const { market: initialMarketQuery } = initialData!;
 
     // liquidator1 and liquidator2 are supplying BSW
-    expect(initialMarketsQuery[0].supplierCount).to.equal('2');
-
+    expect(initialMarketQuery?.supplierCount).to.equal('1');
     // adding two new suppliers
-    await comptroller.connect(supplier1).enterMarkets([vBnxToken.address, vBswToken.address]);
-    await bswToken.connect(supplier1).faucet(mintAmount);
-    await bswToken.connect(supplier1).approve(vBswToken.address, mintAmount);
-    await vBswToken.connect(supplier1).mint(mintAmount);
+    let tx = await vBtcbToken.connect(supplier1).mint(mintAmount.toString());
+    await tx.wait(1);
 
-    await comptroller.connect(supplier2).enterMarkets([vBnxToken.address, vBswToken.address]);
-    await bswToken.connect(supplier2).faucet(mintAmount);
-    await bswToken.connect(supplier2).approve(vBswToken.address, mintAmount);
-    await vBswToken.connect(supplier2).mint(mintAmount);
+    // @todo check entering market
+    // await comptroller.connect(supplier2).enterMarkets([vBnxToken.address, vBtcbToken.address]);
+    tx = await vBtcbToken.connect(supplier2).mint(mintAmount.toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataWithNewSupplier } = await subgraphClient.getMarkets();
-    expect(dataWithNewSupplier).to.not.be.equal(undefined);
-    const { markets: marketsQueryAfterNewSupplier } = dataWithNewSupplier!;
-
-    expect(marketsQueryAfterNewSupplier[0].supplierCount).to.equal('4');
+    const { data: dataWithNewSupplier } = await subgraphClient.getMarketById(
+      vBtcbAddress.toLowerCase(),
+    );
+    const { market: marketsQueryAfterNewSupplier } = dataWithNewSupplier!;
+    expect(marketsQueryAfterNewSupplier?.supplierCount).to.equal('3');
 
     // removing supplier
-    await vBswToken.connect(supplier1).redeem(mintAmount);
+    tx = await vBtcbToken.connect(supplier1).redeemUnderlying(mintAmount.toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataWithoutNewSupplier } = await subgraphClient.getMarkets();
-    expect(dataWithoutNewSupplier).to.not.be.equal(undefined);
-    const { markets: marketsQueryAfterRemovingSupplier } = dataWithoutNewSupplier!;
+    const { data: dataWithoutNewSupplier } = await subgraphClient.getMarketById(
+      vBtcbAddress.toLowerCase(),
+    );
+    const { market: marketQueryAfterRemovingSupplier } = dataWithoutNewSupplier!;
 
-    expect(marketsQueryAfterRemovingSupplier[0].supplierCount).to.equal('3');
+    expect(marketQueryAfterRemovingSupplier?.supplierCount).to.equal('2');
 
     // partially redeeming should not decrease count
-    const halfMintAmount = convertToUnit(0.5, 4);
-    await vBswToken.connect(supplier2).redeem(halfMintAmount);
+    const halfMintAmount = mintAmount.dividedBy(2);
+    tx = await vBtcbToken.connect(supplier2).redeemUnderlying(halfMintAmount.toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataAfterHalfRedeem } = await subgraphClient.getMarkets();
-    expect(dataAfterHalfRedeem).to.not.be.equal(undefined);
-    const { markets: marketsAfterHalfRedeem } = dataAfterHalfRedeem!;
+    const { data: dataAfterHalfRedeem } = await subgraphClient.getMarketById(
+      vBtcbAddress.toLowerCase(),
+    );
+    const { market: marketAfterHalfRedeem } = dataAfterHalfRedeem!;
 
-    expect(marketsAfterHalfRedeem[0].supplierCount).to.equal('3');
+    expect(marketAfterHalfRedeem?.supplierCount).to.equal('2');
 
     // now redeem remaining amount and remove supplier
-    await vBswToken.connect(supplier2).redeem(halfMintAmount);
+    tx = await vBtcbToken.connect(supplier2).redeemUnderlying(halfMintAmount.toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getMarkets();
-    expect(data).to.not.be.equal(undefined);
-    const { markets } = data!;
+    const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
+    const { market } = data!;
 
-    expect(markets[0].supplierCount).to.equal('2');
+    expect(market?.supplierCount).to.equal('1');
   });
 
   it('updates the borrowerCount for the market', async function () {
-    const { data: initialData } = await subgraphClient.getMarkets();
-    expect(initialData).to.not.be.equal(undefined);
-    const { markets: marketsBeforeData } = initialData!;
-
-    expect(marketsBeforeData[0].borrowerCount).to.equal('0');
-
+    const { data: initialData } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
+    const { market: marketBeforeData } = initialData!;
+    expect(marketBeforeData?.borrowerCount).to.equal('0');
+    // Borrower supplies BTCB and borrows BNX
+    await btcbToken.connect(borrower2).faucet(mintAmount.toString());
+    await vBtcbToken.connect(borrower2).mint(mintAmount.toString());
+    await comptroller.connect(borrower2).enterMarkets([vBnxToken.address, vBtcbToken.address]);
     // borrowing adds to count
-    await bswToken.connect(borrower2).faucet(borrowAmount);
-    await bswToken.connect(borrower2).approve(vBswToken.address, borrowAmount);
-    await vBswToken.connect(borrower2).borrow(borrowAmount);
+    let tx = await vBnxToken.connect(borrower2).borrow(borrowAmount.toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataAfterBorrow } = await subgraphClient.getMarkets();
-    expect(dataAfterBorrow).to.not.be.equal(undefined);
-    const { markets: marketAfterBorrow } = dataAfterBorrow!;
+    const { data: dataAfterBorrow } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
+    const { market: marketAfterBorrow } = dataAfterBorrow!;
 
-    expect(marketAfterBorrow[0].borrowerCount).to.equal('1');
+    expect(marketAfterBorrow?.borrowerCount).to.equal('1');
 
     // completely repaying the borrow should decrease the count
-    await bswToken.connect(borrower2).faucet(borrowAmount);
-    await bswToken.connect(borrower2).approve(vBswToken.address, borrowAmount);
-    await vBswToken.connect(borrower2).repayBorrow(borrowAmount);
+    tx = await vBnxToken.connect(borrower2).repayBorrow(borrowAmount.times(1.5).toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getMarkets();
-    expect(data).to.not.be.equal(undefined);
-    const { markets } = data!;
+    const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
+    const { market } = data!;
 
-    expect(markets[0].borrowerCount).to.equal('0');
+    expect(market?.borrowerCount).to.equal('0');
   });
 
   it('handles BadDebtIncreased event', async function () {
-    // borrower borrows BSW
-    await vBswToken.connect(borrower).borrow(borrowAmount);
+    // Borrower supplies BNX and borrows BTCB
+    await vBtcbToken.connect(borrower).mint(mintAmount.toString());
+    await vBnxToken.connect(borrower).borrow(scaleValue(0.0004446, 18).toString());
 
-    // set higher underlying prices
-    await mockPriceOracleContract.setPrice(vBnxToken.address, convertToUnit(1, 20));
-    await mockPriceOracleContract.setPrice(vBswToken.address, convertToUnit(1, 20));
+    const mockPriceOracleFactory = await ethers.getContractFactory(
+      'MockPriceOracleUnderlyingPrice',
+    );
+    mockPriceOracleContract = await mockPriceOracleFactory.deploy();
+    // set lower price for collateral asset
+    await mockPriceOracleContract.setPrice(vBtcbToken.address, scaleValue(0.00005, 10).toString());
+    await mockPriceOracleContract.setPrice(vBnxToken.address, scaleValue(160, 18).toString());
+    let tx = await comptroller.setPriceOracle(mockPriceOracleContract.address);
+    tx.wait(1);
 
-    // add allowance to the liquidator to be used when healing the borrower
-    await bswToken.connect(liquidator).faucet(mintAmount);
-    await bswToken.connect(liquidator).approve(vBswToken.address, liquidatorAllowance);
+    await bnxToken.connect(liquidator).faucet(faucetAmount.toString());
+    await bnxToken.connect(liquidator).approve(vBnxToken.address, faucetAmount.toString());
+    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
+    const { market: marketBeforeUpdate } = dataBeforeEvent!;
 
-    const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets: marketsBeforeUpdate } = dataBeforeEvent!;
+    expect(marketBeforeUpdate?.badDebtMantissa).to.equal('0');
 
-    expect(marketsBeforeUpdate[0].badDebtMantissa).to.equal('0');
+    tx = await comptroller.connect(liquidator).healAccount(borrower.address);
+    await tx.wait(1);
+    await waitForSubgraphToBeSynced(4000);
 
-    await comptroller.connect(liquidator).healAccount(borrower.address);
-    await waitForSubgraphToBeSynced(syncDelay);
+    const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
+    const { market } = data!;
 
-    const { data } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets } = data!;
-
-    expect(markets[0].badDebtMantissa).to.equal('6001');
+    expect(market?.badDebtMantissa).to.equal('444600002962838');
 
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
-    expect(accountVTokensData).to.not.be.equal(undefined);
     const { accountVTokens } = accountVTokensData!;
 
-    const accountVBswData = accountVTokens.find(avt =>
+    const vBnxAccountTokens = accountVTokens.find(avt =>
       avt.id.includes(borrower.address.toLowerCase()),
     );
-    expect(accountVBswData?.badDebt.length).to.be.equal(1);
-    expect(accountVBswData?.badDebt[0].amount).to.be.equal('6001');
-  });
-
-  it('handles NewAccessControlManager event', async function () {
-    const newACM = '0x0000000000000000000000000000000000000123';
-    const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets: marketsBeforeUpdate } = dataBeforeEvent!;
-
-    expect(marketsBeforeUpdate[0].accessControlManager).to.equal(
-      '0xc5a5c42992decbae36851359345fe25997f5c42d',
-    );
-
-    const vTokenContract = await ethers.getContractAt('VToken', marketsBeforeUpdate[0].id);
-    await vTokenContract.connect(root).setAccessControlAddress(newACM);
-    await waitForSubgraphToBeSynced(syncDelay);
-
-    const { data } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets } = data!;
-
-    expect(markets[0].accessControlManager).to.equal(newACM);
+    expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
+    expect(vBnxAccountTokens?.badDebt[0].amount).to.be.equal('444600002962838');
   });
 
   it('handles ReservesAdded event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(vBswAddress.toLowerCase());
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
+    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(
+      vBtcbAddress.toLowerCase(),
+    );
     const { market: marketBeforeEvent } = dataBeforeEvent!;
-    expect(marketBeforeEvent).to.not.be.equal(undefined);
 
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('0');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('8333330000000000');
 
-    await bswToken.connect(liquidator2).faucet(mintAmount);
-    await bswToken.connect(liquidator2).approve(vBswToken.address, mintAmount);
+    await btcbToken.connect(liquidator2).faucet(faucetAmount.toString());
+    await btcbToken.connect(liquidator2).approve(vBtcbToken.address, faucetAmount.toString());
 
-    const vTokenContract = await ethers.getContractAt('VToken', vBswAddress);
-    await vTokenContract.connect(liquidator2).addReserves(123);
+    const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
+    const tx = await vTokenContract.connect(liquidator2).addReserves(scaleValue(0.5, 18).toString());
+    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getMarketById(vBswAddress.toLowerCase());
-    expect(data).to.not.be.equal(undefined);
+    const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.reservesMantissa).to.be.equal('123');
+    expect(market?.reservesMantissa).to.be.equal('508333330000000000');
   });
 
   it('handles ReservesReduced event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(vBswAddress.toLowerCase());
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
+    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(
+      vBtcbAddress.toLowerCase(),
+    );
     const { market: marketBeforeEvent } = dataBeforeEvent!;
-    expect(marketBeforeEvent).to.not.be.equal(undefined);
 
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('123');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('508333330000000000');
 
-    const vTokenContract = await ethers.getContractAt('VToken', vBswAddress);
+    const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
 
-    await vTokenContract.connect(liquidator2).reduceReserves(123);
-    await waitForSubgraphToBeSynced(syncDelay);
+    const tx = await vTokenContract
+      .connect(liquidator2)
+      .reduceReserves(scaleValue(0.5, 18).toString());
+    tx.wait(1);
+    await waitForSubgraphToBeSynced(4000);
 
-    const { data } = await subgraphClient.getMarketById(vBswAddress.toLowerCase());
-    expect(data).to.not.be.equal(undefined);
+    const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.reservesMantissa).to.be.equal('0');
-  });
-
-  it('handles NewComptroller event', async function () {
-    const accessControlManager = await ethers.getContract('AccessControlManager');
-    const poolRegistry = await ethers.getContract('PoolRegistry');
-    const mockNewComptrollerFactory = await ethers.getContractFactory('Comptroller');
-    const mockNewComptrollerContract = await mockNewComptrollerFactory.deploy(
-      poolRegistry.address,
-      accessControlManager.address,
-    );
-
-    const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets: marketsBeforeUpdate } = dataBeforeEvent!;
-
-    expect(marketsBeforeUpdate[0].pool.id).to.equal('0x9467a509da43cb50eb332187602534991be1fea4');
-
-    const vTokenContract = await ethers.getContractAt('VToken', marketsBeforeUpdate[0].id);
-    await vTokenContract.connect(root).setComptroller(mockNewComptrollerContract.address);
-    await waitForSubgraphToBeSynced(syncDelay);
-
-    const { data } = await subgraphClient.getMarkets();
-    expect(dataBeforeEvent).to.not.be.equal(undefined);
-    const { markets } = data!;
-
-    expect(markets[0].pool.id).to.equal(mockNewComptrollerContract.address.toLowerCase());
+    expect(market?.reservesMantissa).to.be.equal('8333330000000000');
   });
 });

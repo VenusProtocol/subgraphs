@@ -18,8 +18,8 @@ const deploy = async () => {
 
   const deployCmd =
     env === 'local'
-      ? `npx graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`
-      : `npx graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ${Date.now().toString()}`;
+      ? `npx graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label v${Date.now().toString()}`
+      : `npx graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label v${Date.now().toString()}`;
   exec(deployCmd, root);
 
   await waitForSubgraphToBeSynced(SYNC_DELAY);

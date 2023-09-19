@@ -4805,7 +4805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:>=13.7.0, @types/node@npm:^20.6.0":
+"@types/node@npm:*, @types/node@npm:>=13.7.0":
   version: 20.6.0
   resolution: "@types/node@npm:20.6.0"
   checksum: 52611801af5cf151c6fac1963aa4a8a8ca2e388a9e9ed82b01b70bca762088ded5b32cc789c5564220d5d7dccba2b8dd34446a3d4fc74736805e1f2cf262e29d
@@ -5069,9 +5069,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:1.0.0":
-  version: 1.0.0
-  resolution: "@venusprotocol/isolated-pools@npm:1.0.0"
+"@venusprotocol/isolated-pools@npm:2.1.0-dev.2":
+  version: 2.1.0-dev.2
+  resolution: "@venusprotocol/isolated-pools@npm:2.1.0-dev.2"
   dependencies:
     "@openzeppelin/contracts": ^4.8.3
     "@openzeppelin/contracts-upgradeable": ^4.8.3
@@ -5080,7 +5080,7 @@ __metadata:
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-  checksum: 113533052d71fd3af7a3b6dac6bbc56c7b979bde9e7811cbe0cc92638ed1e7de5f46ede878b2a345c094a9cfea25ef3e2fd06c572987c67019ba4ce260ac7cd9
+  checksum: 6915770070382a41f900df7e2bbd7184aabc77cbc191fc73c1737a8c41175dbf93be37accb698e0e06e06d2979943c7f5148f2800a6afcd7db7fa0743588171f
   languageName: node
   linkType: hard
 
@@ -5104,18 +5104,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/venus-protocol@npm:0.6.0":
-  version: 0.6.0
-  resolution: "@venusprotocol/venus-protocol@npm:0.6.0"
-  dependencies:
-    "@openzeppelin/contracts-upgradeable": ^4.8.0
-    dotenv: ^16.0.1
-  peerDependencies:
-    hardhat: ^2.10.1
-  checksum: e05bf173d0320560b64bda12dfc32c1d2c205dd997ea1ca327d91e3b78dc03094f4a81bab4a84499c780d599e1574f70370becad0b3abb5b563d4154ba91668a
-  languageName: node
-  linkType: hard
-
 "@venusprotocol/venus-protocol@npm:0.7.0":
   version: 0.7.0
   resolution: "@venusprotocol/venus-protocol@npm:0.7.0"
@@ -5125,6 +5113,20 @@ __metadata:
   peerDependencies:
     hardhat: ^2.10.1
   checksum: 9b3c4403799dd41ea282daf0333c46bc2e5ec6221a3616026eef3c715075ad013318624dae72f4bc6c635c954b1b0225eaf2b1cf066109d94ddb585f98e9f4aa
+  languageName: node
+  linkType: hard
+
+"@venusprotocol/venus-protocol@npm:^3.0.0-dev.18":
+  version: 3.1.0
+  resolution: "@venusprotocol/venus-protocol@npm:3.1.0"
+  dependencies:
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.0
+    dotenv: ^16.0.1
+    module-alias: ^2.2.2
+  peerDependencies:
+    hardhat: ^2.10.1
+  checksum: 0c44a6566ed623161f49036961d2118958485a59bdba71733e86c77731cde2adcfcb535b69c275381888bc1fc6d807ab9ec271e8796aa961897dac2850081e1c
   languageName: node
   linkType: hard
 
@@ -15673,13 +15675,12 @@ __metadata:
     "@typechain/hardhat": ^6.1.2
     "@types/mocha": ^9.1.1
     "@types/mustache": ^4.2.1
-    "@types/node": ^20.6.0
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": ^1.0.0
-    "@venusprotocol/isolated-pools": 1.0.0
+    "@venusprotocol/isolated-pools": 2.1.0-dev.2
     "@venusprotocol/oracle": ^1.7.2
-    "@venusprotocol/venus-protocol": 0.6.0
+    "@venusprotocol/venus-protocol": ^3.0.0-dev.18
     assemblyscript: 0.19.23
     chai: ^4.3.6
     eslint: ^8.25.0

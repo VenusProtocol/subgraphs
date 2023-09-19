@@ -59,6 +59,8 @@ jobs:
 
       - name: Generate graphql types
         run: |
+          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run deploy:docker
           docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run generate-subgraph-types
       
       - name: Run integration tests

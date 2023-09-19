@@ -17,7 +17,7 @@
     "build:docker": "npx graph build --ipfs http://ipfs:5001",
     "build:bsc": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:local": "LOCAL=true npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:docker": "npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:sepolia": "npx prepare:sepolia && npx graph deploy --studio venus-isolated-pools-sepolia",
