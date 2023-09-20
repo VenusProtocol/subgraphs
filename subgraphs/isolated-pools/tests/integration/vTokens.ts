@@ -5,7 +5,6 @@ import { ethers } from 'hardhat';
 import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
-import deploy from './utils/deploy';
 
 describe('VToken events', function () {
   const syncDelay = 2000;
@@ -33,7 +32,6 @@ describe('VToken events', function () {
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
-    await deploy();
 
     const signers = await ethers.getSigners();
     [_root, liquidator, borrower, liquidator2, borrower2, supplier1, supplier2] = signers;
@@ -83,7 +81,9 @@ describe('VToken events', function () {
     await bnxToken.connect(borrower).faucet(faucetAmount.times(2).toString());
     await bnxToken.connect(borrower).approve(vBnxToken.address, faucetAmount.toString());
     await bnxToken.connect(borrower2).faucet(borrowAmount.toString());
-    const tx = await bnxToken.connect(borrower2).approve(vBnxToken.address, faucetAmount.toString());
+    const tx = await bnxToken
+      .connect(borrower2)
+      .approve(vBnxToken.address, faucetAmount.toString());
 
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
@@ -229,7 +229,9 @@ describe('VToken events', function () {
     await btcbToken.connect(liquidator2).approve(vBtcbToken.address, faucetAmount.toString());
 
     const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
-    const tx = await vTokenContract.connect(liquidator2).addReserves(scaleValue(0.5, 18).toString());
+    const tx = await vTokenContract
+      .connect(liquidator2)
+      .addReserves(scaleValue(0.5, 18).toString());
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
