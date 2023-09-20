@@ -1,23 +1,10 @@
-import { Address, BigDecimal } from '@graphprotocol/graph-ts';
+import { Address } from '@graphprotocol/graph-ts';
 
-import { getTokenPrice } from './getTokenPrice';
-import { zeroBigDecimal } from '../constants';
+import { getTokenPriceCents } from './getTokenPriceCents';
 
-class GetUnderlyingPriceReturn {
-  underlyingPrice: BigDecimal;
-  underlyingPriceUsd: BigDecimal;
-}
-
-export function getUnderlyingPrice(
-  address: string,
-  underlyingDecimals: i32,
-): GetUnderlyingPriceReturn {
-  let underlyingPriceUsd = zeroBigDecimal;
-  let underlyingPrice = zeroBigDecimal;
-
+export function getUnderlyingPrice(address: string, underlyingDecimals: i32): i32 {
   const contractAddress = Address.fromString(address);
-  underlyingPrice = getTokenPrice(contractAddress, underlyingDecimals);
-  underlyingPriceUsd = underlyingPrice.truncate(underlyingDecimals);
+  const underlyingPriceCents = getTokenPriceCents(contractAddress, underlyingDecimals);
 
-  return { underlyingPrice, underlyingPriceUsd };
+  return underlyingPriceCents;
 }

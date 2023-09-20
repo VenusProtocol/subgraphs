@@ -48,9 +48,8 @@ export const updateMarket = (
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
     market.blockTimestamp = blockTimestamp;
 
-    const underlyingValue = getUnderlyingPrice(market.id, market.underlyingDecimals);
-    market.underlyingPrice = underlyingValue.underlyingPrice;
-    market.underlyingPriceUSD = underlyingValue.underlyingPriceUsd;
+    const underlyingPriceCents = getUnderlyingPrice(market.id, market.underlyingDecimals);
+    market.underlyingPriceCents = underlyingPriceCents;
 
     market.totalSupplyMantissa = contract
       .totalSupply()

@@ -54,8 +54,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('underlyingDecimals', '18');
     assertMarketDocument('underlyingName', 'Binance Coin');
     assertMarketDocument('underlyingSymbol', 'BNB');
-    assertMarketDocument('underlyingPriceUSD', '0');
-    assertMarketDocument('underlyingPrice', '1');
+    assertMarketDocument('underlyingPriceCents', '0');
     assertMarketDocument('borrowRateMantissa', '0');
     assertMarketDocument('cash', '0');
     assertMarketDocument('collateralFactor', '0');

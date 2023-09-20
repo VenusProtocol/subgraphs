@@ -8,7 +8,7 @@ import {
   getExchangeRateBigDecimal,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { getTokenPriceInUsd } from '../utilities';
+import { getTokenPriceInCents } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
   getOrCreateAccount,
@@ -171,12 +171,12 @@ export const updateMarket = (
   }
   const marketContract = VToken.bind(vTokenAddress);
 
-  const tokenPriceUsd = getTokenPriceInUsd(
+  const tokenPriceCents = getTokenPriceInCents(
     marketContract.comptroller(),
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPriceUsd = tokenPriceUsd.truncate(market.underlyingDecimals);
+  market.underlyingPriceCents = tokenPriceCents.truncate(market.underlyingDecimals);
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),

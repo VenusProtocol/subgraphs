@@ -36,7 +36,7 @@ import {
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
-import { getTokenPriceInUsd } from '../utilities';
+import { getTokenPriceInCents } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import {
   getAccountVTokenId,
@@ -100,11 +100,11 @@ export function createMarket(
   market.symbol = vTokenContract.symbol();
 
   const underlyingDecimals = underlyingContract.decimals();
-  const underlyingValue = getTokenPriceInUsd(comptroller, vTokenAddress, underlyingDecimals);
+  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceUsd = underlyingValue;
+  market.underlyingPriceCents = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
   market.vTokenDecimals = vTokenContract.decimals();
 

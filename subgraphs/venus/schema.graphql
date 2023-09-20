@@ -47,8 +47,6 @@ type Market @entity {
     underlyingAddress: Bytes!
     "Underlying token name"
     underlyingName: String!
-    "Underlying price of token in BNB (ex. 0.007 DAI)"
-    underlyingPrice: BigDecimal!
     "Underlying token symbol"
     underlyingSymbol: String!
 
@@ -61,8 +59,8 @@ type Market @entity {
     borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactor: BigInt!
-    "Underlying token price in USD"
-    underlyingPriceUSD: BigDecimal!
+    "Underlying token price in USD cents"
+    underlyingPriceCents: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "Total XVS Distributed for this market"
