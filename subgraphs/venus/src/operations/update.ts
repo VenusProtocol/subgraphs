@@ -36,7 +36,6 @@ export const updateMarket = (
   const marketId = marketAddress.toHexString();
   let market = Market.load(marketId) as Market;
   if (market == null) {
-    log.debug('[updateMarket] market null: {}, creating...', [marketAddress.toHexString()]);
     market = createMarket(marketId);
   }
 
