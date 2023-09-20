@@ -22,7 +22,7 @@ type Market @entity {
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
-    cash: BigDecimal!
+    cashMantissa: BigInt!
     "Collateral factor determining how much one can borrow"
     collateralFactor: BigDecimal!
     "Exchange rate of tokens / vTokens"

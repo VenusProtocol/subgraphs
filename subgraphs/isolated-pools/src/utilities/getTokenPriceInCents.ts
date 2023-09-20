@@ -1,4 +1,4 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
 import { NOT_AVAILABLE_BIG_INT } from '../constants';
@@ -11,7 +11,7 @@ const getTokenPriceInCents = (
   poolAddress: Address,
   eventAddress: Address,
   underlyingDecimals: i32,
-): i32 => {
+): BigInt => {
   const pool = getPool(poolAddress);
   // will return NOT_AVAILABLE if the price cannot be fetched
   let underlyingPrice = NOT_AVAILABLE_BIG_INT;

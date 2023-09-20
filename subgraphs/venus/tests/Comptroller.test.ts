@@ -56,7 +56,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('underlyingSymbol', 'BNB');
     assertMarketDocument('underlyingPriceCents', '0');
     assertMarketDocument('borrowRateMantissa', '0');
-    assertMarketDocument('cash', '0');
+    assertMarketDocument('cashMantissa', '0');
     assertMarketDocument('collateralFactor', '0');
     assertMarketDocument('exchangeRateMantissa', '0');
     assertMarketDocument('interestRateModelAddress', interestRateModelAddress.toHex());

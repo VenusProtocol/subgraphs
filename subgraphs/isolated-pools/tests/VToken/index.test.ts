@@ -482,7 +482,7 @@ describe('VToken', () => {
     assertMarketDocument('borrowIndexMantissa', '300000000000000000000');
     assertMarketDocument('reservesMantissa', '5128924555022289393');
     assertMarketDocument('totalBorrowsMantissa', '2641234234636158123');
-    assertMarketDocument('cash', '1.418171344423412457');
+    assertMarketDocument('cashMantissa', '1418171344423412457');
     assertMarketDocument('borrowRateMantissa', '12678493');
     assertMarketDocument('supplyRateMantissa', '12678493');
   });

@@ -176,7 +176,7 @@ export const updateMarket = (
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPriceCents = tokenPriceCents.truncate(market.underlyingDecimals);
+  market.underlyingPriceCents = tokenPriceCents;
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),
@@ -192,10 +192,7 @@ export const updateMarket = (
   market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
   const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
-  market.cash = cashBigInt
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  market.cashMantissa = cashBigInt;
 
   // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
   market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(

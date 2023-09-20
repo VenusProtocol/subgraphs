@@ -58,7 +58,7 @@ export function createMarket(marketAddress: string): Market {
     market.underlyingDecimals = 18;
     market.underlyingName = 'Binance Coin';
     market.underlyingSymbol = 'BNB';
-    market.underlyingPriceCents = zeroBigDecimal;
+    market.underlyingPriceCents = zeroBigInt32;
     // It is all other VBEP20 contracts
   } else {
     market = new Market(marketAddress);
@@ -71,8 +71,8 @@ export function createMarket(marketAddress: string): Market {
     market.underlyingName = underlyingContract.name();
     market.underlyingSymbol = underlyingContract.symbol();
 
-    const underlyingValue = getUnderlyingPrice(market.id, market.underlyingDecimals);
-    market.underlyingPriceCents = underlyingValue.underlyingPriceUsd;
+    const underlyingPriceCents = getUnderlyingPrice(market.id, market.underlyingDecimals);
+    market.underlyingPriceCents = underlyingPriceCents;
   }
 
   market.vTokenDecimals = contract.decimals();
@@ -81,7 +81,7 @@ export function createMarket(marketAddress: string): Market {
   const reserveFactor = contract.try_reserveFactorMantissa();
 
   market.borrowRateMantissa = zeroBigInt32;
-  market.cash = zeroBigDecimal;
+  market.cashMantissa = zeroBigInt32;
   market.collateralFactor = zeroBigDecimal;
   market.exchangeRateMantissa = zeroBigInt32;
   market.interestRateModelAddress = interestRateModelAddress.reverted

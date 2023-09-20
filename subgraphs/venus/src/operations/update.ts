@@ -4,7 +4,6 @@ import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { createMarket } from '../operations/create';
-import { exponentToBigDecimal } from '../utilities/exponentToBigDecimal';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { createAccountVToken } from './create';
 import { getOrCreateAccountVTokenTransaction } from './getOrCreate';
@@ -43,17 +42,13 @@ export const updateMarket = (
   if (market.accrualBlockNumber != blockNumber) {
     const contractAddress = Address.fromString(market.id);
     const contract = VToken.bind(contractAddress);
-    const vTokenDecimals = market.vTokenDecimals;
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
     market.blockTimestamp = blockTimestamp;
 
     const underlyingPriceCents = getUnderlyingPrice(market.id, market.underlyingDecimals);
     market.underlyingPriceCents = underlyingPriceCents;
 
-    market.totalSupplyMantissa = contract
-      .totalSupply()
-      .toBigDecimal()
-      .div(exponentToBigDecimal(vTokenDecimals));
+    market.totalSupplyMantissa = contract.totalSupply();
 
     /* Exchange rate explanation
        In Practice
@@ -77,11 +72,7 @@ export const updateMarket = (
     market.reservesMantissa = contract.totalReserves();
     market.totalBorrowsMantissa = contract.totalBorrows();
 
-    market.cash = contract
-      .getCash()
-      .toBigDecimal()
-      .div(exponentToBigDecimal(market.underlyingDecimals))
-      .truncate(market.underlyingDecimals);
+    market.cashMantissa = contract.getCash();
 
     // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
     const borrowRatePerBlock = contract.try_borrowRatePerBlock();

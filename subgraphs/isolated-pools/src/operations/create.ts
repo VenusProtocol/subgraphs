@@ -110,11 +110,7 @@ export function createMarket(
 
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
-  market.cash = vTokenContract
-    .getCash()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  market.cashMantissa = vTokenContract.getCash();
 
   market.exchangeRateMantissa = vTokenContract.exchangeRateStored();
 

@@ -135,7 +135,7 @@ describe('Pools', function () {
     markets.forEach((m, idx) => {
       expect(m.pool.id).to.equal(pool.id);
       expect(m.borrowRateMantissa).to.equal('0');
-      expect(m.cash).to.equal('1');
+      expect(m.cashMantissa).to.equal('1');
       expect(m.collateralFactorMantissa).to.equal('700000000000000000');
       expect(m.exchangeRateMantissa).to.equal('10000000000000000000000000000');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
