@@ -36,7 +36,7 @@ import {
   zeroBigInt32,
 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
-import { getTokenPriceInUsd } from '../utilities';
+import { getTokenPriceInCents } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import {
   getAccountVTokenId,
@@ -100,21 +100,17 @@ export function createMarket(
   market.symbol = vTokenContract.symbol();
 
   const underlyingDecimals = underlyingContract.decimals();
-  const underlyingValue = getTokenPriceInUsd(comptroller, vTokenAddress, underlyingDecimals);
+  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceUsd = underlyingValue;
+  market.underlyingPriceCents = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
   market.vTokenDecimals = vTokenContract.decimals();
 
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
-  market.cash = vTokenContract
-    .getCash()
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  market.cashMantissa = vTokenContract.getCash();
 
   market.exchangeRateMantissa = vTokenContract.exchangeRateStored();
 
@@ -129,8 +125,8 @@ export function createMarket(
 
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
-  market.treasuryTotalBorrowsMantissa = vTokenContract.totalBorrows();
-  market.treasuryTotalSupplyMantissa = vTokenContract.totalSupply();
+  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.totalSupplyMantissa = vTokenContract.totalSupply();
 
   market.badDebtMantissa = vTokenContract.badDebt();
 

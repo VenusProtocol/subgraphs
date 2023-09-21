@@ -8,7 +8,7 @@ import {
   getExchangeRateBigDecimal,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { getTokenPriceInUsd } from '../utilities';
+import { getTokenPriceInCents } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
   getOrCreateAccount,
@@ -171,12 +171,12 @@ export const updateMarket = (
   }
   const marketContract = VToken.bind(vTokenAddress);
 
-  const tokenPriceUsd = getTokenPriceInUsd(
+  const tokenPriceCents = getTokenPriceInCents(
     marketContract.comptroller(),
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPriceUsd = tokenPriceUsd.truncate(market.underlyingDecimals);
+  market.underlyingPriceCents = tokenPriceCents;
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),
@@ -192,10 +192,7 @@ export const updateMarket = (
   market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
   const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
-  market.cash = cashBigInt
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  market.cashMantissa = cashBigInt;
 
   // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
   market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
@@ -205,12 +202,8 @@ export const updateMarket = (
     marketContract.try_supplyRatePerBlock(),
   );
 
-  market.treasuryTotalBorrowsMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_totalBorrows(),
-  );
-  market.treasuryTotalSupplyMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_totalSupply(),
-  );
+  market.totalBorrowsMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalBorrows());
+  market.totalSupplyMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalSupply());
 
   market.save();
   return market as Market;

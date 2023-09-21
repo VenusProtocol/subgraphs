@@ -57,7 +57,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/vtoken.ts
+      file: ./src/mappings/vToken.ts
       entities:
         - User
         - Market
@@ -65,6 +65,8 @@ templates:
       abis:
         - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
+        - name: VBep20Storage
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VTokenInterfaces.sol/VBep20Storage.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: BEP20
@@ -72,9 +74,9 @@ templates:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
       eventHandlers:
-        - event: Mint(address,uint256,uint256)
+        - event: Mint(address,uint256,uint256,uint256)
           handler: handleMint
-        - event: Redeem(address,uint256,uint256)
+        - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
         - event: Borrow(address,uint256,uint256,uint256)
           handler: handleBorrow

@@ -20,35 +20,33 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     #Fields that match Venus API
     "Borrow rate per block"
-    borrowRate: BigDecimal!
+    borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
-    cash: BigDecimal!
+    cashMantissa: BigInt!
     "Collateral factor determining how much one can borrow"
     collateralFactor: BigDecimal!
     "Exchange rate of tokens / vTokens"
-    exchangeRate:  BigDecimal!
+    exchangeRateMantissa:  BigInt!
     "Address of the interest rate model"
     interestRateModelAddress: Bytes!
     "Name of the vToken"
     name: String!
     "Reserves stored in the contract"
-    reservesWei: BigInt!
+    reservesMantissa: BigInt!
     "Supply rate per block"
-    supplyRate: BigDecimal!
+    supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
     "VToken address"
     id: ID!
     "Borrows in the market"
-    totalBorrows: BigDecimal!
+    totalBorrowsMantissa: BigInt!
     "VToken supply. VTokens have 8 decimals"
-    totalSupply: BigDecimal!
+    totalSupplyMantissa: BigInt!
     "Underlying token address"
     underlyingAddress: Bytes!
     "Underlying token name"
     underlyingName: String!
-    "Underlying price of token in BNB (ex. 0.007 DAI)"
-    underlyingPrice: BigDecimal!
     "Underlying token symbol"
     underlyingSymbol: String!
 
@@ -58,15 +56,17 @@ type Market @entity {
     "Timestamp the market was most recently updated"
     blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndex: BigDecimal!
+    borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactor: BigInt!
-    "Underlying token price in USD"
-    underlyingPriceUSD: BigDecimal!
+    "Underlying token price in USD cents"
+    underlyingPriceCents: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "Total XVS Distributed for this market"
     totalXvsDistributedMantissa: BigInt!
+    "vToken decimal length"
+    vTokenDecimals: Int!
 }
 
 """
@@ -120,11 +120,11 @@ type AccountVToken @entity {
     "VToken balance of the user"
     vTokenBalance: BigDecimal!
     "Total amount of underlying supplied"
-    totalUnderlyingSupplied: BigDecimal!
+    totalUnderlyingSuppliedMantissa: BigInt!
     "Total amount of underling redeemed"
-    totalUnderlyingRedeemed: BigDecimal!
+    totalUnderlyingRedeemedMantissa: BigInt!
     "The value of the borrow index upon users last interaction"
-    accountBorrowIndex: BigDecimal!
+    accountBorrowIndexMantissa: BigInt!
     "Total amount underlying borrowed, exclusive of interest"
     totalUnderlyingBorrowed: BigDecimal!
     "Total amount underlying repaid"

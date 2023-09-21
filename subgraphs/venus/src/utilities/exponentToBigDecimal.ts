@@ -9,9 +9,3 @@ export function exponentToBigDecimal(decimals: i32): BigDecimal {
   }
   return bd;
 }
-
-export let mantissaFactor = 18;
-export let vTokenDecimals = 8;
-export let mantissaFactorBD: BigDecimal = exponentToBigDecimal(mantissaFactor);
-export let vTokenDecimalsBD: BigDecimal = exponentToBigDecimal(vTokenDecimals);
-export let zeroBD = BigDecimal.fromString('0');

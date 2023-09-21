@@ -78,7 +78,7 @@ type Market @entity {
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
-    cash: BigDecimal!
+    cashMantissa: BigInt!
     "Collateral factor determining how much one can borrow"
     collateralFactorMantissa: BigInt!
     "Exchange rate of tokens / vTokens"
@@ -102,9 +102,9 @@ type Market @entity {
     "Max token borrow amount allowed"
     borrowCapMantissa: BigInt!
     "Total borrowed"
-    treasuryTotalBorrowsMantissa: BigInt!
+    totalBorrowsMantissa: BigInt!
     "Total supplied"
-    treasuryTotalSupplyMantissa: BigInt!
+    totalSupplyMantissa: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"
@@ -115,8 +115,8 @@ type Market @entity {
     borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactorMantissa: BigInt!
-    "Underlying token price in USD"
-    underlyingPriceUsd: BigDecimal!
+    "Underlying token price in USD cents"
+    underlyingPriceCents: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "vToken decimal length"

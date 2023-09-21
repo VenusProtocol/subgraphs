@@ -22,7 +22,7 @@ describe('Pools', function () {
     '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
   ];
   const underlyingSymbols = ['BSW', 'BNX'];
-  const underlyingPricesUSD = ['0.208', '159.99'];
+  const underlyingPricesCents = ['208', '15999'];
   const interestRateModelAddresses = [
     '0xbf5a316f4303e13ae92c56d2d8c9f7629bef5c6e',
     '0xb955b6c65ff69bfe07a557aa385055282b8a5ea3',
@@ -135,7 +135,7 @@ describe('Pools', function () {
     markets.forEach((m, idx) => {
       expect(m.pool.id).to.equal(pool.id);
       expect(m.borrowRateMantissa).to.equal('0');
-      expect(m.cash).to.equal('1');
+      expect(m.cashMantissa).to.equal('1');
       expect(m.collateralFactorMantissa).to.equal('700000000000000000');
       expect(m.exchangeRateMantissa).to.equal('10000000000000000000000000000');
       expect(m.interestRateModelAddress).to.equal(interestRateModelAddresses[idx]);
@@ -152,7 +152,7 @@ describe('Pools', function () {
       expect(m.blockTimestamp).to.not.be.equal('0');
       expect(m.borrowIndexMantissa).to.equal('1000000000000000000');
       expect(m.reserveFactorMantissa).to.equal('0');
-      expect(m.underlyingPriceUsd).to.equal(underlyingPricesUSD[idx]);
+      expect(m.underlyingPriceCents).to.equal(underlyingPricesCents[idx]);
       expect(m.underlyingDecimals).to.equal(18);
     });
   });
