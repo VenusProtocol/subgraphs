@@ -5,7 +5,7 @@
   "repository": "https://github.com/VenusProtocol/subgraphs",
   "license": "MIT",
   "engines": {
-    "node": ">=16.x.x"
+    "node": ">=18.x.x"
   },
   "workspaces": [
     "packages/*",
