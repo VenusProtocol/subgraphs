@@ -45,6 +45,7 @@ services:
     volumes:
       - ./:/usr/app
       - /usr/app/node_modules
+      - /usr/app/contracts
     restart: always
     healthcheck:
         test: ["CMD", "node", "./hardhat-healthcheck.js"]

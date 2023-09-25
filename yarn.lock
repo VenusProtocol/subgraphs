@@ -5116,7 +5116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/venus-protocol@npm:^3.0.0-dev.18":
+"@venusprotocol/venus-protocol@npm:^3.1.0":
   version: 3.1.0
   resolution: "@venusprotocol/venus-protocol@npm:3.1.0"
   dependencies:
@@ -15763,7 +15763,7 @@ __metadata:
     "@venusprotocol/governance-contracts": ^1.0.0
     "@venusprotocol/isolated-pools": 2.1.0-dev.2
     "@venusprotocol/oracle": ^1.7.2
-    "@venusprotocol/venus-protocol": ^3.0.0-dev.18
+    "@venusprotocol/venus-protocol": ^3.1.0
     assemblyscript: 0.19.23
     chai: ^4.3.6
     eslint: ^8.25.0
