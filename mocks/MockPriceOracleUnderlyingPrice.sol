@@ -1,20 +1,30 @@
 pragma solidity 0.8.13;
 
-import "../../oracle/contracts/interfaces/OracleInterface.sol";
-import "hardhat/console.sol";
+import { ResilientOracleInterface } from '../../oracle/contracts/interfaces/OracleInterface.sol';
+import 'hardhat/console.sol';
 
-contract MockPriceOracleUnderlyingPrice is OracleInterface {
-    mapping(address => uint256) public prices;
+contract MockPriceOracleUnderlyingPrice is ResilientOracleInterface {
+  mapping(address => uint256) public prices;
 
-    constructor() {}
+  constructor() {}
 
-    function updatePrice(address vToken) external {}
+  function updatePrice(address vToken) external {
+    prices[vToken] = prices[vToken];
+  }
 
-    function setPrice(address vToken, uint256 price) public {
-        prices[vToken] = price;
-    }
+  function updateAssetPrice(address asset) external {
+    prices[asset] = prices[asset];
+  }
 
-    function getUnderlyingPrice(address vToken) external view returns (uint256) {
-        return prices[vToken];
-    }
+  function setPrice(address vToken, uint256 price) public {
+    prices[vToken] = price;
+  }
+
+  function getPrice(address asset) external view returns (uint256) {
+    return 0;
+  }
+
+  function getUnderlyingPrice(address vToken) external view returns (uint256) {
+    return prices[vToken];
+  }
 }

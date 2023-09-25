@@ -8,6 +8,7 @@ query MarketById($id: ID!) {
     borrowRateMantissa
     cashMantissa
     collateralFactorMantissa
+    liquidationThresholdMantissa
     exchangeRateMantissa
     interestRateModelAddress
     name

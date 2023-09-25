@@ -1,4 +1,4 @@
-import deployPoolLens from '@venusprotocol/isolated-pools/dist/deploy/004-swap-router';
+import deployPoolLens from '@venusprotocol/isolated-pools/dist/deploy/006-deploy-pool-registry';
 
 deployPoolLens.skip = async () => process.env.PACKAGE !== 'isolated-pools';
 

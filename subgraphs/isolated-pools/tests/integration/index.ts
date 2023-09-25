@@ -1,3 +1,4 @@
+// The first test must deploy the subgraph
 import './pool.ts';
 import './poolRegistry.ts';
-import './vtokens.ts';
+import './vTokens.ts';

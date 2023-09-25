@@ -1,4 +1,4 @@
-import accessControlConfigure from '@venusprotocol/isolated-pools/deploy/008-access-control-configure';
+import accessControlConfigure from '@venusprotocol/isolated-pools/dist/deploy/008-deploy-comptrollers';
 
 accessControlConfigure.skip = async () => process.env.PACKAGE !== 'isolated-pools';
 

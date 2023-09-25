@@ -167,8 +167,6 @@ type AccountVToken @entity {
     id: ID!
     "Relation to market"
     market: Market!
-    "Symbol of the vToken"
-    symbol: String!
     "Relation to user"
     account: Account!
     "Transactions data"

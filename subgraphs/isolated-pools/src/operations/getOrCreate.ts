@@ -86,7 +86,6 @@ export const getOrCreateAccountVTokenTransaction = (
 };
 
 export const getOrCreateAccountVToken = (
-  marketSymbol: string,
   accountAddress: Address,
   marketAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
@@ -95,7 +94,6 @@ export const getOrCreateAccountVToken = (
   let accountVToken = AccountVToken.load(accountVTokenId);
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.symbol = marketSymbol;
     accountVToken.account = accountAddress.toHexString();
     accountVToken.market = marketAddress.toHexString();
     accountVToken.enteredMarket = enteredMarket;

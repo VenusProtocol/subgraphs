@@ -28,6 +28,7 @@ import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate
 import {
   updateAccountVTokenBorrow,
   updateAccountVTokenRepayBorrow,
+  updateAccountVTokenSupply,
   updateAccountVTokenTransferFrom,
   updateAccountVTokenTransferTo,
   updateMarket,
@@ -54,6 +55,15 @@ export function handleMint(event: Mint): void {
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
+  updateAccountVTokenSupply(
+    vTokenAddress,
+    event.params.minter,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.block.number,
+    event.logIndex,
+    suppliedTotal,
+  );
   if (suppliedTotal == event.params.mintTokens) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
@@ -80,6 +90,15 @@ export function handleRedeem(event: Redeem): void {
 
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
+  updateAccountVTokenSupply(
+    vTokenAddress,
+    event.params.redeemer,
+    event.transaction.hash,
+    event.block.timestamp,
+    event.block.number,
+    event.logIndex,
+    currentBalance,
+  );
   if (currentBalance == zeroBigInt32) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
@@ -102,7 +121,6 @@ export function handleBorrow(event: Borrow): void {
 
   updateAccountVTokenBorrow(
     vTokenAddress,
-    market.symbol,
     event.params.borrower,
     event.transaction.hash,
     event.block.timestamp,
@@ -141,7 +159,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   updateAccountVTokenRepayBorrow(
     vTokenAddress,
-    market.symbol,
     event.params.borrower,
     event.transaction.hash,
     event.block.timestamp,
@@ -234,7 +251,6 @@ export function handleTransfer(event: Transfer): void {
 
     updateAccountVTokenTransferFrom(
       vTokenAddress,
-      market.symbol,
       accountFromAddress,
       event.transaction.hash,
       event.block.timestamp,
@@ -256,7 +272,6 @@ export function handleTransfer(event: Transfer): void {
 
     updateAccountVTokenTransferTo(
       vTokenAddress,
-      market.symbol,
       accountToAddress,
       event.transaction.hash,
       event.block.timestamp,

@@ -17,14 +17,12 @@ export const exec = (cmd: string, srcDir: string) => {
 
 // Subgraph Support
 export const fetchSubgraphs = createApolloFetch({
-  uri: process.env.LOCAL ? 'http://127.0.0.1:8030/graphql' : 'http://graph-node:8030/graphql',
+  uri: 'http://graph-node:8030/graphql',
 });
 
 export const fetchSubgraph = (subgraphUser: string, subgraphName: string) => {
   return createApolloFetch({
-    uri: process.env.LOCAL
-      ? `http://127.0.0.1:8000/subgraphs/name/${subgraphUser}/${subgraphName}`
-      : `http://graph-node:8000/subgraphs/name/${subgraphUser}/${subgraphName}`,
+    uri: `http://graph-node:8000/subgraphs/name/${subgraphUser}/${subgraphName}`,
   });
 };
 
@@ -102,7 +100,7 @@ export const deploy = async ({
   exec(`yarn workspace ${packageName} run build:local`, root);
   exec(`yarn workspace ${packageName} run create:local`, root);
   exec(
-    `npx graph deploy ${subgraphAccount}/${subgraphName} --debug --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
+    `npx graph deploy ${subgraphAccount}/${subgraphName} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
     root,
   );
   await waitForSubgraphToBeSynced(syncDelay);

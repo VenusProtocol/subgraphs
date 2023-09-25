@@ -30,7 +30,7 @@
     "pretty": "prettier '**/*.ts' --write",
     "test": "yarn workspaces foreach run test",
     "test:integration": "yarn workspaces foreach run test:integration",
-    "postinstall": "./copy_contracts.sh"
+    "postinstall": "patch-package && ./copy_contracts.sh"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "^3.0.0",
@@ -49,9 +49,9 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@venusprotocol/governance-contracts": "^1.0.0",
-    "@venusprotocol/isolated-pools": "1.0.0",
-    "@venusprotocol/oracle": "^1.4.1",
-    "@venusprotocol/venus-protocol": "^3.0.0-dev.7",
+    "@venusprotocol/isolated-pools": "2.1.0-dev.2",
+    "@venusprotocol/oracle": "^1.7.2",
+    "@venusprotocol/venus-protocol": "^3.1.0",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",
@@ -69,6 +69,7 @@
     "matchstick-as": "^0.5.0",
     "module-alias": "^2.2.2",
     "mustache": "^4.2.0",
+    "patch-package": "6.5.1",
     "prettier": "^2.5.1",
     "prettier-airbnb-config": "^1.0.0",
     "solidity-coverage": "^0.7.21",

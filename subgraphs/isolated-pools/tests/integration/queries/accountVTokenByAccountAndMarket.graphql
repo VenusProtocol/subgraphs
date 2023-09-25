@@ -4,7 +4,6 @@ query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: Strin
     market {
       id
     }
-    symbol
     account {
       id
     }
