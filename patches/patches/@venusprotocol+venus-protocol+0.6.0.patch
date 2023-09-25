@@ -1,0 +1,111 @@
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Comptroller.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Comptroller.sol
+index 918388f..233b6fc 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Comptroller.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Comptroller.sol
+@@ -15,7 +15,7 @@ import "./Unitroller.sol";
+  * @title Venus's Comptroller Contract
+  * @author Venus
+  */
+-contract Comptroller is ComptrollerV10Storage, ComptrollerInterfaceG2, ComptrollerErrorReporter, ExponentialNoError {
++contract CorePoolComptroller is ComptrollerV10Storage, ComptrollerInterfaceG2, ComptrollerErrorReporter, ExponentialNoError {
+     /// @notice Emitted when an admin supports a market
+     event MarketListed(VToken vToken);
+ 
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
+index 4c0ce6c..f18c3a5 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ import "../Oracle/PriceOracle.sol";
+ 
+ contract ComptrollerInterfaceG1 {
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
+index b5a296a..7b104ef 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
+@@ -6,7 +6,8 @@ import "../Tokens/VTokens/VToken.sol";
+ import "../Tokens/EIP20Interface.sol";
+ import "../Oracle/PriceOracle.sol";
+ import "../Utils/ErrorReporter.sol";
+-import "../Comptroller/Comptroller.sol";
++import { ComptrollerLensInterface } from "../Comptroller/ComptrollerLensInterface.sol";
++import { CorePoolComptroller as Comptroller, ComptrollerErrorReporter, ExponentialNoError } from "../Comptroller/Comptroller.sol";
+ import "../Tokens/VAI/VAIControllerInterface.sol";
+ 
+ contract ComptrollerLens is ComptrollerLensInterface, ComptrollerErrorReporter, ExponentialNoError {
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
+index d44d94a..826ce00 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
+@@ -1,9 +1,9 @@
+ pragma solidity ^0.5.16;
+ pragma experimental ABIEncoderV2;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ import "../Utils/SafeMath.sol";
+-import "../Comptroller/Comptroller.sol";
++import { CorePoolComptroller as Comptroller } from "../Comptroller/Comptroller.sol";
+ import "../Tokens/EIP20Interface.sol";
+ import "../Tokens/VTokens/VBep20.sol";
+ 
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
+index 2f472d8..9655f39 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
+@@ -4,9 +4,9 @@ import "../../Oracle/PriceOracle.sol";
+ import "../../Utils/ErrorReporter.sol";
+ import "../../Utils/Exponential.sol";
+ import "../../Comptroller/ComptrollerStorage.sol";
+-import "../../Comptroller/Comptroller.sol";
++import { CorePoolComptroller as Comptroller } from "../../Comptroller/Comptroller.sol";
+ import "../../Governance/IAccessControlManager.sol";
+-import "../VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../VTokens/VToken.sol";
+ import "./VAIControllerStorage.sol";
+ import "./VAIUnitroller.sol";
+ import "./VAI.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
+index 3cc3e70..e7be892 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
+@@ -13,7 +13,7 @@ import "./VTokenInterfaces.sol";
+  * @notice Abstract base for VTokens
+  * @author Venus
+  */
+-contract VToken is VTokenInterface, Exponential, TokenErrorReporter {
++contract CorePoolVToken is VTokenInterface, Exponential, TokenErrorReporter {
+     /**
+      * @notice Initialize the money market
+      * @param comptroller_ The address of the Comptroller
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerHarness.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerHarness.sol
+index f5495f4..362cb61 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerHarness.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerHarness.sol
+@@ -1,6 +1,8 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Comptroller/Comptroller.sol";
++import { UnitrollerAdminStorage } from "../Comptroller/ComptrollerStorage.sol";
++import { Unitroller } from "../Comptroller/Unitroller.sol";
++import { CorePoolComptroller as Comptroller } from "../Comptroller/Comptroller.sol";
+ import "../Oracle/PriceOracle.sol";
+ 
+ contract ComptrollerKovan is Comptroller {
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerScenario.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerScenario.sol
+index 8c247aa..1c6e3db 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerScenario.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerScenario.sol
+@@ -1,6 +1,7 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Comptroller/Comptroller.sol";
++import { CorePoolComptroller as Comptroller } from "../Comptroller/Comptroller.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ 
+ contract ComptrollerScenario is Comptroller {
+     uint public blockNumber;
