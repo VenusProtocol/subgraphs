@@ -16,6 +16,4 @@ const scenarios: DeployFunction = async function (hre: HardhatRuntimeEnvironment
   await pool1Comptroller.connect(addressSigner).enterMarkets(pools[0].vTokens.map(m => m.vToken));
 };
 
-scenarios.skip = async () => process.env.PACKAGE !== 'isolated-pools';
-
 export default scenarios;
