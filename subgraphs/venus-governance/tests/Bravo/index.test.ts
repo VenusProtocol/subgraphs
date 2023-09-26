@@ -17,6 +17,7 @@ import {
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { GOVERNANCE } from '../../src/constants/index';
 import {
+  handleBravoVoteCast,
   handleNewAdmin,
   handleNewGuardian,
   handleNewImplementation,
@@ -28,7 +29,6 @@ import {
   handleProposalMaxOperationsUpdated,
   handleProposalQueued,
   handleProposalThresholdSet,
-  handleVoteCast,
   handleVotingDelaySet,
   handleVotingPeriodSet,
 } from '../../src/mappings/bravo';
@@ -246,7 +246,7 @@ describe('Bravo', () => {
     const reason = 'Good idea!';
     /** run handler */
     const voteCastEvent = createVoteCastBravoEvent(user1, 1, 1, BigInt.fromI64(votes), reason);
-    handleVoteCast(voteCastEvent);
+    handleBravoVoteCast(voteCastEvent);
 
     // Vote
     const assertVoteDocument = (key: string, value: string): void => {

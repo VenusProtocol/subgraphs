@@ -1,6 +1,6 @@
 {
   "network": "hardhat",
-  "accessControlManagerAddress": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  "accessControlManagerAddress": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
   "accessControlManagerStartBlock": "0",
   "governorAlphaAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
   "governorAlphaStartBlock": "0",

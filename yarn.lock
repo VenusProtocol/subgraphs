@@ -5116,7 +5116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/venus-protocol@npm:^3.1.0":
+"@venusprotocol/venus-protocol@npm:3.1.0":
   version: 3.1.0
   resolution: "@venusprotocol/venus-protocol@npm:3.1.0"
   dependencies:
@@ -15772,7 +15772,7 @@ __metadata:
     "@venusprotocol/governance-contracts": ^1.1.0-dev.1
     "@venusprotocol/isolated-pools": 2.1.0-dev.2
     "@venusprotocol/oracle": ^1.7.2
-    "@venusprotocol/venus-protocol": ^3.1.0
+    "@venusprotocol/venus-protocol": 3.1.0
     assemblyscript: 0.19.23
     chai: ^4.3.6
     eslint: ^8.25.0
@@ -16891,9 +16891,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"venus-governance@workspace:subgraphs/venus-governance":
+"venus-governance-subgraph@workspace:subgraphs/venus-governance":
   version: 0.0.0-use.local
-  resolution: "venus-governance@workspace:subgraphs/venus-governance"
+  resolution: "venus-governance-subgraph@workspace:subgraphs/venus-governance"
   dependencies:
     "@graphprotocol/client-cli": ^3.0.0
     apollo-fetch: ^0.7.0

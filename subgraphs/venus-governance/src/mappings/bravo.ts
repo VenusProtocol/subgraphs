@@ -50,7 +50,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
   updateProposalExecuted<ProposalExecuted>(event);
 }
 
-export function handleVoteCast(event: VoteCast): void {
+export function handleBravoVoteCast(event: VoteCast): void {
   createVoteBravo(event);
   const proposalId = event.params.proposalId.toString();
   const proposal = getProposal(proposalId);
