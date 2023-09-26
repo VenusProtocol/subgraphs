@@ -1,5 +1,3 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
-
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate, getOrCreateTokenHolder } from './getOrCreate';
@@ -83,47 +81,3 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
   governance.save();
 }
-
-export const updateSentXvs = (from: Address, amount: BigInt): void => {
-  const governance = getGovernanceEntity();
-  const fromHolderResult = getOrCreateTokenHolder(from.toHexString());
-  const fromHolder = fromHolderResult.entity;
-  const fromHolderPreviousBalance = fromHolder.tokenBalance;
-  fromHolder.tokenBalance = fromHolder.tokenBalance.minus(amount);
-
-  if (fromHolder.tokenBalance < BIGINT_ZERO) {
-    log.error('Negative balance on holder {} with balance {}', [
-      fromHolder.id,
-      fromHolder.tokenBalance.toString(),
-    ]);
-  }
-
-  if (fromHolder.tokenBalance == BIGINT_ZERO && fromHolderPreviousBalance > BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
-    governance.save();
-  } else if (fromHolder.tokenBalance > BIGINT_ZERO && fromHolderPreviousBalance == BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
-    governance.save();
-  }
-
-  fromHolder.save();
-};
-
-export const updateReceivedXvs = (to: Address, amount: BigInt): void => {
-  const governance = getGovernanceEntity();
-  const toHolderResult = getOrCreateTokenHolder(to.toHexString());
-  const toHolder = toHolderResult.entity;
-  const toHolderPreviousBalance = toHolder.tokenBalance;
-  toHolder.tokenBalance = toHolder.tokenBalance.plus(amount);
-  toHolder.totalTokensHeld = toHolder.totalTokensHeld.plus(amount);
-
-  if (toHolder.tokenBalance == BIGINT_ZERO && toHolderPreviousBalance > BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
-    governance.save();
-  } else if (toHolder.tokenBalance > BIGINT_ZERO && toHolderPreviousBalance == BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
-    governance.save();
-  }
-
-  toHolder.save();
-};

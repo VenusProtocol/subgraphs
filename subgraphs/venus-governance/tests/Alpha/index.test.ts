@@ -23,7 +23,7 @@ import {
   handleVoteCast,
 } from '../../src/mappings/alpha';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { getVoteId } from '../../src/utils/ids';
+import { getVoteId } from '../../src/utilities/ids';
 import { user1 } from '../common/constants';
 import {
   createProposalCanceledEvent,
