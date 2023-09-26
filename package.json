@@ -48,7 +48,7 @@
     "@types/mustache": "^4.2.1",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "^1.0.0",
+    "@venusprotocol/governance-contracts": "^1.1.0-dev.1",
     "@venusprotocol/isolated-pools": "2.1.0-dev.2",
     "@venusprotocol/oracle": "^1.7.2",
     "@venusprotocol/venus-protocol": "^3.1.0",
@@ -61,6 +61,7 @@
     "graphql": "16.6.0",
     "graphql-tag": "2.12.6",
     "hardhat": "^2.10.2",
+    "hardhat-dependency-compiler": "^1.1.3",
     "hardhat-deploy": "^0.11.15",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
     "hardhat-gas-reporter": "^1.0.8",
@@ -84,7 +85,6 @@
   },
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {
-    "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers",
-    "@nomiclabs/hardhat-ethers/types": "hardhat-deploy-ethers/types"
+    "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers"
   }
 }

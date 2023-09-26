@@ -1,8 +1,8 @@
 import 'module-alias/register';
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
+import 'hardhat-dependency-compiler';
 import { HardhatUserConfig } from 'hardhat/config';
-import 'module-alias/register';
 
 const compilers = {
   compilers: [
@@ -87,6 +87,13 @@ const config: HardhatUserConfig = {
   paths: {
     sources: `${__dirname}/contracts`,
     artifacts: `${__dirname}/artifacts`,
+  },
+  dependencyCompiler: {
+    paths: [
+      '@venusprotocol/governance-contracts/contracts/Governance/Timelock.sol',
+      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegate.sol',
+      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegator.sol',
+    ],
   },
   // Hardhat deploy
   namedAccounts: {
