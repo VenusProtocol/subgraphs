@@ -165,31 +165,6 @@ dataSources:
         - event: ProposalMaxOperationsUpdated(uint256,uint256)
           handler: handleProposalMaxOperationsUpdated
   - kind: ethereum/contract
-    name: XVSToken
-    network: {{ network }}
-    source:
-      address: "{{ xvsTokenAddress }}"
-      abi: XVSToken
-      startBlock: {{ xvsTokenStartBlock }}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/xvsToken.ts
-      entities:
-        - Delegate
-        - TokenHolder
-      abis:
-        - name: XVSToken
-          file: ../../packages/venus-governance-abis/XVSToken.json
-      eventHandlers:
-        - event: DelegateChanged(indexed address,indexed address,indexed address)
-          handler: handleDelegateChanged
-        - event: DelegateVotesChanged(indexed address,uint256,uint256)
-          handler: handleDelegateVotesChanged
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
-  - kind: ethereum/contract
     name: XVSVault
     network: {{ network }}
     source:

@@ -10,8 +10,6 @@
   "governorBravoDelegateStartBlock": "13729317",
   "governorBravoDelegate2Address": "",
   "governorBravoDelegate2StartBlock": "",
-  "xvsTokenAddress": "0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63",
-  "xvsTokenStartBlock": "858561",
   "xvsVaultAddress": "0x6eF49b4e0772Fe78128F981d42D54172b55eCF9F",
   "xvsVaultStartBlock": "13018718"
 }
