@@ -1,6 +1,6 @@
 {
   "network": "hardhat",
-  "poolRegistryAddress": "0x5bf5b11053e734690269c6b9d438f8c9d48f528a",
+  "poolRegistryAddress": "0xffa7CA1AEEEbBc30C874d32C7e22F052BbEa0429",
   "poolLensAddress": "0x3aade2dcd2df6a8cac689ee797591b2913658659",
   "startBlock": 0
 }
