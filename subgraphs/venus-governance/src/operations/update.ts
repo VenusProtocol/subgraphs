@@ -73,11 +73,11 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   delegate.save();
 
   if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {
-    governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
+    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
   }
   if (newBalance == BIGINT_ZERO) {
-    governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
+    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
   }
-  governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
+  governance.totalVotesMantissa = governance.totalVotesMantissa.plus(votesDifference);
   governance.save();
 }

@@ -2,6 +2,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
+  beforeAll,
   beforeEach,
   clearStore,
   describe,
@@ -14,7 +15,7 @@ import {
   ProposalExecuted,
   ProposalQueued,
 } from '../../generated/GovernorAlpha/GovernorAlpha';
-import { GOVERNANCE } from '../../src/constants';
+import { governorBravoDelegateAddress } from '../../src/constants/addresses';
 import {
   handleProposalCanceled,
   handleProposalCreated,
@@ -32,6 +33,7 @@ import {
   createProposalQueuedEvent,
   createVoteCastAlphaEvent,
 } from '../common/events';
+import { createGovernorBravoMocks } from '../common/mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -40,6 +42,10 @@ const cleanup = (): void => {
 const startBlock = 4563820;
 const endBlock = 4593820;
 const description = 'Very creative Proposal';
+
+beforeAll(() => {
+  createGovernorBravoMocks();
+})
 
 beforeEach(() => {
   getOrCreateDelegate(user1.toHexString());
@@ -111,7 +117,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'QUEUED');
@@ -134,7 +140,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'EXECUTED');

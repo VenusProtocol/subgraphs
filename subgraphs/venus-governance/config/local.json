@@ -8,8 +8,6 @@
   "governorAlpha2StartBlock": "0",
   "governorBravoDelegateAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
   "governorBravoDelegateStartBlock": "0",
-  "governorBravoDelegate2Address": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
-  "governorBravoDelegate2StartBlock": "0",
   "xvsVaultAddress": "0xe1708FA6bb2844D5384613ef0846F9Bc1e8eC55E",
   "xvsVaultStartBlock": "0"
 }

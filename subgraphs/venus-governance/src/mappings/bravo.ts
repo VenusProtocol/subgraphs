@@ -79,7 +79,7 @@ export function handleNewImplementation(event: NewImplementation): void {
 
 export function handleProposalThresholdSet(event: ProposalThresholdSet): void {
   const governance = getGovernanceEntity();
-  governance.proposalThreshold = event.params.newProposalThreshold;
+  governance.proposalThresholdMantissa = event.params.newProposalThreshold;
   governance.save();
 }
 
