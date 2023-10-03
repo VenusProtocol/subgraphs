@@ -49,9 +49,9 @@ export function updateDelegateChanged<E>(event: E): void {
   const newDelegateResult = getOrCreateDelegate(params.toDelegate.toHexString());
   const newDelegate = newDelegateResult.entity;
 
-  oldDelegate.tokenHoldersRepresentedAmount = oldDelegate.tokenHoldersRepresentedAmount - 1;
-  newDelegate.tokenHoldersRepresentedAmount = newDelegate.tokenHoldersRepresentedAmount + 1;
+  oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
   oldDelegate.save();
+  newDelegate.delegateCount = newDelegate.delegateCount + 1;
   newDelegate.save();
 }
 
@@ -65,7 +65,7 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   const newBalance = params.newBalance;
   const votesDifference = newBalance.minus(previousBalance);
 
-  delegate.delegatedVotes = newBalance;
+  delegate.totalVotesMantissa = newBalance;
   delegate.save();
 
   if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {

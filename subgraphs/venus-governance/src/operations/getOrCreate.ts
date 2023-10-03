@@ -11,11 +11,12 @@ export class GetOrCreateDelegateReturn {
 export const getOrCreateDelegate = (id: string): GetOrCreateDelegateReturn => {
   let created = false;
   let delegate = Delegate.load(id);
-
   if (!delegate) {
     delegate = new Delegate(id);
-    delegate.delegatedVotes = BIGINT_ZERO;
-    delegate.tokenHoldersRepresentedAmount = 0;
+    delegate.stakedXvsMantissa = BIGINT_ZERO;
+    delegate.totalVotesMantissa = BIGINT_ZERO;
+    delegate.delegateCount = 0;
+    delegate.delegates = [];
 
     if (id != nullAddress.toString()) {
       const governance = getGovernanceEntity();

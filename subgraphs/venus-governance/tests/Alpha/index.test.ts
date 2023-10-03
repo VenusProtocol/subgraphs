@@ -45,7 +45,7 @@ const description = 'Very creative Proposal';
 
 beforeAll(() => {
   createGovernorBravoMocks();
-})
+});
 
 beforeEach(() => {
   getOrCreateDelegate(user1.toHexString());
@@ -74,8 +74,10 @@ describe('Alpha', () => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
     assertDelegateDocument('id', user1.toHexString());
-    assertDelegateDocument('delegatedVotes', '0');
-    assertDelegateDocument('tokenHoldersRepresentedAmount', '0');
+    assertDelegateDocument('totalVotesMantissa', '0');
+    assertDelegateDocument('delegateCount', '0');
+    assertDelegateDocument('proposals', '[1]');
+    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {

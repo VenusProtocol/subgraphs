@@ -2,6 +2,7 @@ import { BigInt } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
+  beforeAll,
   beforeEach,
   clearStore,
   describe,
@@ -15,6 +16,7 @@ import { handleDelegateChanged } from '../../src/mappings/xvsVault';
 import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
 import { user1, user2, user3 } from '../common/constants';
 import { createDelegateChangedEvent, createProposalCreatedEvent } from '../common/events';
+import { createGovernorBravoMocks } from '../common/mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -23,6 +25,10 @@ const cleanup = (): void => {
 const startBlock = 4563820;
 const endBlock = 4593820;
 const description = 'Very creative Proposal';
+
+beforeAll(() => {
+  createGovernorBravoMocks();
+});
 
 beforeEach(() => {
   /** setup test */
@@ -61,12 +67,12 @@ describe('XVS Vault', () => {
     const assertOldDelegateDocument = (key: string, value: string): void => {
       assert.fieldEquals('Delegate', user2.toHex(), key, value);
     };
-    assertOldDelegateDocument('tokenHoldersRepresentedAmount', '-1');
+    assertOldDelegateDocument('delegateCount', '-1');
 
     // New Delegate
     const assertNewDelegateDocument = (key: string, value: string): void => {
       assert.fieldEquals('Delegate', user3.toHex(), key, value);
     };
-    assertNewDelegateDocument('tokenHoldersRepresentedAmount', '1');
+    assertNewDelegateDocument('delegateCount', '1');
   });
 });

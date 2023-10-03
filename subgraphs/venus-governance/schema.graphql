@@ -10,13 +10,17 @@ type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
   id: ID!
 
-  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the XVS Token"
-  delegatedVotes: BigInt!
+  "Amount of XVS this user has staked"
+  stakedXvsMantissa: BigInt!
+  
+  "Total amount of votes via delegation and staking"
+  totalVotesMantissa: BigInt!
 
-  tokenHoldersRepresentedAmount: Int!
+  "Accounts delegating to this voter"
+  delegateCount: Int!
 
-  "Token holders that this delegate represents"
-  tokenHoldersRepresented: [TokenHolder!]! @derivedFrom(field: "delegate")
+  "Accounts delegating to this voter"
+  delegates: [Delegate!]!
 
   "Votes that a delegate has made in different proposals"
   votes: [Vote!]! @derivedFrom(field: "voter")

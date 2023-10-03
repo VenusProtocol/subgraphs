@@ -1,8 +1,10 @@
 query DelegateById($id: ID!) {
   delegate(id: $id) {
       id
-      delegatedVotes
-      tokenHoldersRepresented {
+      stakedXvsMantissa
+      totalVotesMantissa
+      delegateCount
+      delegates {
         id
       }
       votes {
