@@ -6,20 +6,6 @@ enum ProposalStatus {
   EXECUTED
 }
 
-type TokenHolder @entity {
-  "A TokenHolder is any address that holds any amount of Venus Tokens, the id used is the blockchain address."
-  id: ID!
-
-  "Delegate address of the token holder which will participate in votings. Delegates don't need to hold any tokens and can even be the token holder itself."
-  delegate: Delegate
-
-  "Venus Token balance of this address expressed in the smallest unit of the XVS Token"
-  tokenBalance: BigInt!
-
-  "Total amount of Venus Token ever held by this address expressed in the smallest unit of the XVS Token"
-  totalTokensHeld: BigInt!
-}
-
 type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
   id: ID!

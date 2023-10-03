@@ -18,7 +18,6 @@ dataSources:
       file: ./src/mappings/alpha.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -50,7 +49,6 @@ dataSources:
       file: ./src/mappings/alpha.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -82,7 +80,6 @@ dataSources:
       file: ./src/mappings/bravo.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -130,7 +127,6 @@ dataSources:
       file: ./src/mappings/bravo.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -156,7 +152,6 @@ dataSources:
       file: ./src/mappings/xvsVault.ts
       entities:
         - Delegate
-        - TokenHolder
       abis:
         - name: XVSVault
           file: ../../packages/venus-governance-abis/XVSVault.json

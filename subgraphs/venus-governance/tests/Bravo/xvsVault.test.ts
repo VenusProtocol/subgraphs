@@ -68,41 +68,5 @@ describe('XVS Vault', () => {
       assert.fieldEquals('Delegate', user3.toHex(), key, value);
     };
     assertNewDelegateDocument('tokenHoldersRepresentedAmount', '1');
-
-    // TokenHolder
-    const assertTokenHolderDocument = (key: string, value: string): void => {
-      assert.fieldEquals('TokenHolder', user1.toHex(), key, value);
-    };
-    assertTokenHolderDocument('delegate', user3.toHexString());
-  });
-
-  test('delegate changed', () => {
-    const delegator = user1;
-    const fromDelegate = user2;
-    const toDelegate = user3;
-    /** run handler */
-    const delegateChangedEvent = createDelegateChangedEvent<DelegateChangedV2>(
-      delegator,
-      fromDelegate,
-      toDelegate,
-    );
-    handleDelegateChanged(delegateChangedEvent);
-    // OldDelegate
-    const assertOldDelegateDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Delegate', user2.toHex(), key, value);
-    };
-    assertOldDelegateDocument('tokenHoldersRepresentedAmount', '-1');
-
-    // New Delegate
-    const assertNewDelegateDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Delegate', user3.toHex(), key, value);
-    };
-    assertNewDelegateDocument('tokenHoldersRepresentedAmount', '1');
-
-    // TokenHolder
-    const assertTokenHolderDocument = (key: string, value: string): void => {
-      assert.fieldEquals('TokenHolder', user1.toHex(), key, value);
-    };
-    assertTokenHolderDocument('delegate', user3.toHexString());
   });
 });

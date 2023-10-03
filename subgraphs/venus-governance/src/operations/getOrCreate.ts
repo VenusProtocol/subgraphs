@@ -1,33 +1,7 @@
-import { Delegate, TokenHolder } from '../../generated/schema';
-import { BIGINT_ONE, BIGINT_ZERO, ZERO_ADDRESS } from '../constants';
+import { Delegate } from '../../generated/schema';
+import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
+import { nullAddress } from '../constants/addresses';
 import { getGovernanceEntity } from './get';
-
-export class GetOrCreateTokenHolderReturn {
-  entity: TokenHolder;
-  created: boolean;
-}
-
-export const getOrCreateTokenHolder = (id: string): GetOrCreateTokenHolderReturn => {
-  let created = false;
-  let tokenHolder = TokenHolder.load(id);
-
-  if (!tokenHolder) {
-    tokenHolder = new TokenHolder(id);
-    tokenHolder.tokenBalance = BIGINT_ZERO;
-    tokenHolder.totalTokensHeld = BIGINT_ZERO;
-
-    if (id != ZERO_ADDRESS) {
-      const governance = getGovernanceEntity();
-      governance.totalTokenHolders = governance.totalTokenHolders.plus(BIGINT_ONE);
-      governance.save();
-    }
-
-    tokenHolder.save();
-    created = true;
-  }
-
-  return { entity: tokenHolder as TokenHolder, created };
-};
 
 export class GetOrCreateDelegateReturn {
   entity: Delegate;
@@ -43,7 +17,7 @@ export const getOrCreateDelegate = (id: string): GetOrCreateDelegateReturn => {
     delegate.delegatedVotes = BIGINT_ZERO;
     delegate.tokenHoldersRepresentedAmount = 0;
 
-    if (id != ZERO_ADDRESS) {
+    if (id != nullAddress.toString()) {
       const governance = getGovernanceEntity();
       governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
       governance.totalVoters = governance.totalVoters.plus(BIGINT_ONE);
