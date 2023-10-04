@@ -34,10 +34,10 @@ export const getGovernanceEntity = (): Governance => {
     const normalGovernanceRoute = new GovernanceRoute('0');
     normalGovernanceRoute.governor = governorBravoDelegateAddress;
     normalGovernanceRoute.timelock = normalTimelockAddress;
-    normalGovernanceRoute.queDelay = normalTimelock.delay();
-    normalGovernanceRoute.votingDelay = normalProposalConfig.getVotingDelay();
-    normalGovernanceRoute.votingPeriod = normalProposalConfig.getVotingPeriod();
-    normalGovernanceRoute.proposalThreshold = normalProposalConfig.getProposalThreshold();
+    normalGovernanceRoute.queueDelayBlocks = normalTimelock.delay();
+    normalGovernanceRoute.votingDelayBlocks = normalProposalConfig.getVotingDelay();
+    normalGovernanceRoute.votingPeriodBlocks = normalProposalConfig.getVotingPeriod();
+    normalGovernanceRoute.proposalThresholdMantissa = normalProposalConfig.getProposalThreshold();
     normalGovernanceRoute.save();
     // Fast track
     const fastTrackProposalConfig = governorBravoDelegate2.proposalConfigs(new BigInt(1));
@@ -46,10 +46,11 @@ export const getGovernanceEntity = (): Governance => {
     const fastTrackGovernanceRoute = new GovernanceRoute('1');
     fastTrackGovernanceRoute.governor = governorBravoDelegateAddress;
     fastTrackGovernanceRoute.timelock = fastTrackTimelockAddress;
-    fastTrackGovernanceRoute.queDelay = fastTrackTimelock.delay();
-    fastTrackGovernanceRoute.votingDelay = fastTrackProposalConfig.getVotingDelay();
-    fastTrackGovernanceRoute.votingPeriod = fastTrackProposalConfig.getVotingPeriod();
-    fastTrackGovernanceRoute.proposalThreshold = fastTrackProposalConfig.getProposalThreshold();
+    fastTrackGovernanceRoute.queueDelayBlocks = fastTrackTimelock.delay();
+    fastTrackGovernanceRoute.votingDelayBlocks = fastTrackProposalConfig.getVotingDelay();
+    fastTrackGovernanceRoute.votingPeriodBlocks = fastTrackProposalConfig.getVotingPeriod();
+    fastTrackGovernanceRoute.proposalThresholdMantissa =
+      fastTrackProposalConfig.getProposalThreshold();
     fastTrackGovernanceRoute.save();
     // Critical
     const criticalProposalConfig = governorBravoDelegate2.proposalConfigs(new BigInt(2));
@@ -58,10 +59,11 @@ export const getGovernanceEntity = (): Governance => {
     const criticalGovernanceRoute = new GovernanceRoute('2');
     criticalGovernanceRoute.governor = governorBravoDelegateAddress;
     criticalGovernanceRoute.timelock = criticalTimelockAddress;
-    criticalGovernanceRoute.queDelay = criticalTimelock.delay();
-    criticalGovernanceRoute.votingDelay = criticalProposalConfig.getVotingDelay();
-    criticalGovernanceRoute.votingPeriod = criticalProposalConfig.getVotingPeriod();
-    criticalGovernanceRoute.proposalThreshold = criticalProposalConfig.getProposalThreshold();
+    criticalGovernanceRoute.queueDelayBlocks = criticalTimelock.delay();
+    criticalGovernanceRoute.votingDelayBlocks = criticalProposalConfig.getVotingDelay();
+    criticalGovernanceRoute.votingPeriodBlocks = criticalProposalConfig.getVotingPeriod();
+    criticalGovernanceRoute.proposalThresholdMantissa =
+      criticalProposalConfig.getProposalThreshold();
     criticalGovernanceRoute.save();
   }
 

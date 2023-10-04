@@ -145,13 +145,13 @@ type GovernanceRoute @entity {
   "Address of timelock contract for route"
   timelock: Bytes!
   "Que execution delay in blocks"
-  queueDelay: BigInt!
+  queueDelayBlocks: BigInt!
   "The delay before voting on a proposal may take place, once proposed, in blocks"
-  votingDelay: BigInt!
+  votingDelayBlocks: BigInt!
   "The duration of voting on a proposal, in blocks"
-  votingPeriod: BigInt!
+  votingPeriodBlocks: BigInt!
   "The number of votes required in order for a voter to become a proposer"
-  proposalThreshold: BigInt!
+  proposalThresholdMantissa: BigInt!
 }
 
 enum PermissionStatus {
