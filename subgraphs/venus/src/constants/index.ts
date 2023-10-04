@@ -1,4 +1,5 @@
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+
 import { exponentToBigDecimal } from '../utilities';
 
 export const BORROW = 'BORROW';

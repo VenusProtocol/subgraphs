@@ -16,9 +16,7 @@ import {
   Transfer as TransferEvent,
 } from '../../generated/templates/VToken/VToken';
 
-export const createMarketListedEvent = (
-  vTokenAddress: Address,
-): MarketListedEvent => {
+export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEvent => {
   const event = changetype<MarketListedEvent>(newMockEvent());
 
   event.parameters = [];

@@ -152,6 +152,8 @@ dataSources:
       eventHandlers:
         - event: Deposit(indexed address,indexed address,indexed uint256,uint256)
           handler: handleDeposit
+        - event: ReqestedWithdrawal(indexed address,indexed address,indexed uint256,uint256)
+          handler: handleRequestedWithdrawal
         - event: DelegateChangedV2(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged
         - event: DelegateVotesChangedV2(indexed address,uint256,uint256)

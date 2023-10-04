@@ -1,7 +1,7 @@
 import { Address, log } from '@graphprotocol/graph-ts';
 
 import { Market } from '../../generated/schema';
-import { getMarketId } from '../utilities/ids'
+import { getMarketId } from '../utilities/ids';
 
 export const getMarket = (vTokenAddress: Address): Market | null => {
   const id = getMarketId(vTokenAddress);
