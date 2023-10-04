@@ -29,9 +29,6 @@ import {
   handleProposalExecuted,
   handleProposalMaxOperationsUpdated,
   handleProposalQueued,
-  handleProposalThresholdSet,
-  handleVotingDelaySet,
-  handleVotingPeriodSet,
 } from '../../../src/mappings/bravo';
 import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
 import { getVoteId } from '../../../src/utilities/ids';
@@ -51,9 +48,6 @@ import {
   createNewImplementationEvent,
   createNewPendingAdminEvent,
   createNewProposalMaxOperationsEvent,
-  createNewProposalThresholdEvent,
-  createNewVotingDelayEvent,
-  createNewVotingPeriodEvent,
 } from './events';
 
 const startBlock = 4563820;
@@ -273,42 +267,6 @@ describe('Bravo', () => {
     assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
   });
 
-  test('registers new voting delay', () => {
-    const oldVotingDelay = BigInt.fromI32(1);
-    const newVotingDelay = BigInt.fromI32(2);
-    const votingDelayEvent = createNewVotingDelayEvent(
-      governanceAddress,
-      oldVotingDelay,
-      newVotingDelay,
-    );
-
-    handleVotingDelaySet(votingDelayEvent);
-    assert.fieldEquals(
-      'Governance',
-      governorBravoDelegateAddress.toHex(),
-      'votingDelay',
-      newVotingDelay.toString(),
-    );
-  });
-
-  test('registers new voting period', () => {
-    const oldVotingPeriod = BigInt.fromI32(1);
-    const newVotingPeriod = BigInt.fromI32(2);
-    const votingPeriodEvent = createNewVotingPeriodEvent(
-      governanceAddress,
-      oldVotingPeriod,
-      newVotingPeriod,
-    );
-
-    handleVotingPeriodSet(votingPeriodEvent);
-    assert.fieldEquals(
-      'Governance',
-      governorBravoDelegateAddress.toHex(),
-      'votingPeriod',
-      newVotingPeriod.toString(),
-    );
-  });
-
   test('registers new implementation', () => {
     const oldImplementation = Address.fromString('0x0a00000000000000000000000000000000000000');
     const newImplementation = Address.fromString('0x0b00000000000000000000000000000000000000');
@@ -324,24 +282,6 @@ describe('Bravo', () => {
       governorBravoDelegateAddress.toHex(),
       'implementation',
       newImplementation.toHexString(),
-    );
-  });
-
-  test('registers new proposal threshold', () => {
-    const oldProposalThreshold = BigInt.fromI64(300000000000000000000000);
-    const newProposalThreshold = BigInt.fromI64(500000000000000000000000);
-    const proposalThresholdEvent = createNewProposalThresholdEvent(
-      governanceAddress,
-      oldProposalThreshold,
-      newProposalThreshold,
-    );
-
-    handleProposalThresholdSet(proposalThresholdEvent);
-    assert.fieldEquals(
-      'Governance',
-      governorBravoDelegateAddress.toHex(),
-      'proposalThresholdMantissa',
-      newProposalThreshold.toString(),
     );
   });
 

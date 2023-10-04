@@ -97,14 +97,8 @@ dataSources:
           handler: handleProposalExecuted
         - event: VoteCast(indexed address,uint256,uint8,uint256,string)
           handler: handleBravoVoteCast
-        - event: VotingDelaySet(uint256,uint256)
-          handler: handleVotingDelaySet
-        - event: VotingPeriodSet(uint256,uint256)
-          handler: handleVotingPeriodSet
         - event: NewImplementation(address,address)
           handler: handleNewImplementation
-        - event: ProposalThresholdSet(uint256,uint256)
-          handler: handleProposalThresholdSet
         - event: NewPendingAdmin(address,address)
           handler: handleNewPendingAdmin
         - event: NewAdmin(address,address)

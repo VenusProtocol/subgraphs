@@ -117,21 +117,12 @@ type Governance @entity {
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!
-
-  "The delay before voting on a proposal may take place, once proposed, in blocks"
-  votingDelay: BigInt!
-
-  "The duration of voting on a proposal, in blocks"
-  votingPeriod: BigInt!
   
   "The number of votes required to reach quorum"
   quorumVotesMantissa: BigInt!
   
   "Active brains of Governor"
   implementation: Bytes!
-
-  "The number of votes required in order for a voter to become a proposer"
-  proposalThresholdMantissa: BigInt!
   
   "Pending administrator for this contract"
   pendingAdmin: Bytes

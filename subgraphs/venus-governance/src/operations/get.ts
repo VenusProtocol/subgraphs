@@ -21,10 +21,6 @@ export const getGovernanceEntity = (): Governance => {
     governance.totalVotesMantissa = BIGINT_ZERO;
     governance.proposalsQueued = BIGINT_ZERO;
 
-    governance.votingDelay = governorBravoDelegate2.votingDelay();
-
-    governance.votingPeriod = governorBravoDelegate2.votingPeriod();
-    governance.proposalThresholdMantissa = governorBravoDelegate2.proposalThreshold();
     governance.admin = governorBravoDelegate2.admin();
     governance.implementation = governorBravoDelegate2.implementation();
     governance.guardian = governorBravoDelegate2.guardian();

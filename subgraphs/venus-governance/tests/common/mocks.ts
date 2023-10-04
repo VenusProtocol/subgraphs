@@ -14,27 +14,9 @@ import {
 export const createGovernorBravoMocks = (): void => {
   createMockedFunction(
     governorBravoDelegateAddress,
-    'votingDelay',
-    'votingDelay():(uint256)',
-  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1'))]);
-
-  createMockedFunction(
-    governorBravoDelegateAddress,
-    'votingPeriod',
-    'votingPeriod():(uint256)',
-  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('28800'))]);
-
-  createMockedFunction(
-    governorBravoDelegateAddress,
     'implementation',
     'implementation():(address)',
   ).returns([ethereum.Value.fromAddress(mockImplementationAddress)]);
-
-  createMockedFunction(
-    governorBravoDelegateAddress,
-    'proposalThreshold',
-    'proposalThreshold():(uint256)',
-  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('300000000000000000000000'))]);
 
   createMockedFunction(governorBravoDelegateAddress, 'admin', 'admin():(address)').returns([
     ethereum.Value.fromAddress(mockAdminAddress),
