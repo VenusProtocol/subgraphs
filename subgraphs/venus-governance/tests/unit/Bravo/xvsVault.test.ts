@@ -9,14 +9,14 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { ProposalCreated } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { DelegateChangedV2 } from '../../generated/XVSVault/XVSVault';
-import { handleProposalCreated } from '../../src/mappings/bravo';
-import { handleDelegateChanged } from '../../src/mappings/xvsVault';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { user1, user2, user3 } from '../common/constants';
-import { createDelegateChangedEvent, createProposalCreatedEvent } from '../common/events';
-import { createGovernorBravoMocks } from '../common/mocks';
+import { ProposalCreated } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { DelegateChangedV2 } from '../../../generated/XVSVault/XVSVault';
+import { handleProposalCreated } from '../../../src/mappings/bravo';
+import { handleDelegateChanged } from '../../../src/mappings/xvsVault';
+import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
+import { user1, user2, user3 } from '../../common/constants';
+import { createDelegateChangedEvent, createProposalCreatedEvent } from '../../common/events';
+import { createGovernorBravoMocks } from '../../common/mocks';
 
 const cleanup = (): void => {
   clearStore();

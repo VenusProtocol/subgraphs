@@ -14,26 +14,26 @@ import {
   ProposalCreated,
   ProposalExecuted,
   ProposalQueued,
-} from '../../generated/GovernorAlpha/GovernorAlpha';
-import { governorBravoDelegateAddress } from '../../src/constants/addresses';
+} from '../../../generated/GovernorAlpha/GovernorAlpha';
+import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
 import {
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
   handleProposalQueued,
   handleVoteCast,
-} from '../../src/mappings/alpha';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { getVoteId } from '../../src/utilities/ids';
-import { user1 } from '../common/constants';
+} from '../../../src/mappings/alpha';
+import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
+import { getVoteId } from '../../../src/utilities/ids';
+import { user1 } from '../../common/constants';
 import {
   createProposalCanceledEvent,
   createProposalCreatedEvent,
   createProposalExecutedEvent,
   createProposalQueuedEvent,
   createVoteCastAlphaEvent,
-} from '../common/events';
-import { createGovernorBravoMocks } from '../common/mocks';
+} from '../../common/events';
+import { createGovernorBravoMocks } from '../../common/mocks';
 
 const cleanup = (): void => {
   clearStore();

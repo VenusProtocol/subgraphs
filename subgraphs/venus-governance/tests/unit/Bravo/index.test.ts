@@ -9,14 +9,14 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { ProposalCreated as ProposalCreatedV2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
+import { ProposalCreated as ProposalCreatedV2 } from '../../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import {
   ProposalCanceled,
   ProposalCreated,
   ProposalExecuted,
   ProposalQueued,
-} from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { governorBravoDelegateAddress } from '../../src/constants/addresses';
+} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
 import {
   handleBravoVoteCast,
   handleNewAdmin,
@@ -32,10 +32,10 @@ import {
   handleProposalThresholdSet,
   handleVotingDelaySet,
   handleVotingPeriodSet,
-} from '../../src/mappings/bravo';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { getVoteId } from '../../src/utilities/ids';
-import { user1 } from '../common/constants';
+} from '../../../src/mappings/bravo';
+import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
+import { getVoteId } from '../../../src/utilities/ids';
+import { user1 } from '../../common/constants';
 import {
   createProposalCanceledEvent,
   createProposalCreatedEvent,
@@ -43,8 +43,8 @@ import {
   createProposalExecutedEvent,
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
-} from '../common/events';
-import { createGovernorBravoMocks } from '../common/mocks';
+} from '../../common/events';
+import { createGovernorBravoMocks } from '../../common/mocks';
 import {
   createNewAdminEvent,
   createNewGuardianEvent,

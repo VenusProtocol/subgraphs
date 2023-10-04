@@ -10,7 +10,7 @@ import {
   ProposalThresholdSet,
   VotingDelaySet,
   VotingPeriodSet,
-} from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 
 export function createNewVotingDelayEvent(
   governanceAddress: Address,
