@@ -3,15 +3,15 @@ import { afterEach, assert, clearStore, describe, test } from 'matchstick-as/ass
 import {
   PermissionGranted,
   PermissionRevoked,
-} from '../../generated/AccessControlManager/AccessControlManger';
-import { GRANTED, REVOKED } from '../../src/constants';
+} from '../../../generated/AccessControlManager/AccessControlManger';
+import { GRANTED, REVOKED } from '../../../src/constants';
 import {
   handlePermissionGranted,
   handlePermissionRevoked,
-} from '../../src/mappings/accessControlManager';
-import { getPermissionId } from '../../src/utils/ids';
-import { mockContractAddress, mockFunctionSig, user1 } from '../common/constants';
-import { createPermission } from '../common/events';
+} from '../../../src/mappings/accessControlManager';
+import { getPermissionId } from '../../../src/utilities/ids';
+import { mockContractAddress, mockFunctionSig, user1 } from '../../common/constants';
+import { createPermission } from '../../common/events';
 
 const cleanup = (): void => {
   clearStore();

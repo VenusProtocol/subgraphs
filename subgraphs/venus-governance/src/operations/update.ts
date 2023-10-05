@@ -1,8 +1,6 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
-
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
 import { getGovernanceEntity, getProposal } from './get';
-import { getOrCreateDelegate, getOrCreateTokenHolder } from './getOrCreate';
+import { getOrCreateDelegate } from './getOrCreate';
 
 export const updateProposalStatus = (id: string, status: string): void => {
   const proposal = getProposal(id);
@@ -46,18 +44,14 @@ export function updateProposalExecuted<E>(event: E): void {
 
 export function updateDelegateChanged<E>(event: E): void {
   const params = event.params;
-  const tokenHolderResult = getOrCreateTokenHolder(params.delegator.toHexString());
-  const tokenHolder = tokenHolderResult.entity;
   const oldDelegateResult = getOrCreateDelegate(params.fromDelegate.toHexString());
   const oldDelegate = oldDelegateResult.entity;
   const newDelegateResult = getOrCreateDelegate(params.toDelegate.toHexString());
   const newDelegate = newDelegateResult.entity;
-  tokenHolder.delegate = newDelegate.id;
-  tokenHolder.save();
 
-  oldDelegate.tokenHoldersRepresentedAmount = oldDelegate.tokenHoldersRepresentedAmount - 1;
-  newDelegate.tokenHoldersRepresentedAmount = newDelegate.tokenHoldersRepresentedAmount + 1;
+  oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
   oldDelegate.save();
+  newDelegate.delegateCount = newDelegate.delegateCount + 1;
   newDelegate.save();
 }
 
@@ -71,59 +65,15 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   const newBalance = params.newBalance;
   const votesDifference = newBalance.minus(previousBalance);
 
-  delegate.delegatedVotes = newBalance;
+  delegate.totalVotesMantissa = newBalance;
   delegate.save();
 
   if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {
-    governance.currentDelegates = governance.currentDelegates.plus(BIGINT_ONE);
+    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
   }
   if (newBalance == BIGINT_ZERO) {
-    governance.currentDelegates = governance.currentDelegates.minus(BIGINT_ONE);
+    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
   }
-  governance.delegatedVotes = governance.delegatedVotes.plus(votesDifference);
+  governance.totalVotesMantissa = governance.totalVotesMantissa.plus(votesDifference);
   governance.save();
 }
-
-export const updateSentXvs = (from: Address, amount: BigInt): void => {
-  const governance = getGovernanceEntity();
-  const fromHolderResult = getOrCreateTokenHolder(from.toHexString());
-  const fromHolder = fromHolderResult.entity;
-  const fromHolderPreviousBalance = fromHolder.tokenBalance;
-  fromHolder.tokenBalance = fromHolder.tokenBalance.minus(amount);
-
-  if (fromHolder.tokenBalance < BIGINT_ZERO) {
-    log.error('Negative balance on holder {} with balance {}', [
-      fromHolder.id,
-      fromHolder.tokenBalance.toString(),
-    ]);
-  }
-
-  if (fromHolder.tokenBalance == BIGINT_ZERO && fromHolderPreviousBalance > BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
-    governance.save();
-  } else if (fromHolder.tokenBalance > BIGINT_ZERO && fromHolderPreviousBalance == BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
-    governance.save();
-  }
-
-  fromHolder.save();
-};
-
-export const updateReceivedXvs = (to: Address, amount: BigInt): void => {
-  const governance = getGovernanceEntity();
-  const toHolderResult = getOrCreateTokenHolder(to.toHexString());
-  const toHolder = toHolderResult.entity;
-  const toHolderPreviousBalance = toHolder.tokenBalance;
-  toHolder.tokenBalance = toHolder.tokenBalance.plus(amount);
-  toHolder.totalTokensHeld = toHolder.totalTokensHeld.plus(amount);
-
-  if (toHolder.tokenBalance == BIGINT_ZERO && toHolderPreviousBalance > BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.minus(BIGINT_ONE);
-    governance.save();
-  } else if (toHolder.tokenBalance > BIGINT_ZERO && toHolderPreviousBalance == BIGINT_ZERO) {
-    governance.currentTokenHolders = governance.currentTokenHolders.plus(BIGINT_ONE);
-    governance.save();
-  }
-
-  toHolder.save();
-};

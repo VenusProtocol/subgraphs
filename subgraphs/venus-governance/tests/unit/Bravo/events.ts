@@ -7,58 +7,7 @@ import {
   NewImplementation,
   NewPendingAdmin,
   ProposalMaxOperationsUpdated,
-  ProposalThresholdSet,
-  VotingDelaySet,
-  VotingPeriodSet,
-} from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-
-export function createNewVotingDelayEvent(
-  governanceAddress: Address,
-  oldVotingDelay: BigInt,
-  newVotingDelay: BigInt,
-): VotingDelaySet {
-  const event = changetype<VotingDelaySet>(newMockEvent());
-  event.address = governanceAddress;
-  event.parameters = [];
-
-  const oldVotingDelayParam = new ethereum.EventParam(
-    'oldVotingDelay',
-    ethereum.Value.fromUnsignedBigInt(oldVotingDelay),
-  );
-  event.parameters.push(oldVotingDelayParam);
-
-  const newVotingDelayParam = new ethereum.EventParam(
-    'newVotingDelay',
-    ethereum.Value.fromUnsignedBigInt(newVotingDelay),
-  );
-  event.parameters.push(newVotingDelayParam);
-
-  return event;
-}
-
-export function createNewVotingPeriodEvent(
-  governanceAddress: Address,
-  oldVotingPeriod: BigInt,
-  newVotingPeriod: BigInt,
-): VotingPeriodSet {
-  const event = changetype<VotingPeriodSet>(newMockEvent());
-  event.address = governanceAddress;
-  event.parameters = [];
-
-  const oldVotingPeriodParam = new ethereum.EventParam(
-    'oldVotingPeriod',
-    ethereum.Value.fromUnsignedBigInt(oldVotingPeriod),
-  );
-  event.parameters.push(oldVotingPeriodParam);
-
-  const newVotingPeriodParam = new ethereum.EventParam(
-    'newVotingPeriod',
-    ethereum.Value.fromUnsignedBigInt(newVotingPeriod),
-  );
-  event.parameters.push(newVotingPeriodParam);
-
-  return event;
-}
+} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 
 export function createNewImplementationEvent(
   governanceAddress: Address,
@@ -80,30 +29,6 @@ export function createNewImplementationEvent(
     ethereum.Value.fromAddress(newImplementation),
   );
   event.parameters.push(newImplementationParam);
-
-  return event;
-}
-
-export function createNewProposalThresholdEvent(
-  governanceAddress: Address,
-  oldProposalThreshold: BigInt,
-  newProposalThreshold: BigInt,
-): ProposalThresholdSet {
-  const event = changetype<ProposalThresholdSet>(newMockEvent());
-  event.address = governanceAddress;
-  event.parameters = [];
-
-  const oldProposalThresholdParam = new ethereum.EventParam(
-    'oldProposalThreshold',
-    ethereum.Value.fromUnsignedBigInt(oldProposalThreshold),
-  );
-  event.parameters.push(oldProposalThresholdParam);
-
-  const newProposalThresholdParam = new ethereum.EventParam(
-    'newProposalThreshold',
-    ethereum.Value.fromUnsignedBigInt(newProposalThreshold),
-  );
-  event.parameters.push(newProposalThresholdParam);
 
   return event;
 }

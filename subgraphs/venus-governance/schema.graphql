@@ -6,31 +6,21 @@ enum ProposalStatus {
   EXECUTED
 }
 
-type TokenHolder @entity {
-  "A TokenHolder is any address that holds any amount of Venus Tokens, the id used is the blockchain address."
-  id: ID!
-
-  "Delegate address of the token holder which will participate in votings. Delegates don't need to hold any tokens and can even be the token holder itself."
-  delegate: Delegate
-
-  "Venus Token balance of this address expressed in the smallest unit of the XVS Token"
-  tokenBalance: BigInt!
-
-  "Total amount of Venus Token ever held by this address expressed in the smallest unit of the XVS Token"
-  totalTokensHeld: BigInt!
-}
-
 type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
   id: ID!
 
-  "Amount of votes delegated to this delegate to be used on proposal votings expressed in the smallest unit of the XVS Token"
-  delegatedVotes: BigInt!
+  "Amount of XVS this user has staked"
+  stakedXvsMantissa: BigInt!
+  
+  "Total amount of votes via delegation and staking"
+  totalVotesMantissa: BigInt!
 
-  tokenHoldersRepresentedAmount: Int!
+  "Accounts delegating to this voter"
+  delegateCount: Int!
 
-  "Token holders that this delegate represents"
-  tokenHoldersRepresented: [TokenHolder!]! @derivedFrom(field: "delegate")
+  "Accounts delegating to this voter"
+  delegates: [Delegate!]!
 
   "Votes that a delegate has made in different proposals"
   votes: [Vote!]! @derivedFrom(field: "voter")
@@ -116,35 +106,23 @@ type Governance @entity {
   "Number of proposals created"
   proposals: BigInt!
 
-  "Total number of token holders currently"
-  currentTokenHolders: BigInt!
-
-  "Total number of delegates participating on the governance currently"
-  currentDelegates: BigInt!
-
-  "Total number of token holders"
-  totalTokenHolders: BigInt!
-
-  "Total number of delegates that held delegated votes"
+  "Total number of accounts delegates that can participate in governance by voting or creating proposals"
   totalDelegates: BigInt!
+  
+  "Total number of accounts participating in governance as delegates or by delegating"
+  totalVoters: BigInt!
 
-  "Total number of votes delegated expressed in the smallest unit of the Venus Token"
-  delegatedVotes: BigInt!
+  "Total number of votes delegated expressed in the smallest unit of XVS"
+  totalVotesMantissa: BigInt!
 
   "Number of proposals currently queued for execution"
   proposalsQueued: BigInt!
-
-  "The delay before voting on a proposal may take place, once proposed, in blocks"
-  votingDelay: BigInt!
-
-  "The duration of voting on a proposal, in blocks"
-  votingPeriod: BigInt!
+  
+  "The number of votes required to reach quorum"
+  quorumVotesMantissa: BigInt!
   
   "Active brains of Governor"
   implementation: Bytes!
-
-  "The number of votes required in order for a voter to become a proposer"
-  proposalThreshold: BigInt!
   
   "Pending administrator for this contract"
   pendingAdmin: Bytes
@@ -157,7 +135,23 @@ type Governance @entity {
 
   "The maximum number of actions that can be included in a proposal"
   proposalMaxOperations: BigInt!
+}
 
+type GovernanceRoute @entity {
+  "Index of the governance route"
+  id: ID!
+  "Governor implementation the route belongs to"
+  governor: Bytes!
+  "Address of timelock contract for route"
+  timelock: Bytes!
+  "Queue execution delay in blocks"
+  queueDelayBlocks: BigInt!
+  "The delay before voting on a proposal may take place, once proposed, in blocks"
+  votingDelayBlocks: BigInt!
+  "The duration of voting on a proposal, in blocks"
+  votingPeriodBlocks: BigInt!
+  "The number of votes required in order for a voter to become a proposer"
+  proposalThresholdMantissa: BigInt!
 }
 
 enum PermissionStatus {

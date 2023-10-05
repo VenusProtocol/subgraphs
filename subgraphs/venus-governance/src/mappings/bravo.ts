@@ -9,10 +9,7 @@ import {
   ProposalExecuted,
   ProposalMaxOperationsUpdated,
   ProposalQueued,
-  ProposalThresholdSet,
   VoteCast,
-  VotingDelaySet,
-  VotingPeriodSet,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { ACTIVE, CANCELLED, CRITICAL, FAST_TRACK, NORMAL, PENDING } from '../constants';
 import { createProposal, createVoteBravo } from '../operations/create';
@@ -50,7 +47,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
   updateProposalExecuted<ProposalExecuted>(event);
 }
 
-export function handleVoteCast(event: VoteCast): void {
+export function handleBravoVoteCast(event: VoteCast): void {
   createVoteBravo(event);
   const proposalId = event.params.proposalId.toString();
   const proposal = getProposal(proposalId);
@@ -59,27 +56,9 @@ export function handleVoteCast(event: VoteCast): void {
   }
 }
 
-export function handleVotingDelaySet(event: VotingDelaySet): void {
-  const governance = getGovernanceEntity();
-  governance.votingDelay = event.params.newVotingDelay;
-  governance.save();
-}
-
-export function handleVotingPeriodSet(event: VotingPeriodSet): void {
-  const governance = getGovernanceEntity();
-  governance.votingPeriod = event.params.newVotingPeriod;
-  governance.save();
-}
-
 export function handleNewImplementation(event: NewImplementation): void {
   const governance = getGovernanceEntity();
   governance.implementation = event.params.newImplementation;
-  governance.save();
-}
-
-export function handleProposalThresholdSet(event: ProposalThresholdSet): void {
-  const governance = getGovernanceEntity();
-  governance.proposalThreshold = event.params.newProposalThreshold;
   governance.save();
 }
 

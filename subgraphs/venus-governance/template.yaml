@@ -13,12 +13,11 @@ dataSources:
       startBlock: {{ governorAlphaStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -45,12 +44,11 @@ dataSources:
       startBlock: {{ governorAlpha2StartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -77,12 +75,11 @@ dataSources:
       startBlock: {{ governorBravoDelegateStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
@@ -100,14 +97,8 @@ dataSources:
           handler: handleProposalExecuted
         - event: VoteCast(indexed address,uint256,uint8,uint256,string)
           handler: handleBravoVoteCast
-        - event: VotingDelaySet(uint256,uint256)
-          handler: handleVotingDelaySet
-        - event: VotingPeriodSet(uint256,uint256)
-          handler: handleVotingPeriodSet
         - event: NewImplementation(address,address)
           handler: handleNewImplementation
-        - event: ProposalThresholdSet(uint256,uint256)
-          handler: handleProposalThresholdSet
         - event: NewPendingAdmin(address,address)
           handler: handleNewPendingAdmin
         - event: NewAdmin(address,address)
@@ -120,75 +111,27 @@ dataSources:
     name: GovernorBravoDelegate2
     network: {{ network }}
     source:
-      address: "{{ governorBravoDelegate2Address }}"
+      address: "{{ governorBravoDelegateAddress }}"
       abi: GovernorBravoDelegate2
-      startBlock: {{ governorBravoDelegate2StartBlock }}
+      startBlock: {{ governorBravoDelegateStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
       entities:
         - Delegate
-        - TokenHolder
         - Proposal
         - Vote
         - Governance
       abis:
         - name: GovernorBravoDelegate2
           file: ../../packages/venus-governance-abis/GovernorBravoDelegate2.json
+        - name: Timelock
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/Timelock.sol/Timelock.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string,uint8)
           handler: handleProposalCreatedV2
-        - event: ProposalCanceled(uint256)
-          handler: handleProposalCanceled
-        - event: ProposalQueued(uint256,uint256)
-          handler: handleProposalQueued
-        - event: ProposalExecuted(uint256)
-          handler: handleProposalExecuted
-        - event: VoteCast(indexed address,uint256,uint8,uint256,string)
-          handler: handleBravoVoteCast
-        - event: VotingDelaySet(uint256,uint256)
-          handler: handleVotingDelaySet
-        - event: VotingPeriodSet(uint256,uint256)
-          handler: handleVotingPeriodSet
-        - event: NewImplementation(address,address)
-          handler: handleNewImplementation
-        - event: ProposalThresholdSet(uint256,uint256)
-          handler: handleProposalThresholdSet
-        - event: NewPendingAdmin(address,address)
-          handler: handleNewPendingAdmin
-        - event: NewAdmin(address,address)
-          handler: handleNewAdmin
-        - event: NewGuardian(address,address)
-          handler: handleNewGuardian
-        - event: ProposalMaxOperationsUpdated(uint256,uint256)
-          handler: handleProposalMaxOperationsUpdated
-  - kind: ethereum/contract
-    name: XVSToken
-    network: {{ network }}
-    source:
-      address: "{{ xvsTokenAddress }}"
-      abi: XVSToken
-      startBlock: {{ xvsTokenStartBlock }}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      file: ./src/mappings/xvsToken.ts
-      entities:
-        - Delegate
-        - TokenHolder
-      abis:
-        - name: XVSToken
-          file: ../../packages/venus-governance-abis/XVSToken.json
-      eventHandlers:
-        - event: DelegateChanged(indexed address,indexed address,indexed address)
-          handler: handleDelegateChanged
-        - event: DelegateVotesChanged(indexed address,uint256,uint256)
-          handler: handleDelegateVotesChanged
-        - event: Transfer(indexed address,indexed address,uint256)
-          handler: handleTransfer
   - kind: ethereum/contract
     name: XVSVault
     network: {{ network }}
@@ -198,12 +141,11 @@ dataSources:
       startBlock: {{ xvsVaultStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/xvsVault.ts
       entities:
         - Delegate
-        - TokenHolder
       abis:
         - name: XVSVault
           file: ../../packages/venus-governance-abis/XVSVault.json
@@ -221,7 +163,7 @@ dataSources:
       startBlock: {{ accessControlManagerStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/accessControlManager.ts
       entities:

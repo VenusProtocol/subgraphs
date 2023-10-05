@@ -1,7 +1,7 @@
 import { PermissionGranted } from '../../generated/AccessControlManager/AccessControlManger';
 import { Permission } from '../../generated/schema';
 import { GRANTED, REVOKED } from '../constants';
-import { getPermissionId } from '../utils/ids';
+import { getPermissionId } from '../utilities/ids';
 
 export function createOrUpdatePermission<E>(event: E): Permission {
   const id = getPermissionId(

@@ -1,0 +1,3 @@
+// Use yarn prepare commands to generate config typescript file per env
+
+export const governorBravoDelegateAddress = '{{ governorBravoDelegateAddress }}';

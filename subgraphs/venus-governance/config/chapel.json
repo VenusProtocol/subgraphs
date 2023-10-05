@@ -7,11 +7,7 @@
   "governorAlpha2Address": "0x7116894ed34FC4B27D5b84f46B70Af48397a6C24",
   "governorAlpha2StartBlock": "13584539",
   "governorBravoDelegateAddress": "0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2",
-  "governorBravoDelegateStartBlock": "16002994 ",
-  "governorBravoDelegate2Address": "",
-  "governorBravoDelegate2StartBlock": "",
-  "xvsTokenAddress": "0xB9e0E753630434d7863528cc73CB7AC638a7c8ff",
-  "xvsTokenStartBlock": "2802593",
+  "governorBravoDelegateStartBlock": "16002994",
   "xvsVaultAddress": "0xa4Fd54cACdA379FB7CaA783B83Cc846f8ac0Faa6",
   "xvsVaultStartBlock": "13937802"
 }

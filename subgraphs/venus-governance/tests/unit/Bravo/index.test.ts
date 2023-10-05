@@ -2,21 +2,23 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
+  beforeAll,
   beforeEach,
   clearStore,
   describe,
   test,
 } from 'matchstick-as/assembly/index';
 
-import { ProposalCreated as ProposalCreatedV2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
+import { ProposalCreated as ProposalCreatedV2 } from '../../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import {
   ProposalCanceled,
   ProposalCreated,
   ProposalExecuted,
   ProposalQueued,
-} from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { GOVERNANCE } from '../../src/constants/index';
+} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
 import {
+  handleBravoVoteCast,
   handleNewAdmin,
   handleNewGuardian,
   handleNewImplementation,
@@ -27,14 +29,10 @@ import {
   handleProposalExecuted,
   handleProposalMaxOperationsUpdated,
   handleProposalQueued,
-  handleProposalThresholdSet,
-  handleVoteCast,
-  handleVotingDelaySet,
-  handleVotingPeriodSet,
-} from '../../src/mappings/bravo';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { getVoteId } from '../../src/utils/ids';
-import { user1 } from '../common/constants';
+} from '../../../src/mappings/bravo';
+import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
+import { getVoteId } from '../../../src/utilities/ids';
+import { user1 } from '../../common/constants';
 import {
   createProposalCanceledEvent,
   createProposalCreatedEvent,
@@ -42,16 +40,14 @@ import {
   createProposalExecutedEvent,
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
-} from '../common/events';
+} from '../../common/events';
+import { createGovernorBravoMocks } from '../../common/mocks';
 import {
   createNewAdminEvent,
   createNewGuardianEvent,
   createNewImplementationEvent,
   createNewPendingAdminEvent,
   createNewProposalMaxOperationsEvent,
-  createNewProposalThresholdEvent,
-  createNewVotingDelayEvent,
-  createNewVotingPeriodEvent,
 } from './events';
 
 const startBlock = 4563820;
@@ -62,6 +58,10 @@ const governanceAddress = Address.fromString('0x00000000000000000000000000000000
 const cleanup = (): void => {
   clearStore();
 };
+
+beforeAll(() => {
+  createGovernorBravoMocks();
+});
 
 beforeEach(() => {
   /** setup test */
@@ -107,8 +107,10 @@ describe('Bravo', () => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
     assertDelegateDocument('id', user1.toHexString());
-    assertDelegateDocument('delegatedVotes', '0');
-    assertDelegateDocument('tokenHoldersRepresentedAmount', '0');
+    assertDelegateDocument('totalVotesMantissa', '0');
+    assertDelegateDocument('delegateCount', '0');
+    assertDelegateDocument('proposals', '[1]');
+    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {
@@ -149,8 +151,10 @@ describe('Bravo', () => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
     assertDelegateDocument('id', user1.toHexString());
-    assertDelegateDocument('delegatedVotes', '0');
-    assertDelegateDocument('tokenHoldersRepresentedAmount', '0');
+    assertDelegateDocument('totalVotesMantissa', '0');
+    assertDelegateDocument('delegateCount', '0');
+    assertDelegateDocument('proposals', '[1]');
+    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {
@@ -209,7 +213,7 @@ describe('Bravo', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'QUEUED');
@@ -232,7 +236,7 @@ describe('Bravo', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'EXECUTED');
@@ -246,7 +250,7 @@ describe('Bravo', () => {
     const reason = 'Good idea!';
     /** run handler */
     const voteCastEvent = createVoteCastBravoEvent(user1, 1, 1, BigInt.fromI64(votes), reason);
-    handleVoteCast(voteCastEvent);
+    handleBravoVoteCast(voteCastEvent);
 
     // Vote
     const assertVoteDocument = (key: string, value: string): void => {
@@ -263,32 +267,6 @@ describe('Bravo', () => {
     assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
   });
 
-  test('registers new voting delay', () => {
-    const oldVotingDelay = BigInt.fromI32(1);
-    const newVotingDelay = BigInt.fromI32(2);
-    const votingDelayEvent = createNewVotingDelayEvent(
-      governanceAddress,
-      oldVotingDelay,
-      newVotingDelay,
-    );
-
-    handleVotingDelaySet(votingDelayEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'votingDelay', newVotingDelay.toString());
-  });
-
-  test('registers new voting period', () => {
-    const oldVotingPeriod = BigInt.fromI32(1);
-    const newVotingPeriod = BigInt.fromI32(2);
-    const votingPeriodEvent = createNewVotingPeriodEvent(
-      governanceAddress,
-      oldVotingPeriod,
-      newVotingPeriod,
-    );
-
-    handleVotingPeriodSet(votingPeriodEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'votingPeriod', newVotingPeriod.toString());
-  });
-
   test('registers new implementation', () => {
     const oldImplementation = Address.fromString('0x0a00000000000000000000000000000000000000');
     const newImplementation = Address.fromString('0x0b00000000000000000000000000000000000000');
@@ -299,24 +277,11 @@ describe('Bravo', () => {
     );
 
     handleNewImplementation(newImplementationEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'implementation', newImplementation.toHexString());
-  });
-
-  test('registers new proposal threshold', () => {
-    const oldProposalThreshold = BigInt.fromI64(300000000000000000000000);
-    const newProposalThreshold = BigInt.fromI64(500000000000000000000000);
-    const proposalThresholdEvent = createNewProposalThresholdEvent(
-      governanceAddress,
-      oldProposalThreshold,
-      newProposalThreshold,
-    );
-
-    handleProposalThresholdSet(proposalThresholdEvent);
     assert.fieldEquals(
       'Governance',
-      GOVERNANCE,
-      'proposalThreshold',
-      newProposalThreshold.toString(),
+      governorBravoDelegateAddress.toHex(),
+      'implementation',
+      newImplementation.toHexString(),
     );
   });
 
@@ -330,7 +295,12 @@ describe('Bravo', () => {
     );
 
     handleNewPendingAdmin(pendingAdminEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', newPendingAdmin.toHexString());
+    assert.fieldEquals(
+      'Governance',
+      governorBravoDelegateAddress.toHex(),
+      'pendingAdmin',
+      newPendingAdmin.toHexString(),
+    );
   });
 
   test('registers new admin', () => {
@@ -339,8 +309,13 @@ describe('Bravo', () => {
     const newAdminEvent = createNewAdminEvent(governanceAddress, oldAdmin, newAdmin);
 
     handleNewAdmin(newAdminEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'admin', newAdmin.toHexString());
-    assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', 'null');
+    assert.fieldEquals(
+      'Governance',
+      governorBravoDelegateAddress.toHex(),
+      'admin',
+      newAdmin.toHexString(),
+    );
+    assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), 'pendingAdmin', 'null');
   });
 
   test('registers new guardian', () => {
@@ -349,7 +324,12 @@ describe('Bravo', () => {
     const newGuardianEvent = createNewGuardianEvent(governanceAddress, oldGuardian, newGuardian);
 
     handleNewGuardian(newGuardianEvent);
-    assert.fieldEquals('Governance', GOVERNANCE, 'guardian', newGuardian.toHexString());
+    assert.fieldEquals(
+      'Governance',
+      governorBravoDelegateAddress.toHex(),
+      'guardian',
+      newGuardian.toHexString(),
+    );
   });
 
   test('registers new proposal max operations', () => {
@@ -364,7 +344,7 @@ describe('Bravo', () => {
     handleProposalMaxOperationsUpdated(newProposalMaxOperationsEvent);
     assert.fieldEquals(
       'Governance',
-      GOVERNANCE,
+      governorBravoDelegateAddress.toHex(),
       'proposalMaxOperations',
       newProposalMaxOperations.toString(),
     );

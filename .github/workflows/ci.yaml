@@ -61,18 +61,32 @@ jobs:
         shell: bash
         run: sleep 45s
 
-      - name: Generate graphql types
+      - name: Generate Isolated Pools graphql types
         run: |
-          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run prepare:docker
-          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run codegen
-          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run create:docker
-          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run deploy:docker
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run deploy:docker
           sleep 5s
-          docker exec -i subgraph-hardhat-node  yarn workspace isolated-pools-subgraph run generate-subgraph-types
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run generate-subgraph-types
       
-      - name: Run integration tests
+      - name: Run Isolated Pools integration integration tests
         run: |
           docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration
+      
+      - name: Generate Governance graphql types
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run prepare:local
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run deploy:docker
+          sleep 5s
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run generate-subgraph-types
+      
+      # @TODO - turn on once the integration tests pass
+      # - name: Run Governance integration integration tests
+      #   run: |
+      #     docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration
       
       - name: Stop containers
         if: always()

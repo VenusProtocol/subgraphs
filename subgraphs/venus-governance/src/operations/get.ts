@@ -1,31 +1,70 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { BigInt, log } from '@graphprotocol/graph-ts';
 
-import { Delegate, Governance, Proposal } from '../../generated/schema';
-import { BIGINT_ONE, BIGINT_ZERO, GOVERNANCE } from '../constants';
+import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
+import { Timelock } from '../../generated/GovernorBravoDelegate2/Timelock';
+import { Delegate, Governance, GovernanceRoute, Proposal } from '../../generated/schema';
+import { BIGINT_ZERO } from '../constants';
+import { governorBravoDelegateAddress } from '../constants/addresses';
 
 /**
- * While techinically this function does also create, we don't care because it only happens once as the id is a constant.
+ * While technically this function does also create, we don't care because it only happens once as the id is a constant.
  * @returns Governance
  */
 export const getGovernanceEntity = (): Governance => {
-  let governance = Governance.load(GOVERNANCE);
+  let governance = Governance.load(governorBravoDelegateAddress.toHex());
   if (!governance) {
-    governance = new Governance(GOVERNANCE);
+    const governorBravoDelegate2 = GovernorBravoDelegate2.bind(governorBravoDelegateAddress);
+    governance = new Governance(governorBravoDelegateAddress.toHex());
     governance.proposals = BIGINT_ZERO;
-    governance.totalTokenHolders = BIGINT_ZERO;
-    governance.currentTokenHolders = BIGINT_ZERO;
-    governance.currentDelegates = BIGINT_ZERO;
     governance.totalDelegates = BIGINT_ZERO;
-    governance.delegatedVotes = BIGINT_ZERO;
+    governance.totalVoters = BIGINT_ZERO;
+    governance.totalVotesMantissa = BIGINT_ZERO;
     governance.proposalsQueued = BIGINT_ZERO;
-    // defaulting to Governor Bravo constructor defaults
-    governance.votingDelay = BIGINT_ONE;
-    governance.votingPeriod = BigInt.fromI64(86400);
-    governance.implementation = Address.fromString('0x18df46ec843e79d9351b57f85af7d69aec0d7eff');
-    governance.proposalThreshold = BigInt.fromI64(300000000000000000000000);
-    governance.admin = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
-    governance.guardian = Address.fromString('0x1c2cac6ec528c20800b2fe734820d87b581eaa6b');
-    governance.proposalMaxOperations = BigInt.fromI32(10);
+
+    governance.admin = governorBravoDelegate2.admin();
+    governance.implementation = governorBravoDelegate2.implementation();
+    governance.guardian = governorBravoDelegate2.guardian();
+    governance.quorumVotesMantissa = governorBravoDelegate2.quorumVotes();
+    governance.proposalMaxOperations = governorBravoDelegate2.proposalMaxOperations();
+    // Governance Routes are set in initialization
+    // Normal
+    const normalProposalConfig = governorBravoDelegate2.proposalConfigs(new BigInt(0));
+    const normalTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(0));
+    const normalTimelock = Timelock.bind(normalTimelockAddress);
+    const normalGovernanceRoute = new GovernanceRoute('0');
+    normalGovernanceRoute.governor = governorBravoDelegateAddress;
+    normalGovernanceRoute.timelock = normalTimelockAddress;
+    normalGovernanceRoute.queueDelayBlocks = normalTimelock.delay();
+    normalGovernanceRoute.votingDelayBlocks = normalProposalConfig.getVotingDelay();
+    normalGovernanceRoute.votingPeriodBlocks = normalProposalConfig.getVotingPeriod();
+    normalGovernanceRoute.proposalThresholdMantissa = normalProposalConfig.getProposalThreshold();
+    normalGovernanceRoute.save();
+    // Fast track
+    const fastTrackProposalConfig = governorBravoDelegate2.proposalConfigs(new BigInt(1));
+    const fastTrackTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(1));
+    const fastTrackTimelock = Timelock.bind(normalTimelockAddress);
+    const fastTrackGovernanceRoute = new GovernanceRoute('1');
+    fastTrackGovernanceRoute.governor = governorBravoDelegateAddress;
+    fastTrackGovernanceRoute.timelock = fastTrackTimelockAddress;
+    fastTrackGovernanceRoute.queueDelayBlocks = fastTrackTimelock.delay();
+    fastTrackGovernanceRoute.votingDelayBlocks = fastTrackProposalConfig.getVotingDelay();
+    fastTrackGovernanceRoute.votingPeriodBlocks = fastTrackProposalConfig.getVotingPeriod();
+    fastTrackGovernanceRoute.proposalThresholdMantissa =
+      fastTrackProposalConfig.getProposalThreshold();
+    fastTrackGovernanceRoute.save();
+    // Critical
+    const criticalProposalConfig = governorBravoDelegate2.proposalConfigs(new BigInt(2));
+    const criticalTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(2));
+    const criticalTimelock = Timelock.bind(normalTimelockAddress);
+    const criticalGovernanceRoute = new GovernanceRoute('2');
+    criticalGovernanceRoute.governor = governorBravoDelegateAddress;
+    criticalGovernanceRoute.timelock = criticalTimelockAddress;
+    criticalGovernanceRoute.queueDelayBlocks = criticalTimelock.delay();
+    criticalGovernanceRoute.votingDelayBlocks = criticalProposalConfig.getVotingDelay();
+    criticalGovernanceRoute.votingPeriodBlocks = criticalProposalConfig.getVotingPeriod();
+    criticalGovernanceRoute.proposalThresholdMantissa =
+      criticalProposalConfig.getProposalThreshold();
+    criticalGovernanceRoute.save();
   }
 
   return governance as Governance;

@@ -1,17 +1,13 @@
 {
-  "network": "bsc",
+  "network": "hardhat",
   "accessControlManagerAddress": "0xc5a5C42992dECbae36851359345FE25997F5C42d",
   "accessControlManagerStartBlock": "0",
-  "governorAlphaAddress": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+  "governorAlphaAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
   "governorAlphaStartBlock": "0",
-  "governorAlpha2Address": "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
+  "governorAlpha2Address": "0x0fe4223AD99dF788A6Dcad148eB4086E6389cEB6",
   "governorAlpha2StartBlock": "0",
-  "governorBravoDelegateAddress": "0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2",
-  "governorBravoDelegateStartBlock": "16002994",
-  "governorBravoDelegate2Address": "0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2",
-  "governorBravoDelegate2StartBlock": "16002994",
-  "xvsTokenAddress": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-  "xvsTokenStartBlock": "0",
-  "xvsVaultAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  "governorBravoDelegateAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
+  "governorBravoDelegateStartBlock": "0",
+  "xvsVaultAddress": "0xe1708FA6bb2844D5384613ef0846F9Bc1e8eC55E",
   "xvsVaultStartBlock": "0"
 }

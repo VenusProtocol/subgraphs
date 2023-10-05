@@ -8,7 +8,7 @@ import { deploy, exec, normalizeMantissa, waitForSubgraphToBeSynced } from 'venu
 
 import subgraphClient from '../../subgraph-client/index';
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from './utils/constants';
-import deployFixtures from './utils/deploy';
+import deployFixtures from './utils/fixtures';
 import { enfranchiseAccount } from './utils/voter';
 
 describe('Governance', function () {
@@ -25,7 +25,7 @@ describe('Governance', function () {
     const root = `${__dirname}/../..`;
     await deploy({
       root,
-      packageName: 'venus-governance',
+      packageName: 'venus-governance-subgraph',
       subgraphAccount: SUBGRAPH_ACCOUNT,
       subgraphName: SUBGRAPH_NAME,
       syncDelay: SYNC_DELAY,

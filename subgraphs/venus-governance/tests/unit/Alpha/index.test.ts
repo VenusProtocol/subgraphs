@@ -2,6 +2,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
+  beforeAll,
   beforeEach,
   clearStore,
   describe,
@@ -13,25 +14,26 @@ import {
   ProposalCreated,
   ProposalExecuted,
   ProposalQueued,
-} from '../../generated/GovernorAlpha/GovernorAlpha';
-import { GOVERNANCE } from '../../src/constants';
+} from '../../../generated/GovernorAlpha/GovernorAlpha';
+import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
 import {
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
   handleProposalQueued,
   handleVoteCast,
-} from '../../src/mappings/alpha';
-import { getOrCreateDelegate } from '../../src/operations/getOrCreate';
-import { getVoteId } from '../../src/utils/ids';
-import { user1 } from '../common/constants';
+} from '../../../src/mappings/alpha';
+import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
+import { getVoteId } from '../../../src/utilities/ids';
+import { user1 } from '../../common/constants';
 import {
   createProposalCanceledEvent,
   createProposalCreatedEvent,
   createProposalExecutedEvent,
   createProposalQueuedEvent,
   createVoteCastAlphaEvent,
-} from '../common/events';
+} from '../../common/events';
+import { createGovernorBravoMocks } from '../../common/mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -40,6 +42,10 @@ const cleanup = (): void => {
 const startBlock = 4563820;
 const endBlock = 4593820;
 const description = 'Very creative Proposal';
+
+beforeAll(() => {
+  createGovernorBravoMocks();
+});
 
 beforeEach(() => {
   getOrCreateDelegate(user1.toHexString());
@@ -68,8 +74,10 @@ describe('Alpha', () => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
     assertDelegateDocument('id', user1.toHexString());
-    assertDelegateDocument('delegatedVotes', '0');
-    assertDelegateDocument('tokenHoldersRepresentedAmount', '0');
+    assertDelegateDocument('totalVotesMantissa', '0');
+    assertDelegateDocument('delegateCount', '0');
+    assertDelegateDocument('proposals', '[1]');
+    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {
@@ -111,7 +119,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'QUEUED');
@@ -134,7 +142,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', GOVERNANCE, key, value);
+      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'EXECUTED');

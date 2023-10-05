@@ -6,6 +6,7 @@ import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import { defaultPools } from './constants';
+import deploy from './utils/deploy';
 
 describe('Pool Registry', function () {
   let root: SignerWithAddress;
@@ -20,6 +21,8 @@ describe('Pool Registry', function () {
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
+
+    await deploy();
 
     [root] = await ethers.getSigners();
     poolRegistry = await ethers.getContract('PoolRegistry');
@@ -45,19 +48,22 @@ describe('Pool Registry', function () {
   it('indexes pool registry events', async function () {
     const { data } = await subgraphClient.getPools();
     const { pools } = data!;
+
     expect(pools.length).to.equal(2);
-    pools.forEach((pool, idx) => {
-      expect(pool.id).to.be.equal(defaultPools[idx].id);
-      expect(pool.name).to.be.equal(defaultPools[idx].name);
-      expect(pool.creator).to.be.equal(defaultPools[idx].creator);
+
+    pools.forEach(pool => {
+      const defaultPool = defaultPools.find(dp => pool.id === dp.id);
+      expect(pool.id).to.be.equal(defaultPool?.id);
+      expect(pool.name).to.be.equal(defaultPool?.name);
+      expect(pool.creator).to.be.equal(defaultPool?.creator);
       expect(pool.blockPosted).to.be.string;
-      expect(pool.category).to.be.equal(defaultPools[idx].category);
-      expect(pool.logoUrl).to.be.equal(defaultPools[idx].logoUrl);
-      expect(pool.description).to.be.equal(defaultPools[idx].description);
-      expect(pool.priceOracleAddress).to.be.equal(defaultPools[idx].priceOracleAddress);
-      expect(pool.closeFactorMantissa).to.be.equal(defaultPools[idx].closeFactorMantissa);
+      expect(pool.category).to.be.equal(defaultPool?.category);
+      expect(pool.logoUrl).to.be.equal(defaultPool?.logoUrl);
+      expect(pool.description).to.be.equal(defaultPool?.description);
+      expect(pool.priceOracleAddress).to.be.equal(defaultPool?.priceOracleAddress);
+      expect(pool.closeFactorMantissa).to.be.equal(defaultPool?.closeFactorMantissa);
       expect(pool.liquidationIncentiveMantissa).to.be.equal(
-        defaultPools[idx].liquidationIncentiveMantissa,
+        defaultPool?.liquidationIncentiveMantissa,
       );
     });
   });

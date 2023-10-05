@@ -97,10 +97,10 @@ export const deploy = async ({
   console.log('Build and deploy subgraph...');
   exec(`yarn workspace ${packageName} run prepare:local`, root);
   exec(`yarn workspace ${packageName} run codegen`, root);
-  exec(`yarn workspace ${packageName} run build:local`, root);
-  exec(`yarn workspace ${packageName} run create:local`, root);
+  exec(`yarn workspace ${packageName} run build:docker`, root);
+  exec(`yarn workspace ${packageName} run create:docker`, root);
   exec(
-    `npx graph deploy ${subgraphAccount}/${subgraphName} --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/ --version-label ${Date.now().toString()}`,
+    `npx graph deploy ${subgraphAccount}/${subgraphName} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ${Date.now().toString()}`,
     root,
   );
   await waitForSubgraphToBeSynced(syncDelay);

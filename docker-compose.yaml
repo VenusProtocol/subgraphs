@@ -16,7 +16,7 @@ services:
       postgres:
         condition: service_started
     healthcheck:
-        test: ["CMD", "curl", "-f", "http://localhost:8000"]
+        test: ["CMD", "curl", "-f", "http://graph-node:8000"]
         interval: 30s
         timeout: 12s
         retries: 10
@@ -45,7 +45,6 @@ services:
     volumes:
       - ./:/usr/app
       - /usr/app/node_modules
-      - /usr/app/contracts
     restart: always
     healthcheck:
         test: ["CMD", "node", "./hardhat-healthcheck.js"]

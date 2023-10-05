@@ -4,7 +4,7 @@ import { VoteCast as VoteCastAlpha } from '../../generated/GovernorAlpha/Governo
 import { VoteCast as VoteCastBravo } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { Proposal, Vote } from '../../generated/schema';
 import { ABSTAIN, ACTIVE, AGAINST, BIGINT_ONE, FOR, NORMAL, PENDING } from '../constants';
-import { getVoteId } from '../utils/ids';
+import { getVoteId } from '../utilities/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
 export function createProposal<E>(event: E): Proposal {
