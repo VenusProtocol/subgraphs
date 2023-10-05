@@ -1,28 +1,28 @@
-import { loadFixture, mine } from '@nomicfoundation/hardhat-network-helpers';
+import { mine } from '@nomicfoundation/hardhat-network-helpers';
 import '@nomiclabs/hardhat-ethers';
 import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import { deploy, exec, normalizeMantissa, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { deploy, scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from './utils/constants';
-import deployFixtures from './utils/fixtures';
 import { enfranchiseAccount } from './utils/voter';
 
 describe('Governance', function () {
   let signers: SignerWithAddress[];
   let governorAlpha: Contract;
   let governorAlpha2: Contract;
-  let xvs: Contract;
-  let xvsVault: Contract;
 
   before(async function () {
     this.timeout(50000000); // sometimes it takes a long time
-    ({ governorAlpha, governorAlpha2, xvs, xvsVault } = await loadFixture(deployFixtures));
+    governorAlpha = await ethers.getContract('GovernorAlpha');
+    governorAlpha2 = await ethers.getContract('GovernorAlpha2');
     signers = await ethers.getSigners();
+
     const root = `${__dirname}/../..`;
+
     await deploy({
       root,
       packageName: 'venus-governance-subgraph',
@@ -32,18 +32,12 @@ describe('Governance', function () {
     });
 
     const [_, user1, user2, user3, user4] = signers;
-    await enfranchiseAccount(xvs, xvsVault, user1, normalizeMantissa(10e4, 1e18));
-    await enfranchiseAccount(xvs, xvsVault, user2, normalizeMantissa(20e4, 1e18));
-    await enfranchiseAccount(xvs, xvsVault, user3, normalizeMantissa(30e4, 1e18));
-    await enfranchiseAccount(xvs, xvsVault, user4, normalizeMantissa(40e4, 1e18));
-  });
 
-  after(async function () {
-    process.stdout.write('Clean up, removing subgraph....');
-
-    exec(`yarn remove:local`, __dirname);
-
-    process.stdout.write('Clean up complete.');
+    await enfranchiseAccount(user1, scaleValue(100000, 18));
+    await enfranchiseAccount(user2, scaleValue(200000, 18));
+    await enfranchiseAccount(user3, scaleValue(300000, 18));
+    await enfranchiseAccount(user4, scaleValue(400000, 18));
+    await waitForSubgraphToBeSynced(SYNC_DELAY);
   });
 
   describe('Alpha', function () {
@@ -67,7 +61,6 @@ describe('Governance', function () {
       const {
         data: { proposal },
       } = await subgraphClient.getProposalById('1');
-
       expect(proposal.id).to.be.equal('1');
       expect(proposal.description).to.be.equal('Test proposal 1');
       expect(proposal.status).to.be.equal('PENDING');
@@ -109,7 +102,7 @@ describe('Governance', function () {
 
       expect(delegate1.votes[0].id).to.equal(`${user1.address.toLowerCase()}-0x1`);
       expect(delegate1.votes[0].support).to.equal('AGAINST');
-      expect(delegate1.votes[0].votes).to.equal('116807000000000000000000');
+      expect(delegate1.votes[0].votes).to.equal('100000000000000000000000');
       expect(delegate1.proposals).to.deep.equal([]);
 
       const {
@@ -135,9 +128,9 @@ describe('Governance', function () {
   describe('Alpha2', function () {
     it('indexes created proposals - alpha2', async function () {
       const [_, user1] = signers;
-      await enfranchiseAccount(xvs, xvsVault, user1, normalizeMantissa(40e4, 1e18));
+      await enfranchiseAccount(user1, scaleValue(600000, 18));
 
-      const callData = ethers.utils.defaultAbiCoder.encode(['address'], [governorAlpha.address]);
+      const callData = ethers.utils.defaultAbiCoder.encode(['address'], [governorAlpha2.address]);
 
       const vip = [
         ['0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'], // targets
@@ -172,10 +165,9 @@ describe('Governance', function () {
   describe('Permission events', function () {
     it('indexes permission granted events', async function () {
       const { data } = await subgraphClient.getPermissions();
-      expect(data).to.not.be.equal(undefined);
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(7);
+      expect(permissions.length).to.be.equal(12);
 
       permissions.forEach(pe => {
         expect(pe.type).to.be.equal('GRANTED');
@@ -193,10 +185,9 @@ describe('Governance', function () {
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
       const { data } = await subgraphClient.getPermissions();
-      expect(data).to.not.be.equal(undefined);
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(8);
+      expect(permissions.length).to.be.equal(13);
 
       expect(permissions[0].type).to.be.equal('REVOKED');
     });
@@ -212,10 +203,9 @@ describe('Governance', function () {
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
       const { data } = await subgraphClient.getPermissions();
-      expect(data).to.not.be.equal(undefined);
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(8);
+      expect(permissions.length).to.be.equal(13);
 
       expect(permissions[0].type).to.be.equal('GRANTED');
     });

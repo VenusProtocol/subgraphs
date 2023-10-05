@@ -24,6 +24,8 @@ dataSources:
       abis:
         - name: GovernorAlpha
           file: ../../packages/venus-governance-abis/GovernorAlpha.json
+        - name: GovernorBravoDelegate2
+          file: ../../packages/venus-governance-abis/GovernorBravoDelegate2.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleProposalCreated
@@ -55,6 +57,8 @@ dataSources:
       abis:
         - name: GovernorAlpha2
           file: ../../packages/venus-governance-abis/GovernorAlpha2.json
+        - name: GovernorBravoDelegate2
+          file: ../../packages/venus-governance-abis/GovernorBravoDelegate2.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleProposalCreated
@@ -86,6 +90,8 @@ dataSources:
       abis:
         - name: GovernorBravoDelegate
           file: ../../packages/venus-governance-abis/GovernorBravoDelegate.json
+        - name: GovernorBravoDelegate2
+          file: ../../packages/venus-governance-abis/GovernorBravoDelegate2.json
       eventHandlers:
         - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
           handler: handleProposalCreated

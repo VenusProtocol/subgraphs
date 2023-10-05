@@ -82,11 +82,10 @@ jobs:
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run deploy:docker
           sleep 5s
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run generate-subgraph-types
-      
-      # @TODO - turn on once the integration tests pass
-      # - name: Run Governance integration integration tests
-      #   run: |
-      #     docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration
+
+      - name: Run Governance integration integration tests
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration
       
       - name: Stop containers
         if: always()
