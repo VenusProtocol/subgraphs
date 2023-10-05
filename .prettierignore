@@ -6,3 +6,4 @@ hardhat.config.ts
 /subgraphs/venus-governance/subgraph-client/.graphclient
 typechain-types
 
+/subgraphs/venus-governance/tests/integration/index.ts
