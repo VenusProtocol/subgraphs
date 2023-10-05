@@ -73,7 +73,7 @@ jobs:
       
       - name: Run Isolated Pools integration integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration --bail
       
       - name: Stop containers
         if: always()
@@ -106,7 +106,7 @@ jobs:
 
       - name: Run Governance integration integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration --bail
       
       - name: Stop containers
         if: always()
