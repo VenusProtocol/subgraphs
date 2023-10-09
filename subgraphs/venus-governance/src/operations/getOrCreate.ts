@@ -16,7 +16,6 @@ export const getOrCreateDelegate = (id: string): GetOrCreateDelegateReturn => {
     delegate.stakedXvsMantissa = BIGINT_ZERO;
     delegate.totalVotesMantissa = BIGINT_ZERO;
     delegate.delegateCount = 0;
-    delegate.delegates = [];
 
     if (id != nullAddress.toHex()) {
       const governance = getGovernanceEntity();

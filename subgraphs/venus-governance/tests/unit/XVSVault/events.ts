@@ -1,8 +1,8 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import { Deposit, ReqestedWithdrawal } from '../../generated/XVSVault/XVSVault';
-import { mockXvsAddress } from '../common/constants';
+import { Deposit, RequestedWithdrawal } from '../../../generated/XVSVault/XVSVault';
+import { mockXvsAddress } from '../../common/constants';
 
 export function createXvsDepositEvent(user: Address, amount: BigInt): Deposit {
   const event = changetype<Deposit>(newMockEvent());
@@ -28,8 +28,8 @@ export function createXvsDepositEvent(user: Address, amount: BigInt): Deposit {
 export function createXvsWithdrawlRequestedEvent(
   user: Address,
   amount: BigInt,
-): ReqestedWithdrawal {
-  const event = changetype<ReqestedWithdrawal>(newMockEvent());
+): RequestedWithdrawal {
+  const event = changetype<RequestedWithdrawal>(newMockEvent());
   event.parameters = [];
 
   const userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user));

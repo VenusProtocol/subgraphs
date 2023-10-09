@@ -110,7 +110,6 @@ describe('Bravo', () => {
     assertDelegateDocument('totalVotesMantissa', '0');
     assertDelegateDocument('delegateCount', '0');
     assertDelegateDocument('proposals', '[1]');
-    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {
@@ -154,7 +153,6 @@ describe('Bravo', () => {
     assertDelegateDocument('totalVotesMantissa', '0');
     assertDelegateDocument('delegateCount', '0');
     assertDelegateDocument('proposals', '[1]');
-    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {

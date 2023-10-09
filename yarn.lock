@@ -5055,17 +5055,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/governance-contracts@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "@venusprotocol/governance-contracts@npm:0.0.2"
-  checksum: 101ade6013fe3963968d37ff839a4c62aeaedd9f26d8c5ae47bdc413e6c61732b4048a1b026e4281ade5676fb1545a49ecac299f6b669a9f0c7e73723666d7e1
-  languageName: node
-  linkType: hard
-
-"@venusprotocol/governance-contracts@npm:^1.1.0-dev.1":
-  version: 1.1.0-dev.1
-  resolution: "@venusprotocol/governance-contracts@npm:1.1.0-dev.1"
-  checksum: 314335686f1073dfff01ecf761a79ef64e9ee0c7451780a55bc66866336f1295735f24eb1e9ac11da120a12f50d9a5d1c7f831f92231c9468db695818dc15a5b
+"@venusprotocol/governance-contracts@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@venusprotocol/governance-contracts@npm:1.3.0"
+  checksum: 9cbc44e5fffd2f33e273c96e3f77b2d9afe254b3f8c22533eecb96f79011715afafd72f2a716bab5509164fa4f3e0629b94450f16619bba221d8d5a9e632b610
   languageName: node
   linkType: hard
 
@@ -5084,23 +5077,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/oracle@npm:^1.7.2":
-  version: 1.7.2
-  resolution: "@venusprotocol/oracle@npm:1.7.2"
+"@venusprotocol/oracle@npm:^1.7.3-dev.1":
+  version: 1.7.3-dev.1
+  resolution: "@venusprotocol/oracle@npm:1.7.3-dev.1"
   dependencies:
     "@chainlink/contracts": ^0.5.1
     "@defi-wonderland/smock": ^2.3.4
     "@nomicfoundation/hardhat-network-helpers": ^1.0.8
     "@openzeppelin/contracts": ^4.6.0
     "@openzeppelin/contracts-upgradeable": ^4.7.3
-    "@venusprotocol/governance-contracts": ^0.0.2
+    "@venusprotocol/governance-contracts": ^1.3.0
     "@venusprotocol/venus-protocol": 0.7.0
     ethers: ^5.6.8
     hardhat: ^2.16.1
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
     solidity-docgen: ^0.6.0-beta.29
-  checksum: 71dc7faf761e110cda526dabbe2ac7bdda40849cccb6473647cf80edd6940e1cbe02528c270f83e9d14c7815cdfaf736a1acef3c8896cf04926f72a8c53ff9df
+  checksum: ae803c39e8fddeccff6d14c79d4a0974b6c910d45f16302870bfbb1d4374f56e19295d17ffb83eacb6fd3a1e4941f0200592ca729e493b2df691eb4ba4b0c34b
   languageName: node
   linkType: hard
 
@@ -15769,9 +15762,9 @@ __metadata:
     "@types/mustache": ^4.2.1
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/governance-contracts": ^1.1.0-dev.1
+    "@venusprotocol/governance-contracts": ^1.3.0
     "@venusprotocol/isolated-pools": 2.1.0-dev.2
-    "@venusprotocol/oracle": ^1.7.2
+    "@venusprotocol/oracle": ^1.7.3-dev.1
     "@venusprotocol/venus-protocol": 3.1.0
     assemblyscript: 0.19.23
     chai: ^4.3.6

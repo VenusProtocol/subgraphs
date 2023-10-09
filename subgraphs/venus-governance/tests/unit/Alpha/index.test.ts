@@ -73,11 +73,11 @@ describe('Alpha', () => {
     const assertDelegateDocument = (key: string, value: string): void => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
+
     assertDelegateDocument('id', user1.toHexString());
     assertDelegateDocument('totalVotesMantissa', '0');
     assertDelegateDocument('delegateCount', '0');
     assertDelegateDocument('proposals', '[1]');
-    assertDelegateDocument('delegates', '[]');
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {

@@ -27,7 +27,7 @@
     "remove:local": "graph remove --node http://localhost:8020/ venusprotocol/venus-governance",
     "generate-subgraph-types": "yarn graphclient build --dir ./subgraph-client",
     "test": "graph test",
-    "test:integration": "NETWORK=mainnet PACKAGE=venus-governance hardhat test tests/integration/index.ts --network localhost"
+    "test:integration": "hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "^3.0.0",

@@ -1,6 +1,6 @@
 {
   "network": "hardhat",
-  "accessControlManagerAddress": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+  "accessControlManagerAddress": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
   "accessControlManagerStartBlock": "0",
   "governorAlphaAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
   "governorAlphaStartBlock": "0",
@@ -8,7 +8,7 @@
   "governorAlpha2StartBlock": "0",
   "governorBravoDelegateAddress": "0x1c9fD50dF7a4f066884b58A05D91e4b55005876A",
   "governorBravoDelegateStartBlock": "0",
-  "xvsVaultAddress": "0xe1708FA6bb2844D5384613ef0846F9Bc1e8eC55E",
+  "xvsVaultAddress": "0x967AB65ef14c58bD4DcfFeaAA1ADb40a022140E5",
   "xvsVaultStartBlock": "0",
   "xvsVaultPid": "0"
 }
