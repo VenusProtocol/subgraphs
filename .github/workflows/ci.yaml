@@ -24,7 +24,7 @@ jobs:
       - name: pretty
         run: yarn pretty
   
-  test:
+  unit-test:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -48,8 +48,9 @@ jobs:
       - name: Run Matchstick tests
         run: yarn test
 
-  integration-test:
+  integration-test-isolated-pools:
     runs-on: ubuntu-20.04
+    needs: unit-test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -72,7 +73,27 @@ jobs:
       
       - name: Run Isolated Pools integration integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration
+          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration --bail
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker-compose down -v
+          docker system prune -f -a --volumes
+
+  integration-test-governance:
+    runs-on: ubuntu-20.04
+    needs: unit-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Start containers
+        run: docker-compose up -d
+      
+      - name: Sleep to allow graph-node to become accessible
+        shell: bash
+        run: sleep 45s
       
       - name: Generate Governance graphql types
         run: |
@@ -82,11 +103,10 @@ jobs:
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run deploy:docker
           sleep 5s
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run generate-subgraph-types
-      
-      # @TODO - turn on once the integration tests pass
-      # - name: Run Governance integration integration tests
-      #   run: |
-      #     docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration
+
+      - name: Run Governance integration integration tests
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration --bail
       
       - name: Stop containers
         if: always()
