@@ -1,3 +1,4 @@
+import { DocumentNode } from 'graphql';
 import { Client as UrqlClient, createClient } from 'urql/core';
 
 import {
@@ -24,66 +25,71 @@ class SubgraphClient {
     });
   }
 
+  async query(document: DocumentNode, args: Record<string, string>) {
+    const result = await this.urqlClient.query(document, args).toPromise();
+    if (result.error) {
+      console.error(result.error);
+    }
+    return result;
+  }
+
   async getPools() {
-    const result = await this.urqlClient.query(PoolsDocument, {}).toPromise();
+    const result = await this.query(PoolsDocument, {});
     return result;
   }
 
   async getMarkets() {
-    const result = await this.urqlClient.query(MarketsDocument, {}).toPromise();
+    const result = await this.query(MarketsDocument, {});
     return result;
   }
 
   async getMarketById(id: string) {
-    const result = await this.urqlClient.query(MarketByIdDocument, { id }).toPromise();
+    const result = await this.query(MarketByIdDocument, { id });
     return result;
   }
 
   async getAccountById(id: string) {
-    const result = await this.urqlClient.query(AccountByIdDocument, { id }).toPromise();
+    const result = await this.query(AccountByIdDocument, { id });
     return result;
   }
 
   async getAccountVTokens() {
-    const result = await this.urqlClient.query(AccountVTokensDocument, {}).toPromise();
+    const result = await this.query(AccountVTokensDocument, {});
     return result;
   }
 
   async getAccountVTokensTransactions() {
-    const result = await this.urqlClient.query(AccountVTokenTransactionsDocument, {}).toPromise();
+    const result = await this.query(AccountVTokenTransactionsDocument, {});
     return result;
   }
 
   async getMarketActions() {
-    const result = await this.urqlClient.query(MarketActionsDocument, {}).toPromise();
+    const result = await this.query(MarketActionsDocument, {});
     return result;
   }
 
   async getAccountFromMarket(marketId: string, accountId: string) {
-    const result = await this.urqlClient
-      .query(AccountFromMarketDocument, { marketId, accountId })
-      .toPromise();
+    const result = await this.query(AccountFromMarketDocument, { marketId, accountId });
     return result;
   }
 
   async getAccountVTokensByAccountId(accountId: string) {
-    const result = await this.urqlClient
-      .query(AccountVTokenByAccountIdDocument, { accountId })
-      .toPromise();
+    const result = await this.query(AccountVTokenByAccountIdDocument, { accountId });
     return result;
   }
 
   async getAccountVTokenByAccountAndMarket(accountId: string, marketId: string) {
-    const result = await this.urqlClient
-      .query(AccountVTokenByAccountAndMarketQueryDocument, { accountId, marketId })
-      .toPromise();
+    const result = await this.query(AccountVTokenByAccountAndMarketQueryDocument, {
+      accountId,
+      marketId,
+    });
     return result;
   }
 
   async getAccountVTokenTransactionsByAccountId(accountVTokenId: string) {
-    const result = await this.urqlClient
-      .query(AccountVTokenTransactionsByAccountIdDocument, { accountVTokenId })
-      .toPromise();
+    const result = await this.query(AccountVTokenTransactionsByAccountIdDocument, {
+      accountVTokenId,
+    });
     return result;
   }
 }
