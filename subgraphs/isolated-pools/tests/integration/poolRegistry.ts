@@ -6,7 +6,6 @@ import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import { defaultPools } from './constants';
-import deploy from './utils/deploy';
 
 describe('Pool Registry', function () {
   let root: SignerWithAddress;
@@ -21,8 +20,6 @@ describe('Pool Registry', function () {
 
   before(async function () {
     this.timeout(500000); // sometimes it takes a long time
-
-    await deploy();
 
     [root] = await ethers.getSigners();
     poolRegistry = await ethers.getContract('PoolRegistry');
