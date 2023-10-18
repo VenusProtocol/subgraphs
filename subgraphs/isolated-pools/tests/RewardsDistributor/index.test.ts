@@ -10,6 +10,7 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
+import { RewardsDistributor } from '../../generated/schema';
 import { handleNewRewardsDistributor } from '../../src/mappings/pool';
 import {
   handleRewardTokenBorrowSpeedUpdated,
@@ -77,12 +78,9 @@ describe('Rewards Distributor', () => {
     assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', '0');
     assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', newBorrowRate);
 
-    assert.fieldEquals(
-      'RewardsDistributor',
-      rewardsDistributorAddress.toHex(),
-      'rewardSpeeds',
-      `[${rewardId}]`,
-    );
+    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress.toHex())!;
+    const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
+    assert.stringEquals(rewardId, rewardSpeeds[0].id);
   });
 
   test('indexes new supply speed', () => {
@@ -107,11 +105,8 @@ describe('Rewards Distributor', () => {
     assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', newSupplyRate);
     assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', '0');
 
-    assert.fieldEquals(
-      'RewardsDistributor',
-      rewardsDistributorAddress.toHex(),
-      'rewardSpeeds',
-      `[${rewardId}]`,
-    );
+    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress.toHex())!;
+    const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
+    assert.stringEquals(rewardId, rewardSpeeds[0].id);
   });
 });

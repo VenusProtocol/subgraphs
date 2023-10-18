@@ -2448,12 +2448,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-ts@npm:0.27.0":
-  version: 0.27.0
-  resolution: "@graphprotocol/graph-ts@npm:0.27.0"
+"@graphprotocol/graph-ts@npm:0.31.0":
+  version: 0.31.0
+  resolution: "@graphprotocol/graph-ts@npm:0.31.0"
   dependencies:
     assemblyscript: 0.19.10
-  checksum: d2916b9d0a8063ed3f00486012fd625301332fced8c9407f57908b43f0724d512c56b89b1c40e1cb67eca2ced9b1d437e237b04ab588b1d962573c301848a31a
+  checksum: 20394b17d3241a662f0b2efebdc02f44e4e0814fdbb09b4cac0c84b84a173798325840bc1daf1d11ebaf27b1b3e13ff6e2766567c755cb77c1321ba1462fbecc
   languageName: node
   linkType: hard
 
@@ -12297,12 +12297,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"matchstick-as@npm:^0.5.0":
-  version: 0.5.2
-  resolution: "matchstick-as@npm:0.5.2"
+"matchstick-as@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "matchstick-as@npm:0.6.0"
   dependencies:
     wabt: 1.0.24
-  checksum: 6493b2c27e4e2d47397e111dd188ba637b76a46674b2165350f7f1571728acfae3bdb3e12c440ad0793853140aff4dca5bcd322eebe259074cc1fc508e2da926
+  checksum: 340025caf2fe677675d9e388f2726b9517dcd977e13c1d5d13517d3d72ebfe561ea849e5859df74e1ccf48559d5fe3a9bb7cce107187102ec9a3d0d677c596ff
   languageName: node
   linkType: hard
 
@@ -15749,7 +15749,7 @@ __metadata:
   dependencies:
     "@graphprotocol/client-cli": ^3.0.0
     "@graphprotocol/graph-cli": 0.56.0
-    "@graphprotocol/graph-ts": 0.27.0
+    "@graphprotocol/graph-ts": 0.31.0
     "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
     "@nomicfoundation/hardhat-network-helpers": ^1.0.4
     "@nomicfoundation/hardhat-toolbox": ^1.0.2
@@ -15781,7 +15781,7 @@ __metadata:
     hardhat-gas-reporter: ^1.0.8
     husky: ^3.0.5
     lint-staged: ^12.3.3
-    matchstick-as: ^0.5.0
+    matchstick-as: ^0.6.0
     module-alias: ^2.2.2
     mustache: ^4.2.0
     patch-package: 6.5.1
