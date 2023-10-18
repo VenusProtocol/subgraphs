@@ -4,10 +4,10 @@ query Delegates {
       stakedXvsMantissa
       totalVotesMantissa
       delegateCount
-      delegate {
+      delegatee {
         id
       }
-      delegates {
+      delegators {
         id
       }
       votes {

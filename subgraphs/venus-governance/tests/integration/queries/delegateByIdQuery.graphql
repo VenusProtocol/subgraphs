@@ -4,10 +4,10 @@ query DelegateById($id: ID!) {
       stakedXvsMantissa
       totalVotesMantissa
       delegateCount
-      delegate {
+      delegatee {
         id
       }
-      delegates {
+      delegators {
         id
       }
       votes {

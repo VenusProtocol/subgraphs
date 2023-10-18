@@ -51,7 +51,7 @@ export function updateDelegateChanged<E>(event: E): void {
 
   const delegatorResult = getOrCreateDelegate(delegator);
   const delegatorEntity = delegatorResult.entity;
-  delegatorEntity.delegate = toDelegate;
+  delegatorEntity.delegatee = toDelegate;
   delegatorEntity.save();
 
   if (fromDelegate != nullAddress.toHexString()) {

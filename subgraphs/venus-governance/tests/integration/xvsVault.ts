@@ -68,8 +68,8 @@ describe('XVS Vault and Delegation', function () {
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
       expect(delegate1.delegateCount).to.equal(0);
-      expect(delegate1.delegate.id).to.equal(user2.address.toLowerCase());
-      expect(delegate1.delegates).to.deep.equal([]);
+      expect(delegate1.delegatee.id).to.equal(user2.address.toLowerCase());
+      expect(delegate1.delegators).to.deep.equal([]);
 
       expect(delegate1.stakedXvsMantissa).to.deep.equal(amount.toFixed());
       expect(delegate1.totalVotesMantissa).to.equal('0');
@@ -79,7 +79,7 @@ describe('XVS Vault and Delegation', function () {
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
 
       expect(delegate2.delegateCount).to.equal(1);
-      expect(delegate2.delegates).to.deep.equal([{ id: user1.address, __typename: 'Delegate' }]);
+      expect(delegate2.delegators).to.deep.equal([{ id: user1.address, __typename: 'Delegate' }]);
       expect(delegate2.stakedXvsMantissa).to.equal('0');
       expect(delegate2.totalVotesMantissa).to.equal(amount.toFixed());
     });
@@ -118,7 +118,7 @@ describe('XVS Vault and Delegation', function () {
 
       expect(delegate1.stakedXvsMantissa).to.equal(amount.times(2).toFixed());
       expect(delegate1.totalVotesMantissa).to.equal('0');
-      expect(delegate1.delegate.id).to.equal(user3.address.toLowerCase());
+      expect(delegate1.delegatee.id).to.equal(user3.address.toLowerCase());
 
       const {
         data: { delegate: delegate2 },
@@ -127,14 +127,14 @@ describe('XVS Vault and Delegation', function () {
       expect(delegate2.stakedXvsMantissa).to.equal('0');
       expect(delegate2.totalVotesMantissa).to.equal('0');
       expect(delegate2.delegateCount).to.equal(0);
-      expect(delegate2.delegates).to.deep.equal([]);
+      expect(delegate2.delegators).to.deep.equal([]);
 
       const {
         data: { delegate: delegate3 },
       } = await subgraphClient.getDelegateById(user3.address.toLowerCase());
 
       expect(delegate3.delegateCount).to.equal(1);
-      expect(delegate3.delegates).to.deep.equal([
+      expect(delegate3.delegators).to.deep.equal([
         { id: user1.address.toLowerCase(), __typename: 'Delegate' },
       ]);
       expect(delegate3.stakedXvsMantissa).to.equal(amount.toFixed());
@@ -151,7 +151,7 @@ describe('XVS Vault and Delegation', function () {
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
       expect(delegate1.delegateCount).to.equal(1);
-      expect(delegate1.delegates).to.deep.equal([
+      expect(delegate1.delegators).to.deep.equal([
         {
           id: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
           __typename: 'Delegate',
