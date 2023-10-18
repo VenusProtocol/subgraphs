@@ -66,7 +66,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   /** setup test */
-  getOrCreateDelegate(user1.toHexString());
+  getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
     user1,
@@ -215,13 +215,8 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
-    };
-
     assertProposalDocument('queued', 'true');
     assertProposalDocument('executionEta', eta.toString());
-    assertGovernanceDocument('proposalsQueued', '1');
   });
 
   test('proposal executed', () => {
@@ -238,12 +233,7 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
-    };
-
     assertProposalDocument('executed', 'true');
-    assertGovernanceDocument('proposalsQueued', '0');
   });
 
   test('vote cast', () => {

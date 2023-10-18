@@ -16,7 +16,6 @@ import {
   ProposalQueued,
 } from '../../../generated/GovernorAlpha/GovernorAlpha';
 import { Delegate } from '../../../generated/schema';
-import { governorBravoDelegatorAddress } from '../../../src/constants/addresses';
 import {
   handleProposalCanceled,
   handleProposalCreated,
@@ -49,7 +48,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  getOrCreateDelegate(user1.toHexString());
+  getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
     user1,
@@ -121,13 +120,8 @@ describe('Alpha', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
-    };
-
     assertProposalDocument('queued', 'true');
     assertProposalDocument('executionEta', eta.toString());
-    assertGovernanceDocument('proposalsQueued', '1');
   });
 
   test('proposal executed', () => {
@@ -144,12 +138,7 @@ describe('Alpha', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
-    };
-
     assertProposalDocument('executed', 'true');
-    assertGovernanceDocument('proposalsQueued', '0');
   });
 
   test('vote cast', () => {

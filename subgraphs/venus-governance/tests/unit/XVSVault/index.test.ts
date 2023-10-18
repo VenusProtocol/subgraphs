@@ -25,7 +25,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   /** setup test */
-  getOrCreateDelegate(user1.toHexString());
+  getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
     user1,
