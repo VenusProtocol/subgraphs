@@ -34,7 +34,7 @@ export function handleDeposit(event: Deposit): void {
     const user = event.params.user;
     const amount = event.params.amount;
     // Update user's staked XVS
-    const result = getOrCreateDelegate(user.toHex());
+    const result = getOrCreateDelegate(user);
     result.entity.stakedXvsMantissa = result.entity.stakedXvsMantissa.plus(amount);
     result.entity.save();
   }
@@ -45,7 +45,7 @@ export function handleRequestedWithdrawal(event: RequestedWithdrawal): void {
   if (event.params.pid.equals(BigInt.fromString(xvsVaultPid))) {
     const user = event.params.user;
     const amount = event.params.amount;
-    const result = getOrCreateDelegate(user.toHex());
+    const result = getOrCreateDelegate(user);
     const newAmount = result.entity.stakedXvsMantissa.minus(amount);
     // Update their delegate
     if (newAmount.equals(new BigInt(0))) {

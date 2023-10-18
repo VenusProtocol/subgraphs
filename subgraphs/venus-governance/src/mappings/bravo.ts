@@ -22,12 +22,12 @@ import {
 } from '../operations/update';
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  getOrCreateDelegate(event.params.proposer.toHexString());
+  getOrCreateDelegate(event.params.proposer);
   createProposal<ProposalCreated>(event);
 }
 
 export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
-  getOrCreateDelegate(event.params.proposer.toHexString());
+  getOrCreateDelegate(event.params.proposer);
   const proposal = createProposal<ProposalCreatedV2>(event);
   const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
   proposal.type = indexProposalTypeConstant[event.params.proposalType];

@@ -19,7 +19,7 @@ import {
 //   handler: handleProposalCreated
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  const result = getOrCreateDelegate(event.params.proposer.toHex());
+  const result = getOrCreateDelegate(event.params.proposer);
   const created = result.created;
   createProposal<ProposalCreated>(event);
 
@@ -59,7 +59,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 
 export function handleVoteCast(event: VoteCast): void {
   // Alpha V1 doesn't require staking in the vault so we need to create delegates when casting a vote
-  getOrCreateDelegate(event.params.voter.toHexString());
+  getOrCreateDelegate(event.params.voter);
   createVoteAlpha(event);
 }
 

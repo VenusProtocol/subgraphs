@@ -11,3 +11,5 @@ export const getPermissionId = (
   functionSig: string,
 ): string =>
   [accountAddress.toHexString(), contractAddress.toHexString(), functionSig].join(SEPERATOR);
+
+export const getDelegateId = (account: Address): string => account.toHexString();

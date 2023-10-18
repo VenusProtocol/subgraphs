@@ -33,15 +33,14 @@ export function updateDelegateChanged<E>(event: E): void {
   const params = event.params;
   const fromDelegate = params.fromDelegate.toHexString();
   const toDelegate = params.toDelegate.toHexString();
-  const delegator = params.delegator.toHexString();
 
-  const delegatorResult = getOrCreateDelegate(delegator);
+  const delegatorResult = getOrCreateDelegate(params.delegator);
   const delegatorEntity = delegatorResult.entity;
   delegatorEntity.delegatee = toDelegate;
   delegatorEntity.save();
 
   if (fromDelegate != nullAddress.toHexString()) {
-    const oldDelegateResult = getOrCreateDelegate(fromDelegate);
+    const oldDelegateResult = getOrCreateDelegate(params.fromDelegate);
     const oldDelegate = oldDelegateResult.entity;
     oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
     oldDelegate.save();
@@ -51,7 +50,7 @@ export function updateDelegateChanged<E>(event: E): void {
   }
 
   if (toDelegate != nullAddress.toHexString()) {
-    const newDelegateResult = getOrCreateDelegate(toDelegate);
+    const newDelegateResult = getOrCreateDelegate(params.toDelegate);
     const newDelegate = newDelegateResult.entity;
     newDelegate.delegateCount = newDelegate.delegateCount + 1;
     newDelegate.save();
@@ -64,7 +63,7 @@ export function updateDelegateChanged<E>(event: E): void {
 export function updateDelegateVoteChanged<E>(event: E): void {
   const params = event.params;
   const governance = getGovernanceEntity();
-  const delegateResult = getOrCreateDelegate(params.delegate.toHexString());
+  const delegateResult = getOrCreateDelegate(params.delegate);
   const delegate = delegateResult.entity;
 
   const previousBalance = params.previousBalance;
