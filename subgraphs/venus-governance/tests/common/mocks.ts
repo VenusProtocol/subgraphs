@@ -1,7 +1,7 @@
 import { BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { governorBravoDelegateAddress } from '../../src/constants/addresses';
+import { governorBravoDelegatorAddress } from '../../src/constants/addresses';
 import {
   mockAdminAddress,
   mockGuardianAddress,
@@ -13,34 +13,34 @@ import {
 
 export const createGovernorBravoMocks = (): void => {
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'implementation',
     'implementation():(address)',
   ).returns([ethereum.Value.fromAddress(mockImplementationAddress)]);
 
-  createMockedFunction(governorBravoDelegateAddress, 'admin', 'admin():(address)').returns([
+  createMockedFunction(governorBravoDelegatorAddress, 'admin', 'admin():(address)').returns([
     ethereum.Value.fromAddress(mockAdminAddress),
   ]);
 
-  createMockedFunction(governorBravoDelegateAddress, 'guardian', 'guardian():(address)').returns([
+  createMockedFunction(governorBravoDelegatorAddress, 'guardian', 'guardian():(address)').returns([
     ethereum.Value.fromAddress(mockGuardianAddress),
   ]);
 
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'quorumVotes',
     'quorumVotes():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))]);
 
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalMaxOperations',
     'proposalMaxOperations():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))]);
 
   // Proposal Configs
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalConfigs',
     'proposalConfigs(uint256):(uint256,uint256,uint256)',
   )
@@ -51,7 +51,7 @@ export const createGovernorBravoMocks = (): void => {
       ethereum.Value.fromUnsignedBigInt(BigInt.fromString('300000000000000000000000')),
     ]);
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalConfigs',
     'proposalConfigs(uint256):(uint256,uint256,uint256)',
   )
@@ -62,7 +62,7 @@ export const createGovernorBravoMocks = (): void => {
       ethereum.Value.fromUnsignedBigInt(BigInt.fromString('300000000000000000000000')),
     ]);
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalConfigs',
     'proposalConfigs(uint256):(uint256,uint256,uint256)',
   )
@@ -74,21 +74,21 @@ export const createGovernorBravoMocks = (): void => {
     ]);
 
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalTimelocks',
     'proposalTimelocks(uint256):(address)',
   )
     .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))])
     .returns([ethereum.Value.fromAddress(timelockAddress0)]);
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalTimelocks',
     'proposalTimelocks(uint256):(address)',
   )
     .withArgs([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1'))])
     .returns([ethereum.Value.fromAddress(timelockAddress1)]);
   createMockedFunction(
-    governorBravoDelegateAddress,
+    governorBravoDelegatorAddress,
     'proposalTimelocks',
     'proposalTimelocks(uint256):(address)',
   )

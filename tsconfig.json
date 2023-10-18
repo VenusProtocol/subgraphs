@@ -7,7 +7,8 @@
     "noLib": false,
     "lib": ["es2015"],
     "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true
   },
   "include": ["subgraphs", "hardhat.config.ts"]
 }

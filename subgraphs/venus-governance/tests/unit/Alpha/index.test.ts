@@ -16,7 +16,7 @@ import {
   ProposalQueued,
 } from '../../../generated/GovernorAlpha/GovernorAlpha';
 import { Delegate } from '../../../generated/schema';
-import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
+import { governorBravoDelegatorAddress } from '../../../src/constants/addresses';
 import {
   handleProposalCanceled,
   handleProposalCreated,
@@ -122,7 +122,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
+      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'QUEUED');
@@ -145,7 +145,7 @@ describe('Alpha', () => {
     };
 
     const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
+      assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
     };
 
     assertProposalDocument('status', 'EXECUTED');
