@@ -11,8 +11,10 @@ query ProposalById($id: ID!) {
       startBlock
       endBlock
       description
-      status
-      executionETA
+      executionEta
+      queued
+      canceled
+      executed
       votes {
         id
         votes

@@ -11,8 +11,10 @@ query Proposals {
       startBlock
       endBlock
       description
-      status
-      executionETA
+      executionEta
+      queued
+      canceled
+      executed
       votes {
         id
         votes

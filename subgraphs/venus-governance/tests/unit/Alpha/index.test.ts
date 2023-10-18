@@ -107,7 +107,7 @@ describe('Alpha', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('status', 'CANCELLED');
+    assertProposalDocument('canceled', 'true');
   });
 
   test('queue proposal', () => {
@@ -125,8 +125,8 @@ describe('Alpha', () => {
       assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
     };
 
-    assertProposalDocument('status', 'QUEUED');
-    assertProposalDocument('executionETA', eta.toString());
+    assertProposalDocument('queued', 'true');
+    assertProposalDocument('executionEta', eta.toString());
     assertGovernanceDocument('proposalsQueued', '1');
   });
 
@@ -148,8 +148,7 @@ describe('Alpha', () => {
       assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), key, value);
     };
 
-    assertProposalDocument('status', 'EXECUTED');
-    assertProposalDocument('executionETA', 'null');
+    assertProposalDocument('executed', 'true');
     assertGovernanceDocument('proposalsQueued', '0');
   });
 

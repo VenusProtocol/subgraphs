@@ -19,7 +19,6 @@ export const getGovernanceEntity = (): Governance => {
     governance.totalDelegates = BIGINT_ZERO;
     governance.totalVoters = BIGINT_ZERO;
     governance.totalVotesMantissa = BIGINT_ZERO;
-    governance.proposalsQueued = BIGINT_ZERO;
     // Mocking values until we can correctly index current governance contract
     governance.admin = nullAddress;
     governance.implementation = nullAddress;

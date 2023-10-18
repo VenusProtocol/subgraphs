@@ -14,14 +14,19 @@ describe('GovernorAlpha', function () {
   let signers: SignerWithAddress[];
   let governorAlpha: Contract;
   let governorAlpha2: Contract;
+  let _: SignerWithAddress;
+  let user1: SignerWithAddress;
+  let user2: SignerWithAddress;
+  let user3: SignerWithAddress;
+  let user4: SignerWithAddress;
 
   before(async function () {
-    this.timeout(50000000); // sometimes it takes a long time
+    this.timeout(100000000); // sometimes it takes a long time
     governorAlpha = await ethers.getContract('GovernorAlpha');
     governorAlpha2 = await ethers.getContract('GovernorAlpha2');
     signers = await ethers.getSigners();
 
-    const [_, user1, user2, user3, user4] = signers;
+    [_, user1, user2, user3, user4] = signers;
 
     await enfranchiseAccount(user1, scaleValue(100000, 18));
     await enfranchiseAccount(user2, scaleValue(200000, 18));
@@ -53,8 +58,7 @@ describe('GovernorAlpha', function () {
       } = await subgraphClient.getProposalById('1');
       expect(proposal.id).to.be.equal('1');
       expect(proposal.description).to.be.equal('Test proposal 1');
-      expect(proposal.status).to.be.equal('PENDING');
-      expect(proposal.executionETA).to.be.null;
+      expect(proposal.executionEta).to.be.null;
       expect(proposal.targets).to.deep.equal([
         '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
       ]);
@@ -66,18 +70,12 @@ describe('GovernorAlpha', function () {
     it('index for vote cast', async function () {
       const [_, user1, user2, user3, user4] = signers;
 
-      const time = Date.now() + 106400;
-      await ethers.provider.send('evm_setNextBlockTimestamp', [time]);
       await mine(1);
 
-      let tx = await governorAlpha.connect(user1).castVote('1', false);
-      await tx.wait(1);
-      tx = await governorAlpha.connect(user2).castVote('1', true);
-      await tx.wait(1);
-      tx = await governorAlpha.connect(user3).castVote('1', true);
-      await tx.wait(1);
-      tx = await governorAlpha.connect(user4).castVote('1', true);
-      await tx.wait(1);
+      await governorAlpha.connect(user1).castVote('1', false);
+      await governorAlpha.connect(user2).castVote('1', true);
+      await governorAlpha.connect(user3).castVote('1', true);
+      await governorAlpha.connect(user4).castVote('1', true);
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -109,11 +107,19 @@ describe('GovernorAlpha', function () {
       } = await subgraphClient.getDelegateById(user4.address.toLowerCase());
       expect(delegate4.proposals).to.deep.equal([{ id: '1', __typename: 'Proposal' }]);
     });
-  });
 
-  // @TODO Update proposal Status
-  // @TODO Changing delegates
-  // @TODO Governance
+    it('should transition to canceled', async () => {
+      await governorAlpha.connect(signers[0]).cancel('1');
+
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const {
+        data: { proposal },
+      } = await subgraphClient.getProposalById('1');
+
+      expect(proposal.canceled).to.equal(true);
+    });
+  });
 
   describe('Alpha2', function () {
     it('indexes created proposals - alpha2', async function () {
@@ -130,8 +136,13 @@ describe('GovernorAlpha', function () {
         'Test proposal 21', // description
       ];
 
-      const tx = await governorAlpha2.connect(user1).propose(...vip);
-      await tx.wait(1);
+      await governorAlpha2.connect(user1).propose(...vip);
+
+      await mine(1);
+
+      // Voting so it passes
+      await governorAlpha2.connect(user4).castVote('21', true);
+      await governorAlpha2.connect(user3).castVote('21', true);
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -141,14 +152,52 @@ describe('GovernorAlpha', function () {
 
       expect(proposal.id).to.be.equal('21');
       expect(proposal.description).to.be.equal('Test proposal 21');
-      expect(proposal.status).to.be.equal('PENDING');
-      expect(proposal.executionETA).to.be.null;
+      expect(proposal.executionEta).to.be.null;
       expect(proposal.targets).to.deep.equal([
         '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
       ]);
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
+    });
+
+    it('should transition to queued', async () => {
+      let votingPeriod = +(await governorAlpha2.votingPeriod());
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      await governorAlpha2.queue(21);
+
+      const governorAlpha2Timelock = await ethers.getContract('GovernorAlpha2Timelock');
+      const eta =
+        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
+        +(await governorAlpha2Timelock.delay());
+
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const {
+        data: { proposal },
+      } = await subgraphClient.getProposalById('21');
+
+      expect(proposal.queued).to.equal(true);
+      expect(proposal.executionEta).to.equal(eta.toString());
+
+      await ethers.provider.send('evm_setNextBlockTimestamp', [eta + 1]);
+    });
+
+    it('should transition to executed', async () => {
+      await governorAlpha2.execute('21');
+
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const {
+        data: { proposal },
+      } = await subgraphClient.getProposalById('21');
+
+      expect(proposal.executed).to.equal(true);
     });
   });
 });
