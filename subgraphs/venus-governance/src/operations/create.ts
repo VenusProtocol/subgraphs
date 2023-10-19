@@ -51,7 +51,7 @@ export function createVoteAlpha(event: VoteCastAlpha): Vote {
 
 export function createVoteBravo(event: VoteCastBravo): Vote {
   const proposal = getProposal(event.params.proposalId.toString());
-  const voter = getDelegate(event.params.voter.toHexString());
+  const voter = getDelegate(event.params.voter);
   const id = getVoteId(event.params.voter, event.params.proposalId);
   const vote = new Vote(id);
   vote.proposal = proposal.id;

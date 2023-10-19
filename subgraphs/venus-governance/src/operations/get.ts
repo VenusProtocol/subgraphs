@@ -1,10 +1,11 @@
-import { BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import { Timelock } from '../../generated/GovernorBravoDelegate2/Timelock';
 import { Delegate, Governance, GovernanceRoute, Proposal } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import { governorBravoDelegatorAddress, nullAddress } from '../constants/addresses';
+import { getDelegateId } from '../utilities/ids';
 
 /**
  * While technically this function does also create, we don't care because it only happens once as the id is a constant.
@@ -91,7 +92,8 @@ export const getProposal = (id: string): Proposal => {
   return proposal as Proposal;
 };
 
-export const getDelegate = (id: string): Delegate => {
+export const getDelegate = (address: Address): Delegate => {
+  const id = getDelegateId(address);
   const delegate = Delegate.load(id);
   if (!delegate) {
     log.critical('Delegate {} not found', [id]);
