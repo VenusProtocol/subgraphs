@@ -20,7 +20,8 @@ describe('XVS Vault and Delegation', function () {
     signers = await ethers.getSigners();
 
     xvs = await ethers.getContract('XVS');
-    xvsVault = await ethers.getContract('XVSVault');
+    const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
+    xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxy.address);
 
     await waitForSubgraphToBeSynced(SYNC_DELAY);
   });

@@ -3,7 +3,8 @@ import { ethers } from 'hardhat';
 
 export async function enfranchiseAccount(account: any, amount: BigNumber) {
   const xvs = await ethers.getContract('XVS');
-  const xvsVault = await ethers.getContract('XVSVault');
+  const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
+  const xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxy.address);
 
   await xvs.connect(account).approve(xvsVault.address, amount.toFixed());
 

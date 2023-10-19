@@ -9,7 +9,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const signers = await ethers.getSigners();
 
   const timelock = await ethers.getContract('Timelock');
-  const xvsVault = await ethers.getContract('XVSVault');
+  const xvsVault = await ethers.getContract('XVSVaultProxy');
 
   await deploy('GovernorAlphaTimelock', {
     contract: 'Timelock',

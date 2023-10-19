@@ -7,7 +7,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
 
   const accessControlManager = await ethers.getContract('AccessControlManager');
-  const xvsVault = await ethers.getContract('XVSVault');
+  const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
+  const xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxy.address);
   const xvs = await ethers.getContract('XVS');
 
   const tx = await accessControlManager.giveCallPermission(
