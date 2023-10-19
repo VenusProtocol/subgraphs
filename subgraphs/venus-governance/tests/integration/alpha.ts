@@ -88,7 +88,7 @@ describe('GovernorAlpha', function () {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
-      expect(delegate1.votes[0].id).to.equal(`${user1.address.toLowerCase()}-0x1`);
+      expect(delegate1.votes[0].id).to.equal(`${user1.address.toLowerCase()}-1`);
       expect(delegate1.votes[0].support).to.equal('AGAINST');
       expect(delegate1.votes[0].votes).to.equal('100000000000000000000000');
       expect(delegate1.proposals).to.deep.equal([]);
@@ -96,10 +96,9 @@ describe('GovernorAlpha', function () {
       const {
         data: { delegate: delegate2 },
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
-      expect(delegate2.votes[0].id).to.equal(`${user2.address.toLowerCase()}-0x1`);
+      expect(delegate2.votes[0].id).to.equal(`${user2.address.toLowerCase()}-1`);
       expect(delegate2.votes[0].support).to.equal('FOR');
       expect(delegate2.votes[0].votes).to.equal('200000000000000000000000');
-      expect(delegate2.proposals).to.deep.equal([]);
       expect(delegate2.proposals).to.deep.equal([]);
 
       const {
