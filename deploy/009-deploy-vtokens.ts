@@ -1,3 +1,3 @@
-import deployPoolLens from '@venusprotocol/isolated-pools/dist/deploy/009-deploy-vtokens';
+import deployVTokens from '@venusprotocol/isolated-pools/dist/deploy/009-deploy-vtokens';
 
-export default deployPoolLens;
+export default deployVTokens;

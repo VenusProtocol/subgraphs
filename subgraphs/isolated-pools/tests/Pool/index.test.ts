@@ -10,6 +10,7 @@ import {
   test,
 } from 'matchstick-as/assembly';
 
+import { Pool } from '../../generated/schema';
 import { oneBigInt, zeroBigInt32 } from '../../src/constants';
 import {
   handleActionPausedMarket,
@@ -373,11 +374,8 @@ describe('Pool Events', () => {
       comptrollerAddress.toHexString(),
     );
 
-    assert.fieldEquals(
-      'Pool',
-      comptrollerAddress.toHex(),
-      'rewardsDistributors',
-      `[${rewardsDistributorAddress.toHexString()}]`,
-    );
+    const pool = Pool.load(comptrollerAddress.toHex())!;
+    const rewardsDistributors = pool.rewardsDistributors.load();
+    assert.stringEquals(rewardsDistributorAddress.toHexString(), rewardsDistributors[0].id);
   });
 });

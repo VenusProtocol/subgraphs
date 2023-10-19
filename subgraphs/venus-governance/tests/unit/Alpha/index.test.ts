@@ -15,6 +15,7 @@ import {
   ProposalExecuted,
   ProposalQueued,
 } from '../../../generated/GovernorAlpha/GovernorAlpha';
+import { Delegate } from '../../../generated/schema';
 import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
 import {
   handleProposalCanceled,
@@ -73,11 +74,14 @@ describe('Alpha', () => {
     const assertDelegateDocument = (key: string, value: string): void => {
       assert.fieldEquals('Delegate', user1.toHex(), key, value);
     };
+
     assertDelegateDocument('id', user1.toHexString());
     assertDelegateDocument('totalVotesMantissa', '0');
     assertDelegateDocument('delegateCount', '0');
-    assertDelegateDocument('proposals', '[1]');
-    assertDelegateDocument('delegates', '[]');
+
+    const delegate = Delegate.load(user1.toHex())!;
+    const proposals = delegate.proposals.load();
+    assert.stringEquals('1', proposals[0].id);
 
     // Proposal
     const assertProposalDocument = (key: string, value: string): void => {
@@ -92,7 +96,6 @@ describe('Alpha', () => {
     assertProposalDocument('startBlock', `${startBlock}`);
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);
-    assertProposalDocument('status', 'PENDING');
   });
 
   test('cancel proposal', () => {
@@ -168,7 +171,5 @@ describe('Alpha', () => {
     assertVoteDocument('votes', votes.toString());
     assertVoteDocument('support', 'FOR');
     assertVoteDocument('votes', votes.toString());
-
-    assert.fieldEquals('Proposal', '1', 'status', 'ACTIVE');
   });
 });

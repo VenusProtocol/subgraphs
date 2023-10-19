@@ -1,5 +1,5 @@
-query DelegateById($id: ID!) {
-  delegate(id: $id) {
+query Delegates {
+  delegates {
       id
       stakedXvsMantissa
       totalVotesMantissa

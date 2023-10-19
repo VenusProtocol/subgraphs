@@ -1,4 +1,5 @@
 import { BIGINT_ONE, BIGINT_ZERO, CANCELLED, EXECUTED, QUEUED } from '../constants';
+import { nullAddress } from '../constants/addresses';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate } from './getOrCreate';
 
@@ -44,15 +45,28 @@ export function updateProposalExecuted<E>(event: E): void {
 
 export function updateDelegateChanged<E>(event: E): void {
   const params = event.params;
-  const oldDelegateResult = getOrCreateDelegate(params.fromDelegate.toHexString());
-  const oldDelegate = oldDelegateResult.entity;
-  const newDelegateResult = getOrCreateDelegate(params.toDelegate.toHexString());
-  const newDelegate = newDelegateResult.entity;
+  const fromDelegate = params.fromDelegate.toHexString();
+  const toDelegate = params.toDelegate.toHexString();
+  const delegator = params.delegator.toHexString();
 
-  oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
-  oldDelegate.save();
-  newDelegate.delegateCount = newDelegate.delegateCount + 1;
-  newDelegate.save();
+  const delegatorResult = getOrCreateDelegate(delegator);
+  const delegatorEntity = delegatorResult.entity;
+  delegatorEntity.delegatee = toDelegate;
+  delegatorEntity.save();
+
+  if (fromDelegate != nullAddress.toHexString()) {
+    const oldDelegateResult = getOrCreateDelegate(fromDelegate);
+    const oldDelegate = oldDelegateResult.entity;
+    oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
+    oldDelegate.save();
+  }
+
+  if (toDelegate != nullAddress.toHexString()) {
+    const newDelegateResult = getOrCreateDelegate(toDelegate);
+    const newDelegate = newDelegateResult.entity;
+    newDelegate.delegateCount = newDelegate.delegateCount + 1;
+    newDelegate.save();
+  }
 }
 
 export function updateDelegateVoteChanged<E>(event: E): void {
@@ -68,12 +82,6 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   delegate.totalVotesMantissa = newBalance;
   delegate.save();
 
-  if (previousBalance == BIGINT_ZERO && newBalance > BIGINT_ZERO) {
-    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
-  }
-  if (newBalance == BIGINT_ZERO) {
-    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
-  }
   governance.totalVotesMantissa = governance.totalVotesMantissa.plus(votesDifference);
   governance.save();
 }

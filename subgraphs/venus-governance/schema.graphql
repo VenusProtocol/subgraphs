@@ -20,7 +20,10 @@ type Delegate @entity {
   delegateCount: Int!
 
   "Accounts delegating to this voter"
-  delegates: [Delegate!]!
+  delegators: [Delegate!]! @derivedFrom(field: "delegatee")
+
+  "Id of account receiving this accounts delegation"
+  delegatee: Delegate
 
   "Votes that a delegate has made in different proposals"
   votes: [Vote!]! @derivedFrom(field: "voter")

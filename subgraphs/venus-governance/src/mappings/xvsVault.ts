@@ -8,7 +8,7 @@ import {
   DelegateChangedV2,
   DelegateVotesChangedV2,
   Deposit,
-  ReqestedWithdrawal,
+  RequestedWithdrawal,
 } from '../../generated/XVSVault/XVSVault';
 import { xvsVaultPid } from '../constants/config';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
@@ -40,7 +40,7 @@ export function handleDeposit(event: Deposit): void {
   }
 }
 
-export function handleRequestedWithdrawal(event: ReqestedWithdrawal): void {
+export function handleRequestedWithdrawal(event: RequestedWithdrawal): void {
   // Only care about XVS Vault
   if (event.params.pid.equals(BigInt.fromString(xvsVaultPid))) {
     const user = event.params.user;

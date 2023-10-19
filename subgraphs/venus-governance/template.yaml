@@ -154,11 +154,13 @@ dataSources:
         - Delegate
       abis:
         - name: XVSVault
-          file: ../../packages/venus-governance-abis/XVSVault.json
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/XVSVault/XVSVault.sol/XVSVault.json
+        - name: GovernorBravoDelegate2
+          file: ../../packages/venus-governance-abis/GovernorBravoDelegate2.json
       eventHandlers:
         - event: Deposit(indexed address,indexed address,indexed uint256,uint256)
           handler: handleDeposit
-        - event: ReqestedWithdrawal(indexed address,indexed address,indexed uint256,uint256)
+        - event: RequestedWithdrawal(indexed address,indexed address,indexed uint256,uint256)
           handler: handleRequestedWithdrawal
         - event: DelegateChangedV2(indexed address,indexed address,indexed address)
           handler: handleDelegateChanged

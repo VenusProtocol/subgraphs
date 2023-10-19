@@ -1,3 +1,3 @@
-import upgradeComptroller from '@venusprotocol/isolated-pools/dist/deploy/011-initial-liquidity';
+import initialLiquidity from '@venusprotocol/isolated-pools/dist/deploy/011-initial-liquidity';
 
-export default upgradeComptroller;
+export default initialLiquidity;

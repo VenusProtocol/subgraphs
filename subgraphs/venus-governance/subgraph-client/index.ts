@@ -2,6 +2,7 @@ import { Client as UrqlClient, createClient } from 'urql/core';
 
 import {
   DelegateByIdDocument,
+  DelegatesDocument,
   PermissionsDocument,
   ProposalByIdDocument,
   ProposalsDocument,
@@ -24,6 +25,11 @@ class SubgraphClient {
 
   async getDelegateById(id: string) {
     const result = await this.urqlClient.query(DelegateByIdDocument, { id: id }).toPromise();
+    return result;
+  }
+
+  async getDelegates() {
+    const result = await this.urqlClient.query(DelegatesDocument, {}).toPromise();
     return result;
   }
 
