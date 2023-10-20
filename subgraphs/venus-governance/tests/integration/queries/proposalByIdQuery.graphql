@@ -15,6 +15,7 @@ query ProposalById($id: ID!) {
       queued
       canceled
       executed
+      type
       votes {
         id
         votes

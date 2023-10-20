@@ -26,7 +26,7 @@ type Delegate @entity {
 
 enum PROPOSAL_TYPE {
   NORMAL
-  FASTRACK
+  FAST_TRACK
   CRITICAL
 }
 
