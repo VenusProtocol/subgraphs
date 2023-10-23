@@ -15,11 +15,6 @@ services:
         condition: service_started
       postgres:
         condition: service_started
-    healthcheck:
-        test: ["CMD", "curl", "-f", "http://graph-node:8000"]
-        interval: 30s
-        timeout: 12s
-        retries: 10
     environment:
       postgres_host: postgres
       postgres_user: graph-node
@@ -38,7 +33,7 @@ services:
       - sh
       - -c
       - |
-        yarn &&PACKAGE=isolated-pools yarn workspace isolated-pools-subgraph run hardhat node --hostname 0.0.0.0
+        yarn && PACKAGE=isolated-pools yarn run node:integration
 # Installing again to link workspaces
     ports:
       - 8545:8545

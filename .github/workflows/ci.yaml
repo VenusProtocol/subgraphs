@@ -107,6 +107,11 @@ jobs:
       - name: Run Governance integration integration tests
         run: |
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration --bail
+
+      - name: Debug
+        if: always()
+        run: |
+          docker inspect --format "{{json .State.Health }}" $(docker-compose ps -q hardhat)
       
       - name: Stop containers
         if: always()
