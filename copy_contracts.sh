@@ -25,8 +25,6 @@ cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/Gover
 
 rm contracts/protocol/contracts/Governance/GovernorBravoDelegate.sol
 rm contracts/protocol/contracts/Governance/GovernorBravoDelegator.sol
-rm contracts/protocol/contracts/Governance/GovernorAlpha.sol
-rm contracts/protocol/contracts/Governance/GovernorAlpha2.sol
 rm contracts/protocol/contracts/Governance/Timelock.sol
 rm -rf contracts/protocol/contracts/Lens/VenusLens.sol
 
