@@ -3,7 +3,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 const SEPERATOR = '-';
 
 export const getVoteId = (voter: Address, proposalId: BigInt): string =>
-  [voter.toHexString(), proposalId.toHexString()].join(SEPERATOR);
+  [voter.toHexString(), proposalId.toString()].join(SEPERATOR);
 
 export const getPermissionId = (
   accountAddress: Address,
@@ -11,3 +11,5 @@ export const getPermissionId = (
   functionSig: string,
 ): string =>
   [accountAddress.toHexString(), contractAddress.toHexString(), functionSig].join(SEPERATOR);
+
+export const getDelegateId = (account: Address): string => account.toHexString();

@@ -20,6 +20,7 @@ mkdir -p ./contracts/governance/contracts/Governance
 mkdir -p ./contracts/governance/contracts/legacy
 cp ./node_modules/@venusprotocol/governance-contracts/contracts/legacy/GovernorBravoDelegateV1.sol ./contracts/governance/contracts/legacy/GovernorBravoDelegateV1.sol
 cp ./node_modules/@venusprotocol/governance-contracts/contracts/legacy/GovernorBravoInterfaces.sol ./contracts/governance/contracts/legacy/GovernorBravoInterfaces.sol
+cp ./node_modules/@venusprotocol/governance-contracts/contracts/legacy/GovernorBravoDelegator.sol ./contracts/governance/contracts/legacy/GovernorBravoDelegator.sol
 cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoInterfaces.sol ./contracts/governance/contracts/Governance/GovernorBravoInterfaces.sol
 
 rm contracts/protocol/contracts/Governance/GovernorBravoDelegate.sol

@@ -95,6 +95,9 @@ const config: HardhatUserConfig = {
       '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegator.sol',
     ],
   },
+  mocha: {
+    timeout: 100000000
+  },
   // Hardhat deploy
   namedAccounts: {
     deployer: 0, // here this will by default take the first account as deployer

@@ -1,25 +1,25 @@
-import { BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import { Timelock } from '../../generated/GovernorBravoDelegate2/Timelock';
 import { Delegate, Governance, GovernanceRoute, Proposal } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
-import { governorBravoDelegateAddress, nullAddress } from '../constants/addresses';
+import { governorBravoDelegatorAddress, nullAddress } from '../constants/addresses';
+import { getDelegateId } from '../utilities/ids';
 
 /**
  * While technically this function does also create, we don't care because it only happens once as the id is a constant.
  * @returns Governance
  */
 export const getGovernanceEntity = (): Governance => {
-  let governance = Governance.load(governorBravoDelegateAddress.toHex());
+  let governance = Governance.load(governorBravoDelegatorAddress.toHex());
   if (!governance) {
-    const governorBravoDelegate2 = GovernorBravoDelegate2.bind(governorBravoDelegateAddress);
-    governance = new Governance(governorBravoDelegateAddress.toHex());
+    const governorBravoDelegate2 = GovernorBravoDelegate2.bind(governorBravoDelegatorAddress);
+    governance = new Governance(governorBravoDelegatorAddress.toHex());
     governance.proposals = BIGINT_ZERO;
     governance.totalDelegates = BIGINT_ZERO;
     governance.totalVoters = BIGINT_ZERO;
     governance.totalVotesMantissa = BIGINT_ZERO;
-    governance.proposalsQueued = BIGINT_ZERO;
     // Mocking values until we can correctly index current governance contract
     governance.admin = nullAddress;
     governance.implementation = nullAddress;
@@ -43,7 +43,7 @@ export const getGovernanceEntity = (): Governance => {
       const normalTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(0));
       const normalTimelock = Timelock.bind(normalTimelockAddress);
       const normalGovernanceRoute = new GovernanceRoute('0');
-      normalGovernanceRoute.governor = governorBravoDelegateAddress;
+      normalGovernanceRoute.governor = governorBravoDelegatorAddress;
       normalGovernanceRoute.timelock = normalTimelockAddress;
       normalGovernanceRoute.queueDelayBlocks = normalTimelock.delay();
       normalGovernanceRoute.votingDelayBlocks = normalProposalConfig.getVotingDelay();
@@ -55,7 +55,7 @@ export const getGovernanceEntity = (): Governance => {
       const fastTrackTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(1));
       const fastTrackTimelock = Timelock.bind(normalTimelockAddress);
       const fastTrackGovernanceRoute = new GovernanceRoute('1');
-      fastTrackGovernanceRoute.governor = governorBravoDelegateAddress;
+      fastTrackGovernanceRoute.governor = governorBravoDelegatorAddress;
       fastTrackGovernanceRoute.timelock = fastTrackTimelockAddress;
       fastTrackGovernanceRoute.queueDelayBlocks = fastTrackTimelock.delay();
       fastTrackGovernanceRoute.votingDelayBlocks = fastTrackProposalConfig.getVotingDelay();
@@ -68,7 +68,7 @@ export const getGovernanceEntity = (): Governance => {
       const criticalTimelockAddress = governorBravoDelegate2.proposalTimelocks(new BigInt(2));
       const criticalTimelock = Timelock.bind(normalTimelockAddress);
       const criticalGovernanceRoute = new GovernanceRoute('2');
-      criticalGovernanceRoute.governor = governorBravoDelegateAddress;
+      criticalGovernanceRoute.governor = governorBravoDelegatorAddress;
       criticalGovernanceRoute.timelock = criticalTimelockAddress;
       criticalGovernanceRoute.queueDelayBlocks = criticalTimelock.delay();
       criticalGovernanceRoute.votingDelayBlocks = criticalProposalConfig.getVotingDelay();
@@ -92,7 +92,8 @@ export const getProposal = (id: string): Proposal => {
   return proposal as Proposal;
 };
 
-export const getDelegate = (id: string): Delegate => {
+export const getDelegate = (address: Address): Delegate => {
+  const id = getDelegateId(address);
   const delegate = Delegate.load(id);
   if (!delegate) {
     log.critical('Delegate {} not found', [id]);

@@ -74,9 +74,9 @@ dataSources:
     name: GovernorBravoDelegate
     network: {{ network }}
     source:
-      address: "{{ governorBravoDelegateAddress }}"
+      address: "{{ governorBravoDelegatorAddress }}"
       abi: GovernorBravoDelegate
-      startBlock: {{ governorBravoDelegateStartBlock }}
+      startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -117,9 +117,9 @@ dataSources:
     name: GovernorBravoDelegate2
     network: {{ network }}
     source:
-      address: "{{ governorBravoDelegateAddress }}"
+      address: "{{ governorBravoDelegatorAddress }}"
       abi: GovernorBravoDelegate2
-      startBlock: {{ governorBravoDelegateStartBlock }}
+      startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

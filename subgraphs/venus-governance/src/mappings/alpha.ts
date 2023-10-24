@@ -7,21 +7,19 @@ import {
   ProposalQueued,
   VoteCast,
 } from '../../generated/GovernorAlpha/GovernorAlpha';
-import { ACTIVE, CANCELLED, PENDING } from '../constants';
 import { createProposal, createVoteAlpha } from '../operations/create';
-import { getProposal } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
-  updateProposalStatus,
 } from '../operations/update';
 
 // - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
 //   handler: handleProposalCreated
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  const result = getOrCreateDelegate(event.params.proposer.toHex());
+  const result = getOrCreateDelegate(event.params.proposer);
   const created = result.created;
   createProposal<ProposalCreated>(event);
 
@@ -39,8 +37,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
 //   handler: handleProposalCanceled
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
-  const proposalId = event.params.id.toString();
-  updateProposalStatus(proposalId, CANCELLED);
+  updateProposalCanceled<ProposalCanceled>(event);
 }
 
 // - event: ProposalQueued(uint256,uint256)
@@ -62,20 +59,10 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 
 export function handleVoteCast(event: VoteCast): void {
   // Alpha V1 doesn't require staking in the vault so we need to create delegates when casting a vote
-  getOrCreateDelegate(event.params.voter.toHexString());
+  getOrCreateDelegate(event.params.voter);
   createVoteAlpha(event);
-  const proposalId = event.params.proposalId.toString();
-  const proposal = getProposal(proposalId);
-  if (proposal.status == PENDING) {
-    updateProposalStatus(proposalId, ACTIVE);
-  }
 }
 
 export function handleVoteCastV2(event: VoteCast): void {
   createVoteAlpha(event);
-  const proposalId = event.params.proposalId.toString();
-  const proposal = getProposal(proposalId);
-  if (proposal.status == PENDING) {
-    updateProposalStatus(proposalId, ACTIVE);
-  }
 }

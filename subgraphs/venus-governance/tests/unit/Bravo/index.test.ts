@@ -17,7 +17,7 @@ import {
   ProposalQueued,
 } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { Delegate } from '../../../generated/schema';
-import { governorBravoDelegateAddress } from '../../../src/constants/addresses';
+import { governorBravoDelegatorAddress } from '../../../src/constants/addresses';
 import {
   handleBravoVoteCast,
   handleNewAdmin,
@@ -66,7 +66,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   /** setup test */
-  getOrCreateDelegate(user1.toHexString());
+  getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
     user1,
@@ -128,7 +128,6 @@ describe('Bravo', () => {
     assertProposalDocument('startBlock', `${startBlock}`);
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);
-    assertProposalDocument('status', 'PENDING');
   });
 
   test('create proposal V2', () => {
@@ -174,7 +173,6 @@ describe('Bravo', () => {
     assertProposalDocument('startBlock', `${startBlock}`);
     assertProposalDocument('endBlock', `${endBlock}`);
     assertProposalDocument('description', description);
-    assertProposalDocument('status', 'PENDING');
     assertProposalDocument('type', 'CRITICAL');
   });
 
@@ -203,7 +201,7 @@ describe('Bravo', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('status', 'CANCELLED');
+    assertProposalDocument('canceled', 'true');
   });
 
   test('queue proposal', () => {
@@ -217,13 +215,8 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
-    };
-
-    assertProposalDocument('status', 'QUEUED');
-    assertProposalDocument('executionETA', eta.toString());
-    assertGovernanceDocument('proposalsQueued', '1');
+    assertProposalDocument('queued', 'true');
+    assertProposalDocument('executionEta', eta.toString());
   });
 
   test('proposal executed', () => {
@@ -240,13 +233,7 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    const assertGovernanceDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), key, value);
-    };
-
-    assertProposalDocument('status', 'EXECUTED');
-    assertProposalDocument('executionETA', 'null');
-    assertGovernanceDocument('proposalsQueued', '0');
+    assertProposalDocument('executed', 'true');
   });
 
   test('vote cast', () => {
@@ -282,7 +269,7 @@ describe('Bravo', () => {
     handleNewImplementation(newImplementationEvent);
     assert.fieldEquals(
       'Governance',
-      governorBravoDelegateAddress.toHex(),
+      governorBravoDelegatorAddress.toHex(),
       'implementation',
       newImplementation.toHexString(),
     );
@@ -300,7 +287,7 @@ describe('Bravo', () => {
     handleNewPendingAdmin(pendingAdminEvent);
     assert.fieldEquals(
       'Governance',
-      governorBravoDelegateAddress.toHex(),
+      governorBravoDelegatorAddress.toHex(),
       'pendingAdmin',
       newPendingAdmin.toHexString(),
     );
@@ -314,11 +301,11 @@ describe('Bravo', () => {
     handleNewAdmin(newAdminEvent);
     assert.fieldEquals(
       'Governance',
-      governorBravoDelegateAddress.toHex(),
+      governorBravoDelegatorAddress.toHex(),
       'admin',
       newAdmin.toHexString(),
     );
-    assert.fieldEquals('Governance', governorBravoDelegateAddress.toHex(), 'pendingAdmin', 'null');
+    assert.fieldEquals('Governance', governorBravoDelegatorAddress.toHex(), 'pendingAdmin', 'null');
   });
 
   test('registers new guardian', () => {
@@ -329,7 +316,7 @@ describe('Bravo', () => {
     handleNewGuardian(newGuardianEvent);
     assert.fieldEquals(
       'Governance',
-      governorBravoDelegateAddress.toHex(),
+      governorBravoDelegatorAddress.toHex(),
       'guardian',
       newGuardian.toHexString(),
     );
@@ -347,7 +334,7 @@ describe('Bravo', () => {
     handleProposalMaxOperationsUpdated(newProposalMaxOperationsEvent);
     assert.fieldEquals(
       'Governance',
-      governorBravoDelegateAddress.toHex(),
+      governorBravoDelegatorAddress.toHex(),
       'proposalMaxOperations',
       newProposalMaxOperations.toString(),
     );

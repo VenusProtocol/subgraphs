@@ -40,10 +40,16 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     autoMine: true,
   });
 
-  const xvsVault = await ethers.getContract('XVSVault');
+  let xvsVault = await ethers.getContract('XVSVault');
   const xvsStore = await ethers.getContract('XVSStore');
   const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
   const accessControlManager = await ethers.getContract('AccessControlManager');
+
+  // Become Implementation of XVSVaultProxy
+  await xvsVaultProxy._setPendingImplementation(xvsVaultAddress);
+  await xvsVault._become(xvsVaultProxyAddress);
+
+  xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxyAddress);
 
   let txn = await xvsVault.setXvsStore(xvsAddress, xvsStore.address);
   await txn.wait(1);
@@ -51,12 +57,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   txn = await xvsVault.setAccessControl(accessControlManager.address);
   await txn.wait(1);
 
-  // Become Implementation of XVSVaultProxy
-  await xvsVaultProxy._setPendingImplementation(xvsVaultAddress);
-  await xvsVault._become(xvsVaultProxyAddress);
-
   // Set new owner to xvs store
-  await xvsStore.setNewOwner(xvsVaultAddress);
+  await xvsStore.setNewOwner(xvsVaultProxyAddress);
 };
 
 func.tags = ['XVS vault'];

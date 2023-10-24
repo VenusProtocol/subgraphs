@@ -11,23 +11,23 @@ import {
   ProposalQueued,
   VoteCast,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { ACTIVE, CANCELLED, CRITICAL, FAST_TRACK, NORMAL, PENDING } from '../constants';
+import { CRITICAL, FAST_TRACK, NORMAL } from '../constants';
 import { createProposal, createVoteBravo } from '../operations/create';
-import { getGovernanceEntity, getProposal } from '../operations/get';
+import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
-  updateProposalStatus,
 } from '../operations/update';
 
 export function handleProposalCreated(event: ProposalCreated): void {
-  getOrCreateDelegate(event.params.proposer.toHexString());
+  getOrCreateDelegate(event.params.proposer);
   createProposal<ProposalCreated>(event);
 }
 
 export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
-  getOrCreateDelegate(event.params.proposer.toHexString());
+  getOrCreateDelegate(event.params.proposer);
   const proposal = createProposal<ProposalCreatedV2>(event);
   const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
   proposal.type = indexProposalTypeConstant[event.params.proposalType];
@@ -35,8 +35,7 @@ export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
 }
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
-  const proposalId = event.params.id.toString();
-  updateProposalStatus(proposalId, CANCELLED);
+  updateProposalCanceled(event);
 }
 
 export function handleProposalQueued(event: ProposalQueued): void {
@@ -49,11 +48,6 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 
 export function handleBravoVoteCast(event: VoteCast): void {
   createVoteBravo(event);
-  const proposalId = event.params.proposalId.toString();
-  const proposal = getProposal(proposalId);
-  if (proposal.status == PENDING) {
-    updateProposalStatus(proposalId, ACTIVE);
-  }
 }
 
 export function handleNewImplementation(event: NewImplementation): void {

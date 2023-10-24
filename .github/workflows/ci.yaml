@@ -49,7 +49,7 @@ jobs:
         run: yarn test
 
   integration-test-isolated-pools:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: unit-test
     steps:
       - name: Checkout
@@ -82,7 +82,7 @@ jobs:
           docker system prune -f -a --volumes
 
   integration-test-governance:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     needs: unit-test
     steps:
       - name: Checkout
@@ -107,7 +107,7 @@ jobs:
       - name: Run Governance integration integration tests
         run: |
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration --bail
-      
+
       - name: Stop containers
         if: always()
         run: |
