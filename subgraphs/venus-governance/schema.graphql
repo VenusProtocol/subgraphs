@@ -105,7 +105,7 @@ type Governance @entity {
   id: ID!
 
   "Number of proposals created"
-  proposals: BigInt!
+  totalProposals: BigInt!
 
   "Total number of accounts delegates that can participate in governance by voting or creating proposals"
   totalDelegates: BigInt!
@@ -133,23 +133,6 @@ type Governance @entity {
 
   "The maximum number of actions that can be included in a proposal"
   proposalMaxOperations: BigInt!
-}
-
-type GovernanceRoute @entity {
-  "Index of the governance route"
-  id: ID!
-  "Governor implementation the route belongs to"
-  governor: Bytes!
-  "Address of timelock contract for route"
-  timelock: Bytes!
-  "Queue execution delay in blocks"
-  queueDelayBlocks: BigInt!
-  "The delay before voting on a proposal may take place, once proposed, in blocks"
-  votingDelayBlocks: BigInt!
-  "The duration of voting on a proposal, in blocks"
-  votingPeriodBlocks: BigInt!
-  "The number of votes required in order for a voter to become a proposer"
-  proposalThresholdMantissa: BigInt!
 }
 
 enum PermissionStatus {

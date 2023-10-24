@@ -1,0 +1,15 @@
+query Governance {
+  governance(id: "GOVERNANCE") {
+      id
+      totalProposals
+      totalDelegates
+      totalVoters
+      totalVotesMantissa
+      quorumVotesMantissa
+      implementation
+      pendingAdmin
+      admin
+      guardian
+      proposalMaxOperations
+    }
+}

@@ -191,11 +191,28 @@ describe('GovernorBravo', function () {
   });
 
   describe('GovernorBravo2', function () {
-    before(async () => {
+    it('should update GovernorEntity when setting implementation', async function () {
+      const timelock = await ethers.getContract('Timelock');
+      const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
+      // Assert original values
+      let {
+        data: { governance },
+      } = await subgraphClient.getGovernance();
+
+      expect(governance.totalProposals).to.equal('4');
+      expect(governance.totalDelegates).to.equal('4');
+      expect(governance.totalVoters).to.equal('4');
+      expect(governance.totalVotesMantissa).to.equal('1700000000000000000000000');
+      expect(governance.quorumVotesMantissa).to.equal('600000000000000000000000');
+      expect(governance.implementation).to.equal(governorBravoDelegateV1.address.toLowerCase());
+      expect(governance.pendingAdmin).to.equal(null);
+      expect(governance.admin).to.equal(signers[0].address.toLowerCase());
+      expect(governance.guardian).to.equal(signers[0].address.toLowerCase());
+      expect(governance.proposalMaxOperations).to.equal('10');
+
       const governorBravoDelegatorV2 = await ethers.getContract('GovernorBravoDelegate');
       const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
       const xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxy.address);
-      const timelock = await ethers.getContract('Timelock');
 
       await governorBravoDelegator._setImplementation(governorBravoDelegatorV2.address);
       governorBravo = await ethers.getContractAt('GovernorBravoDelegate', governorBravo.address);
@@ -223,7 +240,19 @@ describe('GovernorBravo', function () {
 
       const timelocks = [timelock.address, timelock.address, timelock.address];
 
-      governorBravo.initialize(xvsVault.address, proposalConfigs, timelocks, signers[0].address);
+      await governorBravo.initialize(
+        xvsVault.address,
+        proposalConfigs,
+        timelocks,
+        signers[0].address,
+      );
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+      // Assert updated values
+      ({
+        data: { governance },
+      } = await subgraphClient.getGovernance());
+
+      expect(governance.implementation).to.equal(governorBravoDelegatorV2.address.toLowerCase());
     });
 
     it('should index created proposal with routes successfully', async function () {

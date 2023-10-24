@@ -16,6 +16,7 @@ import { createProposal, createVoteBravo } from '../operations/create';
 import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateGovernanceEntity,
   updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
@@ -54,6 +55,7 @@ export function handleNewImplementation(event: NewImplementation): void {
   const governance = getGovernanceEntity();
   governance.implementation = event.params.newImplementation;
   governance.save();
+  updateGovernanceEntity();
 }
 
 export function handleNewPendingAdmin(event: NewPendingAdmin): void {
