@@ -16,7 +16,6 @@ describe('XVS Vault and Delegation', function () {
   const amount = scaleValue(100000, 18);
 
   before(async function () {
-    this.timeout(50000000); // sometimes it takes a long time
     signers = await ethers.getSigners();
 
     xvs = await ethers.getContract('XVS');

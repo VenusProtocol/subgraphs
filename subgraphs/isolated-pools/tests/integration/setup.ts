@@ -4,7 +4,6 @@ import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from './constants';
 
 describe('Deploy Subgraph', function () {
   it('should deploy subgraph', async function () {
-    this.timeout(500000); // sometimes it takes a long time
     const root = `${__dirname}/../..`;
 
     await deploy({

@@ -15,7 +15,6 @@ describe('GovernorBravo', function () {
   let governorBravoDelegator: Contract;
 
   before(async function () {
-    this.timeout(50000000); // sometimes it takes a long time
     signers = await ethers.getSigners();
     governorBravoDelegator = await ethers.getContract('GovernorBravoDelegatorV1');
     const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
