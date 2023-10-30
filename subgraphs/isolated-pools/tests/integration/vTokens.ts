@@ -31,8 +31,6 @@ describe('VToken events', function () {
   const borrowAmount = scaleValue(0.000025, 18);
 
   before(async function () {
-    this.timeout(500000); // sometimes it takes a long time
-
     const signers = await ethers.getSigners();
     [_root, liquidator, borrower, liquidator2, borrower2, supplier1, supplier2] = signers;
 

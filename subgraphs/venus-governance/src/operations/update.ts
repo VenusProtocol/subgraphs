@@ -1,5 +1,8 @@
+import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
+import { Governance } from '../../generated/schema';
 import { BIGINT_ONE } from '../constants';
-import { nullAddress } from '../constants/addresses';
+import { governorBravoDelegatorAddress, nullAddress } from '../constants/addresses';
+import { getGovernanceId } from '../utilities/ids';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate } from './getOrCreate';
 
@@ -44,8 +47,10 @@ export function updateDelegateChanged<E>(event: E): void {
     const oldDelegate = oldDelegateResult.entity;
     oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
     oldDelegate.save();
+  }
 
-    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
+  if (fromDelegate == nullAddress.toHexString()) {
+    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
     governance.save();
   }
 
@@ -54,8 +59,10 @@ export function updateDelegateChanged<E>(event: E): void {
     const newDelegate = newDelegateResult.entity;
     newDelegate.delegateCount = newDelegate.delegateCount + 1;
     newDelegate.save();
+  }
 
-    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
+  if (fromDelegate == nullAddress.toHexString()) {
+    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
     governance.save();
   }
 }
@@ -74,5 +81,15 @@ export function updateDelegateVoteChanged<E>(event: E): void {
   delegate.save();
 
   governance.totalVotesMantissa = governance.totalVotesMantissa.plus(votesDifference);
+  governance.save();
+}
+
+export function updateGovernanceEntity(): void {
+  const governorBravoDelegate2 = GovernorBravoDelegate2.bind(governorBravoDelegatorAddress);
+  const governance = Governance.load(getGovernanceId())!;
+  governance.quorumVotesMantissa = governorBravoDelegate2.quorumVotes();
+  governance.admin = governorBravoDelegate2.admin();
+  governance.guardian = governorBravoDelegate2.guardian();
+  governance.proposalMaxOperations = governorBravoDelegate2.proposalMaxOperations();
   governance.save();
 }

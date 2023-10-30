@@ -21,7 +21,6 @@ describe('GovernorAlpha', function () {
   let user4: SignerWithAddress;
 
   before(async function () {
-    this.timeout(10000000); // sometimes it takes a long time
     governorAlpha = await ethers.getContract('GovernorAlpha');
     governorAlpha2 = await ethers.getContract('GovernorAlpha2');
     signers = await ethers.getSigners();
@@ -121,9 +120,6 @@ describe('GovernorAlpha', function () {
   });
 
   describe('Alpha2', function () {
-    before(async function () {
-      this.timeout(10000000); // sometimes it takes a long time
-    });
     it('indexes created proposals - alpha2', async function () {
       const [_, user1] = signers;
       await enfranchiseAccount(user1, scaleValue(600000, 18));

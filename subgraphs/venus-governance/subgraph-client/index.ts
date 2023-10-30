@@ -4,6 +4,7 @@ import { Client as UrqlClient, createClient } from 'urql/core';
 import {
   DelegateByIdDocument,
   DelegatesDocument,
+  GovernanceDocument,
   PermissionsDocument,
   ProposalByIdDocument,
   ProposalsDocument,
@@ -49,6 +50,11 @@ class SubgraphClient {
 
   async getPermissions() {
     const result = await this.query(PermissionsDocument, {});
+    return result;
+  }
+
+  async getGovernance() {
+    const result = await this.query(GovernanceDocument, {});
     return result;
   }
 }

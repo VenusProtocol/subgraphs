@@ -15,7 +15,6 @@ describe('Pools', function () {
   const syncDelay = 6000;
 
   before(async function () {
-    this.timeout(500000); // sometimes it takes a long time
     const signers = await ethers.getSigners();
     [root] = await ethers.getSigners();
     acc1 = signers[1];

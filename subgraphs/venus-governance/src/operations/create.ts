@@ -13,7 +13,7 @@ export function createProposal<E>(event: E): Proposal {
 
   const governance = getGovernanceEntity();
 
-  governance.proposals = governance.proposals.plus(BIGINT_ONE);
+  governance.totalProposals = governance.totalProposals.plus(BIGINT_ONE);
   governance.save();
   const targets = event.params.targets.map<Bytes>((address: Address) =>
     Bytes.fromHexString(address.toHexString()),
