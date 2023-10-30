@@ -10,16 +10,17 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "graph codegen",
-    "create:local": "LOCAL=true npx graph create venusprotocol/venus-subgraph --node http://127.0.0.1:8020/",
-    "build:local": "LOCAL=true npx graph build --ipfs http://127.0.0.1:5001",
-    "build:mainnet": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:local": "LOCAL=true npx mustache config/local.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs http://127.0.0.1:5001 --node http://127.0.0.1:8020/",
-    "deploy:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools-chapel --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/venus-isolated-pools --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml",
-    "prepare:testnet": "npx mustache config/testnet.json template.yaml > subgraph.yaml",
-    "prepare:mainnet": "npx mustache config/mainnet.json template.yaml > subgraph.yaml",
+    "codegen": "npx graph codegen",
+    "create:docker": "npx graph create venusprotocol/venus-subgraph  --node http://graph-node:8020/",
+    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:integration": "graph deploy venusprotocol/venus-subgraph  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts && npx graph deploy venusprotocol/venus-subgraph --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx mustache config/chapel.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-subgraph -chapel --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-subgraph e --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml",
+    "prepare:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml",
+    "prepare:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts",
     "test": "graph test",
     "test:integration": "true"
   }

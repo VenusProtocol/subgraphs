@@ -95,7 +95,7 @@ export const deploy = async ({
 
   // Build and Deploy Subgraph
   console.log('Build and deploy subgraph...');
-  exec(`yarn workspace ${packageName} run prepare:local`, root);
+  exec(`yarn workspace ${packageName} run prepare:docker`, root);
   exec(`yarn workspace ${packageName} run codegen`, root);
   exec(`yarn workspace ${packageName} run build:docker`, root);
   exec(`yarn workspace ${packageName} run create:docker`, root);

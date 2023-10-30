@@ -11,28 +11,22 @@
   ],
   "scripts": {
     "codegen": "npx graph codegen",
-    "create:local": "graph create venusprotocol/venus-governance --node http://127.0.0.1:8020",
     "create:docker": "npx graph create venusprotocol/venus-governance --node http://graph-node:8020/",
     "build:docker": "npx graph build --ipfs http://ipfs:5001",
-    "build:local": "graph build --ipfs http://localhost:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-governance --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts && yarn deploy:integration",
-    "deploy:docker": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts && npx graph deploy venusprotocol/venus-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts && npx graph deploy venusprotocol/venus-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx mustache config/chapel.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-governance-chapel --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts && graph deploy venusprotocol/venus-governance --debug --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:local": "npx mustache config/local.json template.yaml > subgraph.yaml && npx mustache config/local.json src/constants/config-template > src/constants/config.ts",
+    "prepare:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts",
     "prepare:chapel": "npx mustache config/chapel.json template.yaml > subgraph.yaml && npx mustache config/chapel.json src/constants/config-template > src/constants/config.ts",
     "prepare:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts",
-    "remove:local": "graph remove --node http://localhost:8020/ venusprotocol/venus-governance",
-    "generate-subgraph-types": "yarn graphclient build --dir ./subgraph-client",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
     "test": "graph test",
-    "test:integration": "hardhat test tests/integration/index.ts --network localhost"
+    "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
-    "@graphprotocol/client-cli": "^3.0.0",
     "apollo-fetch": "^0.7.0",
-    "hardhat": "^2.10.2",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }
