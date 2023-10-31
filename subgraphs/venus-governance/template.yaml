@@ -213,3 +213,29 @@ dataSources:
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
           handler: handleRoleRevoked
 
+  - kind: ethereum/contract
+    name: OmnichainProposalSender
+    network: {{ network }}
+    source:
+      address: "{{ omnichainProposalSenderAddress }}"
+      abi: OmnichainProposalSender
+      startBlock: {{ omnichainProposalSenderStartBlock }}
+      file: ./src/mappings/omnichainProposalSender.ts
+      entities:
+        - 
+      abis:
+        - name: OmnichainProposalSender
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/OmnichainProposalSender.sol/OmnichainProposalSender.json
+      eventHandlers:
+        - event: SetTrustedRemoteAddress(indexed uint16,bytes)
+          handler: handleSetTrustedRemoteAddress
+        - event: SetTrustedRemote(indexed uint16,bytes)
+          handler: handleSetTrustedRemote
+        - event: ExecuteRemoteProposal(indexed uint16, bytes)
+          handler: handleExecuteRemoteProposal
+        - event: ClearPayload(indexed uint64, bytes32)
+          handler: handleClearPayload
+        - event: StorePayload(indexed uint64,indexed uint16,bytes,bytes,uint256,bytes)
+          handler: handleStorePayload
+        - event: UpdatedValidChainId(uint16,bool)
+          handler: handleUpdatedValidChainId

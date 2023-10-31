@@ -1,0 +1,21 @@
+type Governance @entity {
+  "Unique entity used to keep track of common aggregated data"
+  id: ID!
+
+  "Max number of commands that can be sent to this governor in a day"
+  maxDailyReceiveLimit: Int!
+}
+
+
+type FunctionRegistry @entity {
+  "Function Registry Signature ID"
+  id: ID!
+  
+  "Function signature that the governor is allowed to call"
+  signature: String!
+}
+
+type Proposal @entity {
+  "Function Registry Signature ID"
+  id: ID!
+}
