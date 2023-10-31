@@ -1,0 +1,26 @@
+{
+  "name": "venus-cross-chain-governance-subgraph",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/VenusProtocol/subgraphs",
+    "directory": "subgraphs/venus"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "create:docker": "npx graph create venusprotocol/venus-subgraph --node http://graph-node:8020/",
+    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "build:ethereum": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:sepolia": "npx mustache config/sepolia.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:ethereum": "npx mustache config/ethereum.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml",
+    "prepare:sepolia": "npx mustache config/sepolia.json template.yaml > subgraph.yaml",
+    "prepare:ethereum": "npx mustache config/ethereum.json template.yaml > subgraph.yaml",
+    "test": "graph test",
+    "test:integration": "true"
+  }
+}
