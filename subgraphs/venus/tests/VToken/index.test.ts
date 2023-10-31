@@ -449,6 +449,8 @@ describe('VToken', () => {
 
       handleMint(mintEvent);
 
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'supplierCount', '2');
+
       const supplier02 = user2Address;
       mintEvent = createMintEvent(
         aaaTokenAddress,
@@ -460,6 +462,7 @@ describe('VToken', () => {
       createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, mintTokens);
 
       handleMint(mintEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'supplierCount', '3');
 
       let redeemEvent = createRedeemEvent(
         aaaTokenAddress,
@@ -471,6 +474,7 @@ describe('VToken', () => {
       createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, zeroBigInt32);
 
       handleRedeem(redeemEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'supplierCount', '2');
 
       redeemEvent = createRedeemEvent(
         aaaTokenAddress,
@@ -482,6 +486,7 @@ describe('VToken', () => {
       createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, halfMintTokens);
 
       handleRedeem(redeemEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'supplierCount', '1');
 
       redeemEvent = createRedeemEvent(
         aaaTokenAddress,
@@ -493,6 +498,7 @@ describe('VToken', () => {
       createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, zeroBigInt32);
 
       handleRedeem(redeemEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'supplierCount', '0');
     });
 
     test('registers increase and decrease in the market borrower count', () => {
@@ -515,6 +521,8 @@ describe('VToken', () => {
       );
 
       handleBorrow(borrowEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '2');
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '2');
 
       const borrower02 = user2Address;
       borrowEvent = createBorrowEvent(
@@ -526,6 +534,8 @@ describe('VToken', () => {
       );
 
       handleBorrow(borrowEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '3');
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '3');
 
       let repayEvent = createRepayBorrowEvent(
         aaaTokenAddress,
@@ -537,6 +547,8 @@ describe('VToken', () => {
       );
 
       handleRepayBorrow(repayEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '2');
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '2');
 
       repayEvent = createRepayBorrowEvent(
         aaaTokenAddress,
@@ -548,17 +560,21 @@ describe('VToken', () => {
       );
 
       handleRepayBorrow(repayEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
       repayEvent = createRepayBorrowEvent(
         aaaTokenAddress,
         borrower01,
         borrower01,
         halfBorrowAmountTokens,
-        zeroBigInt32,
-        zeroBigInt32,
+        oneBigInt,
+        oneBigInt,
       );
 
       handleRepayBorrow(repayEvent);
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
+      assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
     });
   });
 });

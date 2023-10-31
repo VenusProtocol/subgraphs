@@ -67,6 +67,15 @@ type Market @entity {
     totalXvsDistributedMantissa: BigInt!
     "vToken decimal length"
     vTokenDecimals: Int!
+
+    "Number of accounts currently supplying to this market"
+    supplierCount: BigInt!
+
+    "Number of accounts with reasonable borrow positions in this market (excludes accounts with dust (potentially left over from liquidations))"
+    borrowerCountAdjusted: BigInt!
+
+    "Number of accounts currently borrowing from this market"
+    borrowerCount: BigInt!
 }
 
 """
@@ -84,17 +93,6 @@ type Account @entity {
     countLiquidator: Int!
     "True if user has ever borrowed"
     hasBorrowed: Boolean!
-
-    # The following values are added by the JS Wrapper, and must be calculated with the most up
-    # to date values based on the block delta for market.exchangeRate and market.borrowIndex
-    # They do not need to be in the schema, but they will show up in the explorer playground
-
-    # "If less than 1, the account can be liquidated
-    # health: BigDecimal!
-    # "Total assets supplied by user"
-    # totalBorrowValueInEth: BigDecimal!
-    # "Total assets borrowed from user"
-    # totalCollateralValueInEth: BigDecimal!
 }
 
 """
@@ -131,22 +129,6 @@ type AccountVToken @entity {
     totalUnderlyingRepaid: BigDecimal!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     storedBorrowBalance: BigDecimal!
-
-    # The following values are added by the JS Wrapper, and must be calculated with the most up
-    # to date values based on the block delta for market.exchangeRate and market.borrowIndex
-    # They do not need to be in the schema, but they will show up in the explorer playground
-
-    # supplyBalanceUnderlying: BigDecimal!
-    # FORMULA: supplyBalanceUnderlying = vTokenBalance * market.exchangeRate
-
-    # lifetimeSupplyInterestAccrued: BigDecimal!
-    # FORMULA: lifetimeSupplyInterestAccrued = supplyBalanceUnderlying - totalUnderlyingSupplied + totalUnderlyingRedeemed
-
-    # borrowBalanceUnderlying: BigDecimal!
-    # FORMULA: borrowBalanceUnderlying = storedBorrowBalance * market.borrowIndex / accountBorrowIndex
-
-    # lifetimeBorrowInterestAccrued: BigDecimal!
-    # FORMULA: lifetimeBorrowInterestAccrued = borrowBalanceUnderlying - totalUnderlyingBorrowed + totalUnderlyingRepaid
 }
 
 """

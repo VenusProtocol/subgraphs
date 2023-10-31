@@ -1,5 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
+import { BigInt } from '@graphprotocol/graph-ts';
+
 import {
   Account,
   BorrowEvent,
@@ -21,12 +23,14 @@ import {
   RepayBorrow,
   Transfer,
 } from '../../generated/templates/VToken/VToken';
+import { oneBigInt, zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import { createAccount } from '../operations/create';
 import { createMarket } from '../operations/create';
 import { updateCommonVTokenStats } from '../operations/update';
 import { updateMarket } from '../operations/update';
 import { exponentToBigDecimal } from '../utilities/exponentToBigDecimal';
+import { getMarketId, getTransactionId } from '../utilities/ids';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -46,10 +50,7 @@ export const handleMint = (event: Mint): void => {
   if (!market) {
     market = createMarket(event.address.toHexString());
   }
-  let mintID = event.transaction.hash
-    .toHexString()
-    .concat('-')
-    .concat(event.transactionLogIndex.toString());
+  let mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
 
   const vTokenDecimals = market.vTokenDecimals;
 
@@ -62,7 +63,7 @@ export const handleMint = (event: Mint): void => {
     .div(exponentToBigDecimal(market.underlyingDecimals))
     .truncate(market.underlyingDecimals);
 
-  let mint = new MintEvent(mintID);
+  let mint = new MintEvent(mintId);
   mint.amount = vTokenAmount;
   mint.to = event.params.minter;
   mint.from = event.address;
@@ -71,6 +72,10 @@ export const handleMint = (event: Mint): void => {
   mint.vTokenSymbol = market.symbol;
   mint.underlyingAmount = underlyingAmount;
   mint.save();
+
+  if (event.params.mintTokens.equals(event.params.totalSupply)) {
+    market.supplierCount = market.supplierCount.plus(oneBigInt);
+  }
 };
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
@@ -114,6 +119,12 @@ export const handleRedeem = (event: Redeem): void => {
   redeem.vTokenSymbol = market.symbol;
   redeem.underlyingAmount = underlyingAmount;
   redeem.save();
+
+  if (event.params.totalSupply.equals(zeroBigInt32)) {
+    // if the current balance is 0 then the user has withdrawn all their assets from this market
+    market.supplierCount = market.supplierCount.minus(oneBigInt);
+    market.save();
+  }
 };
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
@@ -186,6 +197,13 @@ export const handleBorrow = (event: Borrow): void => {
   borrow.blockTime = event.block.timestamp.toI32();
   borrow.underlyingSymbol = market.underlyingSymbol;
   borrow.save();
+
+  if (event.params.accountBorrows == event.params.borrowAmount) {
+    // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
+    market.borrowerCount = market.borrowerCount.plus(oneBigInt);
+    market.borrowerCountAdjusted = market.borrowerCountAdjusted.plus(oneBigInt);
+    market.save();
+  }
 };
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
@@ -262,6 +280,17 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
   repay.underlyingSymbol = market.underlyingSymbol;
   repay.payer = event.params.payer;
   repay.save();
+
+  if (event.params.accountBorrows.equals(zeroBigInt32)) {
+    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
+    market.save();
+  } else if (event.params.accountBorrows.le(new BigInt(10))) {
+    // Sometimes a liquidator will leave dust behind. If this happens we'll adjust count
+    // because the position only exists due to a technicality
+    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
+    market.save();
+  }
 };
 
 /*
@@ -353,10 +382,10 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
 export const handleTransfer = (event: Transfer): void => {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
-  let marketID = event.address.toHexString();
-  let market = Market.load(marketID);
+  let marketId = getMarketId(event.address);
+  let market = Market.load(marketId);
   if (!market) {
-    market = createMarket(marketID);
+    market = createMarket(marketId);
   }
   if (market.accrualBlockNumber != event.block.number.toI32()) {
     market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
@@ -366,11 +395,11 @@ export const handleTransfer = (event: Transfer): void => {
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
-  let accountFromID = event.params.from.toHex();
-  if (accountFromID != nullAddress.toHex()) {
-    let accountFrom = Account.load(accountFromID);
+  let accountFromId = event.params.from.toHex();
+  if (accountFromId != nullAddress.toHex()) {
+    let accountFrom = Account.load(accountFromId);
     if (accountFrom == null) {
-      createAccount(accountFromID);
+      createAccount(accountFromId);
     }
 
     // Update vTokenStats common for all events, and return the stats to update unique
@@ -378,7 +407,7 @@ export const handleTransfer = (event: Transfer): void => {
     let vTokenStatsFrom = updateCommonVTokenStats(
       market.id,
       market.symbol,
-      accountFromID,
+      accountFromId,
       event.transaction.hash,
       event.block.timestamp,
       event.block.number,
@@ -401,11 +430,11 @@ export const handleTransfer = (event: Transfer): void => {
   // If so, we ignore it. this leaves an edge case, where someone who accidentally sends
   // vTokens to a vToken contract, where it will not get recorded. Right now it would
   // be messy to include, so we are leaving it out for now TODO fix this in future
-  let accountToID = event.params.to.toHex();
-  if (accountToID != marketID) {
-    let accountTo = Account.load(accountToID);
+  let accountToId = event.params.to.toHex();
+  if (accountToId != marketId) {
+    let accountTo = Account.load(accountToId);
     if (accountTo == null) {
-      createAccount(accountToID);
+      createAccount(accountToId);
     }
 
     // Update vTokenStats common for all events, and return the stats to update unique
@@ -413,7 +442,7 @@ export const handleTransfer = (event: Transfer): void => {
     let vTokenStatsTo = updateCommonVTokenStats(
       market.id,
       market.symbol,
-      accountToID,
+      accountToId,
       event.transaction.hash,
       event.block.timestamp,
       event.block.number,
@@ -432,12 +461,9 @@ export const handleTransfer = (event: Transfer): void => {
     vTokenStatsTo.save();
   }
 
-  let transferID = event.transaction.hash
-    .toHexString()
-    .concat('-')
-    .concat(event.transactionLogIndex.toString());
+  let transferId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
 
-  let transfer = new TransferEvent(transferID);
+  let transfer = new TransferEvent(transferId);
   transfer.amount = event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals));
   transfer.to = event.params.to;
   transfer.from = event.params.from;

@@ -100,5 +100,9 @@ export function createMarket(marketAddress: string): Market {
   market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
   market.totalXvsDistributedMantissa = zeroBigInt32;
 
+  market.supplierCount = zeroBigInt32;
+  market.borrowerCount = zeroBigInt32;
+  market.borrowerCountAdjusted = zeroBigInt32;
+
   return market;
 }
