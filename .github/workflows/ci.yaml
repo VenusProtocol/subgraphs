@@ -39,8 +39,8 @@ jobs:
         # enabeling updating the lock file for a bug in yarn berry likely related to installing github
         run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
 
-      - name: Prepare local
-        run: yarn prepare:local
+      - name: Prepare
+        run: yarn prepare:docker
 
       - name: Codegen
         run: yarn codegen
@@ -97,7 +97,7 @@ jobs:
       
       - name: Generate Governance graphql types
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run prepare:local
+          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run prepare:docker
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run codegen
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run create:docker
           docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run deploy:docker

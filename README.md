@@ -23,8 +23,6 @@ Integration tests require running IPFS, a graph-node and a hardhat node. They ca
 $ yarn workspace <WORKSPACE> run test:integration
 ```
 
-If you'd like to run the integration tests locally include the env `LOCAL=true` and follow instructions run the services locally.
-
 > Integration tests are temporarily disabled during CI, while the docker setup is debugged.
 
 ## Running servies locally
@@ -58,14 +56,6 @@ cargo run -p graph-node --release -- \
 ```
 
 Replace `<NETWORK>` with the network indicated by your subgraph.yaml (usually bsc).
-
-### Deploy your local subgraph
-To build or deploy the subgraph you'll need to first compile the subgraph.yaml template and then run the build of deploy commands which can be run for all packages or individual packages.
-
-```
-$ yarn prepare:local
-$ yarn deploy:local
-```
 
 ## Testing
 ### Unit tests
