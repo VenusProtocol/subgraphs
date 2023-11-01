@@ -198,7 +198,7 @@ type MintEvent implements VTokenTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Account that received tokens (minter)"
     to: Bytes!
     "Account that sent tokens (VToken contract)"
@@ -207,10 +207,10 @@ type MintEvent implements VTokenTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the vToken transferred"
-    vTokenSymbol: String!
+    "Address of the vToken transferred"
+    vTokenAddress: Bytes!
     "Underlying token amount transferred"
-    underlyingAmount: BigDecimal
+    underlyingAmountMantissa: BigInt!
 }
 
 """
@@ -221,7 +221,7 @@ type RedeemEvent implements VTokenTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Account that received tokens (VToken contract)"
     to: Bytes!
     "Account that sent tokens (redeemer)"
@@ -230,10 +230,10 @@ type RedeemEvent implements VTokenTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the vToken transferred"
-    vTokenSymbol: String!
+    "Address of the vToken transferred"
+    vTokenAddress: Bytes!
     "Underlying token amount transferred"
-    underlyingAmount: BigDecimal
+    underlyingAmountMantissa: BigInt!
 }
 
 """

@@ -1,14 +1,10 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { BigInt } from '@graphprotocol/graph-ts';
-
 import {
   Account,
   BorrowEvent,
   LiquidationEvent,
   Market,
-  MintEvent,
-  RedeemEvent,
   RepayEvent,
   TransferEvent,
 } from '../../generated/schema';
@@ -16,17 +12,29 @@ import {
   AccrueInterest,
   Borrow,
   LiquidateBorrow,
-  Mint,
+  MintBehalf as MintBehalfV1,
+  Mint as MintV1,
   NewMarketInterestRateModel,
   NewReserveFactor,
-  Redeem,
+  Redeem as RedeemV1,
   RepayBorrow,
   Transfer,
 } from '../../generated/templates/VToken/VToken';
-import { oneBigInt, zeroBigInt32 } from '../constants';
+import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
+import {
+  Mint,
+  MintBehalf,
+  Redeem,
+} from '../../generated/templates/VTokenUpdatedEvents/VTokenUpdatedEvents';
+import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
-import { createAccount } from '../operations/create';
-import { createMarket } from '../operations/create';
+import {
+  createAccount,
+  createMarket,
+  createMintBehalfEvent,
+  createMintEvent,
+  createRedeemEvent,
+} from '../operations/create';
 import { updateCommonVTokenStats } from '../operations/update';
 import { updateMarket } from '../operations/update';
 import { exponentToBigDecimal } from '../utilities/exponentToBigDecimal';
@@ -50,31 +58,26 @@ export const handleMint = (event: Mint): void => {
   if (!market) {
     market = createMarket(event.address.toHexString());
   }
-  let mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
 
-  const vTokenDecimals = market.vTokenDecimals;
-
-  let vTokenAmount = event.params.mintTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
-  let underlyingAmount = event.params.mintAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  let mint = new MintEvent(mintId);
-  mint.amount = vTokenAmount;
-  mint.to = event.params.minter;
-  mint.from = event.address;
-  mint.blockNumber = event.block.number.toI32();
-  mint.blockTime = event.block.timestamp.toI32();
-  mint.vTokenSymbol = market.symbol;
-  mint.underlyingAmount = underlyingAmount;
-  mint.save();
+  createMintEvent<Mint>(event);
 
   if (event.params.mintTokens.equals(event.params.totalSupply)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
+    market.save();
+  }
+};
+
+export const handleMintBehalf = (event: MintBehalf): void => {
+  let market = Market.load(event.address.toHexString());
+  if (!market) {
+    market = createMarket(event.address.toHexString());
+  }
+
+  createMintBehalfEvent<MintBehalf>(event);
+
+  if (event.params.mintTokens.equals(event.params.totalSupply)) {
+    market.supplierCount = market.supplierCount.plus(oneBigInt);
+    market.save();
   }
 };
 
@@ -95,30 +98,8 @@ export const handleRedeem = (event: Redeem): void => {
   if (!market) {
     market = createMarket(event.address.toHexString());
   }
-  let vTokenDecimals = market.vTokenDecimals;
-  let redeemID = event.transaction.hash
-    .toHexString()
-    .concat('-')
-    .concat(event.transactionLogIndex.toString());
 
-  let vTokenAmount = event.params.redeemTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
-  let underlyingAmount = event.params.redeemAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  let redeem = new RedeemEvent(redeemID);
-  redeem.amount = vTokenAmount;
-  redeem.to = event.address;
-  redeem.from = event.params.redeemer;
-  redeem.blockNumber = event.block.number.toI32();
-  redeem.blockTime = event.block.timestamp.toI32();
-  redeem.vTokenSymbol = market.symbol;
-  redeem.underlyingAmount = underlyingAmount;
-  redeem.save();
+  createRedeemEvent<Redeem>(event);
 
   if (event.params.totalSupply.equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
@@ -285,7 +266,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
     market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
     market.save();
-  } else if (event.params.accountBorrows.le(new BigInt(10))) {
+  } else if (event.params.accountBorrows.le(DUST_THRESHOLD)) {
     // Sometimes a liquidator will leave dust behind. If this happens we'll adjust count
     // because the position only exists due to a technicality
     market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
@@ -495,4 +476,55 @@ export function handleNewMarketInterestRateModel(event: NewMarketInterestRateMod
   }
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
+}
+
+export function handleMintV1(event: MintV1): void {
+  let market = Market.load(event.address.toHexString());
+  if (!market) {
+    market = createMarket(event.address.toHexString());
+  }
+
+  createMintEvent<MintV1>(event);
+
+  const vTokenContract = VTokenContract.bind(event.address);
+  let totalSupply = vTokenContract.balanceOf(event.params.minter);
+
+  if (event.params.mintTokens.equals(totalSupply)) {
+    market.supplierCount = market.supplierCount.plus(oneBigInt);
+    market.save();
+  }
+}
+
+export function handleMintBehalfV1(event: MintBehalfV1): void {
+  let market = Market.load(event.address.toHexString());
+  if (!market) {
+    market = createMarket(event.address.toHexString());
+  }
+
+  createMintBehalfEvent<MintBehalfV1>(event);
+
+  const vTokenContract = VTokenContract.bind(event.address);
+  let totalSupply = vTokenContract.balanceOf(event.params.receiver);
+
+  if (event.params.mintTokens.equals(totalSupply)) {
+    market.supplierCount = market.supplierCount.plus(oneBigInt);
+    market.save();
+  }
+}
+
+export function handleRedeemV1(event: RedeemV1): void {
+  let market = Market.load(event.address.toHexString());
+  if (!market) {
+    market = createMarket(event.address.toHexString());
+  }
+  createRedeemEvent<RedeemV1>(event);
+
+  const vTokenContract = VTokenContract.bind(event.address);
+  let totalSupply = vTokenContract.balanceOf(event.params.redeemer);
+
+  if (totalSupply.equals(zeroBigInt32)) {
+    // if the current balance is 0 then the user has withdrawn all their assets from this market
+    market.supplierCount = market.supplierCount.minus(oneBigInt);
+    market.save();
+  }
 }

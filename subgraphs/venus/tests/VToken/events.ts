@@ -7,14 +7,20 @@ import {
   Approval as ApprovalEvent,
   Borrow as BorrowEvent,
   LiquidateBorrow as LiquidateBorrowEvent,
-  Mint as MintEvent,
+  MintBehalf as MintBehalfEventV1,
+  Mint as MintEventV1,
   NewComptroller as NewComptrollerEvent,
   NewMarketInterestRateModel as NewMarketInterestRateModelEvent,
   NewReserveFactor as NewReserveFactorEvent,
-  Redeem as RedeemEvent,
+  Redeem as RedeemEventV1,
   RepayBorrow as RepayBorrowEvent,
   Transfer as TransferEvent,
 } from '../../generated/templates/VToken/VToken';
+import {
+  MintBehalf as MintBehalfEvent,
+  Mint as MintEvent,
+  Redeem as RedeemEvent,
+} from '../../generated/templates/VTokenUpdatedEvents/VTokenUpdatedEvents';
 
 export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEvent => {
   const event = changetype<MarketListedEvent>(newMockEvent());
@@ -374,6 +380,139 @@ export const createNewComptrollerEvent = (
     ethereum.Value.fromAddress(newComptroller),
   );
   event.parameters.push(newComptrollerParam);
+
+  return event;
+};
+
+export const createMintEventV1 = (
+  vTokenAddress: Address,
+  minterAddress: Address,
+  mintAmount: BigInt,
+  mintTokens: BigInt,
+): MintEventV1 => {
+  const event = changetype<MintEventV1>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const minterParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(minterAddress));
+  event.parameters.push(minterParam);
+
+  const mintAmountParam = new ethereum.EventParam(
+    'mintAmount',
+    ethereum.Value.fromUnsignedBigInt(mintAmount),
+  );
+  event.parameters.push(mintAmountParam);
+
+  const mintTokensParam = new ethereum.EventParam(
+    'mintTokens',
+    ethereum.Value.fromUnsignedBigInt(mintTokens),
+  );
+  event.parameters.push(mintTokensParam);
+
+  return event;
+};
+export const createMintBehalfEvent = (
+  vTokenAddress: Address,
+  payerAddress: Address,
+  receiverAddress: Address,
+  mintAmount: BigInt,
+  mintTokens: BigInt,
+  totalSupply: BigInt,
+): MintBehalfEvent => {
+  const event = changetype<MintBehalfEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const payerParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(payerAddress));
+  event.parameters.push(payerParam);
+
+  const receiverParam = new ethereum.EventParam(
+    'minter',
+    ethereum.Value.fromAddress(receiverAddress),
+  );
+  event.parameters.push(receiverParam);
+
+  const mintAmountParam = new ethereum.EventParam(
+    'mintAmount',
+    ethereum.Value.fromUnsignedBigInt(mintAmount),
+  );
+  event.parameters.push(mintAmountParam);
+
+  const mintTokensParam = new ethereum.EventParam(
+    'mintTokens',
+    ethereum.Value.fromUnsignedBigInt(mintTokens),
+  );
+  event.parameters.push(mintTokensParam);
+
+  const totalSupplyParam = new ethereum.EventParam(
+    'totalSupply',
+    ethereum.Value.fromUnsignedBigInt(totalSupply),
+  );
+  event.parameters.push(totalSupplyParam);
+
+  return event;
+};
+export const createMintBehalfEventV1 = (
+  vTokenAddress: Address,
+  payerAddress: Address,
+  receiverAddress: Address,
+  mintAmount: BigInt,
+  mintTokens: BigInt,
+): MintBehalfEventV1 => {
+  const event = changetype<MintBehalfEventV1>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const payerParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(payerAddress));
+  event.parameters.push(payerParam);
+
+  const receiverParam = new ethereum.EventParam(
+    'minter',
+    ethereum.Value.fromAddress(receiverAddress),
+  );
+  event.parameters.push(receiverParam);
+
+  const mintAmountParam = new ethereum.EventParam(
+    'mintAmount',
+    ethereum.Value.fromUnsignedBigInt(mintAmount),
+  );
+  event.parameters.push(mintAmountParam);
+
+  const mintTokensParam = new ethereum.EventParam(
+    'mintTokens',
+    ethereum.Value.fromUnsignedBigInt(mintTokens),
+  );
+  event.parameters.push(mintTokensParam);
+  return event;
+};
+
+export const createRedeemEventV1 = (
+  vTokenAddress: Address,
+  redeemerAddress: Address,
+  redeemAmount: BigInt,
+  redeemTokens: BigInt,
+): RedeemEventV1 => {
+  const event = changetype<RedeemEventV1>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const redeemerParam = new ethereum.EventParam(
+    'redeemer',
+    ethereum.Value.fromAddress(redeemerAddress),
+  );
+  event.parameters.push(redeemerParam);
+
+  const redeemAmountParam = new ethereum.EventParam(
+    'redeemAmount',
+    ethereum.Value.fromUnsignedBigInt(redeemAmount),
+  );
+  event.parameters.push(redeemAmountParam);
+
+  const redeemTokensParam = new ethereum.EventParam(
+    'redeemTokens',
+    ethereum.Value.fromUnsignedBigInt(redeemTokens),
+  );
+  event.parameters.push(redeemTokensParam);
 
   return event;
 };
