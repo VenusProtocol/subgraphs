@@ -177,7 +177,7 @@ type TransferEvent implements VTokenTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Account that received tokens"
     to: Bytes!
     "Account that sent tokens"
@@ -244,7 +244,7 @@ type LiquidationEvent implements VTokenTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens seized"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Liquidator receiving tokens"
     to: Bytes!
     "Account being liquidated (borrower)"
@@ -258,7 +258,7 @@ type LiquidationEvent implements VTokenTransfer @entity {
     "Symbol of the underlying asset repaid through liquidation"
     underlyingSymbol: String!
     "Underlying vToken amount that was repaid by liquidator"
-    underlyingRepayAmount: BigDecimal!
+    underlyingRepayAmountMantissa: BigInt!
 }
 
 """
@@ -269,9 +269,9 @@ interface UnderlyingTransfer {
     "Transaction hash concatenated with log index"
     id: ID!
     "Amount of underlying borrowed"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Total borrows of this asset the account has"
-    accountBorrows: BigDecimal!
+    accountBorrowsMantissa: BigInt!
     "Account that borrowed the tokens"
     borrower: Bytes!
     "Block number"
@@ -289,9 +289,9 @@ type BorrowEvent implements UnderlyingTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "Amount of underlying borrowed"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Total borrows of this asset the account has"
-    accountBorrows: BigDecimal!
+    accountBorrowsMantissa: BigInt!
     "Account that borrowed the tokens"
     borrower: Bytes!
     "Block number"
@@ -310,9 +310,9 @@ type RepayEvent implements UnderlyingTransfer @entity {
     "Transaction hash concatenated with log index"
     id: ID!
     "Amount of underlying repaid"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Total borrows of this asset the account has"
-    accountBorrows: BigDecimal!
+    accountBorrowsMantissa: BigInt!
     "Account that borrowed the tokens"
     borrower: Bytes!
     "Block number"

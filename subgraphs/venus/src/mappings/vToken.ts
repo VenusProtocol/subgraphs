@@ -160,19 +160,9 @@ export const handleBorrow = (event: Borrow): void => {
     .concat('-')
     .concat(event.transactionLogIndex.toString());
 
-  let borrowAmount = event.params.borrowAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  let accountBorrows = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
   let borrow = new BorrowEvent(borrowID);
-  borrow.amount = borrowAmount;
-  borrow.accountBorrows = accountBorrows;
+  borrow.amountMantissa = event.params.borrowAmount;
+  borrow.accountBorrowsMantissa = event.params.accountBorrows;
   borrow.borrower = event.params.borrower;
   borrow.blockNumber = event.block.number.toI32();
   borrow.blockTime = event.block.timestamp.toI32();
@@ -242,19 +232,9 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
     .concat('-')
     .concat(event.transactionLogIndex.toString());
 
-  let repayAmount = event.params.repayAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
-  let accountBorrows = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
-
   let repay = new RepayEvent(repayID);
-  repay.amount = repayAmount;
-  repay.accountBorrows = accountBorrows;
+  repay.amountMantissa = event.params.repayAmount;
+  repay.accountBorrowsMantissa = event.params.accountBorrows;
   repay.borrower = event.params.borrower;
   repay.blockNumber = event.block.number.toI32();
   repay.blockTime = event.block.timestamp.toI32();
@@ -323,24 +303,15 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
     .toHexString()
     .concat('-')
     .concat(event.transactionLogIndex.toString());
-  let vTokenDecimals = marketRepayToken.vTokenDecimals;
-  let vTokenAmount = event.params.seizeTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
-  let underlyingRepayAmount = event.params.repayAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(marketRepayToken.underlyingDecimals))
-    .truncate(marketRepayToken.underlyingDecimals);
 
   let liquidation = new LiquidationEvent(mintID);
-  liquidation.amount = vTokenAmount;
+  liquidation.amountMantissa = event.params.seizeTokens;
   liquidation.to = event.params.liquidator;
   liquidation.from = event.params.borrower;
   liquidation.blockNumber = event.block.number.toI32();
   liquidation.blockTime = event.block.timestamp.toI32();
   liquidation.underlyingSymbol = marketRepayToken.underlyingSymbol;
-  liquidation.underlyingRepayAmount = underlyingRepayAmount;
+  liquidation.underlyingRepayAmountMantissa = event.params.repayAmount;
   liquidation.vTokenSymbol = marketVTokenLiquidated.symbol;
   liquidation.save();
 };
@@ -445,7 +416,7 @@ export const handleTransfer = (event: Transfer): void => {
   let transferId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
 
   let transfer = new TransferEvent(transferId);
-  transfer.amount = event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals));
+  transfer.amountMantissa = event.params.amount;
   transfer.to = event.params.to;
   transfer.from = event.params.from;
   transfer.blockNumber = event.block.number.toI32();
