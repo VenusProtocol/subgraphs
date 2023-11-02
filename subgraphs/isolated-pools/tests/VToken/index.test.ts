@@ -661,7 +661,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'totalUnderlyingRedeemedMantissa',
-      '53371670178204461670107500000000000000',
+      '53371549778058610525',
     );
   });
 

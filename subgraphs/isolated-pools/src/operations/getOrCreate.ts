@@ -13,7 +13,7 @@ import {
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
-import { zeroBigDecimal, zeroBigInt32 } from '../constants';
+import { zeroBigInt32 } from '../constants';
 import {
   getAccountVTokenId,
   getAccountVTokenTransactionId,
@@ -108,9 +108,9 @@ export const getOrCreateAccountVToken = (
     accountVToken.accountSupplyBalanceMantissa = suppliedAmountMantissa;
     accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
 
-    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigDecimal;
+    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
-    accountVToken.totalUnderlyingRepaidMantissa = zeroBigDecimal;
+    accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
   }
   return accountVToken;
 };

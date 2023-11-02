@@ -24,7 +24,7 @@ type Market @entity {
     "The vToken contract balance of BEP20 or BNB"
     cashMantissa: BigInt!
     "Collateral factor determining how much one can borrow"
-    collateralFactor: BigDecimal!
+    collateralFactorMantissa: BigInt!
     "Exchange rate of tokens / vTokens"
     exchangeRateMantissa:  BigInt!
     "Address of the interest rate model"
@@ -116,19 +116,19 @@ type AccountVToken @entity {
     enteredMarket: Boolean!
 
     "VToken balance of the user"
-    vTokenBalance: BigDecimal!
+    vTokenBalanceMantissa: BigInt!
     "Total amount of underlying supplied"
     totalUnderlyingSuppliedMantissa: BigInt!
-    "Total amount of underling redeemed"
+    "Total amount of underlying redeemed"
     totalUnderlyingRedeemedMantissa: BigInt!
     "The value of the borrow index upon users last interaction"
     accountBorrowIndexMantissa: BigInt!
     "Total amount underlying borrowed, exclusive of interest"
-    totalUnderlyingBorrowed: BigDecimal!
+    totalUnderlyingBorrowedMantissa: BigInt!
     "Total amount underlying repaid"
-    totalUnderlyingRepaid: BigDecimal!
+    totalUnderlyingRepaidMantissa: BigInt!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    storedBorrowBalance: BigDecimal!
+    storedBorrowBalanceMantissa: BigInt!
 }
 
 """

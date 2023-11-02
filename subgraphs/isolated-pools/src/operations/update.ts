@@ -3,11 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import {
-  exponentToBigDecimal,
-  getExchangeRateBigDecimal,
-  valueOrNotAvailableIntIfReverted,
-} from '../utilities';
+import { exponentToBigInt, valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getTokenPriceInCents } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
 import {
@@ -118,17 +114,8 @@ export const updateAccountVTokenTransferFrom = (
   logIndex: BigInt,
   amount: BigInt,
   exchangeRate: BigInt,
-  underlyingDecimals: i32,
-  vTokenDecimals: i32,
 ): AccountVToken => {
-  const exchangeRateBigDecimal = getExchangeRateBigDecimal(
-    exchangeRate,
-    underlyingDecimals,
-    vTokenDecimals,
-  );
-  const amountUnderlyingMantissa = exchangeRateBigDecimal
-    .times(exponentToBigDecimal(underlyingDecimals))
-    .times(amount.toBigDecimal());
+  const amountUnderlyingMantissa = exchangeRate.div(exponentToBigInt(18)).times(amount);
 
   const accountVToken = updateAccountVToken(
     marketAddress,

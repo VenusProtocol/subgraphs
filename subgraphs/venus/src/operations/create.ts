@@ -1,10 +1,10 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Account, AccountVToken, Market, MintEvent, RedeemEvent } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VBep20Storage } from '../../generated/templates/VToken/VBep20Storage';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigDecimal, zeroBigInt32 } from '../constants';
+import { zeroBigInt32 } from '../constants';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { getTransactionId } from '../utilities/ids';
@@ -22,16 +22,14 @@ export function createAccountVToken(
   accountVToken.accrualBlockNumber = BigInt.fromI32(0);
   // we need to set an initial real onchain value to this otherwise it will never be accurate
   const vTokenContract = BEP20.bind(Address.fromString(marketId));
-  accountVToken.vTokenBalance = new BigDecimal(
-    vTokenContract.balanceOf(Address.fromString(account)),
-  );
+  accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(account));
 
   accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;
   accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
   accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
-  accountVToken.totalUnderlyingBorrowed = zeroBigDecimal;
-  accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
-  accountVToken.storedBorrowBalance = zeroBigDecimal;
+  accountVToken.totalUnderlyingBorrowedMantissa = zeroBigInt32;
+  accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
+  accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
   accountVToken.enteredMarket = false;
   return accountVToken;
 }
@@ -83,7 +81,7 @@ export function createMarket(marketAddress: string): Market {
 
   market.borrowRateMantissa = zeroBigInt32;
   market.cashMantissa = zeroBigInt32;
-  market.collateralFactor = zeroBigDecimal;
+  market.collateralFactorMantissa = zeroBigInt32;
   market.exchangeRateMantissa = zeroBigInt32;
   market.interestRateModelAddress = interestRateModelAddress.reverted
     ? nullAddress

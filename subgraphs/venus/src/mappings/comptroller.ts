@@ -14,7 +14,6 @@ import {
 } from '../../generated/Comptroller/Comptroller';
 import { Account, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates';
-import { mantissaFactorBigDecimal } from '../constants';
 import { createAccount, createMarket } from '../operations/create';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { updateCommonVTokenStats } from '../operations/update';
@@ -110,9 +109,7 @@ export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
   // sources can source from the contract creation block and not the time the
   // comptroller adds the market, we can avoid this altogether
   if (market != null) {
-    market.collateralFactor = event.params.newCollateralFactorMantissa
-      .toBigDecimal()
-      .div(mantissaFactorBigDecimal);
+    market.collateralFactorMantissa = event.params.newCollateralFactorMantissa;
     market.save();
   }
 };

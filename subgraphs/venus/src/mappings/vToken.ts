@@ -37,7 +37,7 @@ import {
 } from '../operations/create';
 import { updateCommonVTokenStats } from '../operations/update';
 import { updateMarket } from '../operations/update';
-import { exponentToBigDecimal } from '../utilities/exponentToBigDecimal';
+import { exponentToBigInt } from '../utilities/exponentToBigInt';
 import { getMarketId, getTransactionId } from '../utilities/ids';
 
 /* Account supplies assets into market and receives vTokens in exchange
@@ -142,17 +142,12 @@ export const handleBorrow = (event: Borrow): void => {
     event.logIndex,
   );
 
-  let borrowAmountBD = event.params.borrowAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals));
-
-  vTokenStats.storedBorrowBalance = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  vTokenStats.storedBorrowBalanceMantissa = event.params.accountBorrows;
 
   vTokenStats.accountBorrowIndexMantissa = market.borrowIndexMantissa;
-  vTokenStats.totalUnderlyingBorrowed = vTokenStats.totalUnderlyingBorrowed.plus(borrowAmountBD);
+  vTokenStats.totalUnderlyingBorrowedMantissa = vTokenStats.totalUnderlyingBorrowedMantissa.plus(
+    event.params.borrowAmount,
+  );
   vTokenStats.save();
 
   let borrowID = event.transaction.hash
@@ -214,17 +209,12 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
     event.logIndex,
   );
 
-  let repayAmountBD = event.params.repayAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals));
-
-  vTokenStats.storedBorrowBalance = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(market.underlyingDecimals))
-    .truncate(market.underlyingDecimals);
+  vTokenStats.storedBorrowBalanceMantissa = event.params.accountBorrows;
 
   vTokenStats.accountBorrowIndexMantissa = market.borrowIndexMantissa;
-  vTokenStats.totalUnderlyingRepaid = vTokenStats.totalUnderlyingRepaid.plus(repayAmountBD);
+  vTokenStats.totalUnderlyingRepaidMantissa = vTokenStats.totalUnderlyingRepaidMantissa.plus(
+    event.params.repayAmount,
+  );
   vTokenStats.save();
 
   let repayID = event.transaction.hash
@@ -342,8 +332,10 @@ export const handleTransfer = (event: Transfer): void => {
   if (market.accrualBlockNumber != event.block.number.toI32()) {
     market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
   }
-  let vTokenDecimals = market.vTokenDecimals;
-  let amountUnderlying = market.exchangeRateMantissa.times(event.params.amount);
+
+  let amountUnderlying = market.exchangeRateMantissa
+    .times(event.params.amount)
+    .div(exponentToBigInt(18));
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
@@ -366,11 +358,8 @@ export const handleTransfer = (event: Transfer): void => {
       event.logIndex,
     );
 
-    vTokenStatsFrom.vTokenBalance = vTokenStatsFrom.vTokenBalance.minus(
-      event.params.amount
-        .toBigDecimal()
-        .div(exponentToBigDecimal(vTokenDecimals))
-        .truncate(vTokenDecimals),
+    vTokenStatsFrom.vTokenBalanceMantissa = vTokenStatsFrom.vTokenBalanceMantissa.minus(
+      event.params.amount,
     );
 
     vTokenStatsFrom.totalUnderlyingRedeemedMantissa =
@@ -401,11 +390,8 @@ export const handleTransfer = (event: Transfer): void => {
       event.logIndex,
     );
 
-    vTokenStatsTo.vTokenBalance = vTokenStatsTo.vTokenBalance.plus(
-      event.params.amount
-        .toBigDecimal()
-        .div(exponentToBigDecimal(vTokenDecimals))
-        .truncate(vTokenDecimals),
+    vTokenStatsTo.vTokenBalanceMantissa = vTokenStatsTo.vTokenBalanceMantissa.plus(
+      event.params.amount,
     );
 
     vTokenStatsTo.totalUnderlyingSuppliedMantissa =
