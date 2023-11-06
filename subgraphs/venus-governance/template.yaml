@@ -222,15 +222,13 @@ dataSources:
       startBlock: {{ omnichainProposalSenderStartBlock }}
       file: ./src/mappings/omnichainProposalSender.ts
       entities:
-        - 
+        - OmnichainProposalSender
       abis:
         - name: OmnichainProposalSender
-          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/OmnichainProposalSender.sol/OmnichainProposalSender.json
+          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainProposalSender.sol/OmnichainProposalSender.json
       eventHandlers:
         - event: SetTrustedRemoteAddress(indexed uint16,bytes)
           handler: handleSetTrustedRemoteAddress
-        - event: SetTrustedRemote(indexed uint16,bytes)
-          handler: handleSetTrustedRemote
         - event: ExecuteRemoteProposal(indexed uint16, bytes)
           handler: handleExecuteRemoteProposal
         - event: ClearPayload(indexed uint64, bytes32)

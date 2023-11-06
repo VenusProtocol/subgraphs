@@ -1,6 +1,6 @@
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { Delegate, Governance, Proposal } from '../../generated/schema';
+import { Delegate, Governance, Proposal, RemoteProposal } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import { getDelegateId, getGovernanceId } from '../utilities/ids';
@@ -44,4 +44,12 @@ export const getDelegate = (address: Address): Delegate => {
     log.critical('Delegate {} not found', [id.toHexString()]);
   }
   return delegate as Delegate;
+};
+
+export const getRemoteProposal = (id: string): RemoteProposal => {
+  const remoteProposal = RemoteProposal.load(id);
+  if (!remoteProposal) {
+    log.critical('RemoteProposal {} not found', [id]);
+  }
+  return remoteProposal as RemoteProposal;
 };

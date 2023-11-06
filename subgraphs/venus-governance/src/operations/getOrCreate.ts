@@ -1,9 +1,9 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, Bytes } from '@graphprotocol/graph-ts';
 
-import { Delegate } from '../../generated/schema';
+import { Delegate, TrustedRemote } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
-import { getDelegateId } from '../utilities/ids';
+import { getDelegateId, getTrustedRemoteId } from '../utilities/ids';
 import { getGovernanceEntity } from './get';
 
 export class GetOrCreateDelegateReturn {
@@ -32,4 +32,27 @@ export const getOrCreateDelegate = (address: Address): GetOrCreateDelegateReturn
   }
 
   return { entity: delegate as Delegate, created };
+};
+
+export class GetOrCreateTrustedRemoteReturn {
+  entity: TrustedRemote;
+  created: boolean;
+}
+
+export const getOrCreateTrustedRemote = (
+  remoteChainId: i32,
+  remoteAddress: Bytes,
+): GetOrCreateTrustedRemoteReturn => {
+  let created = false;
+  const id = getTrustedRemoteId(remoteChainId);
+  let trustedRemote = TrustedRemote.load(id);
+  if (!trustedRemote) {
+    trustedRemote = new TrustedRemote(id);
+    created = true;
+  }
+
+  trustedRemote.address = Address.fromBytes(remoteAddress);
+  trustedRemote.save();
+
+  return { entity: trustedRemote, created };
 };
