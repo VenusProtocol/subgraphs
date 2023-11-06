@@ -193,3 +193,44 @@ type Permission @entity {
   "The function name for the permission event"
   functionSig: String!
 }
+
+type TrustedRemote @entity {
+  "LayerZero Chain id of the trusted remote"
+  id: ID!
+  
+  "Governance contract address on the trusted remote"
+  address: Bytes
+
+  executedProposals: [RemoteProposal!]!
+
+  active: Boolean!
+
+}
+
+type RemoteProposal @entity {
+  "RemoteProposal Id"
+  id: ID!
+
+  "RemoteProposal Id"
+  proposalId: Int!
+
+  remoteChainId: Int!
+
+  "Targets data for the change"
+  targets: [Bytes!]
+
+  "Values data for the change"
+  values: [BigInt!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [Bytes!]
+  
+  "Type of Proposal can be normal fast track or critical"
+  type: PROPOSAL_TYPE!
+
+  "True if executed, False if waiting to be retried"
+  executed: Boolean!
+}

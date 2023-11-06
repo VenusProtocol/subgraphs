@@ -18,3 +18,7 @@ export const getRoleId = (role: Bytes, account: Address, sender: Address): strin
 export const getDelegateId = (account: Address): Bytes => account;
 
 export const getGovernanceId = (): string => GOVERNANCE;
+
+export const getProposalId = (id: BigInt): string => id.toString();
+
+export const getTrustedRemoteId = (id: i32): string => id.toString();

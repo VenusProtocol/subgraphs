@@ -1,15 +1,15 @@
-import { Address, Bytes } from '@graphprotocol/graph-ts';
+import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { VoteCast as VoteCastAlpha } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { VoteCast as VoteCastBravo } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
-import { Proposal, Vote } from '../../generated/schema';
+import { Proposal, RemoteProposal, Vote } from '../../generated/schema';
 import { ABSTAIN, AGAINST, BIGINT_ONE, BIGINT_ZERO, FOR, NORMAL } from '../constants';
-import { getVoteId } from '../utilities/ids';
-import { getGovernanceEntity, getProposal } from './get';
-import { getOrCreateDelegate } from './getOrCreate';
+import { ExecuteRemoteProposal } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import { getProposalId, getVoteId } from '../utilities/ids';
+import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
 export function createProposal<E>(event: E): Proposal {
-  const id = event.params.id.toString();
+  const id = getProposalId(event.params.id);
   const proposal = new Proposal(id);
 
   const governance = getGovernanceEntity();
@@ -52,8 +52,8 @@ export function createVoteAlpha(event: VoteCastAlpha): Vote {
 }
 
 export function createVoteBravo(event: VoteCastBravo): Vote {
-  const proposal = getProposal(event.params.proposalId.toString());
-  const voter = getOrCreateDelegate(event.params.voter).entity;
+  const proposal = getProposal(getProposalId(event.params.proposalId));
+  const voter = getDelegate(event.params.voter);
   const id = getVoteId(event.params.voter, event.params.proposalId);
   const vote = new Vote(id);
   vote.proposal = proposal.id;
@@ -66,4 +66,20 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
   vote.save();
 
   return vote as Vote;
+}
+
+export function createRemoteProposal(event: ExecuteRemoteProposal): RemoteProposal {
+  const remoteProposal = new RemoteProposal(event.params.nonce);
+  remoteProposal.remoteChainId = event.params.remoteChainId;
+  remoteProposal.proposalId = event.params.proposalId;
+  const decoded = ethereum.decode(
+    '(address[],uint[],string[],bytes[],uint8)',
+    event.params.payload,
+  );
+  remoteProposal.targets = decoded[0].toArray();
+  remoteProposal.targets = decoded[1].toArray();
+  remoteProposal.signatures = decoded[2].toArray();
+  remoteProposal.calldatas = decoded[3].toArray();
+  remoteProposal.proposalType = decoded[4].toString();
+  remoteProposal.save();
 }
