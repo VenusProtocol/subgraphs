@@ -15,3 +15,7 @@ export const getPermissionId = (
 export const getDelegateId = (account: Address): string => account.toHexString();
 
 export const getGovernanceId = (): string => GOVERNANCE;
+
+export const getProposalId = (id: BigInt): string => id.toString();
+
+export const getTrustedRemoteId = (id: i32): string => id.toString();
