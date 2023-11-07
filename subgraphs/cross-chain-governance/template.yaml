@@ -52,11 +52,7 @@ dataSources:
           handler: handleProposalQueued
         - event: ProposalExecuted(uint256)
           handler: handleProposalExecuted
-        - event: ProposalFailed(uint16,bytes,uint64,bytes);
-          handler: handleProposalFailed
         - event: ProposalCancelled(uint256)
           handler: handleProposalCancelled
-        - event: SetExecuteDelay(uint256,uint256)
-          handler: handleSetExecuteDelay
         - event: TimelockAdded(indexed address)
           handler: handleTimelockAdded
