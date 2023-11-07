@@ -1,0 +1,7 @@
+{
+  "network": "hardhat",
+  "addressOmnichainGovernanceOwner": "",
+  "startBlockOmnichainGovernanceOwner": "",
+  "addressOmnichainGovernanceExecutor": "",
+  "startBlockOmnichainGovernanceExecutor": ""
+}

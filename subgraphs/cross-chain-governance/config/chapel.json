@@ -1,0 +1,7 @@
+{
+  "network": "bsc-testnet",
+  "addressOmnichainGovernanceOwner": "",
+  "startBlockOmnichainGovernanceOwner": "",
+  "addressOmnichainGovernanceExecutor": "",
+  "startBlockOmnichainGovernanceExecutor": ""
+}

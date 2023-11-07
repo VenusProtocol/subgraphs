@@ -2,20 +2,63 @@ type Governance @entity {
   "Unique entity used to keep track of common aggregated data"
   id: ID!
 
+  "Address of the governance executor contract"
+  address: Bytes!
+
+  "LayZero chainId for the chain this governance executor is deployed on"
+  chainId: Int!
+
   "Max number of commands that can be sent to this governor in a day"
   maxDailyReceiveLimit: Int!
 }
 
 
 type FunctionRegistry @entity {
-  "Function Registry Signature ID"
-  id: ID!
-  
   "Function signature that the governor is allowed to call"
-  signature: String!
+  id: ID!
+}
+
+enum PROPOSAL_TYPE {
+  NORMAL
+  FAST_TRACK
+  CRITICAL
 }
 
 type Proposal @entity {
-  "Function Registry Signature ID"
+  "Proposal ID"
   id: ID!
+
+  "Targets data for the change"
+  targets: [Bytes!]
+
+  "Values data for the change"
+  values: [BigInt!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [Bytes!]
+  
+  "Type of Proposal can be normal fast track or critical"
+  type: PROPOSAL_TYPE!
+
+  "Once the proposal is queued for execution it will have an ETA of the execution"
+  executionEta: BigInt
+  
+  "Whether a proposal has been queued"
+  queued: Boolean
+
+  "Whether a proposal has been executed"
+  executed: Boolean
+
+  "Whether a proposal has been cancelled"
+  cancelled: Boolean
+}
+
+type GovernanceRoute @entity {
+  "Governance Route index"
+  id: ID!
+
+  timelockAddress: Bytes!
 }
