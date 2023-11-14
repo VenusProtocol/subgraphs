@@ -258,8 +258,6 @@ export function handleTransfer(event: Transfer): void {
       event.logIndex,
       event.params.amount,
       market.exchangeRateMantissa,
-      market.underlyingDecimals,
-      market.vTokenDecimals,
     );
   }
 

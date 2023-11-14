@@ -183,12 +183,12 @@ type AccountVToken @entity {
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
 
-    "Total amount of underling redeemed"
-    totalUnderlyingRedeemedMantissa: BigDecimal!
+    "Total amount of underlying redeemed"
+    totalUnderlyingRedeemedMantissa: BigInt!
     "The value of the borrow index upon users last interaction"
     accountBorrowIndexMantissa: BigInt!
     "Total amount underlying repaid"
-    totalUnderlyingRepaidMantissa: BigDecimal!
+    totalUnderlyingRepaidMantissa: BigInt!
 }
 
 """

@@ -1,12 +1,13 @@
-import { Address, BigDecimal, BigInt, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
-import { Account, AccountVToken, Market } from '../../generated/schema';
+import { Account, AccountVToken, Market, MintEvent, RedeemEvent } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VBep20Storage } from '../../generated/templates/VToken/VBep20Storage';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigDecimal, zeroBigInt32 } from '../constants';
+import { zeroBigInt32 } from '../constants';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
+import { getTransactionId } from '../utilities/ids';
 
 export function createAccountVToken(
   accountVTokenId: string,
@@ -21,16 +22,14 @@ export function createAccountVToken(
   accountVToken.accrualBlockNumber = BigInt.fromI32(0);
   // we need to set an initial real onchain value to this otherwise it will never be accurate
   const vTokenContract = BEP20.bind(Address.fromString(marketId));
-  accountVToken.vTokenBalance = new BigDecimal(
-    vTokenContract.balanceOf(Address.fromString(account)),
-  );
+  accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(account));
 
   accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;
   accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
   accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
-  accountVToken.totalUnderlyingBorrowed = zeroBigDecimal;
-  accountVToken.totalUnderlyingRepaid = zeroBigDecimal;
-  accountVToken.storedBorrowBalance = zeroBigDecimal;
+  accountVToken.totalUnderlyingBorrowedMantissa = zeroBigInt32;
+  accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
+  accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
   accountVToken.enteredMarket = false;
   return accountVToken;
 }
@@ -82,7 +81,7 @@ export function createMarket(marketAddress: string): Market {
 
   market.borrowRateMantissa = zeroBigInt32;
   market.cashMantissa = zeroBigInt32;
-  market.collateralFactor = zeroBigDecimal;
+  market.collateralFactorMantissa = zeroBigInt32;
   market.exchangeRateMantissa = zeroBigInt32;
   market.interestRateModelAddress = interestRateModelAddress.reverted
     ? nullAddress
@@ -100,5 +99,51 @@ export function createMarket(marketAddress: string): Market {
   market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
   market.totalXvsDistributedMantissa = zeroBigInt32;
 
+  market.supplierCount = zeroBigInt32;
+  market.borrowerCount = zeroBigInt32;
+  market.borrowerCountAdjusted = zeroBigInt32;
+
   return market;
+}
+
+export function createMintEvent<E>(event: E): void {
+  const mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+
+  const mint = new MintEvent(mintId);
+  mint.amountMantissa = event.params.mintTokens;
+  mint.to = event.params.minter;
+  mint.from = event.address;
+  mint.blockNumber = event.block.number.toI32();
+  mint.blockTime = event.block.timestamp.toI32();
+  mint.vTokenAddress = event.address;
+  mint.underlyingAmountMantissa = event.params.mintAmount;
+  mint.save();
+}
+
+export function createMintBehalfEvent<E>(event: E): void {
+  const mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+
+  const mint = new MintEvent(mintId);
+  mint.amountMantissa = event.params.mintTokens;
+  mint.to = event.params.receiver;
+  mint.from = event.address;
+  mint.blockNumber = event.block.number.toI32();
+  mint.blockTime = event.block.timestamp.toI32();
+  mint.vTokenAddress = event.address;
+  mint.underlyingAmountMantissa = event.params.mintAmount;
+  mint.save();
+}
+
+export function createRedeemEvent<E>(event: E): void {
+  const redeemId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+
+  const redeem = new RedeemEvent(redeemId);
+  redeem.amountMantissa = event.params.redeemTokens;
+  redeem.to = event.address;
+  redeem.from = event.params.redeemer;
+  redeem.blockNumber = event.block.number.toI32();
+  redeem.blockTime = event.block.timestamp.toI32();
+  redeem.vTokenAddress = event.address;
+  redeem.underlyingAmountMantissa = event.params.redeemAmount;
+  redeem.save();
 }

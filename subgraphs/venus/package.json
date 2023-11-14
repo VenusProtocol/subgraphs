@@ -23,5 +23,9 @@
     "prepare:bsc": "npx mustache config/bsc.json template.yaml > subgraph.yaml && npx mustache config/bsc.json src/constants/config-template > src/constants/config.ts",
     "test": "graph test",
     "test:integration": "true"
+  },
+  "dependencies": {
+    "@venusprotocol/venus-protocol": "3.1.0",
+    "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
   }
 }
