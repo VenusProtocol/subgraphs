@@ -161,7 +161,7 @@ export const handleBorrow = (event: Borrow): void => {
   borrow.borrower = event.params.borrower;
   borrow.blockNumber = event.block.number.toI32();
   borrow.blockTime = event.block.timestamp.toI32();
-  borrow.underlyingSymbol = market.underlyingSymbol;
+  borrow.underlyingAddress = market.underlyingAddress;
   borrow.save();
 
   if (event.params.accountBorrows == event.params.borrowAmount) {
@@ -228,7 +228,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
   repay.borrower = event.params.borrower;
   repay.blockNumber = event.block.number.toI32();
   repay.blockTime = event.block.timestamp.toI32();
-  repay.underlyingSymbol = market.underlyingSymbol;
+  repay.underlyingAddress = market.underlyingAddress;
   repay.payer = event.params.payer;
   repay.save();
 
@@ -285,10 +285,6 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   if (!marketRepayToken) {
     marketRepayToken = createMarket(event.address.toHexString());
   }
-  let marketVTokenLiquidated = Market.load(event.params.vTokenCollateral.toHexString());
-  if (!marketVTokenLiquidated) {
-    marketVTokenLiquidated = createMarket(event.params.vTokenCollateral.toHexString());
-  }
   let mintID = event.transaction.hash
     .toHexString()
     .concat('-')
@@ -300,9 +296,9 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   liquidation.from = event.params.borrower;
   liquidation.blockNumber = event.block.number.toI32();
   liquidation.blockTime = event.block.timestamp.toI32();
-  liquidation.underlyingSymbol = marketRepayToken.underlyingSymbol;
+  liquidation.underlyingRepaidAddress = marketRepayToken.underlyingAddress;
   liquidation.underlyingRepayAmountMantissa = event.params.repayAmount;
-  liquidation.vTokenSymbol = marketVTokenLiquidated.symbol;
+  liquidation.vTokenCollateralAddress = event.params.vTokenCollateral;
   liquidation.save();
 };
 
@@ -407,7 +403,7 @@ export const handleTransfer = (event: Transfer): void => {
   transfer.from = event.params.from;
   transfer.blockNumber = event.block.number.toI32();
   transfer.blockTime = event.block.timestamp.toI32();
-  transfer.vTokenSymbol = market.symbol;
+  transfer.vTokenAddress = event.address;
   transfer.save();
 };
 
