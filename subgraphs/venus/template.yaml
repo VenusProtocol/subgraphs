@@ -8,7 +8,7 @@ dataSources:
     name: Comptroller
     network: {{ network }}
     source:
-      address: "{{ address }}"
+      address: "{{ comptrollerAddress }}"
       abi: Comptroller
       startBlock: {{ startBlock }}
     mapping:

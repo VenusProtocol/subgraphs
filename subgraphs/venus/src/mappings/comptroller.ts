@@ -19,15 +19,15 @@ import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { updateCommonVTokenStats } from '../operations/update';
 import { ensureComptrollerSynced } from '../utilities';
 
-export const handleMarketListed = (event: MarketListed): void => {
+export function handleMarketListed(event: MarketListed): void {
   // Dynamically index all new listed tokens
   VToken.create(event.params.vToken);
   // Create the market for this token, since it's now been listed.
   let market = createMarket(event.params.vToken.toHexString());
   market.save();
-};
+}
 
-export const handleMarketEntered = (event: MarketEntered): void => {
+export function handleMarketEntered(event: MarketEntered): void {
   let market = Market.load(event.params.vToken.toHexString());
   // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
   // sources can source from the contract creation block and not the time the
@@ -60,9 +60,9 @@ export const handleMarketEntered = (event: MarketEntered): void => {
   );
   vTokenStats.enteredMarket = true;
   vTokenStats.save();
-};
+}
 
-export const handleMarketExited = (event: MarketExited): void => {
+export function handleMarketExited(event: MarketExited): void {
   let market = Market.load(event.params.vToken.toHexString());
   // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
   // sources can source from the contract creation block and not the time the
@@ -95,15 +95,15 @@ export const handleMarketExited = (event: MarketExited): void => {
   );
   vTokenStats.enteredMarket = false;
   vTokenStats.save();
-};
+}
 
-export const handleNewCloseFactor = (event: NewCloseFactor): void => {
+export function handleNewCloseFactor(event: NewCloseFactor): void {
   const comptroller = getOrCreateComptroller();
   comptroller.closeFactor = event.params.newCloseFactorMantissa;
   comptroller.save();
-};
+}
 
-export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
+export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   let market = Market.load(event.params.vToken.toHexString());
   // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
   // sources can source from the contract creation block and not the time the
@@ -112,20 +112,20 @@ export const handleNewCollateralFactor = (event: NewCollateralFactor): void => {
     market.collateralFactorMantissa = event.params.newCollateralFactorMantissa;
     market.save();
   }
-};
+}
 
 // This should be the first event acccording to bscscan but it isn't.... price oracle is. weird
-export const handleNewLiquidationIncentive = (event: NewLiquidationIncentive): void => {
+export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
   const comptroller = getOrCreateComptroller();
   comptroller.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
   comptroller.save();
-};
+}
 
-export const handleNewPriceOracle = (event: NewPriceOracle): void => {
+export function handleNewPriceOracle(event: NewPriceOracle): void {
   const comptroller = getOrCreateComptroller();
   comptroller.priceOracle = event.params.newPriceOracle;
   comptroller.save();
-};
+}
 
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {

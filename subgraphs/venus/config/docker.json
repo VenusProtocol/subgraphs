@@ -1,5 +1,6 @@
 {
   "network": "bsc-testnet",
-  "address": "0x94d1820b2D1c7c7452A163983Dc888CEC546b77D",
-  "startBlock": "0"
+  "comptrollerAddress": "0x94d1820b2D1c7c7452A163983Dc888CEC546b77D",
+  "startBlock": "0",
+  "vBnbAddress": "0xA07c5b74C9B40447a954e1466938b865b6BBea36"
 }
