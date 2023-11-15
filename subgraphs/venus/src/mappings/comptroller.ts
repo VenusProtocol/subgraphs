@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { BigInt, log } from '@graphprotocol/graph-ts';
+import { log } from '@graphprotocol/graph-ts';
 
 import {
   DistributedSupplierVenus,
@@ -130,12 +130,10 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {
   let vTokenAddress = event.params.vToken.toHex();
-  let venusDelta = event.params.venusDelta.toHex();
+  const venusDelta = event.params.venusDelta;
   let market = Market.load(vTokenAddress);
   if (market == null) {
     market = createMarket(vTokenAddress);
   }
-  market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
-    BigInt.fromString(venusDelta),
-  );
+  market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(venusDelta);
 }
