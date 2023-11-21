@@ -25,7 +25,7 @@
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/venus-protocol": "3.1.0",
+    "@venusprotocol/venus-protocol": "5.2.0",
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
   }
 }

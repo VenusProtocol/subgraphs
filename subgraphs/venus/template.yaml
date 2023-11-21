@@ -5,6 +5,49 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
+    name: DiamondComptroller
+    network: {{ network }}
+    source:
+      address: "{{ address }}"
+      abi: Comptroller
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/comptroller.ts
+      entities:
+        - Comptroller
+        - Market
+      abis:
+        - name: Comptroller
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Diamond/DiamondConsolidated.sol/DiamondConsolidated.json
+        - name: VToken
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
+        - name: PriceOracle
+          file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
+        - name: BEP20
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/BEP20Interface.sol/BEP20Interface.json
+      eventHandlers:
+        - event: MarketListed(indexed address)
+          handler: handleMarketListed
+        - event: MarketEntered(indexed address,indexed address)
+          handler: handleMarketEntered
+        - event: MarketExited(indexed address,indexed address)
+          handler: handleMarketExited
+        - event: NewCloseFactor(uint256,uint256)
+          handler: handleNewCloseFactor
+        - event: NewCollateralFactor(indexed address,uint256,uint256)
+          handler: handleNewCollateralFactor
+        - event: NewLiquidationIncentive(uint256,uint256)
+          handler: handleNewLiquidationIncentive
+        - event: NewPriceOracle(address,address)
+          handler: handleNewPriceOracle
+        - event: DistributedBorrowerVenus(indexed address,indexed address,uint256,uint256)
+          handler: handleXvsDistributed
+        - event: DistributedSupplierVenus(indexed address,indexed address,uint256,uint256)
+          handler: handleXvsDistributed
+  - kind: ethereum/contract
     name: Comptroller
     network: {{ network }}
     source:
@@ -21,7 +64,7 @@ dataSources:
         - Market
       abis:
         - name: Comptroller
-          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
+          file: ../../node_modules/@venusprotocol/venus-protocol-orig-events/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
         - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
         - name: PriceOracle
@@ -31,22 +74,12 @@ dataSources:
       eventHandlers:
         - event: MarketListed(address)
           handler: handleMarketListed
+        - event: NewCollateralFactor(address,uint256,uint256)
+          handler: handleNewCollateralFactor
         - event: MarketEntered(address,address)
           handler: handleMarketEntered
         - event: MarketExited(address,address)
           handler: handleMarketExited
-        - event: NewCloseFactor(uint256,uint256)
-          handler: handleNewCloseFactor
-        - event: NewCollateralFactor(address,uint256,uint256)
-          handler: handleNewCollateralFactor
-        - event: NewLiquidationIncentive(uint256,uint256)
-          handler: handleNewLiquidationIncentive
-        - event: NewPriceOracle(address,address)
-          handler: handleNewPriceOracle
-        - event: DistributedBorrowerVenus(indexed address,indexed address,uint256,uint256)
-          handler: handleXvsDistributed
-        - event: DistributedSupplierVenus(indexed address,indexed address,uint256,uint256)
-          handler: handleXvsDistributed
 templates:
   - name: VToken
     kind: ethereum/contract
@@ -70,7 +103,7 @@ templates:
         - name: BEP20
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/BEP20Interface.sol/BEP20Interface.json
         - name: Comptroller
-          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Diamond/DiamondConsolidated.sol/DiamondConsolidated.json
       eventHandlers:
         - event: Mint(address,uint256,uint256)
           handler: handleMintV1

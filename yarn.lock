@@ -3316,7 +3316,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.3.3":
+"@openzeppelin/contracts@npm:4.9.3, @openzeppelin/contracts@npm:^4.3.3":
   version: 4.9.3
   resolution: "@openzeppelin/contracts@npm:4.9.3"
   checksum: 4932063e733b35fa7669b9fe2053f69b062366c5c208b0c6cfa1ac451712100c78acff98120c3a4b88d94154c802be05d160d71f37e7d74cadbe150964458838
@@ -4267,6 +4267,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/governance-contracts@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "@venusprotocol/governance-contracts@npm:0.0.2"
+  checksum: 101ade6013fe3963968d37ff839a4c62aeaedd9f26d8c5ae47bdc413e6c61732b4048a1b026e4281ade5676fb1545a49ecac299f6b669a9f0c7e73723666d7e1
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/governance-contracts@npm:^1.3.0":
   version: 1.3.0
   resolution: "@venusprotocol/governance-contracts@npm:1.3.0"
@@ -4335,17 +4342,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/venus-protocol@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@venusprotocol/venus-protocol@npm:3.1.0"
+"@venusprotocol/venus-protocol@npm:5.2.0":
+  version: 5.2.0
+  resolution: "@venusprotocol/venus-protocol@npm:5.2.0"
   dependencies:
-    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts": 4.9.3
     "@openzeppelin/contracts-upgradeable": ^4.8.0
+    "@venusprotocol/governance-contracts": ^0.0.2
+    bignumber.js: ^9.1.2
     dotenv: ^16.0.1
     module-alias: ^2.2.2
   peerDependencies:
     hardhat: ^2.10.1
-  checksum: 0c44a6566ed623161f49036961d2118958485a59bdba71733e86c77731cde2adcfcb535b69c275381888bc1fc6d807ab9ec271e8796aa961897dac2850081e1c
+  checksum: 39c709ead10c1cea667cb61ba5dae0945640cd68778719581452dbc465b19e8eb73b572a78fe8fcfd42e4fe3a6820efe7b60bc38fbf290d6fb8dbe228b68703c
   languageName: node
   linkType: hard
 
@@ -5318,7 +5327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:^9.0.0":
+"bignumber.js@npm:^9.0.0, bignumber.js@npm:^9.1.2":
   version: 9.1.2
   resolution: "bignumber.js@npm:9.1.2"
   checksum: 582c03af77ec9cb0ebd682a373ee6c66475db94a4325f92299621d544aa4bd45cb45fd60001610e94aef8ae98a0905fa538241d9638d4422d57abbeeac6fadaf
@@ -15983,7 +15992,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "venus-subgraph@workspace:subgraphs/venus"
   dependencies:
-    "@venusprotocol/venus-protocol": 3.1.0
+    "@venusprotocol/venus-protocol": 5.2.0
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
   languageName: unknown
   linkType: soft

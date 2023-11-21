@@ -20,7 +20,7 @@ export function createAccountVToken(
   accountVToken.account = account;
   accountVToken.accrualBlockNumber = BigInt.fromI32(0);
   // we need to set an initial real onchain value to this otherwise it will never be accurate
-  const vTokenContract = BEP20.bind(Address.fromString(marketId));
+  const vTokenContract = VToken.bind(Address.fromString(marketId));
   accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(account));
 
   accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;

@@ -1,0 +1,305 @@
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
+index a6c8838..2d54e80 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerInterface.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ import "../Oracle/PriceOracle.sol";
+ import "../Tokens/VAI/VAIControllerInterface.sol";
+ 
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerLensInterface.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerLensInterface.sol
+index 2f56b52..fcd8940 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerLensInterface.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerLensInterface.sol
+@@ -1,7 +1,7 @@
+ pragma solidity ^0.5.16;
+ pragma experimental ABIEncoderV2;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ 
+ interface ComptrollerLensInterface {
+     function liquidateCalculateSeizeTokens(
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerStorage.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerStorage.sol
+index 729ada8..c0de12b 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerStorage.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/ComptrollerStorage.sol
+@@ -2,7 +2,7 @@
+ 
+ pragma solidity ^0.5.16;
+ 
+-import { VToken } from "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ import { PriceOracle } from "../Oracle/PriceOracle.sol";
+ import { VAIControllerInterface } from "../Tokens/VAI/VAIControllerInterface.sol";
+ import { ComptrollerLensInterface } from "./ComptrollerLensInterface.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/FacetBase.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/FacetBase.sol
+index 47d6d43..0bfc050 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/FacetBase.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/FacetBase.sol
+@@ -2,7 +2,7 @@
+ 
+ pragma solidity 0.5.16;
+ 
+-import { VToken, ComptrollerErrorReporter, ExponentialNoError } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken, ComptrollerErrorReporter, ExponentialNoError } from "../../../Tokens/VTokens/VToken.sol";
+ import { IVAIVault } from "../../../Comptroller/ComptrollerInterface.sol";
+ import { ComptrollerV14Storage } from "../../../Comptroller/ComptrollerStorage.sol";
+ import { IAccessControlManagerV5 } from "@venusprotocol/governance-contracts/contracts/Governance/IAccessControlManagerV5.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/MarketFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/MarketFacet.sol
+index 835abca..3b1a2ad 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/MarketFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/MarketFacet.sol
+@@ -3,8 +3,8 @@
+ pragma solidity 0.5.16;
+ 
+ import { IMarketFacet } from "../interfaces/IMarketFacet.sol";
+-import { FacetBase, VToken } from "./FacetBase.sol";
+-
++import { FacetBase } from "./FacetBase.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ /**
+  * @title MarketFacet
+  * @author Venus
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/PolicyFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/PolicyFacet.sol
+index 3bc54c6..6c0a244 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/PolicyFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/PolicyFacet.sol
+@@ -4,7 +4,8 @@ pragma solidity 0.5.16;
+ 
+ import { IPolicyFacet } from "../interfaces/IPolicyFacet.sol";
+ 
+-import { XVSRewardsHelper, VToken } from "./XVSRewardsHelper.sol";
++import { XVSRewardsHelper } from "./XVSRewardsHelper.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ 
+ /**
+  * @title PolicyFacet
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/RewardFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/RewardFacet.sol
+index 5a417cb..68357f7 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/RewardFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/RewardFacet.sol
+@@ -2,8 +2,9 @@
+ 
+ pragma solidity 0.5.16;
+ 
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ import { IRewardFacet } from "../interfaces/IRewardFacet.sol";
+-import { XVSRewardsHelper, VToken } from "./XVSRewardsHelper.sol";
++import { XVSRewardsHelper } from "./XVSRewardsHelper.sol";
+ import { SafeBEP20, IBEP20 } from "../../../Utils/SafeBEP20.sol";
+ import { VBep20Interface } from "../../../Tokens/VTokens/VTokenInterfaces.sol";
+ 
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/SetterFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/SetterFacet.sol
+index 4ac0112..b120d70 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/SetterFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/SetterFacet.sol
+@@ -6,7 +6,8 @@ import { ISetterFacet } from "../interfaces/ISetterFacet.sol";
+ import { PriceOracle } from "../../../Oracle/PriceOracle.sol";
+ import { ComptrollerLensInterface } from "../../ComptrollerLensInterface.sol";
+ import { VAIControllerInterface } from "../../../Tokens/VAI/VAIControllerInterface.sol";
+-import { FacetBase, VToken } from "./FacetBase.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { FacetBase } from "./FacetBase.sol";
+ import { IPrime } from "../../../Tokens/Prime/IPrime.sol";
+ 
+ /**
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/XVSRewardsHelper.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/XVSRewardsHelper.sol
+index 76eda44..01071a4 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/XVSRewardsHelper.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/facets/XVSRewardsHelper.sol
+@@ -2,7 +2,8 @@
+ 
+ pragma solidity 0.5.16;
+ 
+-import { FacetBase, VToken } from "./FacetBase.sol";
++import { FacetBase } from "./FacetBase.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ 
+ /**
+  * @title XVSRewardsHelper
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
+index 684d76f..4e8ce87 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
+@@ -2,7 +2,7 @@
+ 
+ pragma solidity 0.5.16;
+ 
+-import { VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ 
+ interface IMarketFacet {
+     function isComptroller() external pure returns (bool);
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IPolicyFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IPolicyFacet.sol
+index 3eac49c..faf85a5 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IPolicyFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IPolicyFacet.sol
+@@ -2,7 +2,7 @@
+ 
+ pragma solidity 0.5.16;
+ 
+-import { VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ 
+ interface IPolicyFacet {
+     function mintAllowed(address vToken, address minter, uint256 mintAmount) external returns (uint256);
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IRewardFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IRewardFacet.sol
+index f44a8f0..bb2a814 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IRewardFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IRewardFacet.sol
+@@ -2,7 +2,7 @@
+ 
+ pragma solidity 0.5.16;
+ 
+-import { VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ import { ComptrollerV14Storage } from "../../ComptrollerStorage.sol";
+ 
+ interface IRewardFacet {
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/ISetterFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/ISetterFacet.sol
+index 35526fc..a07eab4 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/ISetterFacet.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/ISetterFacet.sol
+@@ -3,7 +3,7 @@
+ pragma solidity 0.5.16;
+ 
+ import { PriceOracle } from "../../../Oracle/PriceOracle.sol";
+-import { VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
+ import { ComptrollerV14Storage } from "../../ComptrollerStorage.sol";
+ import { VAIControllerInterface } from "../../../Tokens/VAI/VAIController.sol";
+ import { ComptrollerLensInterface } from "../../../Comptroller/ComptrollerLensInterface.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
+index 3359849..2394a23 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/ComptrollerLens.sol
+@@ -2,7 +2,8 @@ pragma solidity ^0.5.16;
+ pragma experimental ABIEncoderV2;
+ 
+ import "../Tokens/VTokens/VBep20.sol";
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
++import { ExponentialNoError } from "../Utils/ExponentialNoError.sol";
+ import "../Tokens/EIP20Interface.sol";
+ import "../Oracle/PriceOracle.sol";
+ import "../Utils/ErrorReporter.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
+index 9bad3b7..c75ec08 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/SnapshotLens.sol
+@@ -1,7 +1,8 @@
+ pragma solidity ^0.5.16;
+ pragma experimental ABIEncoderV2;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from   "../Tokens/VTokens/VToken.sol";
++import { ExponentialNoError } from "../Utils/ExponentialNoError.sol";
+ import "../Utils/SafeMath.sol";
+ import "../Comptroller/ComptrollerInterface.sol";
+ import "../Tokens/EIP20Interface.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/VenusLens.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/VenusLens.sol
+index a2448a4..ea2ecfe 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Lens/VenusLens.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Lens/VenusLens.sol
+@@ -2,7 +2,7 @@ pragma solidity ^0.5.16;
+ pragma experimental ABIEncoderV2;
+ 
+ import "../Tokens/VTokens/VBep20.sol";
+-import "../Tokens/VTokens/VToken.sol";
++import {CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ import "../Oracle/PriceOracle.sol";
+ import "../Tokens/EIP20Interface.sol";
+ import "../Tokens/XVS/XVS.sol";
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Oracle/PriceOracle.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Oracle/PriceOracle.sol
+index 15f44c1..f8f5685 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Oracle/PriceOracle.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Oracle/PriceOracle.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ 
+ contract PriceOracle {
+     /// @notice Indicator that this is a PriceOracle contract (for inspection)
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
+index 7e76520..191422a 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
+@@ -5,7 +5,7 @@ import "../../Utils/ErrorReporter.sol";
+ import "../../Utils/Exponential.sol";
+ import "../../Comptroller/ComptrollerInterface.sol";
+ import "@venusprotocol/governance-contracts/contracts/Governance/IAccessControlManagerV5.sol";
+-import "../VTokens/VToken.sol";
++import { CorePoolVToken as VToken, EIP20Interface } from "../VTokens/VToken.sol";
+ import "./VAIUnitroller.sol";
+ import "./VAI.sol";
+ 
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
+index 53ea99e..31a188a 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
+@@ -1,6 +1,8 @@
+ pragma solidity ^0.5.16;
+ 
+-import "./VToken.sol";
++import { CorePoolVToken as VToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
++import { EIP20Interface } from "../EIP20Interface.sol";
++import { EIP20NonStandardInterface } from "../EIP20NonStandardInterface.sol";
+ 
+ /**
+  * @title Venus's VBep20 Contract
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20Delegate.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20Delegate.sol
+index e93817f..8d859b7 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20Delegate.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20Delegate.sol
+@@ -1,6 +1,7 @@
+ pragma solidity ^0.5.16;
+ 
+-import "./VBep20.sol";
++import { VBep20 } from "./VBep20.sol";
++import { VDelegateInterface } from "./VTokenInterfaces.sol";
+ 
+ /**
+  * @title Venus's VBep20Delegate Contract
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
+index 7786270..8334f51 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
+@@ -14,7 +14,7 @@ import { IAccessControlManagerV5 } from "@venusprotocol/governance-contracts/con
+  * @notice Abstract base for vTokens
+  * @author Venus
+  */
+-contract VToken is VTokenInterface, Exponential, TokenErrorReporter {
++contract CorePoolVToken is VTokenInterface, Exponential, TokenErrorReporter {
+     struct MintLocalVars {
+         MathError mathErr;
+         uint exchangeRateMantissa;
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
+index 3d98cda..ad7e7a1 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ 
+ /**
+  * @title Venus's vBNB Contract
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
+index fe9520f..f7eceb0 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
+ 
+ /**
+  * @title Venus's VBep20 Contract
