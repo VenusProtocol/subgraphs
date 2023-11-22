@@ -16,6 +16,7 @@ services:
       postgres:
         condition: service_started
     environment:
+      ETHEREUM_REORG_THRESHOLD: 1
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
@@ -33,7 +34,7 @@ services:
       - sh
       - -c
       - |
-        yarn && PACKAGE=isolated-pools yarn run node:integration
+        yarn && yarn run node:integration
 # Installing again to link workspaces
     ports:
       - 8545:8545
