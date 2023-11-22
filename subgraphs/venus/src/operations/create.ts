@@ -100,7 +100,7 @@ export function createMarket(marketAddress: string): Market {
   market.supplierCount = zeroBigInt32;
   market.borrowerCount = zeroBigInt32;
   market.borrowerCountAdjusted = zeroBigInt32;
-
+  market.save();
   return market;
 }
 
