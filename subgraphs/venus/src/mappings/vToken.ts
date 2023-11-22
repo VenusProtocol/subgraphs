@@ -53,7 +53,7 @@ import { getMarketId, getTransactionId } from '../utilities/ids';
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export const handleMint = (event: Mint): void => {
+export function handleMint(event: Mint): void {
   let market = Market.load(event.address.toHexString());
   if (!market) {
     market = createMarket(event.address.toHexString());
@@ -65,9 +65,9 @@ export const handleMint = (event: Mint): void => {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
     market.save();
   }
-};
+}
 
-export const handleMintBehalf = (event: MintBehalf): void => {
+export function handleMintBehalf(event: MintBehalf): void {
   let market = Market.load(event.address.toHexString());
   if (!market) {
     market = createMarket(event.address.toHexString());
@@ -79,7 +79,7 @@ export const handleMintBehalf = (event: MintBehalf): void => {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
     market.save();
   }
-};
+}
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
  *
@@ -93,7 +93,7 @@ export const handleMintBehalf = (event: MintBehalf): void => {
  *    No need to updateCommonVTokenStats, handleTransfer() will
  *    No need to update vTokenBalance, handleTransfer() will
  */
-export const handleRedeem = (event: Redeem): void => {
+export function handleRedeem(event: Redeem): void {
   let market = Market.load(event.address.toHexString());
   if (!market) {
     market = createMarket(event.address.toHexString());
@@ -106,7 +106,7 @@ export const handleRedeem = (event: Redeem): void => {
     market.supplierCount = market.supplierCount.minus(oneBigInt);
     market.save();
   }
-};
+}
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
  *
@@ -117,7 +117,7 @@ export const handleRedeem = (event: Redeem): void => {
  * Notes
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
  */
-export const handleBorrow = (event: Borrow): void => {
+export function handleBorrow(event: Borrow): void {
   let market = Market.load(event.address.toHexString());
   if (!market) {
     market = createMarket(event.address.toHexString());
@@ -161,7 +161,7 @@ export const handleBorrow = (event: Borrow): void => {
   borrow.borrower = event.params.borrower;
   borrow.blockNumber = event.block.number.toI32();
   borrow.blockTime = event.block.timestamp.toI32();
-  borrow.underlyingSymbol = market.underlyingSymbol;
+  borrow.underlyingAddress = market.underlyingAddress;
   borrow.save();
 
   if (event.params.accountBorrows == event.params.borrowAmount) {
@@ -170,7 +170,7 @@ export const handleBorrow = (event: Borrow): void => {
     market.borrowerCountAdjusted = market.borrowerCountAdjusted.plus(oneBigInt);
     market.save();
   }
-};
+}
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
  *
@@ -186,7 +186,7 @@ export const handleBorrow = (event: Borrow): void => {
  *    markets value. We keep this, even though you might think it would reset to 0 upon full
  *    repay.
  */
-export const handleRepayBorrow = (event: RepayBorrow): void => {
+export function handleRepayBorrow(event: RepayBorrow): void {
   let market = Market.load(event.address.toHexString());
   if (!market) {
     market = createMarket(event.address.toHexString());
@@ -228,7 +228,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
   repay.borrower = event.params.borrower;
   repay.blockNumber = event.block.number.toI32();
   repay.blockTime = event.block.timestamp.toI32();
-  repay.underlyingSymbol = market.underlyingSymbol;
+  repay.underlyingAddress = market.underlyingAddress;
   repay.payer = event.params.payer;
   repay.save();
 
@@ -242,7 +242,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
     market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
     market.save();
   }
-};
+}
 
 /*
  * Liquidate an account who has fell below the collateral factor.
@@ -260,7 +260,7 @@ export const handleRepayBorrow = (event: RepayBorrow): void => {
  *    of the vTokens, which is covered by transfer. Therefore we only
  *    add liquidation counts in this handler.
  */
-export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
+export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   let liquidatorID = event.params.liquidator.toHex();
   let liquidator = Account.load(liquidatorID);
   if (liquidator == null) {
@@ -285,10 +285,6 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   if (!marketRepayToken) {
     marketRepayToken = createMarket(event.address.toHexString());
   }
-  let marketVTokenLiquidated = Market.load(event.params.vTokenCollateral.toHexString());
-  if (!marketVTokenLiquidated) {
-    marketVTokenLiquidated = createMarket(event.params.vTokenCollateral.toHexString());
-  }
   let mintID = event.transaction.hash
     .toHexString()
     .concat('-')
@@ -300,11 +296,11 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
   liquidation.from = event.params.borrower;
   liquidation.blockNumber = event.block.number.toI32();
   liquidation.blockTime = event.block.timestamp.toI32();
-  liquidation.underlyingSymbol = marketRepayToken.underlyingSymbol;
+  liquidation.underlyingRepaidAddress = marketRepayToken.underlyingAddress;
   liquidation.underlyingRepayAmountMantissa = event.params.repayAmount;
-  liquidation.vTokenSymbol = marketVTokenLiquidated.symbol;
+  liquidation.vTokenCollateralAddress = event.params.vTokenCollateral;
   liquidation.save();
-};
+}
 
 /* Transferring of vTokens
  *
@@ -321,7 +317,7 @@ export const handleLiquidateBorrow = (event: LiquidateBorrow): void => {
  *    This const handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
  *    events. So for those events, we do not update vToken balances.
  */
-export const handleTransfer = (event: Transfer): void => {
+export function handleTransfer(event: Transfer): void {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   let marketId = getMarketId(event.address);
@@ -407,15 +403,15 @@ export const handleTransfer = (event: Transfer): void => {
   transfer.from = event.params.from;
   transfer.blockNumber = event.block.number.toI32();
   transfer.blockTime = event.block.timestamp.toI32();
-  transfer.vTokenSymbol = market.symbol;
+  transfer.vTokenAddress = event.address;
   transfer.save();
-};
+}
 
 export function handleAccrueInterest(event: AccrueInterest): void {
   updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
 }
 
-export const handleNewReserveFactor = (event: NewReserveFactor): void => {
+export function handleNewReserveFactor(event: NewReserveFactor): void {
   let marketID = event.address.toHex();
   let market = Market.load(marketID);
   if (!market) {
@@ -423,7 +419,7 @@ export const handleNewReserveFactor = (event: NewReserveFactor): void => {
   }
   market.reserveFactor = event.params.newReserveFactorMantissa;
   market.save();
-};
+}
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   let marketID = event.address.toHex();

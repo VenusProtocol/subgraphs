@@ -8,13 +8,9 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import {
-  comptrollerAddress,
-  interestRateModelAddress,
-  nullAddress,
-  vBnbAddress,
-} from '../src/constants/addresses';
+import { comptrollerAddress, nullAddress, vBnbAddress } from '../src/constants/addresses';
 import { handleMarketListed } from '../src/mappings/comptroller';
+import { interestRateModelAddress } from './constants';
 import { createMarketListedEvent } from './events';
 import { createComptrollerMock, createVBep20AndUnderlyingMock } from './mocks';
 

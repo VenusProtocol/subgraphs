@@ -156,7 +156,7 @@ interface VTokenTransfer {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
-    amount: BigDecimal!
+    amountMantissa: BigInt!
     "Account that received tokens"
     to: Bytes!
     "Account that sent tokens"
@@ -165,8 +165,6 @@ interface VTokenTransfer {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the vToken transferred"
-    vTokenSymbol: String!
 }
 
 """
@@ -186,8 +184,8 @@ type TransferEvent implements VTokenTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the vToken transferred"
-    vTokenSymbol: String!
+    "Address of the vToken transferred"
+    vTokenAddress: Bytes!
 }
 
 """
@@ -207,7 +205,7 @@ type MintEvent implements VTokenTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Address of the vToken transferred"
+    "Address of the vToken minted"
     vTokenAddress: Bytes!
     "Underlying token amount transferred"
     underlyingAmountMantissa: BigInt!
@@ -253,10 +251,10 @@ type LiquidationEvent implements VTokenTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "vToken that was sezied as collateral"
-    vTokenSymbol: String!
-    "Symbol of the underlying asset repaid through liquidation"
-    underlyingSymbol: String!
+    "Address of the vToken that was seized as collateral"
+    vTokenCollateralAddress: Bytes!
+    "Address of the underlying asset repaid through liquidation"
+    underlyingRepaidAddress: Bytes!
     "Underlying vToken amount that was repaid by liquidator"
     underlyingRepayAmountMantissa: BigInt!
 }
@@ -278,8 +276,8 @@ interface UnderlyingTransfer {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the borrowed underlying asset"
-    underlyingSymbol: String!
+    "Address of the  underlying token that was seized as transferred"
+    underlyingAddress: Bytes!
 }
 
 """
@@ -298,8 +296,8 @@ type BorrowEvent implements UnderlyingTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the borrowed underlying asset"
-    underlyingSymbol: String!
+    "Address of the  underlying token that was borrowed"
+    underlyingAddress: Bytes!
 }
 
 """
@@ -319,8 +317,8 @@ type RepayEvent implements UnderlyingTransfer @entity {
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-    "Symbol of the borrowed underlying asset"
-    underlyingSymbol: String!
+    "Address of the  underlying token that was repaid"
+    underlyingAddress: Bytes!
     "Payer of the borrow funds"
     payer: Bytes!
 }

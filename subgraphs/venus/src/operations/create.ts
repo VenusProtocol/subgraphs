@@ -2,7 +2,6 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { Account, AccountVToken, Market, MintEvent, RedeemEvent } from '../../generated/schema';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
-import { VBep20Storage } from '../../generated/templates/VToken/VBep20Storage';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { nullAddress, vBnbAddress } from '../constants/addresses';
@@ -46,7 +45,6 @@ export function createAccount(accountId: string): Account {
 export function createMarket(marketAddress: string): Market {
   let market: Market;
   const contract = VToken.bind(Address.fromString(marketAddress));
-  const marketBep20Storage = VBep20Storage.bind(Address.fromString(marketAddress));
 
   log.debug('[createMarket] market address: {}', [marketAddress]);
 
@@ -61,7 +59,7 @@ export function createMarket(marketAddress: string): Market {
     // It is all other VBEP20 contracts
   } else {
     market = new Market(marketAddress);
-    market.underlyingAddress = marketBep20Storage.underlying();
+    market.underlyingAddress = contract.underlying();
     log.debug('[createMarket] market underlying address: {}', [
       market.underlyingAddress.toHexString(),
     ]);
