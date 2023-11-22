@@ -23,8 +23,7 @@ export function handleMarketListed(event: MarketListed): void {
   // Dynamically index all new listed tokens
   VToken.create(event.params.vToken);
   // Create the market for this token, since it's now been listed.
-  let market = createMarket(event.params.vToken.toHexString());
-  market.save();
+  createMarket(event.params.vToken.toHexString());
 }
 
 export function handleMarketEntered(event: MarketEntered): void {

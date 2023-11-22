@@ -21,11 +21,6 @@ mkdir -p ./contracts/governance/contracts/legacy
 cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/legacy ./contracts/governance/contracts
 cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoInterfaces.sol ./contracts/governance/contracts/Governance/GovernorBravoInterfaces.sol
 
-rm contracts/protocol/contracts/Governance/GovernorBravoDelegate.sol
-rm contracts/protocol/contracts/Governance/GovernorBravoDelegator.sol
-rm contracts/protocol/contracts/Governance/GovernorAlpha.sol
-rm contracts/protocol/contracts/Governance/GovernorAlpha2.sol
-rm contracts/protocol/contracts/Governance/Timelock.sol
 rm -rf contracts/protocol/contracts/Lens/VenusLens.sol
 
 mkdir -p ./contracts/mocks
