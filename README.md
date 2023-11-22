@@ -108,7 +108,7 @@ Forking the subgraph is an easy way to debug indexing errors. To deploy a forked
 
 #### Subgraph
 Set the starting block for all handlers to at or before the erroring block.
-Redploy the subgraph pointing to the deployed fork
+Redeploy the subgraph pointing to the deployed fork
 
 ```
 graph deploy <SUBGRAPH_NAME> --debug-fork <SUBGRAPH_ID> --ipfs http://localhost:5001 --node http://localhost:8020

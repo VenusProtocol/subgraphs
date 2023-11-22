@@ -27,7 +27,7 @@
     "lint:fix": "yarn lint --fix",
     "pretty": "prettier '**/*.ts' --write",
     "test": "yarn workspaces foreach run test",
-    "node:integration": "PACKAGE=isolated-pools hardhat node --hostname 0.0.0.0",
+    "node:integration": "hardhat node --hostname 0.0.0.0",
     "test:integration": "yarn workspaces foreach run test:integration",
     "postinstall": "patch-package && ./copy_contracts.sh"
   },
