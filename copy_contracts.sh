@@ -37,6 +37,10 @@ rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
 rm ./contracts/governance/contracts/Governance/Timelock.sol
 
 
+# Copy cross-chain contracts
+mkdir -p ./contracts/governance/contracts/Cross-chain
+cp -rf ./node_modules/@venusprotocol/cross-chain-governance-contracts/contracts/Cross-chain ./contracts/governance/contracts/
+
 mkdir -p ./contracts/mocks
 cp -rf ./mocks/ ./contracts/mocks/contracts
 mv ./contracts/mocks/contracts/VBep20DelegateR1.sol ./contracts/protocol/contracts/Tokens/VTokens/legacy/VBep20DelegateR1.sol

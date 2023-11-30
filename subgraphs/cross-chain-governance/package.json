@@ -22,5 +22,9 @@
     "prepare:ethereum": "npx mustache config/ethereum.json template.yaml > subgraph.yaml",
     "test": "graph test",
     "test:integration": "true"
+  },
+  "dependencies": {
+    "@layerzerolabs/solidity-examples": "^1.0.0",
+    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#dd4434587c752324afc6ad3ad024662892c40b38"
   }
 }
