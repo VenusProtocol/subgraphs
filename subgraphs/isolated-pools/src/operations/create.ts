@@ -17,27 +17,14 @@ import {
   Pool,
   RewardsDistributor,
   Transaction,
-  TransactionParams,
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
-import {
-  ACCOUNT_BORROWS,
-  BORROW,
-  LIQUIDATE,
-  MINT,
-  REDEEM,
-  REPAY,
-  TRANSFER,
-  UNDERLYING_AMOUNT,
-  UNDERLYING_REPAY_AMOUNT,
-  zeroBigInt32,
-} from '../constants';
+import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import { getTokenPriceInCents } from '../utilities';
-import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import exponentToBigInt from '../utilities/exponentToBigInt';
 import {
   getAccountVTokenId,
@@ -153,32 +140,13 @@ export function createMarket(
   return market;
 }
 
-export const createMintTransaction = (
-  event: Mint,
-  underlyingDecimals: i32,
-  vTokenDecimals: i32,
-): void => {
+export const createMintTransaction = (event: Mint): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const underlyingAmount = event.params.mintAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-
-  const vTokenAmount = event.params.mintTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
 
   const transaction = new Transaction(id);
   transaction.type = MINT;
 
-  const transactionParams = new TransactionParams(id);
-  transactionParams.key = UNDERLYING_AMOUNT;
-  transactionParams.value = underlyingAmount.toString();
-  transactionParams.save();
-
-  transaction.params = transactionParams.id;
-  transaction.amount = vTokenAmount;
+  transaction.amountMantissa = event.params.mintAmount;
   transaction.to = event.params.minter;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
@@ -186,32 +154,13 @@ export const createMintTransaction = (
   transaction.save();
 };
 
-export const createRedeemTransaction = (
-  event: Redeem,
-  underlyingDecimals: i32,
-  vTokenDecimals: i32,
-): void => {
+export const createRedeemTransaction = (event: Redeem): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const underlyingAmount = event.params.redeemAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-
-  const vTokenAmount = event.params.redeemTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
 
   const transaction = new Transaction(id);
   transaction.type = REDEEM;
 
-  const transactionParams = new TransactionParams(id);
-  transactionParams.key = UNDERLYING_AMOUNT;
-  transactionParams.value = underlyingAmount.toString();
-  transactionParams.save();
-
-  transaction.params = transactionParams.id;
-  transaction.amount = vTokenAmount;
+  transaction.amountMantissa = event.params.redeemAmount;
   transaction.to = event.params.redeemer;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
@@ -219,28 +168,13 @@ export const createRedeemTransaction = (
   transaction.save();
 };
 
-export const createBorrowTransaction = (event: Borrow, underlyingDecimals: i32): void => {
+export const createBorrowTransaction = (event: Borrow): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const borrowAmount = event.params.borrowAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-
-  const accountBorrows = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
   transaction.type = BORROW;
 
-  const transactionParams = new TransactionParams(id);
-  transactionParams.key = ACCOUNT_BORROWS;
-  transactionParams.value = accountBorrows.toString();
-  transactionParams.save();
-
-  transaction.params = transactionParams.id;
-  transaction.amount = borrowAmount;
+  transaction.amountMantissa = event.params.borrowAmount;
   transaction.to = event.params.borrower;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
@@ -249,28 +183,13 @@ export const createBorrowTransaction = (event: Borrow, underlyingDecimals: i32):
   transaction.save();
 };
 
-export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecimals: i32): void => {
+export const createRepayBorrowTransaction = (event: RepayBorrow): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const repayAmount = event.params.repayAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
-
-  const accountBorrows = event.params.accountBorrows
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
   transaction.type = REPAY;
 
-  const transactionParams = new TransactionParams(id);
-  transactionParams.key = ACCOUNT_BORROWS;
-  transactionParams.value = accountBorrows.toString();
-  transactionParams.save();
-
-  transaction.params = transactionParams.id;
-  transaction.amount = repayAmount;
+  transaction.amountMantissa = event.params.repayAmount;
   transaction.to = event.params.borrower;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
@@ -278,32 +197,13 @@ export const createRepayBorrowTransaction = (event: RepayBorrow, underlyingDecim
   transaction.save();
 };
 
-export const createLiquidateBorrowTransaction = (
-  event: LiquidateBorrow,
-  underlyingDecimals: i32,
-  vTokenDecimals: i32,
-): void => {
+export const createLiquidateBorrowTransaction = (event: LiquidateBorrow): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const amount = event.params.seizeTokens
-    .toBigDecimal()
-    .div(exponentToBigDecimal(vTokenDecimals))
-    .truncate(vTokenDecimals);
-
-  const underlyingRepayAmount = event.params.repayAmount
-    .toBigDecimal()
-    .div(exponentToBigDecimal(underlyingDecimals))
-    .truncate(underlyingDecimals);
 
   const transaction = new Transaction(id);
   transaction.type = LIQUIDATE;
 
-  const transactionParams = new TransactionParams(id);
-  transactionParams.key = UNDERLYING_REPAY_AMOUNT;
-  transactionParams.value = underlyingRepayAmount.toString();
-  transactionParams.save();
-
-  transaction.params = transactionParams.id;
-  transaction.amount = amount;
+  transaction.amountMantissa = event.params.repayAmount;
   transaction.to = event.params.borrower;
   transaction.from = event.address;
   transaction.blockNumber = event.block.number.toI32();
@@ -311,13 +211,12 @@ export const createLiquidateBorrowTransaction = (
   transaction.save();
 };
 
-export const createTransferTransaction = (event: Transfer, vTokenDecimals: i32): void => {
+export const createTransferTransaction = (event: Transfer): void => {
   const id = getTransactionEventId(event.transaction.hash, event.transactionLogIndex);
-  const amount = event.params.amount.toBigDecimal().div(exponentToBigDecimal(vTokenDecimals));
 
   const transaction = new Transaction(id);
   transaction.type = TRANSFER;
-  transaction.amount = amount;
+  transaction.amountMantissa = event.params.amount;
   transaction.to = event.params.to;
   transaction.from = event.params.from;
   transaction.blockNumber = event.block.number.toI32();
@@ -335,7 +234,7 @@ export const createAccountVTokenBadDebt = (
   const accountVTokenId = getAccountVTokenId(marketAddress, event.params.borrower);
   accountVTokenBadDebt.account = accountVTokenId;
   accountVTokenBadDebt.block = event.block.number;
-  accountVTokenBadDebt.amount = event.params.badDebtDelta;
+  accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;
   accountVTokenBadDebt.timestamp = event.block.timestamp;
   accountVTokenBadDebt.save();
 };

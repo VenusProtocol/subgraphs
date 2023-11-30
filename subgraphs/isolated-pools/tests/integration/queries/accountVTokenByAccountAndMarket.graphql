@@ -16,7 +16,7 @@ query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: Strin
     }
     badDebt {
       id
-      amount
+      amountMantissa
       timestamp
       block
     }

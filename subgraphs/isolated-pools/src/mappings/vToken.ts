@@ -51,7 +51,7 @@ import {
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress, null);
-  createMintTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
+  createMintTransaction(event);
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
@@ -86,7 +86,7 @@ export function handleMint(event: Mint): void {
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
-  createRedeemTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
+  createRedeemTransaction(event);
 
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
@@ -130,7 +130,7 @@ export function handleBorrow(event: Borrow): void {
     market.borrowIndexMantissa,
   );
 
-  createBorrowTransaction(event, market.underlyingDecimals);
+  createBorrowTransaction(event);
 
   if (event.params.accountBorrows == event.params.borrowAmount) {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
@@ -168,7 +168,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
     market.borrowIndexMantissa,
   );
 
-  createRepayBorrowTransaction(event, market.underlyingDecimals);
+  createRepayBorrowTransaction(event);
 
   if (event.params.accountBorrows == zeroBigInt32) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
@@ -193,8 +193,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  *    add liquidation counts in this handler.
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
-  const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
   const liquidator = getOrCreateAccount(event.params.liquidator);
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
@@ -203,7 +201,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   borrower.countLiquidated = borrower.countLiquidated + 1;
   borrower.save();
 
-  createLiquidateBorrowTransaction(event, market.underlyingDecimals, market.vTokenDecimals);
+  createLiquidateBorrowTransaction(event);
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
@@ -278,7 +276,7 @@ export function handleTransfer(event: Transfer): void {
     );
   }
 
-  createTransferTransaction(event, market.vTokenDecimals);
+  createTransferTransaction(event);
 }
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {

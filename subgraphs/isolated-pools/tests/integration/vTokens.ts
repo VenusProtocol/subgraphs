@@ -212,7 +212,7 @@ describe('VToken events', function () {
       avt.id.includes(borrower.address.toLowerCase()),
     );
     expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
-    expect(vBnxAccountTokens?.badDebt[0].amount).to.be.equal('444600002962838');
+    expect(vBnxAccountTokens?.badDebt[0].amountMantissa).to.be.equal('444600002962838');
   });
 
   it('handles ReservesAdded event', async function () {

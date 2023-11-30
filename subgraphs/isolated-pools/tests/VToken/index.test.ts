@@ -17,8 +17,6 @@ import {
   REDEEM,
   REPAY,
   TRANSFER,
-  UNDERLYING_AMOUNT,
-  UNDERLYING_REPAY_AMOUNT,
   oneBigInt,
   zeroBigInt32,
 } from '../../src/constants';
@@ -39,7 +37,6 @@ import {
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
-import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import { getBadDebtEventId } from '../../src/utilities/ids';
 import { getAccountVTokenId, getTransactionEventId } from '../../src/utilities/ids';
 import { createMarketAddedEvent } from '../Pool/events';
@@ -161,26 +158,11 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'id', id);
     assert.fieldEquals('Transaction', id, 'type', MINT);
     assert.fieldEquals('Transaction', id, 'from', mintEvent.address.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      id,
-      'amount',
-      mintTokens.toBigDecimal().div(exponentToBigDecimal(18)).truncate(18).toString(),
-    );
+    assert.fieldEquals('Transaction', id, 'amountMantissa', actualMintAmount.toString());
     assert.fieldEquals('Transaction', id, 'to', minter.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', mintEvent.block.number.toString());
     assert.fieldEquals('Transaction', id, 'blockTime', mintEvent.block.timestamp.toString());
-    assert.fieldEquals('TransactionParams', id, 'key', UNDERLYING_AMOUNT);
-    assert.fieldEquals(
-      'TransactionParams',
-      id,
-      'value',
-      actualMintAmount
-        .toBigDecimal()
-        .div(exponentToBigDecimal(market.underlyingDecimals))
-        .truncate(market.underlyingDecimals)
-        .toString(),
-    );
+
     // AccountVToken
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, minter);
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', minter.toHexString());
@@ -252,26 +234,11 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'id', id);
     assert.fieldEquals('Transaction', id, 'type', REDEEM);
     assert.fieldEquals('Transaction', id, 'from', redeemEvent.address.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      id,
-      'amount',
-      redeemTokens.toBigDecimal().div(exponentToBigDecimal(18)).truncate(18).toString(),
-    );
+    assert.fieldEquals('Transaction', id, 'amountMantissa', actualRedeemAmount.toString());
     assert.fieldEquals('Transaction', id, 'to', redeemer.toHexString());
     assert.fieldEquals('Transaction', id, 'blockNumber', redeemEvent.block.number.toString());
     assert.fieldEquals('Transaction', id, 'blockTime', redeemEvent.block.timestamp.toString());
-    assert.fieldEquals('TransactionParams', id, 'key', UNDERLYING_AMOUNT);
-    assert.fieldEquals(
-      'TransactionParams',
-      id,
-      'value',
-      actualRedeemAmount
-        .toBigDecimal()
-        .div(exponentToBigDecimal(market.underlyingDecimals))
-        .truncate(market.underlyingDecimals)
-        .toString(),
-    );
+
     // AccountVToken
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, redeemer);
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', redeemer.toHexString());
@@ -507,12 +474,6 @@ describe('VToken', () => {
       return;
     }
 
-    const underlyingDecimals = market.underlyingDecimals;
-    const underlyingRepayAmount = liquidateBorrowEvent.params.repayAmount
-      .toBigDecimal()
-      .div(exponentToBigDecimal(underlyingDecimals))
-      .truncate(underlyingDecimals);
-
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE);
     assert.fieldEquals(
@@ -533,15 +494,6 @@ describe('VToken', () => {
       transactionId,
       'blockTime',
       liquidateBorrowEvent.block.timestamp.toString(),
-    );
-
-    assert.fieldEquals('TransactionParams', transactionId, 'key', UNDERLYING_REPAY_AMOUNT);
-
-    assert.fieldEquals(
-      'TransactionParams',
-      transactionId,
-      'value',
-      underlyingRepayAmount.toString(),
     );
   });
 
@@ -790,7 +742,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVTokenBadDebt',
       accountVTokenTBadDebtId,
-      'amount',
+      'amountMantissa',
       badDebtDelta.toString(),
     );
     assert.fieldEquals(
