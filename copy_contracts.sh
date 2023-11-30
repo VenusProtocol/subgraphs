@@ -34,5 +34,12 @@ rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
 rm ./contracts/governance/contracts/Governance/Timelock.sol
 
 
+# Copy cross-chain contracts
+mkdir -p ./contracts/governance/contracts/Cross-chain
+cp -rf ./node_modules/@venusprotocol/cross-chain-governance-contracts/contracts/Cross-chain ./contracts/governance/contracts/
+
 mkdir -p ./contracts/mocks
 cp -rf ./mocks/ ./contracts/mocks/contracts
+
+mkdir -p ./contracts/utilities
+cp -rf ./node_modules/@venusprotocol/solidity-utilities/contracts ./contracts/utilities
