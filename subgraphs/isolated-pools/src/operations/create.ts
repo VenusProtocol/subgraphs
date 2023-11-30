@@ -38,6 +38,7 @@ import {
 import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
 import { getTokenPriceInCents } from '../utilities';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
+import exponentToBigInt from '../utilities/exponentToBigInt';
 import {
   getAccountVTokenId,
   getBadDebtEventId,
@@ -111,8 +112,8 @@ export function createMarket(
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
   market.cashMantissa = vTokenContract.getCash();
-
-  market.exchangeRateMantissa = vTokenContract.exchangeRateStored();
+  const exchangeRateMantissa = vTokenContract.exchangeRateStored();
+  market.exchangeRateMantissa = exchangeRateMantissa;
 
   market.reservesMantissa = vTokenContract.totalReserves();
   market.supplyRateMantissa = vTokenContract.supplyRatePerBlock();
@@ -126,7 +127,11 @@ export function createMarket(
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
   market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-  market.totalSupplyMantissa = vTokenContract.totalSupply();
+
+  const totalSupplyVTokensMantissa = vTokenContract.totalSupply();
+  market.totalSupplyMantissa = totalSupplyVTokensMantissa
+    .times(exchangeRateMantissa)
+    .div(exponentToBigInt(18));
 
   market.badDebtMantissa = vTokenContract.badDebt();
 

@@ -4,6 +4,7 @@ import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { createMarket } from '../operations/create';
+import { exponentToBigInt } from '../utilities/exponentToBigInt';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { createAccountVToken } from './create';
 import { getOrCreateAccountVTokenTransaction } from './getOrCreate';
@@ -48,8 +49,6 @@ export const updateMarket = (
     const underlyingPriceCents = getUnderlyingPrice(market.id, market.underlyingDecimals);
     market.underlyingPriceCents = underlyingPriceCents;
 
-    market.totalSupplyMantissa = contract.totalSupply();
-
     /* Exchange rate explanation
        In Practice
         - If you call the vDAI contract on bscscan it comes back (2.0 * 10^26)
@@ -60,13 +59,14 @@ export const updateMarket = (
         - Must multiply by vtokenDecimals, 10^8
         - Must div by mantissa, 10^18
      */
-    const exchangeRateStored = contract.try_exchangeRateStored();
-    if (exchangeRateStored.reverted) {
-      log.error('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-      market.exchangeRateMantissa = zeroBigInt32;
-    } else {
-      market.exchangeRateMantissa = exchangeRateStored.value;
-    }
+    const exchangeRateStored = contract.exchangeRateStored();
+    market.exchangeRateMantissa = exchangeRateStored;
+
+    const totalSupplyVTokensMantissa = contract.totalSupply();
+    market.totalSupplyMantissa = totalSupplyVTokensMantissa
+      .times(exchangeRateStored)
+      .div(exponentToBigInt(18));
+
     market.borrowIndexMantissa = contract.borrowIndex();
 
     market.reservesMantissa = contract.totalReserves();

@@ -101,9 +101,9 @@ type Market @entity {
     underlyingSymbol: String!
     "Max token borrow amount allowed"
     borrowCapMantissa: BigInt!
-    "Total borrowed"
+    "Total borrowed underlying token"
     totalBorrowsMantissa: BigInt!
-    "Total supplied"
+    "Total supplied underlying token"
     totalSupplyMantissa: BigInt!
 
     # Fields that are not in Venus api
