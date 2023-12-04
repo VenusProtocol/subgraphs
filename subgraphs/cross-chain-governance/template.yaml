@@ -5,32 +5,32 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: OmnichainGovernanceOwner
+    name: OmnichainExecutorOwner
     network: {{ network }}
     source:
-      address: "{{ address }}"
-      abi: OmnichainGovernanceOwner
-      startBlock: {{ startBlock }}
+      address: "{{ omnichainGovernanceOwnerAddress }}"
+      abi: OmnichainExecutorOwner
+      startBlock: {{ startBlockOmnichainGovernanceOwner }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mappings/omnichainGovernanceOwner.ts
+      file: ./src/mappings/omnichainExecutorOwner.ts
       entities:
         - Governance
       abis:
-        - name: OmnichainGovernanceExecutor
-          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/OmnichainGovernanceOwner/OmnichainGovernanceOwner.sol/OmnichainGovernanceOwner.json
+        - name: OmnichainExecutorOwner
+          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
       eventHandlers:
-        - event: FunctionRegistryChanged(string, bool)
+        - event: FunctionRegistryChanged(string,bool)
           handler: handleFunctionRegistryChanged
   - kind: ethereum/contract
     name: OmnichainGovernanceExecutor
     network: {{ network }}
     source:
-      address: "{{ address }}"
+      address: "{{ omnichainExecutorOwnerAddress }}"
       abi: OmnichainGovernanceExecutor
-      startBlock: {{ startBlock }}
+      startBlock: {{ startBlockOmnichainGovernanceExecutor }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -42,17 +42,19 @@ dataSources:
         - Proposal
       abis:
         - name: OmnichainGovernanceExecutor
-          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
+          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
       eventHandlers:
         - event: SetMaxDailyReceiveLimit(uint256,uint256)
           handler: handleSetMaxDailyReceiveLimit
-        - event: ProposalReceived(uint256,uint256,address[],uint256[],string[],bytes[],uint8);
+        - event: ProposalReceived(indexed uint256,address[],uint256[],string[],bytes[],uint8)
           handler: handleProposalReceived
-        - event: ProposalQueued(uint256,uint256)
+        - event: ProposalQueued(indexed uint256,uint256)
           handler: handleProposalQueued
-        - event: ProposalExecuted(uint256)
+        - event: ProposalExecuted(indexed uint256)
           handler: handleProposalExecuted
-        - event: ProposalCancelled(uint256)
+        - event: ProposalCancelled(indexed uint256)
           handler: handleProposalCancelled
-        - event: TimelockAdded(indexed address)
+        - event: ReceivePayloadFailed(uint16,bytes,uint64,bytes)
+          handler: handleReceivePayloadFailed
+        - event: TimelockAdded(indexed address,uint8)
           handler: handleTimelockAdded
