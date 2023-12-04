@@ -21,7 +21,7 @@
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
-    "test": "graph test",
+    "test": "yarn prepare:docker && graph test",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
