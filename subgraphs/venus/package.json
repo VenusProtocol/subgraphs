@@ -21,7 +21,7 @@
     "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "test": "graph test",
+    "test": "yarn prepare:docker && graph test",
     "test:integration": "true"
   },
   "dependencies": {
