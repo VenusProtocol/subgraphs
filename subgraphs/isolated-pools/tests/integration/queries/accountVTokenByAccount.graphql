@@ -16,7 +16,7 @@ query AccountVTokenByAccountId($accountId: String!) {
     }
     badDebt {
       id
-      amount
+      amountMantissa
       timestamp
       block
     }

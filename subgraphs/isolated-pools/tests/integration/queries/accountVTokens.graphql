@@ -16,7 +16,7 @@ query AccountVTokens  {
     }
     badDebt {
       id
-      amount
+      amountMantissa
       timestamp
       block
     }
