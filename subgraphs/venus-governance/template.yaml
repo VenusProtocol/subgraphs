@@ -229,9 +229,9 @@ dataSources:
       eventHandlers:
         - event: SetTrustedRemoteAddress(indexed uint16,bytes)
           handler: handleSetTrustedRemoteAddress
-        - event: ExecuteRemoteProposal(indexed uint16, bytes)
+        - event: ExecuteRemoteProposal(indexed uint64,indexed uint16,uint256,bytes)
           handler: handleExecuteRemoteProposal
-        - event: ClearPayload(indexed uint64, bytes32)
+        - event: ClearPayload(indexed uint64,bytes32)
           handler: handleClearPayload
         - event: StorePayload(indexed uint64,indexed uint16,bytes,bytes,uint256,bytes)
           handler: handleStorePayload

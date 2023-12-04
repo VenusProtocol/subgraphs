@@ -2,14 +2,17 @@ type Governance @entity {
   "Unique entity used to keep track of common aggregated data"
   id: ID!
 
-  "Address of the governance executor contract"
+  "Address of the governance owner contract"
   address: Bytes!
+  
+  "Address of the governance executor contract"
+  executor: Bytes!
 
   "LayZero chainId for the chain this governance executor is deployed on"
-  chainId: Int!
+  layerZeroChainId: Int!
 
   "Max number of commands that can be sent to this governor in a day"
-  maxDailyReceiveLimit: Int!
+  maxDailyReceiveLimit: BigInt!
 }
 
 
@@ -60,5 +63,26 @@ type GovernanceRoute @entity {
   "Governance Route index"
   id: ID!
 
+  "Route type enum"
+  type: PROPOSAL_TYPE
+  
+  "Address for the route"
   timelockAddress: Bytes!
+}
+
+type FailedPayload @entity {
+  "Nonce of received payload"
+  id: ID!
+
+  "Chain id where the message came from"
+  srcChainId: Int!
+  
+  "Address of the contract that sent the message"
+  srcAddress: Bytes!
+  
+  "Message nonce"
+  nonce: BigInt!
+  
+  "Failure reason"
+  reason: String!
 }
