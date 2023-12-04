@@ -41,7 +41,7 @@ type Market @entity {
     id: ID!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
-    "VToken supply. VTokens have 8 decimals"
+    "Total underlying supplied"
     totalSupplyMantissa: BigInt!
     "Underlying token address"
     underlyingAddress: Bytes!
