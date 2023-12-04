@@ -1,13 +1,37 @@
-import { ProposalReceived } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
-import { Proposal } from '../../generated/schema';
-import { getProposalId } from '../utilities/ids';
+import { Address, Bytes } from '@graphprotocol/graph-ts';
 
-export const createProposal = (event: ProposalReceived) => {
+import {
+  ProposalReceived,
+  ReceivePayloadFailed,
+} from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
+import { FailedPayload, Proposal } from '../../generated/schema';
+import { CRITICAL, FAST_TRACK, NORMAL } from '../constants';
+import { getFailedPayloadId, getProposalId } from '../utilities/ids';
+
+export const createProposal = (event: ProposalReceived): Proposal => {
   const proposal = new Proposal(getProposalId(event.params.proposalId));
-  proposal.targets = event.params.targets;
+
+  const targets = event.params.targets.map<Bytes>((address: Address) =>
+    Bytes.fromHexString(address.toHexString()),
+  );
+
+  proposal.targets = targets;
   proposal.values = event.params.values;
   proposal.signatures = event.params.signatures;
   proposal.calldatas = event.params.calldatas;
-  proposal.proposalType = event.params.proposalType;
+  const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
+  proposal.type = indexProposalTypeConstant[event.params.proposalType];
   proposal.save();
+  return proposal;
+};
+
+export const createFailedPayload = (event: ReceivePayloadFailed): FailedPayload => {
+  const failedProposal = new FailedPayload(getFailedPayloadId(event.params.nonce));
+  failedProposal.srcChainId = event.params.srcChainId;
+  failedProposal.srcAddress = event.params.srcAddress;
+  failedProposal.nonce = event.params.nonce;
+  failedProposal.reason = event.params.reason.toString();
+
+  failedProposal.save();
+  return failedProposal;
 };

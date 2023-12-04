@@ -1,0 +1,5 @@
+// Use yarn prepare commands to generate config typescript file per env
+
+export const omnichainGovernanceOwnerAddress = '{{ omnichainGovernanceOwnerAddress }}';
+export const omnichainExecutorOwnerAddress = '{{ omnichainExecutorOwnerAddress }}';
+export const layerZeroChainId = {{ layerZeroChainId }};
