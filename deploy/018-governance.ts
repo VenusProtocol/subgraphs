@@ -8,18 +8,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
   const signers = await ethers.getSigners();
 
-  const timelock = await ethers.getContract('Timelock');
+  const timelock = await ethers.getContract('CriticalTimelock');
   const xvsVault = await ethers.getContract('XVSVaultProxy');
 
-  await deploy('GovernorAlphaTimelock', {
-    contract: 'Timelock',
-    from: deployer,
-    args: [deployer, 3600],
-    log: true,
-    autoMine: true,
-  });
-
-  const governorAlphaTimelock = await ethers.getContract('GovernorAlphaTimelock');
+  const governorAlphaTimelock = await ethers.getContract('CriticalTimelock');
   await deploy('GovernorAlpha', {
     from: deployer,
     args: [governorAlphaTimelock.address, xvsVault.address, deployer],
@@ -47,15 +39,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await governorAlpha.__acceptAdmin();
 
-  await deploy('GovernorAlpha2Timelock', {
-    contract: 'Timelock',
-    from: deployer,
-    args: [deployer, 3600],
-    log: true,
-    autoMine: true,
-  });
-
-  const governorAlpha2Timelock = await ethers.getContract('GovernorAlpha2Timelock');
+  const governorAlpha2Timelock = await ethers.getContract('CriticalTimelock');
 
   await deploy('GovernorAlpha2', {
     from: deployer,

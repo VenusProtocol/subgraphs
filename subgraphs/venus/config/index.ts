@@ -21,19 +21,16 @@ const main = () => {
       network: 'hardhat',
       comptrollerAddress: '0x94d1820b2D1c7c7452A163983Dc888CEC546b77D',
       startBlock: '0',
-      vBnbAddress: '0xA07c5b74C9B40447a954e1466938b865b6BBea36',
     },
     chapel: {
       network: 'chapel',
       comptrollerAddress: bscTestnetCoreDeployments.Contracts.Comptroller,
       startBlock: '2470000',
-      vBnbAddress: bscTestnetCoreDeployments.Contracts.vBNB,
     },
     bsc: {
       network: 'bsc',
       comptrollerAddress: bscMainnetCoreDeployments.Contracts.Comptroller,
       startBlock: '2470000',
-      vBnbAddress: bscMainnetCoreDeployments.Contracts.vBNB,
     },
   };
 

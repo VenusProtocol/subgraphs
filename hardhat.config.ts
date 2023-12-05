@@ -92,7 +92,6 @@ const config: HardhatUserConfig = {
     paths: [
       '@venusprotocol/governance-contracts/contracts/Governance/Timelock.sol',
       '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegate.sol',
-      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegator.sol',
     ],
   },
   mocha: {

@@ -1,3 +1,3 @@
-import configureFeeds from '@venusprotocol/oracle/dist/deploy/2-configure-feeds';
+import configureFeeds from '@venusprotocol/oracle/dist/deploy/3-configure-feeds';
 
 export default configureFeeds;
