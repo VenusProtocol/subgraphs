@@ -150,8 +150,8 @@ templates:
           handler: handleNewAccessControlManager
         - event: ReservesAdded(indexed address,uint256,uint256)
           handler: handleReservesAdded
-        - event: ReservesReduced(indexed address,uint256,uint256)
-          handler: handleReservesReduced
+        - event: SpreadReservesReduced(indexed address,uint256,uint256)
+          handler: handleSpreadReservesReduced
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}

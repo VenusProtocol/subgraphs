@@ -239,7 +239,7 @@ describe('VToken events', function () {
     expect(market?.reservesMantissa).to.be.equal('508333330000000000');
   });
 
-  it('handles ReservesReduced event', async function () {
+  it('handles SpreadReservesReduced event', async function () {
     const { data: dataBeforeEvent } = await subgraphClient.getMarketById(
       vBtcbAddress.toLowerCase(),
     );

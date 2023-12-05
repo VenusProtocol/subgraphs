@@ -33,7 +33,7 @@ import {
   handleRedeem,
   handleRepayBorrow,
   handleReservesAdded,
-  handleReservesReduced,
+  handleSpreadReservesReduced,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
@@ -53,7 +53,7 @@ import {
   createRedeemEvent,
   createRepayBorrowEvent,
   createReservesAddedEvent,
-  createReservesReducedEvent,
+  createSpreadReservesReducedEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
@@ -808,14 +808,14 @@ describe('VToken', () => {
     const reduceAmount = BigInt.fromString('100000000000000000');
     const newTotalReserves = BigInt.fromString('9111222333444555666');
 
-    const reservesReducedEvent = createReservesReducedEvent(
+    const reservesReducedEvent = createSpreadReservesReducedEvent(
       aaaTokenAddress,
       benefactor,
       reduceAmount,
       newTotalReserves,
     );
 
-    handleReservesReduced(reservesReducedEvent);
+    handleSpreadReservesReduced(reservesReducedEvent);
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHexString(),
