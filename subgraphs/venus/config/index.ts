@@ -5,32 +5,35 @@ import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['chapel', 'bsc', 'local'] as const;
+  const supportedNetworks = ['chapel', 'bsc', 'docker'] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
     throw new Error(`NETWORK env var must be set to one of ${supportedNetworks}`);
   }
-  return network as typeof supportedNetworks[number];
+  return network as (typeof supportedNetworks)[number];
 };
 
 const main = () => {
   const network = getNetwork();
   const config = {
-    local: {
+    docker: {
       network: 'hardhat',
       comptrollerAddress: '0x94d1820b2D1c7c7452A163983Dc888CEC546b77D',
       startBlock: '0',
+      vBnbAddress: '0xA07c5b74C9B40447a954e1466938b865b6BBea36',
     },
     chapel: {
       network: 'chapel',
       comptrollerAddress: bscTestnetCoreDeployments.Contracts.Comptroller,
       startBlock: '2470000',
+      vBnbAddress: bscTestnetCoreDeployments.Contracts.vBNB,
     },
     bsc: {
       network: 'bsc',
       comptrollerAddress: bscMainnetCoreDeployments.Contracts.Comptroller,
       startBlock: '2470000',
+      vBnbAddress: bscMainnetCoreDeployments.Contracts.vBNB,
     },
   };
 

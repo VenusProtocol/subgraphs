@@ -1,75 +1,84 @@
+import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet.json';
+import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet.json';
+import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet.json';
+import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['chapel', 'bsc', 'local'] as const;
+  const supportedNetworks = ['chapel', 'bsc', 'docker'] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
     throw new Error(`NETWORK env var must be set to one of ${supportedNetworks}`);
   }
-  return network as typeof supportedNetworks[number];
+  return network as (typeof supportedNetworks)[number];
 };
 
 const main = () => {
   const network = getNetwork();
   const config = {
-    local: {
-      network: 'bsc',
-      accessControlManagerAddress: '0xc5a5C42992dECbae36851359345FE25997F5C42d',
+    docker: {
+      network: 'hardhat',
+      accessControlManagerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
       accessControlManagerStartBlock: '0',
-      governorAlphaAddress: '0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1',
+      governorAlphaAddress: '0x95775fD3Afb1F4072794CA4ddA27F2444BCf8Ac3',
       governorAlphaStartBlock: '0',
-      governorAlpha2Address: '0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE',
+      governorAlpha2Address: '0x512F7469BcC83089497506b5df64c6E246B39925',
       governorAlpha2StartBlock: '0',
-      governorBravoDelegateAddress: '0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2',
-      governorBravoDelegateStartBlock: '16002994',
-      governorBravoDelegate2Address: '0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2',
-      governorBravoDelegate2StartBlock: '16002994',
-      xvsTokenAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+      governorBravoDelegatorAddress: '0xE8F7d98bE6722d42F29b50500B0E318EF2be4fc8',
+      governorBravoDelegatorStartBlock: '0',
+      xvsTokenAddress: '0x1343248Cbd4e291C6979e70a138f4c774e902561',
       xvsTokenStartBlock: '0',
-      xvsVaultAddress: '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
+      xvsVaultAddress: '0x547382C0D1b23f707918D3c83A77317B71Aa8470',
       xvsVaultStartBlock: '0',
+      xvsVaultPid: '0',
     },
     chapel: {
       network: 'chapel',
-      accessControlManagerAddress: '0x4a471468cdABA84CEA885aF72129F2e974C3649B',
+      accessControlManagerAddress:
+        bscTestnetGovernanceDeployments.contracts.AccessControlManager.address,
       accessControlManagerStartBlock: '24711629',
-      governorAlphaAddress: '0x7df10b2118eb04d9806b15198019f83741a9f8f4',
+      governorAlphaAddress: bscTestnetGovernanceDeployments.contracts.GovernorAlpha.address,
       governorAlphaStartBlock: '8205736',
       governorAlpha2Address: '0x7116894ed34FC4B27D5b84f46B70Af48397a6C24',
       governorAlpha2StartBlock: '13584539',
-      governorBravoDelegateAddress: '0x5573422a1a59385c247ec3a66b93b7c08ec2f8f2',
-      governorBravoDelegateStartBlock: '16002994 ',
-      governorBravoDelegate2Address: '',
-      governorBravoDelegate2StartBlock: '',
-      xvsTokenAddress: '0xB9e0E753630434d7863528cc73CB7AC638a7c8ff',
+      governorBravoDelegatorAddress:
+        bscTestnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+      governorBravoDelegatorStartBlock: '16002994 ',
+      xvsTokenAddress: bscTestnetCoreDeployments.contracts.XVS.address,
       xvsTokenStartBlock: '2802593',
-      xvsVaultAddress: '0xa4Fd54cACdA379FB7CaA783B83Cc846f8ac0Faa6',
+      xvsVaultAddress: bscTestnetCoreDeployments.contracts.XVSVault.address,
       xvsVaultStartBlock: '13937802',
+      xvsVaultPid: '1',
     },
     bsc: {
       network: 'bsc',
-      accessControlManagerAddress: '',
+      accessControlManagerAddress:
+        bscMainnetGovernanceDeployments.contracts.AccessControlManager.address,
       accessControlManagerStartBlock: '',
-      governorAlphaAddress: '0x406f48f47d25e9caa29f17e7cfbd1dc6878f078f',
+      governorAlphaAddress: bscMainnetGovernanceDeployments.contracts.GovernorAlpha.address,
       governorAlphaStartBlock: '2474351',
-      governorAlpha2Address: '0x388313BfEFEE8ddfeAD55b585F62812293Cf3A60',
+      governorAlpha2Address: bscMainnetGovernanceDeployments.contracts.GovernorAlpha2.address,
       governorAlpha2StartBlock: '11934064',
-      governorBravoDelegateAddress: '0x2d56dC077072B53571b8252008C60e945108c75a',
-      governorBravoDelegateStartBlock: '13729317',
-      governorBravoDelegate2Address: '',
-      governorBravoDelegate2StartBlock: '',
-      xvsTokenAddress: '0xcf6bb5389c92bdda8a3747ddb454cb7a64626c63',
+      governorBravoDelegatorAddress:
+        bscMainnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+      governorBravoDelegatorStartBlock: '13729317',
+      xvsTokenAddress: bscMainnetCoreDeployments.contracts.XVS.address,
       xvsTokenStartBlock: '858561',
-      xvsVaultAddress: '0x6eF49b4e0772Fe78128F981d42D54172b55eCF9F',
+      xvsVaultAddress: bscMainnetCoreDeployments.contracts.XVSVault.address,
       xvsVaultStartBlock: '13018718',
+      xvsVaultPid: '0',
     },
   };
 
   const yamlTemplate = fs.readFileSync('template.yaml', 'utf8');
   const yamlOutput = Mustache.render(yamlTemplate, config[network]);
   fs.writeFileSync('subgraph.yaml', yamlOutput);
+
+  const configTemplate = fs.readFileSync('src/constants/config-template', 'utf8');
+  const tsOutput = Mustache.render(configTemplate, config[network]);
+  fs.writeFileSync('src/constants/config.ts', tsOutput);
 };
 
 main();
