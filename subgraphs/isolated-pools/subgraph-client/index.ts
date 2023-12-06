@@ -13,6 +13,7 @@ import {
   MarketByIdDocument,
   MarketsDocument,
   PoolsDocument,
+  PoolByIdDocument
 } from './.graphclient';
 
 class SubgraphClient {
@@ -35,6 +36,11 @@ class SubgraphClient {
 
   async getPools() {
     const result = await this.query(PoolsDocument, {});
+    return result;
+  }
+
+  async getPool(id: string) {
+    const result = await this.query(PoolByIdDocument, { id });
     return result;
   }
 

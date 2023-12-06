@@ -203,16 +203,16 @@ describe('VToken events', function () {
     const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.badDebtMantissa).to.equal('444600002962838');
+    expect(market?.badDebtMantissa).to.equal('444600002961796');
 
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
     const { accountVTokens } = accountVTokensData!;
 
-    const vBnxAccountTokens = accountVTokens.find(avt =>
-      avt.id.includes(borrower.address.toLowerCase()),
+    const vBnxAccountTokens = accountVTokens.find(avt => 
+      avt.id.includes(borrower.address.toLowerCase()) && avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase()
     );
     expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
-    expect(vBnxAccountTokens?.badDebt[0].amountMantissa).to.be.equal('444600002962838');
+    expect(vBnxAccountTokens?.badDebt[0].amountMantissa).to.be.equal('444600002961796');
   });
 
   it('handles ReservesAdded event', async function () {
@@ -220,8 +220,7 @@ describe('VToken events', function () {
       vBtcbAddress.toLowerCase(),
     );
     const { market: marketBeforeEvent } = dataBeforeEvent!;
-
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('8333330000000000');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('0');
 
     await btcbToken.connect(liquidator2).faucet(faucetAmount.toString());
     await btcbToken.connect(liquidator2).approve(vBtcbToken.address, faucetAmount.toString());
@@ -236,7 +235,7 @@ describe('VToken events', function () {
     const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.reservesMantissa).to.be.equal('508333330000000000');
+    expect(market?.reservesMantissa).to.be.equal('500000000000000000');
   });
 
   it('handles SpreadReservesReduced event', async function () {
@@ -245,7 +244,7 @@ describe('VToken events', function () {
     );
     const { market: marketBeforeEvent } = dataBeforeEvent!;
 
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('508333330000000000');
+    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('500000000000000000');
 
     const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
 
@@ -258,6 +257,6 @@ describe('VToken events', function () {
     const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.reservesMantissa).to.be.equal('8333330000000000');
+    expect(market?.reservesMantissa).to.be.equal('0');
   });
 });

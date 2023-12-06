@@ -1,0 +1,22 @@
+query PoolById($id: ID!) {
+  pool (id: $id) {
+    id
+    name
+    creator
+    blockPosted
+    timestampPosted
+    category
+    logoUrl
+    description
+    priceOracleAddress
+    closeFactorMantissa
+    liquidationIncentiveMantissa
+    minLiquidatableCollateralMantissa
+    markets {
+      id
+      pool {
+        id
+      }
+    }
+  }
+}
