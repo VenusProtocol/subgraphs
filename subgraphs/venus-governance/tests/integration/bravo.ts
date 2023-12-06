@@ -28,7 +28,7 @@ describe('GovernorBravo', function () {
     const governorAlpha2 = await ethers.getContract('GovernorAlpha2');
 
     // Impersonating timelock for convenience
-    const timelock = await ethers.getContract('Timelock');
+    const timelock = await ethers.getContract('CriticalTimelock');
 
     await signers[0].sendTransaction({
       to: timelock.address,
@@ -41,7 +41,7 @@ describe('GovernorBravo', function () {
     });
     const timelockSigner = await ethers.getSigner(timelock.address);
 
-    await timelock.connect(timelockSigner).setPendingAdmin(governorBravoDelegator.address);
+    await timelock.connect(timelockSigner).setPendingAdmin(governorBravo.address);
 
     await network.provider.request({
       method: 'hardhat_stopImpersonatingAccount',
