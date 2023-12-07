@@ -15,7 +15,7 @@ import {
   Redeem as RedeemEvent,
   RepayBorrow as RepayBorrowEvent,
   ReservesAdded as ReservesAddedEvent,
-  ReservesReduced as ReservesReducedEvent,
+  SpreadReservesReduced as SpreadReservesReducedEvent,
   Transfer as TransferEvent,
 } from '../../generated/PoolRegistry/VToken';
 
@@ -461,13 +461,13 @@ export const createReservesAddedEvent = (
   return event;
 };
 
-export const createReservesReducedEvent = (
+export const createSpreadReservesReducedEvent = (
   vTokenAddress: Address,
   benefactor: Address,
   reduceAmount: BigInt,
   newTotalReserves: BigInt,
-): ReservesReducedEvent => {
-  const event = changetype<ReservesReducedEvent>(newMockEvent());
+): SpreadReservesReducedEvent => {
+  const event = changetype<SpreadReservesReducedEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 

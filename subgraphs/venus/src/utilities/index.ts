@@ -1,4 +1,3 @@
-export { getBnbPriceInUsd } from './getBnbPriceInUsd';
 export { getTokenPriceCents } from './getTokenPriceCents';
 export { exponentToBigDecimal } from './exponentToBigDecimal';
 export { ensureComptrollerSynced } from './ensureComptrollerSynced';

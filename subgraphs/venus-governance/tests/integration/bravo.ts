@@ -16,7 +16,7 @@ describe('GovernorBravo', function () {
 
   before(async function () {
     signers = await ethers.getSigners();
-    governorBravoDelegator = await ethers.getContract('GovernorBravoDelegatorV1');
+    governorBravoDelegator = await ethers.getContract('GovernorBravoDelegator');
     const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
     governorBravo = await ethers.getContractAt(
       'GovernorBravoDelegateV1',
@@ -28,7 +28,7 @@ describe('GovernorBravo', function () {
     const governorAlpha2 = await ethers.getContract('GovernorAlpha2');
 
     // Impersonating timelock for convenience
-    const timelock = await ethers.getContract('Timelock');
+    const timelock = await ethers.getContract('NormalTimelock');
 
     await signers[0].sendTransaction({
       to: timelock.address,
@@ -160,10 +160,10 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(23);
 
-      const governorAlpha2Timelock = await ethers.getContract('Timelock');
+      const timelock = await ethers.getContract('NormalTimelock');
       const eta =
         (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await governorAlpha2Timelock.delay());
+        +(await timelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -173,8 +173,8 @@ describe('GovernorBravo', function () {
 
       expect(proposal.queued).to.equal(true);
       expect(proposal.executionEta).to.equal(eta.toString());
-
-      await ethers.provider.send('evm_setNextBlockTimestamp', [eta + 1]);
+      await mine(1);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [eta]);
     });
 
     it('should index succeeded proposal event', async function () {
@@ -192,7 +192,7 @@ describe('GovernorBravo', function () {
 
   describe('GovernorBravo2', function () {
     it('should update GovernorEntity when setting implementation', async function () {
-      const timelock = await ethers.getContract('Timelock');
+      const timelock = await ethers.getContract('NormalTimelock');
       const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
       // Assert original values
       let {
@@ -210,7 +210,7 @@ describe('GovernorBravo', function () {
       expect(governance.guardian).to.equal(signers[0].address.toLowerCase());
       expect(governance.proposalMaxOperations).to.equal('10');
 
-      const governorBravoDelegatorV2 = await ethers.getContract('GovernorBravoDelegate');
+      const governorBravoDelegatorV2 = await ethers.getContract('GovernorBravoDelegateV2');
       const xvsVaultProxy = await ethers.getContract('XVSVaultProxy');
       const xvsVault = await ethers.getContractAt('XVSVault', xvsVaultProxy.address);
 
@@ -375,7 +375,7 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(25);
 
-      const governorBravoTimelock = await ethers.getContract('Timelock');
+      const governorBravoTimelock = await ethers.getContract('NormalTimelock');
       const eta =
         (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
         +(await governorBravoTimelock.delay());
@@ -389,7 +389,8 @@ describe('GovernorBravo', function () {
       expect(proposal.queued).to.equal(true);
       expect(proposal.executionEta).to.equal(eta.toString());
 
-      await ethers.provider.send('evm_setNextBlockTimestamp', [eta + 1]);
+      await mine(1);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [eta]);
     });
 
     it('should index succeeded proposal event', async function () {

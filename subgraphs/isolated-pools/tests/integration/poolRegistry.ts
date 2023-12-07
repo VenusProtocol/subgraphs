@@ -64,14 +64,13 @@ describe('Pool Registry', function () {
   });
 
   it('updates and returns metadata from the pool', async function () {
-    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
-    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
-    const poolBeforeUpdate = poolsBeforeUpdate[0];
-    expect(poolBeforeUpdate.category).to.equal(defaultPools[0].category);
-    expect(poolBeforeUpdate.logoUrl).to.equal(defaultPools[0].logoUrl);
-    expect(poolBeforeUpdate.description).to.equal(defaultPools[0].description);
+    const { data: dataBeforeUpdate } = await subgraphClient.getPool(defaultPools[1].id);
+    const { pool: poolBeforeUpdate } = dataBeforeUpdate!;
+    expect(poolBeforeUpdate.category).to.equal(defaultPools[1].category);
+    expect(poolBeforeUpdate.logoUrl).to.equal(defaultPools[1].logoUrl);
+    expect(poolBeforeUpdate.description).to.equal(defaultPools[1].description);
 
-    const tx = await poolRegistry.updatePoolMetadata(defaultPools[0].id, [
+    const tx = await poolRegistry.updatePoolMetadata(defaultPools[1].id, [
       'Games',
       logoUrl,
       description,
@@ -79,9 +78,8 @@ describe('Pool Registry', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
-    const pool = pools[0];
+    const { data } = await subgraphClient.getPool(poolBeforeUpdate.id);
+    const { pool } = data!;
     expect(pool.category).to.equal(category);
     expect(pool.logoUrl).to.equal(logoUrl);
     expect(pool.description).to.equal(description);

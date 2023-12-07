@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "module": "node16",
-    "types": ["@graphprotocol/graph-ts"],
+    "types": ["@graphprotocol/graph-ts", "node"],
     "noLib": false,
     "lib": ["es2015"],
     "forceConsistentCasingInFileNames": true,

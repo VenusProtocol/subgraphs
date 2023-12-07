@@ -4,7 +4,7 @@ import { Account, AccountVToken, Market, MintEvent, RedeemEvent } from '../../ge
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { nullAddress, vBnbAddress } from '../constants/addresses';
+import { nullAddress } from '../constants/addresses';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { getTransactionId } from '../utilities/ids';
 
@@ -44,22 +44,24 @@ export function createAccount(accountId: string): Account {
 
 export function createMarket(marketAddress: string): Market {
   let market: Market;
-  const contract = VToken.bind(Address.fromString(marketAddress));
+  const vTokenContract = VToken.bind(Address.fromString(marketAddress));
 
   log.debug('[createMarket] market address: {}', [marketAddress]);
 
+  const vTokenSymbol = vTokenContract.symbol();
+
   // It is vBNB, which has a slightly different interface
-  if (marketAddress == vBnbAddress.toHexString()) {
+  if (vTokenSymbol == 'vBNB') {
     market = new Market(marketAddress);
     market.underlyingAddress = nullAddress;
     market.underlyingDecimals = 18;
-    market.underlyingName = 'Binance Coin';
+    market.underlyingName = 'BNB';
     market.underlyingSymbol = 'BNB';
     market.underlyingPriceCents = zeroBigInt32;
     // It is all other VBEP20 contracts
   } else {
     market = new Market(marketAddress);
-    market.underlyingAddress = contract.underlying();
+    market.underlyingAddress = vTokenContract.underlying();
     log.debug('[createMarket] market underlying address: {}', [
       market.underlyingAddress.toHexString(),
     ]);
@@ -72,10 +74,10 @@ export function createMarket(marketAddress: string): Market {
     market.underlyingPriceCents = underlyingPriceCents;
   }
 
-  market.vTokenDecimals = contract.decimals();
+  market.vTokenDecimals = vTokenContract.decimals();
 
-  const interestRateModelAddress = contract.try_interestRateModel();
-  const reserveFactor = contract.try_reserveFactorMantissa();
+  const interestRateModelAddress = vTokenContract.try_interestRateModel();
+  const reserveFactor = vTokenContract.try_reserveFactorMantissa();
 
   market.borrowRateMantissa = zeroBigInt32;
   market.cashMantissa = zeroBigInt32;
@@ -84,10 +86,10 @@ export function createMarket(marketAddress: string): Market {
   market.interestRateModelAddress = interestRateModelAddress.reverted
     ? nullAddress
     : interestRateModelAddress.value;
-  market.name = contract.name();
+  market.name = vTokenContract.name();
   market.reservesMantissa = BigInt.fromI32(0);
   market.supplyRateMantissa = zeroBigInt32;
-  market.symbol = contract.symbol();
+  market.symbol = vTokenContract.symbol();
   market.totalBorrowsMantissa = zeroBigInt32;
   market.totalSupplyMantissa = zeroBigInt32;
 

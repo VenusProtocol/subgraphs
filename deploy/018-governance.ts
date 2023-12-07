@@ -8,11 +8,11 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployer } = await getNamedAccounts();
   const signers = await ethers.getSigners();
 
-  const timelock = await ethers.getContract('Timelock');
+  const timelock = await ethers.getContract('NormalTimelock');
   const xvsVault = await ethers.getContract('XVSVaultProxy');
 
   await deploy('GovernorAlphaTimelock', {
-    contract: 'Timelock',
+    contract: 'TestTimelockV8',
     from: deployer,
     args: [deployer, 3600],
     log: true,
@@ -48,7 +48,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await governorAlpha.__acceptAdmin();
 
   await deploy('GovernorAlpha2Timelock', {
-    contract: 'Timelock',
+    contract: 'TestTimelockV8',
     from: deployer,
     args: [deployer, 3600],
     log: true,
@@ -96,8 +96,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   });
 
   await deploy('GovernorBravoDelegateV2', {
-    contract:
-      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegate.sol:GovernorBravoDelegate',
+    contract: 'GovernorBravoDelegate',
     from: deployer,
     args: [],
     log: true,
@@ -110,7 +109,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const minVotingPeriod = await governorBravoDelegate.MIN_VOTING_PERIOD();
   const minProposalThreshold = await governorBravoDelegate.MIN_PROPOSAL_THRESHOLD();
 
-  await deploy('GovernorBravoDelegatorV1', {
+  await deploy('GovernorBravoDelegator', {
     from: deployer,
     args: [
       timelock.address,
@@ -122,13 +121,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
       minProposalThreshold.toString(),
       deployer,
     ],
-    log: true,
-    autoMine: true,
-  });
-
-  await deploy('GovernorBravoDelegate', {
-    from: deployer,
-    args: [],
     log: true,
     autoMine: true,
   });

@@ -182,8 +182,9 @@ describe('GovernorAlpha', function () {
 
       expect(proposal.queued).to.equal(true);
       expect(proposal.executionEta).to.equal(eta.toString());
+      await mine(1);
 
-      await ethers.provider.send('evm_setNextBlockTimestamp', [eta + 1]);
+      await ethers.provider.send('evm_setNextBlockTimestamp', [eta]);
     });
 
     it('should transition to executed', async () => {

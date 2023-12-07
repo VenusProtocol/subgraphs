@@ -16,7 +16,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(12);
+      expect(permissions.length).to.be.equal(13);
 
       permissions.forEach(pe => {
         expect(pe.type).to.be.equal('GRANTED');
@@ -36,7 +36,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(13);
+      expect(permissions.length).to.be.equal(14);
 
       expect(permissions[0].type).to.be.equal('REVOKED');
     });
@@ -54,7 +54,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(13);
+      expect(permissions.length).to.be.equal(14);
 
       expect(permissions[0].type).to.be.equal('GRANTED');
     });

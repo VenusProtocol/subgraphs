@@ -8,9 +8,13 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { comptrollerAddress, nullAddress, vBnbAddress } from '../src/constants/addresses';
 import { handleMarketListed } from '../src/mappings/comptroller';
-import { interestRateModelAddress } from './constants';
+import {
+  comptrollerAddress,
+  interestRateModelAddress,
+  nullAddress,
+  vBnbAddress,
+} from './constants';
 import { createMarketListedEvent } from './events';
 import { createComptrollerMock, createVBep20AndUnderlyingMock } from './mocks';
 
@@ -48,7 +52,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('id', vBnbAddress.toHex());
     assertMarketDocument('underlyingAddress', nullAddress.toHex());
     assertMarketDocument('underlyingDecimals', '18');
-    assertMarketDocument('underlyingName', 'Binance Coin');
+    assertMarketDocument('underlyingName', 'BNB');
     assertMarketDocument('underlyingSymbol', 'BNB');
     assertMarketDocument('underlyingPriceCents', '0');
     assertMarketDocument('borrowRateMantissa', '0');

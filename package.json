@@ -45,11 +45,13 @@
     "@typechain/hardhat": "^6.1.2",
     "@types/mocha": "^9.1.1",
     "@types/mustache": "^4.2.1",
+    "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "^1.3.0",
-    "@venusprotocol/isolated-pools": "2.1.0-dev.2",
-    "@venusprotocol/oracle": "^1.7.3-dev.1",
+    "@venusprotocol/governance-contracts": "^1.4.0-dev.9",
+    "@venusprotocol/isolated-pools": "^2.3.0-dev.4",
+    "@venusprotocol/oracle": "^1.8.0-dev.5",
+    "@venusprotocol/venus-protocol": "^6.1.0-dev.5",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",
@@ -84,5 +86,8 @@
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {
     "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers"
+  },
+  "dependencies": {
+    "@venusprotocol/protocol-reserve": "^1.1.0"
   }
 }

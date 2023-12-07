@@ -10,7 +10,7 @@ import {
   Redeem,
   RepayBorrow,
   ReservesAdded,
-  ReservesReduced,
+  SpreadReservesReduced,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
 import { nullAddress } from '../constants/addresses';
@@ -309,7 +309,7 @@ export function handleReservesAdded(event: ReservesAdded): void {
   market.save();
 }
 
-export function handleReservesReduced(event: ReservesReduced): void {
+export function handleSpreadReservesReduced(event: SpreadReservesReduced): void {
   const vTokenAddress = event.address;
   const market = getOrCreateMarket(vTokenAddress);
   market.reservesMantissa = event.params.newTotalReserves;

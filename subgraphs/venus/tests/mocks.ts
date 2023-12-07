@@ -1,7 +1,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { vBnbAddress } from '../src/constants/addresses';
+import { vBnbAddress } from './constants';
 
 export const mockPriceOracleAddress = Address.fromString(
   '0x0000000000000000000000000000000000000001',

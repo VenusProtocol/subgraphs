@@ -21,6 +21,32 @@ const compilers = {
       }
     },
     {
+      version: '0.6.6',
+      settings: {
+        optimizer: {
+          enabled: true,
+        },
+        outputSelection: {
+          '*': {
+            '*': ['storageLayout'],
+          },
+        },
+      },
+    },
+    {
+      version: '0.8.13',
+      settings: {
+        optimizer: {
+          enabled: true,
+        },
+        outputSelection: {
+          '*': {
+            '*': ['storageLayout'],
+          },
+        },
+      },
+    },
+    {
       version: '0.8.17',
       settings: {
         optimizer: {
@@ -34,7 +60,7 @@ const compilers = {
       },
     },
     {
-      version: '0.8.13',
+      version: '0.8.20',
       settings: {
         optimizer: {
           enabled: true,
@@ -45,33 +71,7 @@ const compilers = {
           },
         },
       },
-    },
-    {
-      version: '0.8.13',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
-    {
-      version: '0.6.6',
-      settings: {
-        optimizer: {
-          enabled: !process.env.CI,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
+    }
   ],
 }
 
@@ -87,13 +87,6 @@ const config: HardhatUserConfig = {
   paths: {
     sources: `${__dirname}/contracts`,
     artifacts: `${__dirname}/artifacts`,
-  },
-  dependencyCompiler: {
-    paths: [
-      '@venusprotocol/governance-contracts/contracts/Governance/Timelock.sol',
-      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegate.sol',
-      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegator.sol',
-    ],
   },
   mocha: {
     timeout: 100000000

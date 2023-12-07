@@ -16,10 +16,19 @@ mkdir -p ./contracts/protocol
 cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts
 rm -rf contracts/protocol/contracts/test
 
+mkdir -p ./contracts/protocol-reserve
+cp -rf ./node_modules/@venusprotocol/protocol-reserve/contracts/ ./contracts/protocol-reserve/contracts
+rm -rf contracts/protocol-reserve/contracts/Test
+
 mkdir -p ./contracts/governance/contracts/Governance
 mkdir -p ./contracts/governance/contracts/legacy
+mkdir -p ./contracts/governance/contracts/test
+
 cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/legacy ./contracts/governance/contracts
-cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoInterfaces.sol ./contracts/governance/contracts/Governance/GovernorBravoInterfaces.sol
+cp ./node_modules/@venusprotocol/governance-contracts/contracts/test/TestTimelockV8.sol ./contracts/governance/contracts/test/TestTimelockV8.sol
+cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/Governance ./contracts/governance/contracts
+rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
+rm ./contracts/governance/contracts/Governance/Timelock.sol
 
 rm -rf contracts/protocol/contracts/Lens/VenusLens.sol
 
