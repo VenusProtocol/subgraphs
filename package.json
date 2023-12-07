@@ -48,7 +48,7 @@
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "^1.4.0-dev.7",
+    "@venusprotocol/governance-contracts": "^1.4.0-dev.9",
     "@venusprotocol/isolated-pools": "^2.3.0-dev.4",
     "@venusprotocol/oracle": "^1.8.0-dev.5",
     "@venusprotocol/venus-protocol": "^6.1.0-dev.5",

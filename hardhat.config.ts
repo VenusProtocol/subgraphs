@@ -88,12 +88,6 @@ const config: HardhatUserConfig = {
     sources: `${__dirname}/contracts`,
     artifacts: `${__dirname}/artifacts`,
   },
-  dependencyCompiler: {
-    paths: [
-      '@venusprotocol/governance-contracts/contracts/Governance/Timelock.sol',
-      '@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoDelegate.sol',
-    ],
-  },
   mocha: {
     timeout: 100000000
   },

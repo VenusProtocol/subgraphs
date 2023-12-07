@@ -26,8 +26,9 @@ mkdir -p ./contracts/governance/contracts/test
 
 cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/legacy ./contracts/governance/contracts
 cp ./node_modules/@venusprotocol/governance-contracts/contracts/test/TestTimelockV8.sol ./contracts/governance/contracts/test/TestTimelockV8.sol
-cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/GovernorBravoInterfaces.sol ./contracts/governance/contracts/Governance/GovernorBravoInterfaces.sol
-cp ./node_modules/@venusprotocol/governance-contracts/contracts/Governance/TimelockV8.sol ./contracts/governance/contracts/Governance/TimelockV8.sol
+cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/Governance ./contracts/governance/contracts
+rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
+rm ./contracts/governance/contracts/Governance/Timelock.sol
 
 rm -rf contracts/protocol/contracts/Lens/VenusLens.sol
 
