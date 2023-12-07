@@ -13,7 +13,7 @@ import {
   NewPriceOracle,
 } from '../../generated/Comptroller/Comptroller';
 import { Account, Market } from '../../generated/schema';
-import { VToken } from '../../generated/templates';
+import { VToken, VTokenUpdatedEvents } from '../../generated/templates';
 import { createAccount, createMarket } from '../operations/create';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { updateCommonVTokenStats } from '../operations/update';
@@ -22,6 +22,7 @@ import { ensureComptrollerSynced } from '../utilities';
 export function handleMarketListed(event: MarketListed): void {
   // Dynamically index all new listed tokens
   VToken.create(event.params.vToken);
+  VTokenUpdatedEvents.create(event.params.vToken);
   // Create the market for this token, since it's now been listed.
   createMarket(event.params.vToken.toHexString());
 }
