@@ -24,12 +24,12 @@ const main = () => {
     },
     chapel: {
       network: 'chapel',
-      comptrollerAddress: bscTestnetCoreDeployments.Contracts.Comptroller,
+      comptrollerAddress: bscTestnetCoreDeployments.Contracts.Unitroller,
       startBlock: '2470000',
     },
     bsc: {
       network: 'bsc',
-      comptrollerAddress: bscMainnetCoreDeployments.Contracts.Comptroller,
+      comptrollerAddress: bscMainnetCoreDeployments.Contracts.Unitroller,
       startBlock: '2470000',
     },
   };
