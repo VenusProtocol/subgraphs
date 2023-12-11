@@ -18,7 +18,7 @@
     "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "yarn prepare:chapel && graph deploy venusprotocol/venus-isolated-pools-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy:bsc": "yarn prepare:bsc && graph deploy venusprotocol/venus-isolated-pools --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:sepolia": "yarn prepare:sepolia && npx graph deploy --studio venus-isolated-pools-sepolia",
+    "deploy:sepolia": "yarn prepare:sepolia && npx graph deploy venusprotocol/venus-isolated-pools-sepolia --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
