@@ -100,15 +100,15 @@ Example query
 
 ### Forking
 
-Forking the subgraph is an easy way to debug indexing errors. To deploy a forked subgraph follow the above instructions to setup a local environment wit the following adjustments
+Forking the subgraph is an easy way to debug indexing errors. To deploy a forked subgraph follow the above instructions to setup a local environment with the following adjustments:
 
-#### GraphNode
-- Use the forkbase option to point towards the graph api
-- Set the ethereum RPC to an archive node
+- Update the fork values that are commented out in the docker compose file
+- Point the RPC url to an archive node
+- Set the subgraph id as the `GRAPH_DEBUG_FORK`
+- Change the start block to just before the failing block
 
 #### Subgraph
-Set the starting block for all handlers to at or before the erroring block.
-Redeploy the subgraph pointing to the deployed fork
+Bring up the docker stack, create the subgraph and redeploy the subgraph pointing to the deployed fork
 
 ```
 graph deploy <SUBGRAPH_NAME> --debug-fork <SUBGRAPH_ID> --ipfs http://localhost:5001 --node http://localhost:8020

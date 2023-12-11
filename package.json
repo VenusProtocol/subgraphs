@@ -50,7 +50,8 @@
     "@typescript-eslint/parser": "^5.40.1",
     "@venusprotocol/governance-contracts": "^1.4.0-dev.9",
     "@venusprotocol/isolated-pools": "^2.3.0-dev.4",
-    "@venusprotocol/oracle": "^1.8.0-dev.5",
+    "@venusprotocol/oracle": "^1.8.0-dev.8",
+    "@venusprotocol/protocol-reserve": "^1.1.0",
     "@venusprotocol/venus-protocol": "^6.1.0-dev.5",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
@@ -86,8 +87,5 @@
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {
     "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers"
-  },
-  "dependencies": {
-    "@venusprotocol/protocol-reserve": "^1.1.0"
   }
 }

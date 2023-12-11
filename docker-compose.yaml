@@ -23,6 +23,9 @@ services:
       postgres_db: graph-node
       ipfs: ipfs:5001
       ethereum: hardhat:http://hardhat:8545
+      # Set these values for forking
+      # GRAPH_FORK_BASE: https://api.thegraph.com/subgraphs/id/
+      # GRAPH_DEBUG_FORK: xxx
   hardhat:
     container_name: subgraph-hardhat-node
     build:
