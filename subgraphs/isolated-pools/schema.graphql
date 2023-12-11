@@ -1,11 +1,3 @@
-"""
-The Pool Registry entity manages pools and markets
-"""
-type PoolRegistry @entity {
-    "ID is set to 1"
-    id: ID!
-}
-
 enum PoolActionType {
   Transfer
   Seize
