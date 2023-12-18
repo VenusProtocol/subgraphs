@@ -4,6 +4,7 @@ import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { createMarket } from '../operations/create';
+import { getExchangeRate } from '../utilities';
 import { exponentToBigInt } from '../utilities/exponentToBigInt';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { createAccountVToken } from './create';
@@ -41,8 +42,8 @@ export const updateMarket = (
 
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber != blockNumber) {
-    const contractAddress = Address.fromString(market.id);
-    const contract = VToken.bind(contractAddress);
+    const marketAddress = Address.fromString(market.id);
+    const contract = VToken.bind(marketAddress);
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
     market.blockTimestamp = blockTimestamp;
 
@@ -59,7 +60,7 @@ export const updateMarket = (
         - Must multiply by vtokenDecimals, 10^8
         - Must div by mantissa, 10^18
      */
-    const exchangeRateStored = contract.exchangeRateStored();
+    const exchangeRateStored = getExchangeRate(marketAddress);
     market.exchangeRateMantissa = exchangeRateStored;
 
     const totalSupplyVTokensMantissa = contract.totalSupply();
