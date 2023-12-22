@@ -108,7 +108,7 @@ templates:
         - event: Mint(address,uint256,uint256)
           handler: handleMintV1
         - event: MintBehalf(address,address,uint256,uint256)
-          handler: handleMintV1
+          handler: handleMintBehalfV1
         - event: Redeem(address,uint256,uint256)
           handler: handleRedeemV1
         - event: Borrow(address,uint256,uint256,uint256)
@@ -146,6 +146,6 @@ templates:
         - event: Mint(address,uint256,uint256,uint256)
           handler: handleMint
         - event: MintBehalf(address,address,uint256,uint256,uint256)
-          handler: handleMint
+          handler: handleMintBehalf
         - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
