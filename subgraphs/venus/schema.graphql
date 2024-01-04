@@ -134,7 +134,7 @@ type AccountVToken @entity {
 """
 Auxiliary entity for AccountVToken
 """
-type AccountVTokenTransaction @entity {
+type AccountVTokenTransaction @entity(immutable: true) {
   id: ID!
 
   account: AccountVToken!
@@ -171,7 +171,7 @@ interface VTokenTransfer {
 TransferEvent will be stored for every mint, redeem, liquidation, and any normal
 transfer between two accounts.
 """
-type TransferEvent implements VTokenTransfer @entity {
+type TransferEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
@@ -192,7 +192,7 @@ type TransferEvent implements VTokenTransfer @entity {
 MintEvent stores information for mints. From address will always be a vToken
 market address
 """
-type MintEvent implements VTokenTransfer @entity {
+type MintEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
@@ -215,7 +215,7 @@ type MintEvent implements VTokenTransfer @entity {
 RedeemEvent stores information for redeems. To address will always be a
 vToken market address
 """
-type RedeemEvent implements VTokenTransfer @entity {
+type RedeemEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens transferred"
@@ -238,7 +238,7 @@ type RedeemEvent implements VTokenTransfer @entity {
 LiquidationEvent stores information for liquidations. The event is emitted from
 the vToken market address.
 """
-type LiquidationEvent implements VTokenTransfer @entity {
+type LiquidationEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "vTokens seized"
@@ -283,7 +283,7 @@ interface UnderlyingTransfer {
 """
 BorrowEvent stores information for borrows
 """
-type BorrowEvent implements UnderlyingTransfer @entity {
+type BorrowEvent implements UnderlyingTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "Amount of underlying borrowed"
@@ -304,7 +304,7 @@ type BorrowEvent implements UnderlyingTransfer @entity {
 RepayEvent stores information for repays. Payer is not always the same as
 borrower, such as in the event of a Liquidation
 """
-type RepayEvent implements UnderlyingTransfer @entity {
+type RepayEvent implements UnderlyingTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: ID!
     "Amount of underlying repaid"
