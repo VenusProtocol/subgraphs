@@ -1,7 +1,6 @@
 import { log } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller';
-import { VToken } from '../../generated/templates';
 import { comptrollerAddress } from '../constants/addresses';
 import { updateMarket } from '../operations/update';
 
@@ -17,7 +16,6 @@ export const ensureComptrollerSynced = (blockNumber: i32, blockTimestamp: i32): 
   log.debug('[ensureComptrollerSynced] all markets length: {}', [allMarkets.length.toString()]);
 
   for (let i = 0; i < allMarkets.length; i++) {
-    updateMarket(allMarkets[i], blockNumber, blockTimestamp);
-    VToken.create(allMarkets[i]);
+    updateMarket(allMarkets[i].toHexString(), blockNumber, blockTimestamp);
   }
 };

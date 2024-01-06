@@ -6,9 +6,6 @@ const SEPERATOR = '-';
 
 const joinIds = (idArray: Array<string>): string => idArray.join(SEPERATOR);
 
-export const getMarketId = (vTokenAddress: Address): string =>
-  joinIds([vTokenAddress.toHexString()]);
-
 export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): string =>
   joinIds([marketAddress.toHexString(), accountAddress.toHexString()]);
 
@@ -16,11 +13,10 @@ export const getTransactionId = (transactionHash: Bytes, logIndex: BigInt): stri
   joinIds([transactionHash.toHexString(), logIndex.toString()]);
 
 export const getAccountVTokenTransactionId = (
-  accountAddress: Address,
+  accountVTokenId: string,
   transactionHash: Bytes,
   logIndex: BigInt,
-): string =>
-  joinIds([accountAddress.toHexString(), transactionHash.toHexString(), logIndex.toString()]);
+): string => joinIds([accountVTokenId, transactionHash.toHexString(), logIndex.toString()]);
 
 export const getMarketActionId = (vTokenAddress: Address, action: i32): string => {
   const actionString = Actions[action];

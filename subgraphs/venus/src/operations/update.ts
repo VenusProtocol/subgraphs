@@ -1,47 +1,18 @@
-import { Address, BigInt, Bytes, log } from '@graphprotocol/graph-ts';
+import { Address, log } from '@graphprotocol/graph-ts';
 
-import { AccountVToken, Market } from '../../generated/schema';
+import { Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { createMarket } from '../operations/create';
 import { getExchangeRate } from '../utilities';
 import { exponentToBigInt } from '../utilities/exponentToBigInt';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
-import { createAccountVToken } from './create';
-import { getOrCreateAccountVTokenTransaction } from './getOrCreate';
+import { getOrCreateMarket } from './getOrCreate';
 
-export const updateCommonVTokenStats = (
-  marketId: string,
-  marketSymbol: string,
-  accountId: string,
-  txHash: Bytes,
-  timestamp: BigInt,
-  blockNumber: BigInt,
-  logIndex: BigInt,
-): AccountVToken => {
-  const accountVTokenId = marketId.concat('-').concat(accountId);
-  let accountVToken = AccountVToken.load(accountVTokenId);
-  if (accountVToken == null) {
-    accountVToken = createAccountVToken(accountVTokenId, marketSymbol, accountId, marketId);
-  }
-  getOrCreateAccountVTokenTransaction(accountVTokenId, txHash, timestamp, blockNumber, logIndex);
-  accountVToken.accrualBlockNumber = blockNumber;
-  return accountVToken as AccountVToken;
-};
-
-export const updateMarket = (
-  marketAddress: Address,
-  blockNumber: i32,
-  blockTimestamp: i32,
-): Market => {
-  const marketId = marketAddress.toHexString();
-  let market = Market.load(marketId) as Market;
-  if (market == null) {
-    market = createMarket(marketId);
-  }
+export function updateMarket(marketId: string, blockNumber: i32, blockTimestamp: i32): Market {
+  const market = getOrCreateMarket(marketId);
 
   // Only updateMarket if it has not been updated this block
-  if (market.accrualBlockNumber != blockNumber) {
+  if (market.accrualBlockNumber < blockNumber) {
     const marketAddress = Address.fromString(market.id);
     const contract = VToken.bind(marketAddress);
     market.accrualBlockNumber = contract.accrualBlockNumber().toI32();
@@ -95,5 +66,5 @@ export const updateMarket = (
     }
     market.save();
   }
-  return market as Market;
-};
+  return market;
+}
