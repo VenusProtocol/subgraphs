@@ -26,6 +26,7 @@
     "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
+    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#13673edfe3578336f13b05b2954bd08ce09189b0",
     "apollo-fetch": "^0.7.0",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
