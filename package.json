@@ -80,7 +80,8 @@
     "typescript": "^4.8.4"
   },
   "resolutions": {
-    "@venusprotocol/governance-contracts": "1.4.0-dev.5"
+    "@venusprotocol/governance-contracts": "1.4.0",
+    "@venusprotocol/venus-protocol": "7.0.0"
   },
   "husky": {
     "hooks": {
