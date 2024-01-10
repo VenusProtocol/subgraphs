@@ -1,0 +1,60 @@
+specVersion: 0.0.2
+description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
+repository: https://github.com/VenusProtocol/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: OmnichainExecutorOwner
+    network: {{ network }}
+    source:
+      address: "{{ omnichainGovernanceOwnerAddress }}"
+      abi: OmnichainExecutorOwner
+      startBlock: {{ startBlockOmnichainGovernanceOwner }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/omnichainExecutorOwner.ts
+      entities:
+        - Governance
+      abis:
+        - name: OmnichainExecutorOwner
+          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
+      eventHandlers:
+        - event: FunctionRegistryChanged(string,bool)
+          handler: handleFunctionRegistryChanged
+  - kind: ethereum/contract
+    name: OmnichainGovernanceExecutor
+    network: {{ network }}
+    source:
+      address: "{{ omnichainExecutorOwnerAddress }}"
+      abi: OmnichainGovernanceExecutor
+      startBlock: {{ startBlockOmnichainGovernanceExecutor }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mappings/omnichainGovernanceExecutor.ts
+      entities:
+        - Governance
+        - FunctionRegistry
+        - Proposal
+      abis:
+        - name: OmnichainGovernanceExecutor
+          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
+      eventHandlers:
+        - event: SetMaxDailyReceiveLimit(uint256,uint256)
+          handler: handleSetMaxDailyReceiveLimit
+        - event: ProposalReceived(indexed uint256,address[],uint256[],string[],bytes[],uint8)
+          handler: handleProposalReceived
+        - event: ProposalQueued(indexed uint256,uint256)
+          handler: handleProposalQueued
+        - event: ProposalExecuted(indexed uint256)
+          handler: handleProposalExecuted
+        - event: ProposalCancelled(indexed uint256)
+          handler: handleProposalCancelled
+        - event: ReceivePayloadFailed(uint16,bytes,uint64,bytes)
+          handler: handleReceivePayloadFailed
+        - event: TimelockAdded(indexed address,uint8)
+          handler: handleTimelockAdded

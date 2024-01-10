@@ -21,11 +21,11 @@
     "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "test": "graph test",
+    "test": "yarn prepare:docker && graph test",
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/venus-protocol": "5.2.0",
+    "@venusprotocol/venus-protocol": "7.0.0",
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
   }
 }
