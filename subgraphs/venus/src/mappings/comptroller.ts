@@ -1,7 +1,5 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { log } from '@graphprotocol/graph-ts';
-
 import {
   DistributedSupplierVenus,
   MarketEntered,
@@ -12,7 +10,6 @@ import {
   NewLiquidationIncentive,
   NewPriceOracle,
 } from '../../generated/Comptroller/Comptroller';
-import { Market } from '../../generated/schema';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
@@ -20,66 +17,29 @@ import {
   getOrCreateComptroller,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
-import { ensureComptrollerSynced } from '../utilities';
 
 export function handleMarketListed(event: MarketListed): void {
-  getOrCreateMarket(event.params.vToken.toHexString());
+  getOrCreateMarket(event.params.vToken.toHexString(), event);
 }
 
 export function handleMarketEntered(event: MarketEntered): void {
-  const marketId = event.params.vToken.toHexString();
-  let market = Market.load(marketId);
-  // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
-  // sources can source from the contract creation block and not the time the
-  // comptroller adds the market, we can avoid this altogether
-  if (!market) {
-    log.debug('[handleMarketEntered] market null: {}', [marketId]);
-    ensureComptrollerSynced(event.block.number.toI32(), event.block.timestamp.toI32());
-    market = Market.load(marketId);
-  }
-
-  if (!market) {
-    log.debug('[handleMarketEntered] market still null, return...', []);
-    return;
-  }
-
-  const accountId = event.params.account.toHex();
-  const account = getOrCreateAccount(accountId);
-
-  const accountVToken = getOrCreateAccountVToken(market.id, account.id);
-  accountVToken.accrualBlockNumber = event.block.number;
+  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const account = getOrCreateAccount(event.params.account.toHex());
+  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = true;
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(market.id, account.id, event);
+  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleMarketExited(event: MarketExited): void {
-  const marketId = event.params.vToken.toHexString();
-  let market = Market.load(marketId);
-  // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
-  // sources can source from the contract creation block and not the time the
-  // comptroller adds the market, we can avoid this altogether
-  if (!market) {
-    log.debug('[handleMarketExited] market null: {}', [marketId]);
-    ensureComptrollerSynced(event.block.number.toI32(), event.block.timestamp.toI32());
-    market = Market.load(marketId);
-  }
-
-  if (!market) {
-    log.debug('[handleMarketExited] market still null, return...', []);
-    return;
-  }
-
-  const accountID = event.params.account.toHex();
-  const account = getOrCreateAccount(accountID);
-
-  const accountVToken = getOrCreateAccountVToken(market.id, account.id);
-  accountVToken.accrualBlockNumber = event.block.number;
+  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const account = getOrCreateAccount(event.params.account.toHex());
+  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = false;
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(market.id, account.id, event);
+  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
@@ -89,13 +49,7 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
 }
 
 export function handleNewCollateralFactor(event: NewCollateralFactor): void {
-  const market = Market.load(event.params.vToken.toHexString());
-  // Null check needed to avoid crashing on a new market added. Ideally when dynamic data
-  // sources can source from the contract creation block and not the time the
-  // comptroller adds the market, we can avoid this altogether
-  if (!market) {
-    return;
-  }
+  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
   market.collateralFactorMantissa = event.params.newCollateralFactorMantissa;
   market.save();
 }
@@ -115,7 +69,7 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
 
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {
-  const market = getOrCreateMarket(event.params.vToken.toHexString());
+  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
   market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
     event.params.venusDelta,
   );
