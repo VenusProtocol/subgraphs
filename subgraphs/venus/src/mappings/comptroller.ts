@@ -19,11 +19,11 @@ import {
 } from '../operations/getOrCreate';
 
 export function handleMarketListed(event: MarketListed): void {
-  getOrCreateMarket(event.params.vToken.toHexString(), event);
+  getOrCreateMarket(event.params.vToken, event);
 }
 
 export function handleMarketEntered(event: MarketEntered): void {
-  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const market = getOrCreateMarket(event.params.vToken, event);
   const account = getOrCreateAccount(event.params.account.toHex());
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = true;
@@ -33,7 +33,7 @@ export function handleMarketEntered(event: MarketEntered): void {
 }
 
 export function handleMarketExited(event: MarketExited): void {
-  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const market = getOrCreateMarket(event.params.vToken, event);
   const account = getOrCreateAccount(event.params.account.toHex());
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = false;
@@ -49,7 +49,7 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
 }
 
 export function handleNewCollateralFactor(event: NewCollateralFactor): void {
-  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const market = getOrCreateMarket(event.params.vToken, event);
   market.collateralFactorMantissa = event.params.newCollateralFactorMantissa;
   market.save();
 }
@@ -69,7 +69,7 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
 
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {
-  const market = getOrCreateMarket(event.params.vToken.toHexString(), event);
+  const market = getOrCreateMarket(event.params.vToken, event);
   market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
     event.params.venusDelta,
   );

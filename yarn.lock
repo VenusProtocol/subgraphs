@@ -1631,9 +1631,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:^0.64.1":
-  version: 0.64.1
-  resolution: "@graphprotocol/graph-cli@npm:0.64.1"
+"@graphprotocol/graph-cli@npm:^0.67.1":
+  version: 0.67.1
+  resolution: "@graphprotocol/graph-cli@npm:0.67.1"
   dependencies:
     "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
     "@oclif/core": 2.8.6
@@ -1665,7 +1665,7 @@ __metadata:
     yaml: 1.10.2
   bin:
     graph: bin/run
-  checksum: cb390037538cf79576a13673b6848930fd01bd0c5ac521092f7425caafb37b051cf86e6bb3b92457b632c5933aa19b27eb93740fe3fd895b8050c9b575329600
+  checksum: fdd767cc90ed595cb6becd518ffd99fff93447eac8436504d91348a4171de238b449c19374217e517aa31d5467d84f2d59bcfa13dc91a544670af07b7c51ea3b
   languageName: node
   linkType: hard
 
@@ -14695,7 +14695,7 @@ __metadata:
   resolution: "subgraphs@workspace:."
   dependencies:
     "@graphprotocol/client-cli": ^3.0.0
-    "@graphprotocol/graph-cli": ^0.64.1
+    "@graphprotocol/graph-cli": ^0.67.1
     "@graphprotocol/graph-ts": ^0.32.0
     "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
     "@nomicfoundation/hardhat-network-helpers": ^1.0.4

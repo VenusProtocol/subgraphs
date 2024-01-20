@@ -29,10 +29,10 @@ export function getOrCreateComptroller(): Comptroller {
   return comptroller;
 }
 
-export function getOrCreateMarket(marketId: string, event: ethereum.Event): Market {
-  const marketAddress = Address.fromString(marketId);
+export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event): Market {
   const vTokenContract = VToken.bind(marketAddress);
 
+  const marketId = marketAddress.toHexString();
   let market = Market.load(marketId);
   if (!market) {
     log.debug('[createMarket] market address: {}', [marketId]);
