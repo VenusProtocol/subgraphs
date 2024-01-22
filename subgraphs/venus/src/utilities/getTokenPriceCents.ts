@@ -1,5 +1,6 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
+import { valueOrNotAvailableIntIfReverted } from '.';
 import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { exponentToBigInt } from './exponentToBigInt';
@@ -22,7 +23,9 @@ export function getTokenPriceCents(eventAddress: Address, underlyingDecimals: i3
   const mantissaDecimalFactor = 36 - underlyingDecimals;
   const bdFactor = exponentToBigInt(mantissaDecimalFactor);
   const oracle2 = PriceOracle.bind(oracleAddress);
-  const oracleUnderlyingPrice = oracle2.getUnderlyingPrice(eventAddress);
+  const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(
+    oracle2.try_getUnderlyingPrice(eventAddress),
+  );
   if (oracleUnderlyingPrice.equals(BigInt.zero())) {
     return oracleUnderlyingPrice;
   }
