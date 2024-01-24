@@ -1,0 +1,38 @@
+enum ConversionAccessibility {
+    NONE
+    ALL
+    ONLY_FOR_CONVERTERS
+    ONLY_FOR_USERS
+}
+
+"""
+Converter Network entity
+"""
+type ConverterNetwork @entity {
+    id: ID!
+    tokenConverters: [TokenConverter!]! @derivedFrom(field: "converterNetwork")
+}
+
+"""
+Token Converter entity
+"""
+type TokenConverter @entity {
+    id: ID!
+    converterNetwork: ConverterNetwork
+    destinationAddress: Bytes!
+    baseAsset: Bytes!
+    configs: [TokenConverterConfig!]! @derivedFrom(field: "tokenConverter")
+    paused: Boolean!
+}
+
+"""
+Token Converter Config
+"""
+type TokenConverterConfig @entity {
+    id: ID!
+    tokenConverter: TokenConverter!
+    tokenAddressIn: Bytes!
+    tokenAddressOut: Bytes!
+    incentive: BigInt!
+    access: ConversionAccessibility!
+}

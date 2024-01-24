@@ -1,0 +1,6 @@
+// Use yarn prepare commands to generate config typescript file per env
+
+export const converterNetworkAddress = '{{ converterNetworkAddress }}';
+export const riskFundConverterAddress = '{{ riskFundConverterAddress }}';
+export const riskFundAddress = '{{ riskFundAddress }}';
+
