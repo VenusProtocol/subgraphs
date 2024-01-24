@@ -17,7 +17,6 @@ import { VToken, VTokenUpdatedEvents } from '../../generated/templates';
 import { createAccount, createMarket } from '../operations/create';
 import { getOrCreateComptroller } from '../operations/getOrCreate';
 import { updateCommonVTokenStats } from '../operations/update';
-import { ensureComptrollerSynced } from '../utilities';
 
 export function handleMarketListed(event: MarketListed): void {
   // Dynamically index all new listed tokens
@@ -34,7 +33,6 @@ export function handleMarketEntered(event: MarketEntered): void {
   // comptroller adds the market, we can avoid this altogether
   if (!market) {
     log.debug('[handleMarketEntered] market null: {}', [event.params.vToken.toHexString()]);
-    ensureComptrollerSynced(event.block.number.toI32(), event.block.timestamp.toI32());
     market = Market.load(event.params.vToken.toHexString());
   }
 
@@ -69,7 +67,6 @@ export function handleMarketExited(event: MarketExited): void {
   // comptroller adds the market, we can avoid this altogether
   if (!market) {
     log.debug('[handleMarketExited] market null: {}', [event.params.vToken.toHexString()]);
-    ensureComptrollerSynced(event.block.number.toI32(), event.block.timestamp.toI32());
     market = Market.load(event.params.vToken.toHexString());
   }
 
