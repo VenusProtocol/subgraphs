@@ -14,6 +14,10 @@ import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import { exponentToBigInt } from '../utilities/exponentToBigInt';
 import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
+import {
+  valueOrNotAvailableAddressIfReverted,
+  valueOrNotAvailableIntIfReverted,
+} from '../utilities/valueOrNotAvailableIfReverted';
 
 export function getOrCreateComptroller(): Comptroller {
   let comptroller = Comptroller.load(comptrollerAddress.toHexString());
@@ -59,13 +63,14 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       market.underlyingSymbol = underlyingContract.symbol();
     }
 
-    const interestRateModelAddress = vTokenContract.try_interestRateModel();
-    market.interestRateModelAddress = interestRateModelAddress.reverted
-      ? nullAddress
-      : interestRateModelAddress.value;
-
-    const reserveFactor = vTokenContract.try_reserveFactorMantissa();
-    market.reserveFactor = reserveFactor.reverted ? zeroBigInt32 : reserveFactor.value;
+    market.interestRateModelAddress = valueOrNotAvailableAddressIfReverted(
+      vTokenContract.try_interestRateModel(),
+      'vBEP20 try_interestRateModel()',
+    );
+    market.reserveFactor = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_reserveFactorMantissa(),
+      'vBEP20 try_reserveFactorMantissa()',
+    );
 
     market.accrualBlockNumber = 0;
     market.totalXvsDistributedMantissa = zeroBigInt32;
@@ -100,32 +105,21 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
      */
 
     // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
-    const exchangeRateStored = vTokenContract.try_exchangeRateStored();
-    if (exchangeRateStored.reverted) {
-      log.error('***CALL FAILED*** : vBEP20 try_exchangeRateStored() reverted', []);
-      market.exchangeRateMantissa = zeroBigInt32;
-    } else {
-      market.exchangeRateMantissa = exchangeRateStored.value;
-    }
-
-    // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
-    const borrowRatePerBlock = vTokenContract.try_borrowRatePerBlock();
-    if (borrowRatePerBlock.reverted) {
-      log.error('***CALL FAILED*** : vBEP20 try_borrowRatePerBlock() reverted', []);
-      market.borrowRateMantissa = zeroBigInt32;
-    } else {
-      market.borrowRateMantissa = borrowRatePerBlock.value;
-    }
+    market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_exchangeRateStored(),
+      'vBEP20 try_exchangeRateStored()',
+    );
+    market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_borrowRatePerBlock(),
+      'vBEP20 try_borrowRatePerBlock()',
+    );
 
     // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
     // So we handle it like this.
-    const supplyRatePerBlock = vTokenContract.try_supplyRatePerBlock();
-    if (supplyRatePerBlock.reverted) {
-      log.info('***CALL FAILED*** : vBEP20 supplyRatePerBlock() reverted', []);
-      market.supplyRateMantissa = zeroBigInt32;
-    } else {
-      market.supplyRateMantissa = supplyRatePerBlock.value;
-    }
+    market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_supplyRatePerBlock(),
+      'vBEP20 try_supplyRatePerBlock()',
+    );
 
     market.totalSupplyMantissa = vTokenContract
       .totalSupply()
