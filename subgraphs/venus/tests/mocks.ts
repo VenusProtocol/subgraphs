@@ -8,7 +8,7 @@ export const mockPriceOracleAddress = Address.fromString(
 );
 
 export const createVBep20AndUnderlyingMock = (
-  contractAddress: Address,
+  vTokenContractAddress: Address,
   underlyingAddress: Address,
   name: string,
   symbol: string,
@@ -17,28 +17,73 @@ export const createVBep20AndUnderlyingMock = (
   interestRateModelAddress: Address,
 ): void => {
   // vBep20
-  createMockedFunction(contractAddress, 'underlying', 'underlying():(address)').returns([
+  createMockedFunction(vTokenContractAddress, 'underlying', 'underlying():(address)').returns([
     ethereum.Value.fromAddress(underlyingAddress),
   ]);
-  createMockedFunction(contractAddress, 'name', 'name():(string)').returns([
+  createMockedFunction(vTokenContractAddress, 'name', 'name():(string)').returns([
     ethereum.Value.fromString(`Venus ${name}`),
   ]);
-  createMockedFunction(contractAddress, 'symbol', 'symbol():(string)').returns([
+  createMockedFunction(vTokenContractAddress, 'symbol', 'symbol():(string)').returns([
     ethereum.Value.fromString(`v${symbol}`),
   ]);
   createMockedFunction(
-    contractAddress,
+    vTokenContractAddress,
     'interestRateModel',
     'interestRateModel():(address)',
   ).returns([ethereum.Value.fromAddress(interestRateModelAddress)]);
+
   createMockedFunction(
-    contractAddress,
+    vTokenContractAddress,
     'reserveFactorMantissa',
     'reserveFactorMantissa():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(reserveFactorMantissa)]);
 
-  createMockedFunction(contractAddress, 'decimals', 'decimals():(uint8)').returns([
+  createMockedFunction(vTokenContractAddress, 'decimals', 'decimals():(uint8)').returns([
     ethereum.Value.fromUnsignedBigInt(decimals),
+  ]);
+
+  createMockedFunction(
+    vTokenContractAddress,
+    'accrualBlockNumber',
+    'accrualBlockNumber():(uint256)',
+  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('100'))]);
+
+  createMockedFunction(
+    vTokenContractAddress,
+    'exchangeRateStored',
+    'exchangeRateStored():(uint256)',
+  ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))]);
+
+  createMockedFunction(
+    vTokenContractAddress,
+    'borrowRatePerBlock',
+    'borrowRatePerBlock():(uint256)',
+  ).returns([ethereum.Value.fromI32(0)]);
+
+  createMockedFunction(
+    vTokenContractAddress,
+    'supplyRatePerBlock',
+    'supplyRatePerBlock():(uint256)',
+  ).returns([ethereum.Value.fromI32(0)]);
+
+  createMockedFunction(vTokenContractAddress, 'totalSupply', 'totalSupply():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0')),
+  ]);
+
+  createMockedFunction(vTokenContractAddress, 'borrowIndex', 'borrowIndex():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0')),
+  ]);
+
+  createMockedFunction(vTokenContractAddress, 'totalReserves', 'totalReserves():(uint256)').returns(
+    [ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0'))],
+  );
+
+  createMockedFunction(vTokenContractAddress, 'totalBorrows', 'totalBorrows():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0')),
+  ]);
+
+  createMockedFunction(vTokenContractAddress, 'getCash', 'getCash():(uint256)').returns([
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('0')),
   ]);
 
   // Underlying
@@ -72,6 +117,10 @@ export const createComptrollerMock = (comptrollerAddress: Address): void => {
 
   createMockedFunction(comptrollerAddress, 'maxAssets', 'maxAssets():(uint256)').returns([
     ethereum.Value.fromI32(10),
+  ]);
+
+  createMockedFunction(comptrollerAddress, 'oracle', 'oracle():(address)').returns([
+    ethereum.Value.fromAddress(mockPriceOracleAddress),
   ]);
 
   createMockedFunction(
