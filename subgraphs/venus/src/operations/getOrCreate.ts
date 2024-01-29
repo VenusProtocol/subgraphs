@@ -11,13 +11,13 @@ import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
-import { exponentToBigInt } from '../utilities/exponentToBigInt';
-import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
-import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
 import {
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
-} from '../utilities/valueOrNotAvailableIfReverted';
+} from '../utilities';
+import { exponentToBigInt } from '../utilities/exponentToBigInt';
+import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
+import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
 import { getMarket } from './get';
 
 export function getOrCreateComptroller(): Comptroller {
