@@ -66,8 +66,8 @@ describe('handleMarketListing', () => {
     assertMarketDocument('symbol', 'vBNB');
     assertMarketDocument('totalBorrowsMantissa', '0');
     assertMarketDocument('totalSupplyMantissa', '0');
-    assertMarketDocument('accrualBlockNumber', '0');
-    assertMarketDocument('blockTimestamp', '0');
+    assertMarketDocument('accrualBlockNumber', '100');
+    assertMarketDocument('blockTimestamp', '1');
     assertMarketDocument('borrowIndexMantissa', '0');
     assertMarketDocument('reserveFactor', '100');
   });

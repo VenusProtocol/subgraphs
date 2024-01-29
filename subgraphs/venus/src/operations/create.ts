@@ -1,114 +1,17 @@
-import { Address, BigInt, log } from '@graphprotocol/graph-ts';
+import { Bytes } from '@graphprotocol/graph-ts';
 
-import { Account, AccountVToken, Market, MintEvent, RedeemEvent } from '../../generated/schema';
-import { BEP20 } from '../../generated/templates/VToken/BEP20';
-import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigInt32 } from '../constants';
-import { nullAddress } from '../constants/addresses';
-import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
+import {
+  BorrowEvent,
+  LiquidationEvent,
+  MintEvent,
+  RedeemEvent,
+  RepayEvent,
+  TransferEvent,
+} from '../../generated/schema';
 import { getTransactionId } from '../utilities/ids';
-
-export function createAccountVToken(
-  accountVTokenId: string,
-  symbol: string,
-  account: string,
-  marketId: string,
-): AccountVToken {
-  const accountVToken = new AccountVToken(accountVTokenId);
-  accountVToken.symbol = symbol;
-  accountVToken.market = marketId;
-  accountVToken.account = account;
-  accountVToken.accrualBlockNumber = BigInt.fromI32(0);
-  // we need to set an initial real onchain value to this otherwise it will never be accurate
-  const vTokenContract = VToken.bind(Address.fromString(marketId));
-  accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(account));
-
-  accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;
-  accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-  accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
-  accountVToken.totalUnderlyingBorrowedMantissa = zeroBigInt32;
-  accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
-  accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-  accountVToken.enteredMarket = false;
-  return accountVToken;
-}
-
-export function createAccount(accountId: string): Account {
-  const account = new Account(accountId);
-  account.countLiquidated = 0;
-  account.countLiquidator = 0;
-  account.hasBorrowed = false;
-  account.save();
-  return account;
-}
-
-export function createMarket(marketAddress: string): Market {
-  let market: Market;
-  const vTokenContract = VToken.bind(Address.fromString(marketAddress));
-
-  log.debug('[createMarket] market address: {}', [marketAddress]);
-
-  const vTokenSymbol = vTokenContract.symbol();
-
-  // It is vBNB, which has a slightly different interface
-  if (vTokenSymbol == 'vBNB') {
-    market = new Market(marketAddress);
-    market.underlyingAddress = nullAddress;
-    market.underlyingDecimals = 18;
-    market.underlyingName = 'BNB';
-    market.underlyingSymbol = 'BNB';
-    market.underlyingPriceCents = zeroBigInt32;
-    // It is all other VBEP20 contracts
-  } else {
-    market = new Market(marketAddress);
-    market.underlyingAddress = vTokenContract.underlying();
-    log.debug('[createMarket] market underlying address: {}', [
-      market.underlyingAddress.toHexString(),
-    ]);
-    const underlyingContract = BEP20.bind(Address.fromBytes(market.underlyingAddress));
-    market.underlyingDecimals = underlyingContract.decimals();
-    market.underlyingName = underlyingContract.name();
-    market.underlyingSymbol = underlyingContract.symbol();
-
-    const underlyingPriceCents = getUnderlyingPrice(market.id, market.underlyingDecimals);
-    market.underlyingPriceCents = underlyingPriceCents;
-  }
-
-  market.vTokenDecimals = vTokenContract.decimals();
-
-  const interestRateModelAddress = vTokenContract.try_interestRateModel();
-  const reserveFactor = vTokenContract.try_reserveFactorMantissa();
-
-  market.borrowRateMantissa = zeroBigInt32;
-  market.cashMantissa = zeroBigInt32;
-  market.collateralFactorMantissa = zeroBigInt32;
-  market.exchangeRateMantissa = zeroBigInt32;
-  market.interestRateModelAddress = interestRateModelAddress.reverted
-    ? nullAddress
-    : interestRateModelAddress.value;
-  market.name = vTokenContract.name();
-  market.reservesMantissa = BigInt.fromI32(0);
-  market.supplyRateMantissa = zeroBigInt32;
-  market.symbol = vTokenContract.symbol();
-  market.totalBorrowsMantissa = zeroBigInt32;
-  market.totalSupplyMantissa = zeroBigInt32;
-
-  market.accrualBlockNumber = 0;
-  market.blockTimestamp = 0;
-  market.borrowIndexMantissa = zeroBigInt32;
-  market.reserveFactor = reserveFactor.reverted ? BigInt.fromI32(0) : reserveFactor.value;
-  market.totalXvsDistributedMantissa = zeroBigInt32;
-
-  market.supplierCount = zeroBigInt32;
-  market.borrowerCount = zeroBigInt32;
-  market.borrowerCountAdjusted = zeroBigInt32;
-  market.save();
-  return market;
-}
 
 export function createMintEvent<E>(event: E): void {
   const mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
-
   const mint = new MintEvent(mintId);
   mint.amountMantissa = event.params.mintTokens;
   mint.to = event.params.minter;
@@ -122,7 +25,6 @@ export function createMintEvent<E>(event: E): void {
 
 export function createMintBehalfEvent<E>(event: E): void {
   const mintId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
-
   const mint = new MintEvent(mintId);
   mint.amountMantissa = event.params.mintTokens;
   mint.to = event.params.receiver;
@@ -136,7 +38,6 @@ export function createMintBehalfEvent<E>(event: E): void {
 
 export function createRedeemEvent<E>(event: E): void {
   const redeemId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
-
   const redeem = new RedeemEvent(redeemId);
   redeem.amountMantissa = event.params.redeemTokens;
   redeem.to = event.address;
@@ -146,4 +47,55 @@ export function createRedeemEvent<E>(event: E): void {
   redeem.vTokenAddress = event.address;
   redeem.underlyingAmountMantissa = event.params.redeemAmount;
   redeem.save();
+}
+
+export function createBorrowEvent<E>(event: E, underlyingAddress: Bytes): void {
+  const borrowID = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+  const borrow = new BorrowEvent(borrowID);
+  borrow.amountMantissa = event.params.borrowAmount;
+  borrow.accountBorrowsMantissa = event.params.accountBorrows;
+  borrow.borrower = event.params.borrower;
+  borrow.blockNumber = event.block.number.toI32();
+  borrow.blockTime = event.block.timestamp.toI32();
+  borrow.underlyingAddress = underlyingAddress;
+  borrow.save();
+}
+
+export function createRepayEvent<E>(event: E, underlyingAddress: Bytes): void {
+  const repayID = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+  const repay = new RepayEvent(repayID);
+  repay.amountMantissa = event.params.repayAmount;
+  repay.accountBorrowsMantissa = event.params.accountBorrows;
+  repay.borrower = event.params.borrower;
+  repay.blockNumber = event.block.number.toI32();
+  repay.blockTime = event.block.timestamp.toI32();
+  repay.underlyingAddress = underlyingAddress;
+  repay.payer = event.params.payer;
+  repay.save();
+}
+
+export function createLiquidationEvent<E>(event: E, underlyingAddress: Bytes): void {
+  const liquidationID = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+  const liquidation = new LiquidationEvent(liquidationID);
+  liquidation.amountMantissa = event.params.seizeTokens;
+  liquidation.to = event.params.liquidator;
+  liquidation.from = event.params.borrower;
+  liquidation.blockNumber = event.block.number.toI32();
+  liquidation.blockTime = event.block.timestamp.toI32();
+  liquidation.underlyingRepaidAddress = underlyingAddress;
+  liquidation.underlyingRepayAmountMantissa = event.params.repayAmount;
+  liquidation.vTokenCollateralAddress = event.params.vTokenCollateral;
+  liquidation.save();
+}
+
+export function createTransferEvent<E>(event: E): void {
+  const transferId = getTransactionId(event.transaction.hash, event.transactionLogIndex);
+  const transfer = new TransferEvent(transferId);
+  transfer.amountMantissa = event.params.amount;
+  transfer.to = event.params.to;
+  transfer.from = event.params.from;
+  transfer.blockNumber = event.block.number.toI32();
+  transfer.blockTime = event.block.timestamp.toI32();
+  transfer.vTokenAddress = event.address;
+  transfer.save();
 }
