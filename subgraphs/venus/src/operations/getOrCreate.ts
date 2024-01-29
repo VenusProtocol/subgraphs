@@ -18,6 +18,7 @@ import {
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities/valueOrNotAvailableIfReverted';
+import { getMarket } from './get';
 
 export function getOrCreateComptroller(): Comptroller {
   let comptroller = Comptroller.load(comptrollerAddress.toHexString());
@@ -35,13 +36,10 @@ export function getOrCreateComptroller(): Comptroller {
 
 export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event): Market {
   const vTokenContract = VToken.bind(marketAddress);
-
-  const marketId = marketAddress.toHexString();
-  let market = Market.load(marketId);
+  // @todo add and use market id utility
+  let market = getMarket(marketAddress);
   if (!market) {
-    log.debug('[createMarket] market address: {}', [marketId]);
-
-    market = new Market(marketId);
+    market = new Market(marketAddress.toHexString());
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
