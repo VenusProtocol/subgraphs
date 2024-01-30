@@ -20,7 +20,7 @@ import {
   MintBehalf,
   Redeem,
   RepayBorrow,
-} from '../../generated/templates/VTokenUpdatedEvents/VTokenUpdatedEvents';
+} from '../../generated/templates/VTokenUpdatedEvents/VToken';
 import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
 import {
   createBorrowEvent,
