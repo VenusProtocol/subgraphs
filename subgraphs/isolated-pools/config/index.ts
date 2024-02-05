@@ -1,11 +1,12 @@
 import mainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet.json';
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet.json';
+import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['sepolia', 'chapel', 'bsc', 'docker'] as const;
+  const supportedNetworks = ['mainnet', 'sepolia', 'chapel', 'bsc', 'docker'] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
@@ -19,9 +20,15 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0x5bf5b11053e734690269C6B9D438F8C9d48F528A',
-      poolLensAddress: '0xffa7ca1aeeebbc30c874d32c7e22f052bbea0429',
+      poolRegistryAddress: '0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926',
+      poolLensAddress: '0xe3011a37a904ab90c8881a99bd1f6e21401f1522',
       startBlock: 0,
+    },
+    mainnet: {
+      network: 'mainnet',
+      poolRegistryAddress: ethereumDeployments.addresses.PoolRegistry,
+      poolLensAddress: ethereumDeployments.addresses.PoolLens,
+      startBlock: '18968000',
     },
     sepolia: {
       network: 'sepolia',
