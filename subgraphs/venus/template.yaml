@@ -114,7 +114,7 @@ templates:
         - event: Borrow(address,uint256,uint256,uint256)
           handler: handleBorrow
         - event: RepayBorrow(address,address,uint256,uint256,uint256)
-          handler: handleRepayBorrow
+          handler: handleRepayBorrowV1
         - event: LiquidateBorrow(address,address,uint256,address,uint256)
           handler: handleLiquidateBorrow
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
@@ -129,7 +129,7 @@ templates:
     kind: ethereum/contract
     network: {{ network }}
     source:
-      abi: VTokenUpdatedEvents
+      abi: VToken
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -140,7 +140,7 @@ templates:
         - Market
         - VTokenInfo
       abis:
-        - name: VTokenUpdatedEvents
+        - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
       eventHandlers:
         - event: Mint(address,uint256,uint256,uint256)
@@ -149,3 +149,5 @@ templates:
           handler: handleMintBehalf
         - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
+        - event: RepayBorrow(address,address,uint256,uint256,uint256)
+          handler: handleRepayBorrow
