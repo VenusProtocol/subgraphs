@@ -59,6 +59,7 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
   vote.votes = event.params.votes;
   const indexSupportConstant = [AGAINST, FOR, ABSTAIN];
   vote.support = indexSupportConstant[event.params.support];
+  vote.reason = event.params.reason;
 
   vote.save();
 
