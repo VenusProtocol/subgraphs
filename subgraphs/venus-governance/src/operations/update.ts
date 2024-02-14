@@ -61,7 +61,7 @@ export function updateDelegateChanged<E>(event: E): void {
     newDelegate.save();
   }
 
-  if (fromDelegate == nullAddress.toHexString()) {
+  if (toDelegate == nullAddress.toHexString()) {
     governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
     governance.save();
   }
