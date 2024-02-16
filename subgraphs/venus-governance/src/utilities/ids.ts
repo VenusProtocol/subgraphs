@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { GOVERNANCE, SEPERATOR } from '../constants';
 
@@ -11,6 +11,9 @@ export const getPermissionId = (
   functionSig: string,
 ): string =>
   [accountAddress.toHexString(), contractAddress.toHexString(), functionSig].join(SEPERATOR);
+
+export const getRoleId = (role: Bytes, account: Address, sender: Address): string =>
+  [role.toHexString(), account.toHexString(), sender.toHexString()].join(SEPERATOR);
 
 export const getDelegateId = (account: Address): string => account.toHexString();
 

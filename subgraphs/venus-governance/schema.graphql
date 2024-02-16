@@ -148,7 +148,7 @@ type Permission @entity {
   id: ID!
 
   "Indicates if the permission was either GRANTED or REVOKED"
-  type: PermissionStatus!
+  status: PermissionStatus!
 
   "The target account of the event"
   account: Bytes!
