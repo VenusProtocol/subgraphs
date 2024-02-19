@@ -39,6 +39,7 @@ export function updateDelegateChanged<E>(event: E): void {
 
   const delegatorResult = getOrCreateDelegate(params.delegator);
   const delegatorEntity = delegatorResult.entity;
+
   delegatorEntity.delegatee = toDelegate;
   delegatorEntity.save();
 
@@ -50,7 +51,7 @@ export function updateDelegateChanged<E>(event: E): void {
   }
 
   if (fromDelegate == nullAddress.toHexString()) {
-    governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
+    governance.totalVoters = governance.totalVoters.plus(BIGINT_ONE);
     governance.save();
   }
 
@@ -62,7 +63,7 @@ export function updateDelegateChanged<E>(event: E): void {
   }
 
   if (toDelegate == nullAddress.toHexString()) {
-    governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
+    governance.totalVoters = governance.totalVoters.minus(BIGINT_ONE);
     governance.save();
   }
 }

@@ -110,10 +110,10 @@ type Governance @entity {
   "Number of proposals created"
   totalProposals: BigInt!
 
-  "Total number of accounts delegates that can participate in governance by voting or creating proposals"
+  "Total number of accounts participating in governance as delegates or by delegating"
   totalDelegates: BigInt!
   
-  "Total number of accounts participating in governance as delegates or by delegating"
+  "Total number of accounts delegates that can participate in governance by voting or creating proposals"
   totalVoters: BigInt!
 
   "Total number of votes delegated expressed in the smallest unit of XVS"
