@@ -1,5 +1,5 @@
-query Permissions {
-  permissions {
+query PermissionById($id: ID!) {
+  permission(id: $id) {
     id
     status
     account

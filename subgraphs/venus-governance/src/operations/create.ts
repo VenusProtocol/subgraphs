@@ -5,7 +5,8 @@ import { VoteCast as VoteCastBravo } from '../../generated/GovernorBravoDelegate
 import { Proposal, Vote } from '../../generated/schema';
 import { ABSTAIN, AGAINST, BIGINT_ONE, FOR, NORMAL } from '../constants';
 import { getVoteId } from '../utilities/ids';
-import { getDelegate, getGovernanceEntity, getProposal } from './get';
+import { getGovernanceEntity, getProposal } from './get';
+import { getOrCreateDelegate } from './getOrCreate';
 
 export function createProposal<E>(event: E): Proposal {
   const id = event.params.id.toString();
@@ -51,7 +52,7 @@ export function createVoteAlpha(event: VoteCastAlpha): Vote {
 
 export function createVoteBravo(event: VoteCastBravo): Vote {
   const proposal = getProposal(event.params.proposalId.toString());
-  const voter = getDelegate(event.params.voter);
+  const voter = getOrCreateDelegate(event.params.voter).entity;
   const id = getVoteId(event.params.voter, event.params.proposalId);
   const vote = new Vote(id);
   vote.proposal = proposal.id;
@@ -59,6 +60,7 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
   vote.votes = event.params.votes;
   const indexSupportConstant = [AGAINST, FOR, ABSTAIN];
   vote.support = indexSupportConstant[event.params.support];
+  vote.reason = event.params.reason;
 
   vote.save();
 

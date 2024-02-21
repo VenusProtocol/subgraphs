@@ -56,7 +56,7 @@ const main = () => {
       network: 'bsc',
       accessControlManagerAddress:
         bscMainnetGovernanceDeployments.contracts.AccessControlManager.address,
-      accessControlManagerStartBlock: '',
+      accessControlManagerStartBlock: '21968138',
       governorAlphaAddress: bscMainnetGovernanceDeployments.contracts.GovernorAlpha.address,
       governorAlphaStartBlock: '2474351',
       governorAlpha2Address: bscMainnetGovernanceDeployments.contracts.GovernorAlpha2.address,
