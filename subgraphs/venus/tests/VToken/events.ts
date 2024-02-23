@@ -143,7 +143,7 @@ export const createBorrowEvent = (
   return event;
 };
 
-export const createRepayBorrowEventV1 = (
+export const createRepayBorrowEvent = (
   vTokenAddress: Address,
   payerAddress: Address,
   borrowerAddress: Address,
