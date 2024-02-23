@@ -46,8 +46,6 @@ import {
   createRedeemEvent,
   createRedeemEventV1,
   createRepayBorrowEvent,
-  createReservesAddedEvent,
-  createReservesReducedEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock } from './mocks';
