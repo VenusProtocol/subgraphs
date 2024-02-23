@@ -43,7 +43,7 @@ import {
   createNewReserveFactorEvent,
   createRedeemEvent,
   createRedeemEventV1,
-  createRepayBorrowEventV1,
+  createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock } from './mocks';
@@ -205,7 +205,7 @@ describe('VToken', () => {
     const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
-    const repayBorrowEvent = createRepayBorrowEventV1(
+    const repayBorrowEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       payer,
       borrower,
@@ -579,7 +579,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '2');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '2');
 
-    let repayEvent = createRepayBorrowEventV1(
+    let repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower02,
       borrower02,
@@ -592,7 +592,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
-    repayEvent = createRepayBorrowEventV1(
+    repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower01,
       borrower01,
@@ -605,7 +605,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
-    repayEvent = createRepayBorrowEventV1(
+    repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower01,
       borrower01,
