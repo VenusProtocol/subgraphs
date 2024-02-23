@@ -12,13 +12,15 @@ import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import {
+  getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { exponentToBigInt } from '../utilities/exponentToBigInt';
-import { getUnderlyingPrice } from '../utilities/getUnderlyingPrice';
 import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
 import { getMarket } from './get';
+import { updateMarketCashMantissa } from './updateMarketCashMantissa';
+import { updateMarketRates } from './updateMarketRates';
+import { updateMarketTotalSupplyMantissa } from './updateMarketTotalSupplyMantissa';
 
 export function getOrCreateComptroller(): Comptroller {
   let comptroller = Comptroller.load(comptrollerAddress.toHexString());
@@ -35,14 +37,15 @@ export function getOrCreateComptroller(): Comptroller {
 }
 
 export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event): Market {
-  const vTokenContract = VToken.bind(marketAddress);
   // @todo add and use market id utility
   let market = getMarket(marketAddress);
   if (!market) {
+    const vTokenContract = VToken.bind(marketAddress);
     market = new Market(marketAddress.toHexString());
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
+    market.blockTimestamp = event.block.timestamp.toI32();
 
     // It is vBNB, which has a slightly different interface
     if (market.symbol == 'vBNB') {
@@ -69,66 +72,31 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       vTokenContract.try_reserveFactorMantissa(),
       'vBEP20 try_reserveFactorMantissa()',
     );
+    market.underlyingPriceCents =
+      market.symbol == 'vBNB'
+        ? zeroBigInt32
+        : getUnderlyingPrice(market.id, market.underlyingDecimals);
 
-    market.accrualBlockNumber = 0;
+    market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
     market.totalXvsDistributedMantissa = zeroBigInt32;
     market.collateralFactorMantissa = zeroBigInt32;
     market.supplierCount = zeroBigInt32;
     market.borrowerCount = zeroBigInt32;
     market.borrowerCountAdjusted = zeroBigInt32;
 
+    updateMarketRates(market, vTokenContract);
+    updateMarketCashMantissa(market, vTokenContract);
+    updateMarketTotalSupplyMantissa(market, vTokenContract);
+    market.borrowIndexMantissa = vTokenContract.borrowIndex();
+    market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+    market.reservesMantissa = vTokenContract.totalReserves();
+
     // Dynamically index all new listed tokens
     VTokenTemplate.create(marketAddress);
     VTokenUpdatedEventsTemplate.create(marketAddress);
+
+    market.save();
   }
-
-  const contractAccrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
-  if (market.accrualBlockNumber < contractAccrualBlockNumber) {
-    market.accrualBlockNumber = contractAccrualBlockNumber;
-    market.blockTimestamp = event.block.timestamp.toI32();
-    market.underlyingPriceCents =
-      market.symbol == 'vBNB'
-        ? zeroBigInt32
-        : getUnderlyingPrice(market.id, market.underlyingDecimals);
-
-    /* Exchange rate explanation
-       In Practice
-        - If you call the vDAI contract on bscscan it comes back (2.0 * 10^26)
-        - If you call the vUSDC contract on bscscan it comes back (2.0 * 10^14)
-        - The real value is ~0.02. So vDAI is off by 10^28, and vUSDC 10^16
-       How to calculate for tokens with different decimals
-        - Must div by tokenDecimals, 10^market.underlyingDecimals
-        - Must multiply by vtokenDecimals, 10^8
-        - Must div by mantissa, 10^18
-     */
-
-    // Must convert to BigDecimal, and remove 10^18 that is used for Exp in Venus Solidity
-    market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
-      vTokenContract.try_exchangeRateStored(),
-      'vBEP20 try_exchangeRateStored()',
-    );
-    market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
-      vTokenContract.try_borrowRatePerBlock(),
-      'vBEP20 try_borrowRatePerBlock()',
-    );
-
-    // This fails on only the first call to cZRX. It is unclear why, but otherwise it works.
-    // So we handle it like this.
-    market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
-      vTokenContract.try_supplyRatePerBlock(),
-      'vBEP20 try_supplyRatePerBlock()',
-    );
-
-    market.totalSupplyMantissa = vTokenContract
-      .totalSupply()
-      .times(market.exchangeRateMantissa)
-      .div(exponentToBigInt(18));
-    market.borrowIndexMantissa = vTokenContract.borrowIndex();
-    market.reservesMantissa = vTokenContract.totalReserves();
-    market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-    market.cashMantissa = vTokenContract.getCash();
-  }
-  market.save();
 
   return market;
 }
