@@ -35,7 +35,7 @@ describe('Permission events', () => {
       assert.fieldEquals('Permission', id, key, value);
     };
 
-    assertPermissionGrantedDocument('type', GRANTED);
+    assertPermissionGrantedDocument('status', GRANTED);
     assertPermissionGrantedDocument('account', user1.toHexString());
     assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionGrantedDocument('functionSig', mockFunctionSig);
@@ -54,7 +54,7 @@ describe('Permission events', () => {
       assert.fieldEquals('Permission', id, key, value);
     };
 
-    assertPermissionRevokedDocument('type', REVOKED);
+    assertPermissionRevokedDocument('status', REVOKED);
     assertPermissionRevokedDocument('account', user1.toHexString());
     assertPermissionRevokedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionRevokedDocument('functionSig', mockFunctionSig);
@@ -73,7 +73,7 @@ describe('Permission events', () => {
       assert.fieldEquals('Permission', id, key, value);
     };
 
-    assertPermissionGrantedDocument('type', GRANTED);
+    assertPermissionGrantedDocument('status', GRANTED);
     assertPermissionGrantedDocument('account', user1.toHexString());
     assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionGrantedDocument('functionSig', mockFunctionSig);
@@ -90,7 +90,7 @@ describe('Permission events', () => {
       assert.fieldEquals('Permission', id, key, value);
     };
 
-    assertPermissionRevokedDocument('type', REVOKED);
+    assertPermissionRevokedDocument('status', REVOKED);
     assertPermissionRevokedDocument('account', user1.toHexString());
     assertPermissionRevokedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionRevokedDocument('functionSig', mockFunctionSig);

@@ -4,7 +4,10 @@ import { ethers } from 'hardhat';
 import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
-import { SYNC_DELAY } from './utils/constants';
+import { SYNC_DELAY, nullAddress } from './utils/constants';
+
+const functionSig = 'swapPoolsAssets(address[],uint256[],address[][])';
+const account = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 describe('AccessControlManager', function () {
   before(async function () {
@@ -16,10 +19,10 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(13);
+      expect(permissions.length).to.be.equal(28);
 
       permissions.forEach(pe => {
-        expect(pe.type).to.be.equal('GRANTED');
+        expect(pe.status).to.be.equal('GRANTED');
       });
     });
 
@@ -27,26 +30,30 @@ describe('AccessControlManager', function () {
       const accessControlManager = await ethers.getContract('AccessControlManager');
       const tx = await accessControlManager.revokeCallPermission(
         ethers.constants.AddressZero,
-        'setMinLiquidatableCollateral(uint256)',
-        ethers.constants.AddressZero,
+        functionSig,
+        account,
       );
       await tx.wait();
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
       const { data } = await subgraphClient.getPermissions();
-
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(14);
+      expect(permissions.length).to.be.equal(28);
 
-      expect(permissions[0].type).to.be.equal('REVOKED');
+      const { data: permissionByIdData } = await subgraphClient.getPermission(
+        `${account}-${nullAddress}-${functionSig}`,
+      );
+
+      const { permission } = permissionByIdData!;
+      expect(permission.status).to.be.equal('REVOKED');
     });
 
     it('updates a previously created record with a new permission type', async function () {
       const accessControlManager = await ethers.getContract('AccessControlManager');
       const tx = await accessControlManager.giveCallPermission(
         ethers.constants.AddressZero,
-        'setMinLiquidatableCollateral(uint256)',
-        ethers.constants.AddressZero,
+        functionSig,
+        account,
       );
       await tx.wait();
       await waitForSubgraphToBeSynced(SYNC_DELAY);
@@ -54,9 +61,13 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(14);
+      expect(permissions.length).to.be.equal(28);
+      const { data: permissionByIdData } = await subgraphClient.getPermission(
+        `${account}-${nullAddress}-${functionSig}`,
+      );
 
-      expect(permissions[0].type).to.be.equal('GRANTED');
+      const { permission } = permissionByIdData!;
+      expect(permission.status).to.be.equal('GRANTED');
     });
   });
 });

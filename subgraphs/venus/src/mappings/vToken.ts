@@ -15,11 +15,7 @@ import {
   Transfer,
 } from '../../generated/templates/VToken/VToken';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
-import {
-  Mint,
-  MintBehalf,
-  Redeem,
-} from '../../generated/templates/VTokenUpdatedEvents/VTokenUpdatedEvents';
+import { Mint, MintBehalf, Redeem } from '../../generated/templates/VTokenUpdatedEvents/VToken';
 import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
 import {
   createBorrowEvent,

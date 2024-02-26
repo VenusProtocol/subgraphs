@@ -129,7 +129,7 @@ templates:
     kind: ethereum/contract
     network: {{ network }}
     source:
-      abi: VTokenUpdatedEvents
+      abi: VToken
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
@@ -140,7 +140,7 @@ templates:
         - Market
         - VTokenInfo
       abis:
-        - name: VTokenUpdatedEvents
+        - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
       eventHandlers:
         - event: Mint(address,uint256,uint256,uint256)

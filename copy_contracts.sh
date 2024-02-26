@@ -11,6 +11,7 @@ rm -rf contracts/isolated-pools/contracts/test
 mkdir -p ./contracts/oracle
 cp -rf ./node_modules/@venusprotocol/oracle/contracts/ ./contracts/oracle/contracts
 rm -rf contracts/oracle/contracts/test
+rm ./contracts/oracle/contracts/ResilientOracle.sol
 
 mkdir -p ./contracts/protocol
 cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts

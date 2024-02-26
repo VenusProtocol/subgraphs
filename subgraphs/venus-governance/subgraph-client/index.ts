@@ -5,6 +5,7 @@ import {
   DelegateByIdDocument,
   DelegatesDocument,
   GovernanceDocument,
+  PermissionByIdDocument,
   PermissionsDocument,
   ProposalByIdDocument,
   ProposalsDocument,
@@ -29,12 +30,12 @@ class SubgraphClient {
   }
 
   async getProposalById(id: string) {
-    const result = await this.query(ProposalByIdDocument, { id: id });
+    const result = await this.query(ProposalByIdDocument, { id });
     return result;
   }
 
   async getDelegateById(id: string) {
-    const result = await this.query(DelegateByIdDocument, { id: id });
+    const result = await this.query(DelegateByIdDocument, { id });
     return result;
   }
 
@@ -50,6 +51,11 @@ class SubgraphClient {
 
   async getPermissions() {
     const result = await this.query(PermissionsDocument, {});
+    return result;
+  }
+
+  async getPermission(id: string) {
+    const result = await this.query(PermissionByIdDocument, { id });
     return result;
   }
 

@@ -13,14 +13,14 @@ import {
   NewMarketInterestRateModel as NewMarketInterestRateModelEvent,
   NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEventV1,
-  RepayBorrow as RepayBorrowEvent,
+  RepayBorrow as RepayBorrowEventV1,
   Transfer as TransferEvent,
 } from '../../generated/templates/VToken/VToken';
 import {
   MintBehalf as MintBehalfEvent,
   Mint as MintEvent,
   Redeem as RedeemEvent,
-} from '../../generated/templates/VTokenUpdatedEvents/VTokenUpdatedEvents';
+} from '../../generated/templates/VTokenUpdatedEvents/VToken';
 
 export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEvent => {
   const event = changetype<MarketListedEvent>(newMockEvent());
@@ -143,15 +143,15 @@ export const createBorrowEvent = (
   return event;
 };
 
-export const createRepayBorrowEvent = (
+export const createRepayBorrowEventV1 = (
   vTokenAddress: Address,
   payerAddress: Address,
   borrowerAddress: Address,
   repayAmount: BigInt,
   accountBorrows: BigInt,
   totalBorrows: BigInt,
-): RepayBorrowEvent => {
-  const event = changetype<RepayBorrowEvent>(newMockEvent());
+): RepayBorrowEventV1 => {
+  const event = changetype<RepayBorrowEventV1>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 

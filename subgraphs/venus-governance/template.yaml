@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 description: Venus Governance Subgraph
 repository: https://github.com/protofire/venus-governance-subgraph
 schema:
@@ -188,3 +188,26 @@ dataSources:
           handler: handlePermissionGranted
         - event: PermissionRevoked(address,address,string)
           handler: handlePermissionRevoked
+  - kind: ethereum/contract
+    name: AccessControlManagerV5
+    network: {{ network }}
+    source:
+      address: "{{ accessControlManagerAddress }}"
+      abi: AccessControlMangerV5
+      startBlock: {{ accessControlManagerStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/accessControlManager.ts
+      entities:
+        - Permission
+      abis:
+        - name: AccessControlMangerV5
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/IAccessControlManagerV5.sol/IAccessControlManagerV5.json
+      eventHandlers:
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+
