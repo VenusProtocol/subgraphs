@@ -25,7 +25,7 @@ import {
   handleNewReserveFactor,
   handleRedeem,
   handleRedeemV1,
-  handleRepayBorrowV1,
+  handleRepayBorrow,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
@@ -228,7 +228,7 @@ describe('VToken', () => {
       ]);
 
     /** Fire Event */
-    handleRepayBorrowV1(repayBorrowEvent);
+    handleRepayBorrow(repayBorrowEvent);
 
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower);
     const market = getMarket(aaaTokenAddress);
@@ -588,7 +588,7 @@ describe('VToken', () => {
       zeroBigInt32,
     );
 
-    handleRepayBorrowV1(repayEvent);
+    handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
@@ -601,7 +601,7 @@ describe('VToken', () => {
       partialBorrowAmountWei,
     );
 
-    handleRepayBorrowV1(repayEvent);
+    handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
@@ -614,7 +614,7 @@ describe('VToken', () => {
       partialBorrowAmountWei.minus(oneBigInt),
     );
 
-    handleRepayBorrowV1(repayEvent);
+    handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '0');
   });

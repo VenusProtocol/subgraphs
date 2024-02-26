@@ -11,16 +11,11 @@ import {
   NewMarketInterestRateModel,
   NewReserveFactor,
   Redeem as RedeemV1,
-  RepayBorrow as RepayBorrowV1,
+  RepayBorrow,
   Transfer,
 } from '../../generated/templates/VToken/VToken';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
-import {
-  Mint,
-  MintBehalf,
-  Redeem,
-  RepayBorrow,
-} from '../../generated/templates/VTokenUpdatedEvents/VToken';
+import { Mint, MintBehalf, Redeem } from '../../generated/templates/VTokenUpdatedEvents/VToken';
 import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
 import {
   createBorrowEvent,
@@ -308,31 +303,4 @@ export function handleRedeemV1(event: RedeemV1): void {
     market.save();
   }
   createRedeemEvent<RedeemV1>(event);
-}
-
-export function handleRepayBorrowV1(event: RepayBorrowV1): void {
-  const market = getOrCreateMarket(event.address, event);
-  if (event.params.accountBorrows.equals(zeroBigInt32)) {
-    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
-    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
-    market.save();
-  } else if (event.params.accountBorrows.le(DUST_THRESHOLD)) {
-    // Sometimes a liquidator will leave dust behind. If this happens we'll adjust count
-    // because the position only exists due to a technicality
-    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
-    market.save();
-  }
-
-  const account = getOrCreateAccount(event.params.borrower.toHex());
-
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
-  accountVToken.storedBorrowBalanceMantissa = event.params.accountBorrows;
-  accountVToken.accountBorrowIndexMantissa = market.borrowIndexMantissa;
-  accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
-    event.params.repayAmount,
-  );
-  accountVToken.save();
-
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
-  createRepayEvent<RepayBorrowV1>(event, market.underlyingAddress);
 }
