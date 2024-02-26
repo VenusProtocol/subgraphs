@@ -114,7 +114,7 @@ templates:
         - event: Borrow(address,uint256,uint256,uint256)
           handler: handleBorrow
         - event: RepayBorrow(address,address,uint256,uint256,uint256)
-          handler: handleRepayBorrowV1
+          handler: handleRepayBorrow
         - event: LiquidateBorrow(address,address,uint256,address,uint256)
           handler: handleLiquidateBorrow
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
@@ -149,5 +149,3 @@ templates:
           handler: handleMintBehalf
         - event: Redeem(address,uint256,uint256,uint256)
           handler: handleRedeem
-        - event: RepayBorrow(address,address,uint256,uint256,uint256)
-          handler: handleRepayBorrow
