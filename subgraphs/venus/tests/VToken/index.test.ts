@@ -282,18 +282,18 @@ describe('VToken', () => {
 
   test('registers accrue interest event', () => {
     /** Constants */
-    const cashPrior = BigInt.fromString('1246205398726345');
+    const cashPrior = BigInt.fromString('5555566666000012345');
     const interestAccumulated = BigInt.fromI32(26454);
-    const borrowIndex = BigInt.fromI32(1);
-    const totalBorrows = BigInt.fromString('62197468301');
+    const newBorrowIndex = BigInt.fromString('400000000000000000000');
+    const newTotalBorrows = BigInt.fromString('4321234234636158123');
 
     /** Setup test */
     const accrueInterestEvent = createAccrueInterestEvent(
       aaaTokenAddress,
       cashPrior,
       interestAccumulated,
-      borrowIndex,
-      totalBorrows,
+      newBorrowIndex,
+      newTotalBorrows,
     );
 
     /** Fire Event */
@@ -306,10 +306,10 @@ describe('VToken', () => {
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
-    assertMarketDocument('borrowIndexMantissa', '300000000000000000000');
+    assertMarketDocument('borrowIndexMantissa', newBorrowIndex.toString());
     assertMarketDocument('reservesMantissa', '5128924555022289393');
-    assertMarketDocument('totalBorrowsMantissa', '2641234234636158123');
-    assertMarketDocument('cashMantissa', '1418171344423412457');
+    assertMarketDocument('totalBorrowsMantissa', newTotalBorrows.toString());
+    assertMarketDocument('cashMantissa', cashPrior.toString());
     assertMarketDocument('borrowRateMantissa', '12678493');
     assertMarketDocument('supplyRateMantissa', '12678493');
   });
