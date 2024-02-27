@@ -26,6 +26,8 @@ import {
   handleRedeem,
   handleRedeemV1,
   handleRepayBorrow,
+  handleReservesAdded,
+  handleReservesReduced,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
@@ -43,7 +45,9 @@ import {
   createNewReserveFactorEvent,
   createRedeemEvent,
   createRedeemEventV1,
-  createRepayBorrowEventV1,
+  createRepayBorrowEvent,
+  createReservesAddedEvent,
+  createReservesReducedEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock } from './mocks';
@@ -205,7 +209,7 @@ describe('VToken', () => {
     const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
-    const repayBorrowEvent = createRepayBorrowEventV1(
+    const repayBorrowEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       payer,
       borrower,
@@ -282,18 +286,18 @@ describe('VToken', () => {
 
   test('registers accrue interest event', () => {
     /** Constants */
-    const cashPrior = BigInt.fromString('1246205398726345');
+    const cashPrior = BigInt.fromString('5555566666000012345');
     const interestAccumulated = BigInt.fromI32(26454);
-    const borrowIndex = BigInt.fromI32(1);
-    const totalBorrows = BigInt.fromString('62197468301');
+    const newBorrowIndex = BigInt.fromString('400000000000000000000');
+    const newTotalBorrows = BigInt.fromString('4321234234636158123');
 
     /** Setup test */
     const accrueInterestEvent = createAccrueInterestEvent(
       aaaTokenAddress,
       cashPrior,
       interestAccumulated,
-      borrowIndex,
-      totalBorrows,
+      newBorrowIndex,
+      newTotalBorrows,
     );
 
     /** Fire Event */
@@ -306,10 +310,10 @@ describe('VToken', () => {
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
-    assertMarketDocument('borrowIndexMantissa', '300000000000000000000');
+    assertMarketDocument('borrowIndexMantissa', newBorrowIndex.toString());
     assertMarketDocument('reservesMantissa', '5128924555022289393');
-    assertMarketDocument('totalBorrowsMantissa', '2641234234636158123');
-    assertMarketDocument('cashMantissa', '1418171344423412457');
+    assertMarketDocument('totalBorrowsMantissa', newTotalBorrows.toString());
+    assertMarketDocument('cashMantissa', cashPrior.toString());
     assertMarketDocument('borrowRateMantissa', '12678493');
     assertMarketDocument('supplyRateMantissa', '12678493');
   });
@@ -579,7 +583,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '2');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '2');
 
-    let repayEvent = createRepayBorrowEventV1(
+    let repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower02,
       borrower02,
@@ -592,7 +596,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
-    repayEvent = createRepayBorrowEventV1(
+    repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower01,
       borrower01,
@@ -605,7 +609,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
-    repayEvent = createRepayBorrowEventV1(
+    repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
       borrower01,
       borrower01,
@@ -617,5 +621,47 @@ describe('VToken', () => {
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '0');
+  });
+
+  test('registers reserves added event', () => {
+    const benefactor = Address.fromString('0x0000000000000000000000000000000000000111');
+    const addAmount = BigInt.fromString('123456789000000');
+    const newTotalReserves = BigInt.fromString('123456789000000');
+    const newReservesAddedEvent = createReservesAddedEvent(
+      aaaTokenAddress,
+      benefactor,
+      addAmount,
+      newTotalReserves,
+    );
+
+    handleReservesAdded(newReservesAddedEvent);
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'reservesMantissa',
+      newTotalReserves.toString(),
+    );
+  });
+
+  test('registers reserves reduced event', () => {
+    const admin = Address.fromString('0x0000000000000000000000000000000000000111');
+    const reduceAmount = BigInt.fromString('123456789000000');
+    const newTotalReserves = BigInt.fromString('0');
+    const newReservesReducedEvent = createReservesReducedEvent(
+      aaaTokenAddress,
+      admin,
+      reduceAmount,
+      newTotalReserves,
+    );
+
+    handleReservesReduced(newReservesReducedEvent);
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'reservesMantissa',
+      newTotalReserves.toString(),
+    );
   });
 });

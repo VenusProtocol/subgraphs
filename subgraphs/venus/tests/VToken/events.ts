@@ -14,6 +14,8 @@ import {
   NewReserveFactor as NewReserveFactorEvent,
   Redeem as RedeemEventV1,
   RepayBorrow as RepayBorrowEventV1,
+  ReservesAdded as ReservesAddedEvent,
+  ReservesReduced as ReservesReducedEvent,
   Transfer as TransferEvent,
 } from '../../generated/templates/VToken/VToken';
 import {
@@ -143,7 +145,7 @@ export const createBorrowEvent = (
   return event;
 };
 
-export const createRepayBorrowEventV1 = (
+export const createRepayBorrowEvent = (
   vTokenAddress: Address,
   payerAddress: Address,
   borrowerAddress: Address,
@@ -513,6 +515,65 @@ export const createRedeemEventV1 = (
     ethereum.Value.fromUnsignedBigInt(redeemTokens),
   );
   event.parameters.push(redeemTokensParam);
+
+  return event;
+};
+
+export const createReservesAddedEvent = (
+  vTokenAddress: Address,
+  benefactor: Address,
+  addAmount: BigInt,
+  newTotalReserves: BigInt,
+): ReservesAddedEvent => {
+  const event = changetype<ReservesAddedEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const addAmountParam = new ethereum.EventParam(
+    'addAmount',
+    ethereum.Value.fromUnsignedBigInt(addAmount),
+  );
+  event.parameters.push(addAmountParam);
+
+  const benefactorParam = new ethereum.EventParam(
+    'benefactor',
+    ethereum.Value.fromAddress(benefactor),
+  );
+  event.parameters.push(benefactorParam);
+
+  const newTotalReservesParam = new ethereum.EventParam(
+    'newTotalReserves',
+    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
+  );
+  event.parameters.push(newTotalReservesParam);
+
+  return event;
+};
+
+export const createReservesReducedEvent = (
+  vTokenAddress: Address,
+  admin: Address,
+  reduceAmount: BigInt,
+  newTotalReserves: BigInt,
+): ReservesReducedEvent => {
+  const event = changetype<ReservesReducedEvent>(newMockEvent());
+  event.address = vTokenAddress;
+  event.parameters = [];
+
+  const reduceAmountParam = new ethereum.EventParam(
+    'reduceAmount',
+    ethereum.Value.fromUnsignedBigInt(reduceAmount),
+  );
+  event.parameters.push(reduceAmountParam);
+
+  const adminParam = new ethereum.EventParam('admin', ethereum.Value.fromAddress(admin));
+  event.parameters.push(adminParam);
+
+  const newTotalReservesParam = new ethereum.EventParam(
+    'newTotalReserves',
+    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
+  );
+  event.parameters.push(newTotalReservesParam);
 
   return event;
 };
