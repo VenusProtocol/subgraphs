@@ -4431,9 +4431,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:2.5.0, @venusprotocol/isolated-pools@npm:^2.5.0":
-  version: 2.5.0
-  resolution: "@venusprotocol/isolated-pools@npm:2.5.0"
+"@venusprotocol/isolated-pools@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@venusprotocol/isolated-pools@npm:2.6.0"
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.2.3
     "@openzeppelin/contracts": ^4.8.3
@@ -4443,7 +4443,7 @@ __metadata:
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-  checksum: 21d849893ec115165352df9e937178321a2f5daea11e11221787e67f80476905a5b4c3564382a58b89b5308e00cb88d57a677ac46cc9df5782c884cdce8c4c42
+  checksum: 324bdaa9d6de3f812800f78429d4f35812fc5d71a9127b6c6726e5f7b20924b074d5ed2935cf0c4977f0db053624ad9ba27e9207184bcd4672dd9ead3986ba12
   languageName: node
   linkType: hard
 
@@ -4460,6 +4460,22 @@ __metadata:
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
   checksum: c67b2d1eaf2ae7cae1e7b73799ec1dd0ffd3bc996bea09fc6e6c909f416f65fa168bd0690034ce8882da0d0b9a8825032dde3dd15bad392a5a5cad32bf697a73
+  languageName: node
+  linkType: hard
+
+"@venusprotocol/isolated-pools@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "@venusprotocol/isolated-pools@npm:2.5.0"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: 21d849893ec115165352df9e937178321a2f5daea11e11221787e67f80476905a5b4c3564382a58b89b5308e00cb88d57a677ac46cc9df5782c884cdce8c4c42
   languageName: node
   linkType: hard
 
@@ -14865,7 +14881,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 1.4.0
-    "@venusprotocol/isolated-pools": 2.5.0
+    "@venusprotocol/isolated-pools": 2.6.0
     "@venusprotocol/oracle": ^1.9.0
     "@venusprotocol/protocol-reserve": 1.4.0
     "@venusprotocol/venus-protocol": 7.2.0
