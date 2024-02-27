@@ -1,12 +1,20 @@
 import mainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet.json';
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
+import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['mainnet', 'sepolia', 'chapel', 'bsc', 'docker'] as const;
+  const supportedNetworks = [
+    'mainnet',
+    'sepolia',
+    'chapel',
+    'bsc',
+    'docker',
+    'opbnbMainnet',
+  ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
@@ -47,6 +55,12 @@ const main = () => {
       poolRegistryAddress: mainnetDeployments.contracts.PoolRegistry.address,
       poolLensAddress: mainnetDeployments.contracts.PoolLens.address,
       startBlock: '29300000',
+    },
+    opbnbMainnet: {
+      network: 'opbnb-mainnet',
+      poolRegistryAddress: opBnbMainnetDeployments.addresses.PoolRegistry,
+      poolLensAddress: opBnbMainnetDeployments.addresses.PoolLens,
+      startBlock: '16232873',
     },
   };
 
