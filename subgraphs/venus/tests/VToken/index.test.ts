@@ -26,6 +26,8 @@ import {
   handleRedeem,
   handleRedeemV1,
   handleRepayBorrow,
+  handleReservesAdded,
+  handleReservesReduced,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
@@ -44,6 +46,8 @@ import {
   createRedeemEvent,
   createRedeemEventV1,
   createRepayBorrowEvent,
+  createReservesAddedEvent,
+  createReservesReducedEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock } from './mocks';
@@ -617,5 +621,47 @@ describe('VToken', () => {
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '0');
+  });
+
+  test('registers reserves added event', () => {
+    const benefactor = Address.fromString('0x0000000000000000000000000000000000000111');
+    const addAmount = BigInt.fromString('123456789000000');
+    const newTotalReserves = BigInt.fromString('123456789000000');
+    const newReservesAddedEvent = createReservesAddedEvent(
+      aaaTokenAddress,
+      benefactor,
+      addAmount,
+      newTotalReserves,
+    );
+
+    handleReservesAdded(newReservesAddedEvent);
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'reservesMantissa',
+      newTotalReserves.toString(),
+    );
+  });
+
+  test('registers reserves reduced event', () => {
+    const admin = Address.fromString('0x0000000000000000000000000000000000000111');
+    const reduceAmount = BigInt.fromString('123456789000000');
+    const newTotalReserves = BigInt.fromString('0');
+    const newReservesReducedEvent = createReservesReducedEvent(
+      aaaTokenAddress,
+      admin,
+      reduceAmount,
+      newTotalReserves,
+    );
+
+    handleReservesReduced(newReservesReducedEvent);
+    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'reservesMantissa',
+      newTotalReserves.toString(),
+    );
   });
 });
