@@ -30,6 +30,14 @@ enum PROPOSAL_TYPE {
   CRITICAL
 }
 
+type _Schema_
+  @fulltext(
+    name: "proposalSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Proposal", fields: [{ name: "description" }] }]
+  )
+
 type Proposal @entity {
   "Internal proposal ID, in this implementation it seems to be a autoincremental id"
   id: ID!

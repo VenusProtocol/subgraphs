@@ -3,6 +3,8 @@ description: Venus Governance Subgraph
 repository: https://github.com/protofire/venus-governance-subgraph
 schema:
   file: ./schema.graphql
+features:
+  - fullTextSearch
 dataSources:
   - kind: ethereum/contract
     name: GovernorAlpha
