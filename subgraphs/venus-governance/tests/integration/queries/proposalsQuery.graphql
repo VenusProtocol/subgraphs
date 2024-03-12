@@ -16,6 +16,9 @@ query Proposals {
       canceled
       executed
       type
+      forVotes
+      againstVotes
+      abstainVotes
       votes {
         id
         votes

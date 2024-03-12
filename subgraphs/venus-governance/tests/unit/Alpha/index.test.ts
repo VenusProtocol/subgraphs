@@ -154,6 +154,13 @@ describe('Alpha', () => {
       assert.fieldEquals('Vote', voteId, key, value);
     };
 
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+    assertProposalDocument('forVotes', votes.toString());
+    assertProposalDocument('abstainVotes', '0');
+    assertProposalDocument('againstVotes', '0');
+
     assertVoteDocument('proposal', '1');
     assertVoteDocument('voter', user1.toHexString());
     assertVoteDocument('votes', votes.toString());

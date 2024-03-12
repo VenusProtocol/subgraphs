@@ -78,6 +78,15 @@ type Proposal @entity {
   "Whether a proposal has been executed"
   executed: Boolean
 
+  "Total of for votes on the proposal"
+  forVotes: BigInt!
+
+  "Total of against votes on the proposal"
+  againstVotes: BigInt!
+
+  "Total of abstain votes on the proposal"
+  abstainVotes: BigInt!
+
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
 

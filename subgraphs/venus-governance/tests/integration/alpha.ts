@@ -83,6 +83,10 @@ describe('GovernorAlpha', function () {
       } = await subgraphClient.getProposalById('1');
       expect(proposal.votes.length).to.be.equal(4);
 
+      expect(proposal.forVotes).to.be.equal(scaleValue(1000000, 18).toFixed());
+      expect(proposal.againstVotes).to.be.equal(scaleValue(100000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+
       const {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
@@ -157,6 +161,10 @@ describe('GovernorAlpha', function () {
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
+
+      expect(proposal.forVotes).to.be.equal(scaleValue(800000, 18).toFixed());
+      expect(proposal.againstVotes).to.be.equal('0');
+      expect(proposal.abstainVotes).to.be.equal('0');
     });
 
     it('should transition to queued', async () => {

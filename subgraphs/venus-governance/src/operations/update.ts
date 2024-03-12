@@ -1,3 +1,5 @@
+import { BigInt } from '@graphprotocol/graph-ts';
+
 import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
 import { Governance } from '../../generated/schema';
 import { BIGINT_ONE } from '../constants';
@@ -93,4 +95,26 @@ export function updateGovernanceEntity(): void {
   governance.guardian = governorBravoDelegate2.guardian();
   governance.proposalMaxOperations = governorBravoDelegate2.proposalMaxOperations();
   governance.save();
+}
+
+export function updateAlphaProposalVotes(id: BigInt, votes: BigInt, support: boolean): void {
+  const proposal = getProposal(id.toString());
+  if (support) {
+    proposal.forVotes = proposal.forVotes.plus(votes);
+  } else {
+    proposal.againstVotes = proposal.againstVotes.plus(votes);
+  }
+  proposal.save();
+}
+
+export function updateBravoProposalVotes(id: BigInt, votes: BigInt, support: i32): void {
+  const proposal = getProposal(id.toString());
+  if (support == 0) {
+    proposal.againstVotes = proposal.againstVotes.plus(votes);
+  } else if (support == 1) {
+    proposal.forVotes = proposal.forVotes.plus(votes);
+  } else {
+    proposal.abstainVotes = proposal.abstainVotes.plus(votes);
+  }
+  proposal.save();
 }
