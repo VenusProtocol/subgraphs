@@ -14071,8 +14071,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vai-subgraph@workspace:subgraphs/vai"
   dependencies:
-    "@graphprotocol/graph-cli": ^0.67.1
-    "@venusprotocol/venus-protocol": 5.2.0
     apollo-fetch: ^0.7.0
     urql: ^3.0.3
     venus-subgraph-utils: 0.0.0
