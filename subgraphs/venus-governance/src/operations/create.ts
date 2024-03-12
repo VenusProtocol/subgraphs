@@ -27,13 +27,11 @@ export function createProposal<E>(event: E): Proposal {
   proposal.startBlock = event.params.startBlock;
   proposal.endBlock = event.params.endBlock;
   proposal.description = event.params.description;
-  proposal.queued = false;
-  proposal.canceled = false;
-  proposal.executed = false;
   proposal.type = NORMAL;
   proposal.forVotes = BIGINT_ZERO;
   proposal.againstVotes = BIGINT_ZERO;
   proposal.abstainVotes = BIGINT_ZERO;
+  proposal.passing = false;
 
   proposal.save();
 

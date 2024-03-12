@@ -17,6 +17,7 @@ services:
         condition: service_started
     environment:
       ETHEREUM_REORG_THRESHOLD: 1
+      GRAPH_ALLOW_NON_DETERMINISTIC_FULLTEXT_SEARCH: "true"
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in

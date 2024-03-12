@@ -86,6 +86,7 @@ describe('GovernorAlpha', function () {
       expect(proposal.forVotes).to.be.equal(scaleValue(1000000, 18).toFixed());
       expect(proposal.againstVotes).to.be.equal(scaleValue(100000, 18).toFixed());
       expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
 
       const {
         data: { delegate: delegate1 },
@@ -119,7 +120,9 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('1');
 
-      expect(proposal.canceled).to.equal(true);
+      expect(typeof proposal.canceled.blockNumber).to.equal('string');
+      expect(typeof proposal.canceled.txHash).to.equal('string');
+      expect(typeof proposal.canceled.timestamp).to.equal('string');
     });
   });
 
@@ -165,6 +168,7 @@ describe('GovernorAlpha', function () {
       expect(proposal.forVotes).to.be.equal(scaleValue(800000, 18).toFixed());
       expect(proposal.againstVotes).to.be.equal('0');
       expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
     });
 
     it('should transition to queued', async () => {
@@ -188,7 +192,10 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('21');
 
-      expect(proposal.queued).to.equal(true);
+      expect(typeof proposal.queued.blockNumber).to.equal('string');
+      expect(typeof proposal.queued.txHash).to.equal('string');
+      expect(typeof proposal.queued.timestamp).to.equal('string');
+
       expect(proposal.executionEta).to.equal(eta.toString());
       await mine(1);
 
@@ -204,7 +211,9 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('21');
 
-      expect(proposal.executed).to.equal(true);
+      expect(typeof proposal.executed.blockNumber).to.equal('string');
+      expect(typeof proposal.executed.txHash).to.equal('string');
+      expect(typeof proposal.executed.timestamp).to.equal('string');
     });
   });
 });

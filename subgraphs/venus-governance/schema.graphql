@@ -38,6 +38,20 @@ type _Schema_
     include: [{ entity: "Proposal", fields: [{ name: "description" }] }]
   )
 
+type ProposalAction @entity {
+  "Transaction hash used as the ID"
+  id: ID!
+  
+  "Transaction hash for the proposal action"
+  txHash: Bytes!
+  
+  "Block number of the proposal action"
+  blockNumber: BigInt!
+  
+  "Timestamp of the transaction block"
+  timestamp: BigInt!
+}
+
 type Proposal @entity {
   "Internal proposal ID, in this implementation it seems to be a autoincremental id"
   id: ID!
@@ -70,13 +84,13 @@ type Proposal @entity {
   executionEta: BigInt
   
   "Whether a proposal has been queued"
-  queued: Boolean
+  queued: ProposalAction
 
   "Whether a proposal has been canceled"
-  canceled: Boolean
+  canceled: ProposalAction
 
   "Whether a proposal has been executed"
-  executed: Boolean
+  executed: ProposalAction
 
   "Total of for votes on the proposal"
   forVotes: BigInt!
@@ -86,6 +100,9 @@ type Proposal @entity {
 
   "Total of abstain votes on the proposal"
   abstainVotes: BigInt!
+
+  "Difference between for and against"
+  passing: Boolean!
 
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
