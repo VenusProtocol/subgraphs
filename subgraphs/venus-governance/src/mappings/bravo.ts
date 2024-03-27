@@ -16,6 +16,7 @@ import { createProposal, createVoteBravo } from '../operations/create';
 import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateBravoProposalVotes,
   updateGovernanceEntity,
   updateProposalCanceled,
   updateProposalExecuted,
@@ -49,6 +50,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 
 export function handleBravoVoteCast(event: VoteCast): void {
   createVoteBravo(event);
+  updateBravoProposalVotes(event.params.proposalId, event.params.votes, event.params.support);
 }
 
 export function handleNewImplementation(event: NewImplementation): void {

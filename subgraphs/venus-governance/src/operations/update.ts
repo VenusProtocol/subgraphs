@@ -1,5 +1,7 @@
+import { BigInt } from '@graphprotocol/graph-ts';
+
 import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
-import { Governance } from '../../generated/schema';
+import { Governance, ProposalAction } from '../../generated/schema';
 import { BIGINT_ONE } from '../constants';
 import { governorBravoDelegatorAddress, nullAddress } from '../constants/addresses';
 import { getGovernanceId } from '../utilities/ids';
@@ -10,7 +12,13 @@ export function updateProposalCanceled<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  proposal.canceled = true;
+  const canceledAction = new ProposalAction(event.transaction.hash.toHexString());
+  canceledAction.blockNumber = event.block.number;
+  canceledAction.timestamp = event.block.timestamp;
+  canceledAction.txHash = event.transaction.hash;
+  canceledAction.save();
+
+  proposal.canceled = canceledAction.id;
   proposal.save();
 }
 
@@ -18,7 +26,13 @@ export function updateProposalQueued<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  proposal.queued = true;
+  const queuedAction = new ProposalAction(event.transaction.hash.toHexString());
+  queuedAction.blockNumber = event.block.number;
+  queuedAction.timestamp = event.block.timestamp;
+  queuedAction.txHash = event.transaction.hash;
+  queuedAction.save();
+
+  proposal.queued = queuedAction.id;
   proposal.executionEta = params.eta;
   proposal.save();
 }
@@ -27,7 +41,13 @@ export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  proposal.executed = true;
+  const executedAction = new ProposalAction(event.transaction.hash.toHexString());
+  executedAction.blockNumber = event.block.number;
+  executedAction.timestamp = event.block.timestamp;
+  executedAction.txHash = event.transaction.hash;
+  executedAction.save();
+
+  proposal.executed = executedAction.id;
   proposal.save();
 }
 
@@ -93,4 +113,28 @@ export function updateGovernanceEntity(): void {
   governance.guardian = governorBravoDelegate2.guardian();
   governance.proposalMaxOperations = governorBravoDelegate2.proposalMaxOperations();
   governance.save();
+}
+
+export function updateAlphaProposalVotes(id: BigInt, votes: BigInt, support: boolean): void {
+  const proposal = getProposal(id.toString());
+  if (support) {
+    proposal.forVotes = proposal.forVotes.plus(votes);
+  } else {
+    proposal.againstVotes = proposal.againstVotes.plus(votes);
+  }
+  proposal.passing = proposal.forVotes > proposal.againstVotes;
+  proposal.save();
+}
+
+export function updateBravoProposalVotes(id: BigInt, votes: BigInt, support: i32): void {
+  const proposal = getProposal(id.toString());
+  if (support == 0) {
+    proposal.againstVotes = proposal.againstVotes.plus(votes);
+  } else if (support == 1) {
+    proposal.forVotes = proposal.forVotes.plus(votes);
+  } else {
+    proposal.abstainVotes = proposal.abstainVotes.plus(votes);
+  }
+  proposal.passing = proposal.forVotes > proposal.againstVotes;
+  proposal.save();
 }

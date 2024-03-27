@@ -201,7 +201,7 @@ describe('Bravo', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('canceled', 'true');
+    assertProposalDocument('canceled', proposalCanceledEvent.transaction.hash.toHexString());
   });
 
   test('queue proposal', () => {
@@ -215,7 +215,7 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    assertProposalDocument('queued', 'true');
+    assertProposalDocument('queued', proposalQueuedEvent.transaction.hash.toHexString());
     assertProposalDocument('executionEta', eta.toString());
   });
 
@@ -233,7 +233,7 @@ describe('Bravo', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    assertProposalDocument('executed', 'true');
+    assertProposalDocument('executed', proposalExecutedEvent.transaction.hash.toHexString());
   });
 
   test('vote cast', () => {

@@ -4,7 +4,7 @@ import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers, network } from 'hardhat';
-import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
 import { SYNC_DELAY, mockAddress } from './utils/constants';
@@ -102,6 +102,11 @@ describe('GovernorBravo', function () {
       } = await subgraphClient.getProposalById('22');
       expect(proposal.votes.length).to.be.equal(2);
 
+      expect(proposal.againstVotes).to.be.equal(scaleValue(700000, 18).toFixed());
+      expect(proposal.forVotes).to.be.equal(scaleValue(200000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(false);
+
       const {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
@@ -131,7 +136,9 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('22');
 
-      expect(proposal.canceled).to.equal(true);
+      expect(typeof proposal.canceled.blockNumber).to.equal('string');
+      expect(typeof proposal.canceled.txHash).to.equal('string');
+      expect(typeof proposal.canceled.timestamp).to.equal('string');
     });
 
     it('should index queued proposal event', async function () {
@@ -171,8 +178,16 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('23');
 
-      expect(proposal.queued).to.equal(true);
+      expect(typeof proposal.queued.blockNumber).to.equal('string');
+      expect(typeof proposal.queued.txHash).to.equal('string');
+      expect(typeof proposal.queued.timestamp).to.equal('string');
       expect(proposal.executionEta).to.equal(eta.toString());
+
+      expect(proposal.againstVotes).to.be.equal('0');
+      expect(proposal.forVotes).to.be.equal(scaleValue(800000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
+
       await mine(1);
       await ethers.provider.send('evm_setNextBlockTimestamp', [eta]);
     });
@@ -186,7 +201,9 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('23');
 
-      expect(proposal.executed).to.equal(true);
+      expect(typeof proposal.executed.blockNumber).to.equal('string');
+      expect(typeof proposal.executed.txHash).to.equal('string');
+      expect(typeof proposal.executed.timestamp).to.equal('string');
     });
   });
 
@@ -305,6 +322,11 @@ describe('GovernorBravo', function () {
       } = await subgraphClient.getProposalById('1');
       expect(proposal.votes.length).to.be.equal(4);
 
+      expect(proposal.againstVotes).to.be.equal(scaleValue(100000, 18).toFixed());
+      expect(proposal.forVotes).to.be.equal(scaleValue(1000000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
+
       const {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
@@ -339,7 +361,9 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('24');
 
-      expect(proposal.canceled).to.equal(true);
+      expect(typeof proposal.canceled.blockNumber).to.equal('string');
+      expect(typeof proposal.canceled.txHash).to.equal('string');
+      expect(typeof proposal.canceled.timestamp).to.equal('string');
     });
 
     it('should index queued proposal event', async function () {
@@ -386,8 +410,16 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('25');
 
-      expect(proposal.queued).to.equal(true);
+      expect(typeof proposal.queued.blockNumber).to.equal('string');
+      expect(typeof proposal.queued.txHash).to.equal('string');
+      expect(typeof proposal.queued.timestamp).to.equal('string');
+
       expect(proposal.executionEta).to.equal(eta.toString());
+
+      expect(proposal.againstVotes).to.be.equal('0');
+      expect(proposal.forVotes).to.be.equal(scaleValue(800000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
 
       await mine(1);
       await ethers.provider.send('evm_setNextBlockTimestamp', [eta]);
@@ -402,7 +434,9 @@ describe('GovernorBravo', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('25');
 
-      expect(proposal.executed).to.equal(true);
+      expect(typeof proposal.executed.blockNumber).to.equal('string');
+      expect(typeof proposal.executed.txHash).to.equal('string');
+      expect(typeof proposal.executed.timestamp).to.equal('string');
     });
   });
 });

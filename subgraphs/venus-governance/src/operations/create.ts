@@ -3,7 +3,7 @@ import { Address, Bytes } from '@graphprotocol/graph-ts';
 import { VoteCast as VoteCastAlpha } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { VoteCast as VoteCastBravo } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { Proposal, Vote } from '../../generated/schema';
-import { ABSTAIN, AGAINST, BIGINT_ONE, FOR, NORMAL } from '../constants';
+import { ABSTAIN, AGAINST, BIGINT_ONE, BIGINT_ZERO, FOR, NORMAL } from '../constants';
 import { getVoteId } from '../utilities/ids';
 import { getGovernanceEntity, getProposal } from './get';
 import { getOrCreateDelegate } from './getOrCreate';
@@ -27,10 +27,11 @@ export function createProposal<E>(event: E): Proposal {
   proposal.startBlock = event.params.startBlock;
   proposal.endBlock = event.params.endBlock;
   proposal.description = event.params.description;
-  proposal.queued = false;
-  proposal.canceled = false;
-  proposal.executed = false;
   proposal.type = NORMAL;
+  proposal.forVotes = BIGINT_ZERO;
+  proposal.againstVotes = BIGINT_ZERO;
+  proposal.abstainVotes = BIGINT_ZERO;
+  proposal.passing = false;
 
   proposal.save();
 

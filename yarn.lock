@@ -15926,6 +15926,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vai-subgraph@workspace:subgraphs/vai":
+  version: 0.0.0-use.local
+  resolution: "vai-subgraph@workspace:subgraphs/vai"
+  dependencies:
+    apollo-fetch: ^0.7.0
+    urql: ^3.0.3
+    venus-subgraph-utils: 0.0.0
+  languageName: unknown
+  linkType: soft
+
 "validate-npm-package-license@npm:^3.0.1":
   version: 3.0.4
   resolution: "validate-npm-package-license@npm:3.0.4"
