@@ -14,6 +14,8 @@ import {
   handleAccrueInterest,
   handleBorrow,
   handleMint,
+  handleRedeem,
+  handleRepayBorrow,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import exponentToBigInt from '../../src/utilities/exponentToBigInt';
@@ -21,9 +23,11 @@ import {
   createAccrueInterestEvent,
   createBorrowEvent,
   createMintEvent,
+  createRedeemEvent,
+  createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
+import { createAccountVTokenBalanceOfMock, createVBep20Mock } from './mocks';
 
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
