@@ -4447,6 +4447,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/isolated-pools@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@venusprotocol/isolated-pools@npm:3.0.0"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: 1790bbf0cfc73f258d8c454f5e697f6a6b5d4c5272e9743aa7e253aae6cf73e01571a3403d595c366887129d8832547f488d9ef4628245088a9f26235d625418
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/isolated-pools@npm:^2.3.0":
   version: 2.4.0
   resolution: "@venusprotocol/isolated-pools@npm:2.4.0"
@@ -8059,6 +8075,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo":
+  version: 0.0.0-use.local
+  resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
+  dependencies:
+    "@venusprotocol/isolated-pools": 3.0.0
+  languageName: unknown
+  linkType: soft
+
 "ethers@npm:^4.0.32":
   version: 4.0.49
   resolution: "ethers@npm:4.0.49"
@@ -10619,6 +10643,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "isolated-pools-subgraph@workspace:subgraphs/isolated-pools"
   dependencies:
+    "@venusprotocol/isolated-pools": 2.5.0
     apollo-fetch: ^0.7.0
     urql: ^3.0.3
     venus-subgraph-utils: 0.0.0
@@ -14865,7 +14890,6 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 1.4.0
-    "@venusprotocol/isolated-pools": 2.5.0
     "@venusprotocol/oracle": ^1.9.0
     "@venusprotocol/protocol-reserve": 1.4.0
     "@venusprotocol/venus-protocol": 7.2.0
@@ -15909,6 +15933,17 @@ __metadata:
   checksum: 78089ad549e21bcdbfca10c08850022b22024cdcc2da9b168bcf5a73a6ed7bf01a9cebb9eac28e03cd23a684d81e0502797e88f3ccd27a32aeab1cfc44c39da0
   languageName: node
   linkType: hard
+
+"vai-subgraph@workspace:subgraphs/vai":
+  version: 0.0.0-use.local
+  resolution: "vai-subgraph@workspace:subgraphs/vai"
+  dependencies:
+    "@venusprotocol/venus-protocol": 5.2.0
+    apollo-fetch: ^0.7.0
+    urql: ^3.0.3
+    venus-subgraph-utils: 0.0.0
+  languageName: unknown
+  linkType: soft
 
 "validate-npm-package-license@npm:^3.0.1":
   version: 3.0.4
