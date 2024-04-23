@@ -8,8 +8,8 @@ export const mockPriceOracleAddress = Address.fromString(
 export const createVBep20Mock = (contractAddress: Address, exchangeRateCurrent: BigInt): void => {
   createMockedFunction(
     contractAddress,
-    'exchangeRateStored',
-    'exchangeRateStored():(uint256)',
+    'exchangeRateCurrent',
+    'exchangeRateCurrent():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(exchangeRateCurrent)]);
 };
 
