@@ -107,6 +107,7 @@ describe('VToken', () => {
     const minter = user1Address;
     const actualMintAmount = BigInt.fromString('124620530798726345');
     const mintTokens = BigInt.fromString('37035970026454');
+
     const accountBalance = mintTokens;
     const mintEvent = createMintEvent(
       aaaTokenAddress,
@@ -115,13 +116,26 @@ describe('VToken', () => {
       mintTokens,
       accountBalance,
     );
-    const market = getMarket(aaaTokenAddress);
+    const market = getMarket(aaaTokenAddress)!;
     assert.assertNotNull(market);
-    if (!market) {
-      return;
-    }
 
     handleMint(mintEvent);
+
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, minter);
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingSuppliedMantissa',
+      actualMintAmount.toString(),
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalanceMantissa',
+      mintTokens.toString(),
+    );
   });
 
   test('registers redeem event', () => {
@@ -129,6 +143,25 @@ describe('VToken', () => {
     const actualRedeemAmount = BigInt.fromString('124620530798726345');
     const redeemTokens = BigInt.fromString('37035970026454');
     const accountBalance = redeemTokens;
+
+    const mintEvent = createMintEvent(
+      aaaTokenAddress,
+      redeemer,
+      actualRedeemAmount,
+      redeemTokens,
+      accountBalance,
+    );
+    handleMint(mintEvent);
+
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, redeemer);
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingSuppliedMantissa',
+      mintEvent.params.mintAmount.toString(),
+    );
+
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
       redeemer,
@@ -136,13 +169,28 @@ describe('VToken', () => {
       redeemTokens,
       accountBalance,
     );
-    const market = getMarket(aaaTokenAddress);
+    const market = getMarket(aaaTokenAddress)!;
     assert.assertNotNull(market);
-    if (!market) {
-      return;
-    }
 
     handleRedeem(redeemEvent);
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'accrualBlockNumber',
+      redeemEvent.block.number.toString(),
+    );
+
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'vTokenBalanceMantissa', '0');
+
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingSuppliedMantissa', '0');
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingRedeemedMantissa',
+      redeemEvent.params.redeemAmount.toString(),
+    );
   });
 
   test('registers borrow event', () => {
@@ -189,6 +237,13 @@ describe('VToken', () => {
       accountVTokenId,
       'accrualBlockNumber',
       borrowEvent.block.number.toString(),
+    );
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingBorrowedMantissa',
+      borrowAmount.toString(),
     );
 
     assert.fieldEquals(
@@ -254,6 +309,8 @@ describe('VToken', () => {
       'accountBorrowIndexMantissa',
       market.borrowIndexMantissa.toString(),
     );
+
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingBorrowedMantissa', '0');
   });
 
   test('registers liquidate borrow event', () => {
@@ -340,9 +397,25 @@ describe('VToken', () => {
   test('registers transfer from event', () => {
     /** Constants */
     const from = user1Address; // 101
-    const to = aaaTokenAddress;
-    const amount = BigInt.fromString('146205398726345');
+    const to = user2Address;
+
+    const actualMintAmount = BigInt.fromString('124620530798726345');
+    const mintTokens = BigInt.fromString('37035970026454');
+
+    const accountBalance = mintTokens;
+
+    const amount = BigInt.fromString('146205398723');
     const balanceOf = BigInt.fromString('262059874253345');
+
+    const mintEvent = createMintEvent(
+      aaaTokenAddress,
+      from,
+      actualMintAmount,
+      mintTokens,
+      accountBalance,
+    );
+
+    handleMint(mintEvent);
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
@@ -359,43 +432,56 @@ describe('VToken', () => {
         ethereum.Value.fromSignedBigInt(oneBigInt),
       ]);
 
+    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, from);
+    /** AccountVToken */
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalanceMantissa',
+      mintTokens.toString(),
+    );
+    const market = getMarket(aaaTokenAddress)!;
+
+    const amountUnderlying = market.exchangeRateMantissa
+      .times(amount)
+      .div(BigInt.fromI64(1000000000000000000));
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingSuppliedMantissa',
+      actualMintAmount.toString(),
+    );
+
     /** Fire Event */
     handleTransfer(transferEvent);
-
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, from);
 
     /** AccountVToken */
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
+      'vTokenBalanceMantissa',
+      mintTokens.minus(amount).toString(),
     );
-
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
 
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'totalUnderlyingRedeemedMantissa',
-      '53371670178204461670',
+      'totalUnderlyingSuppliedMantissa',
+      actualMintAmount.minus(amountUnderlying).toString(),
     );
   });
 
   test('registers transfer to event', () => {
     /** Constants */
     const amount = BigInt.fromString('5246205398726345');
-    const from = aaaTokenAddress;
+    const from = user1Address;
     const to = user2Address;
     const balanceOf = BigInt.fromString('262059874253345');
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createAccountVTokenBalanceOfMock(
-      aaaTokenAddress,
-      aaaTokenAddress, // something is wrong with this test
-      balanceOf,
-    );
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, balanceOf);
     createMockedFunction(
       aaaTokenAddress,
       'getAccountSnapshot',
@@ -422,7 +508,24 @@ describe('VToken', () => {
       transferEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalanceMantissa',
+      amount.plus(balanceOf).toString(),
+    );
+
+    const market = getMarket(aaaTokenAddress)!;
+    const amountUnderlying = market.exchangeRateMantissa
+      .times(amount)
+      .div(BigInt.fromI64(1000000000000000000));
+
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'totalUnderlyingSuppliedMantissa',
+      amountUnderlying.toString(),
+    );
   });
 
   test('registers new interest rate model', () => {
