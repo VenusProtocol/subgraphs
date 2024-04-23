@@ -4295,6 +4295,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/isolated-pools@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@venusprotocol/isolated-pools@npm:3.0.0"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: 1790bbf0cfc73f258d8c454f5e697f6a6b5d4c5272e9743aa7e253aae6cf73e01571a3403d595c366887129d8832547f488d9ef4628245088a9f26235d625418
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/isolated-pools@npm:3.2.0-dev.10":
   version: 3.2.0-dev.10
   resolution: "@venusprotocol/isolated-pools@npm:3.2.0-dev.10"
@@ -7381,6 +7397,14 @@ __metadata:
   checksum: 27a3c79d6e06b2df34b80d478ce465b371c8458b58f5afc14d91c8564c13363ad336e6e83f57eb0bd719fde94d10ee5697ceef78b5aa932087150c5287b286d1
   languageName: node
   linkType: hard
+
+"etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo":
+  version: 0.0.0-use.local
+  resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
+  dependencies:
+    "@venusprotocol/isolated-pools": 3.0.0
+  languageName: unknown
+  linkType: soft
 
 "ethers@npm:^5.6.8, ethers@npm:^5.7.0, ethers@npm:^5.7.2":
   version: 5.7.2
