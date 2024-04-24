@@ -34,6 +34,9 @@
     "test": "yarn prepare:docker && graph test",
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
+  "dependencies": {
+    "@venusprotocol/isolated-pools": "2.5.0"
+  },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.71.0",
