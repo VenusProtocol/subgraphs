@@ -59,23 +59,20 @@ export function handleTransfer(event: Transfer): void {
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
   const fromAccountAddress = event.params.from;
-  if (fromAccountAddress != nullAddress) {
-    const supplierAccount = getSupplierAccount(fromAccountAddress)!;
+  if (fromAccountAddress != nullAddress && fromAccountAddress != event.address) {
+    const fromAccount = getSupplierAccount(fromAccountAddress)!;
     updateSupplierAccount(
       fromAccountAddress,
-      supplierAccount.effective_balance.minus(amountUnderlying),
+      fromAccount.effective_balance.minus(amountUnderlying),
     );
-  }
-  // To
-  const toAccountAddress = event.params.to;
-  const supplierAccount = getSupplierAccount(toAccountAddress);
-  if (supplierAccount) {
-    updateSupplierAccount(
-      toAccountAddress,
-      supplierAccount.effective_balance.plus(amountUnderlying),
-    );
-  } else if (toAccountAddress != event.address) {
-    createSupplierAccount(toAccountAddress, amountUnderlying);
+    // To
+    const toAccountAddress = event.params.to;
+    const toAccount = getSupplierAccount(toAccountAddress);
+    if (toAccount) {
+      updateSupplierAccount(toAccountAddress, toAccount.effective_balance.plus(amountUnderlying));
+    } else if (toAccountAddress != event.address) {
+      createSupplierAccount(toAccountAddress, amountUnderlying);
+    }
   }
 }
 
