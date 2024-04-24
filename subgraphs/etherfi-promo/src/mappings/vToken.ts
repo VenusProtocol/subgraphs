@@ -55,11 +55,7 @@ export function handleTransfer(event: Transfer): void {
   // If the to account is the vToken address we assume it was a redeem
   const toAccountAddress = event.params.to;
 
-  if (
-    fromAccountAddress != nullAddress &&
-    fromAccountAddress != event.address &&
-    toAccountAddress != event.address
-  ) {
+  if (fromAccountAddress != nullAddress && fromAccountAddress != event.address) {
     const vTokenContract = VTokenContract.bind(event.address);
     const exchangeRateMantissa = vTokenContract.exchangeRateCurrent();
     const amountUnderlying = exchangeRateMantissa
