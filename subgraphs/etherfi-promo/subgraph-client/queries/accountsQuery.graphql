@@ -1,0 +1,12 @@
+query Accounts {
+  supplierAccounts {
+    id
+    address
+    effective_balance
+  }
+  borrowerAccounts {
+    id
+    address
+    effective_balance
+  }
+}

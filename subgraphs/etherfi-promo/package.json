@@ -21,6 +21,7 @@
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
     "test": "graph test",
     "test:integration": "true"
   },
