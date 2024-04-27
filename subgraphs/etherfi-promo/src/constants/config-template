@@ -1,3 +1,4 @@
 // Use yarn prepare commands to generate config typescript file per env
 
-export const vWeEthAddress = '{{ weEth }}';
+export const vWeEthAddress = '{{ vWeEthAddress }}';
+export const weEthAddress = '{{ weEthAddress }}';

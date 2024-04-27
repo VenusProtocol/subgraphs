@@ -18,17 +18,20 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      weEth: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      vWeEthAddress: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      weEthAddress: '0x3b8b6E96e57f0d1cD366AaCf4CcC68413aF308D0',
       startBlock: '0',
     },
     sepolia: {
       network: 'sepolia',
-      weEth: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      vWeEthAddress: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      weEthAddress: '0x3b8b6E96e57f0d1cD366AaCf4CcC68413aF308D0',
       startBlock: '5659827',
     },
     ethereum: {
       network: 'mainnet',
-      weEth: ethereumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      vWeEthAddress: ethereumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      weEthAddress: '0xCd5fE23C85820F7B72D0926FC9b05b43E359b7ee',
       startBlock: '19076099',
     },
   };

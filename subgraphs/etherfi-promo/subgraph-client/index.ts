@@ -13,7 +13,7 @@ class SubgraphClient {
     });
   }
 
-  async query(document: DocumentNode, args: Record<string, string>) {
+  async query(document: DocumentNode, args: Record<string, string | number>) {
     const result = await this.urqlClient.query(document, args).toPromise();
     if (result.error) {
       console.error(result.error);
@@ -21,8 +21,8 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccounts() {
-    const result = await this.query(AccountsDocument, {});
+  async getAccounts(blockNumber: number) {
+    const result = await this.query(AccountsDocument, { blockNumber });
     return result;
   }
 }

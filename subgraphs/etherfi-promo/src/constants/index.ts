@@ -12,3 +12,4 @@ export const nullAddress = Address.fromString('0x0000000000000000000000000000000
 
 export const SUPPLY = 'SUPPLY';
 export const BORROW = 'BORROW';
+export const TOTAL_VALUE_LOCKED = 'TOTAL_VALUE_LOCKED';

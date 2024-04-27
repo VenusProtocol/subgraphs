@@ -1,7 +1,18 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-import { Borrow, BorrowerAccount, SupplierAccount, Supply } from '../../generated/schema';
-import { BORROW, SUPPLY } from '../constants';
+import { Borrow, BorrowerAccount, SupplierAccount, Supply, TVL } from '../../generated/schema';
+import { BORROW, SUPPLY, TOTAL_VALUE_LOCKED, zeroBigInt32 } from '../constants';
+
+export const getTvl = (): TVL => {
+  let tvl = TVL.load(TOTAL_VALUE_LOCKED);
+  if (!tvl) {
+    tvl = new TVL(TOTAL_VALUE_LOCKED);
+    tvl.tvl = zeroBigInt32;
+    tvl.save();
+  }
+  tvl.save();
+  return tvl;
+};
 
 export const getSupply = (): Supply => {
   let supply = Supply.load(SUPPLY);
