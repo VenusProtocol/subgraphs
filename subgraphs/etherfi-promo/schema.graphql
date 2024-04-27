@@ -1,4 +1,12 @@
 """
+TVL
+"""
+type TVL @entity {
+    id: ID!
+    tvl: BigInt!
+}
+
+"""
 Entity to iterate over suppliers
 """
 type Supply @entity {

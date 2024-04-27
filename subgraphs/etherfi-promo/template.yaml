@@ -8,7 +8,7 @@ dataSources:
     name: vWeETH
     network: {{ network }}
     source:
-      address: "{{ weEth }}"
+      address: "{{ vWeEthAddress }}"
       abi: VToken
       startBlock: {{ startBlock }}
     mapping:
@@ -22,6 +22,8 @@ dataSources:
       abis:
         - name: VToken
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/test/ERC20.sol/ERC20.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256,uint256)
           handler: handleMint
