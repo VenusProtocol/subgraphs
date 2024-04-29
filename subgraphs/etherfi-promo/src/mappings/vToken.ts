@@ -1,53 +1,28 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-import {
-  AccrueInterest,
-  Borrow,
-  Mint,
-  Redeem,
-  RepayBorrow,
-  Transfer,
-} from '../../generated/vWeETH/VToken';
+import { AccrueInterest, Borrow, Mint, Transfer } from '../../generated/vWeETH/VToken';
 import { VToken as VTokenContract } from '../../generated/vWeETH/VToken';
 import { nullAddress } from '../constants';
 import { vWeEthAddress } from '../constants/addresses';
 import { createBorrowerAccount, createSupplierAccount } from '../operations/create';
 import { getBorrow, getBorrowerAccount, getSupplierAccount, getSupply } from '../operations/get';
-import { updateBorrowerAccount, updateSupplierAccount, updateTvl } from '../operations/update';
+import { updateSupplierAccount, updateTvl } from '../operations/update';
 import exponentToBigInt from '../utilities/exponentToBigInt';
 
 export function handleMint(event: Mint): void {
   const minter = event.params.minter;
   const supplierAccount = getSupplierAccount(minter);
-  if (supplierAccount) {
-    updateSupplierAccount(minter, supplierAccount.effective_balance.plus(event.params.mintAmount));
-  } else {
+  if (!supplierAccount) {
     createSupplierAccount(minter, event.params.mintAmount);
   }
-}
-
-export function handleRedeem(event: Redeem): void {
-  const redeemer = event.params.redeemer;
-  const supplierAccount = getSupplierAccount(redeemer)!;
-  updateSupplierAccount(
-    redeemer,
-    supplierAccount.effective_balance.minus(event.params.redeemAmount),
-  );
 }
 
 export function handleBorrow(event: Borrow): void {
   const borrower = event.params.borrower;
   const borrowerAccount = getBorrowerAccount(borrower);
-  if (borrowerAccount) {
-    updateBorrowerAccount(borrower, event.params.accountBorrows);
-  } else {
+  if (!borrowerAccount) {
     createBorrowerAccount(borrower, event.params.accountBorrows);
   }
-}
-
-export function handleRepayBorrow(event: RepayBorrow): void {
-  const borrower = event.params.borrower;
-  updateBorrowerAccount(borrower, event.params.accountBorrows);
 }
 
 export function handleTransfer(event: Transfer): void {

@@ -9,13 +9,11 @@ import {
 } from 'matchstick-as/assembly/index';
 
 import { zeroBigInt32 } from '../../src/constants';
-import { vWeEthAddress } from '../../src/constants/addresses';
+import { vWeEthAddress, weEthAddress } from '../../src/constants/addresses';
 import {
   handleAccrueInterest,
   handleBorrow,
   handleMint,
-  handleRedeem,
-  handleRepayBorrow,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import exponentToBigInt from '../../src/utilities/exponentToBigInt';
@@ -23,16 +21,15 @@ import {
   createAccrueInterestEvent,
   createBorrowEvent,
   createMintEvent,
-  createRedeemEvent,
-  createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createVBep20Mock } from './mocks';
+import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
 
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
 const exchangeRateCurrent = BigInt.fromU64(2000000000000000000);
 const vTokenAddress = vWeEthAddress;
+const underlyingAddress = weEthAddress;
 
 const cleanup = (): void => {
   clearStore();
@@ -71,41 +68,6 @@ describe('VToken', () => {
     );
   });
 
-  test('registers redeem event', () => {
-    /** Constants */
-    const redeemer = user2Address;
-    const actualRedeemAmount = BigInt.fromString('5000000000000000000');
-    const redeemTokens = BigInt.fromString('25000000000000000000');
-    const accountBalance = zeroBigInt32;
-    /** Setup test */
-    const redeemEvent = createRedeemEvent(
-      vTokenAddress,
-      redeemer,
-      actualRedeemAmount,
-      redeemTokens,
-      accountBalance,
-    );
-    const mintEvent = createMintEvent(
-      vTokenAddress,
-      redeemer,
-      actualRedeemAmount,
-      redeemTokens,
-      accountBalance,
-    );
-
-    handleMint(mintEvent);
-
-    /** Fire Event */
-    handleRedeem(redeemEvent);
-    assert.fieldEquals(
-      'SupplierAccount',
-      redeemer.toHexString(),
-      'address',
-      redeemer.toHexString(),
-    );
-    assert.fieldEquals('SupplierAccount', redeemer.toHexString(), 'effective_balance', '0');
-  });
-
   test('registers borrow event', () => {
     /** Constants */
     const borrower = user1Address;
@@ -139,57 +101,13 @@ describe('VToken', () => {
     );
   });
 
-  test('registers repay borrow event', () => {
-    /** Constants */
-    const borrower = user1Address;
-    const payer = user1Address;
-    const borrowAmount = BigInt.fromString('2000000000000000000');
-    const accountBorrows = BigInt.fromString('4000000000000000000');
-    const totalBorrows = BigInt.fromString('80000000000000000000');
-
-    /** Setup test */
-    const borrowEvent = createBorrowEvent(
-      vTokenAddress,
-      borrower,
-      borrowAmount,
-      accountBorrows,
-      totalBorrows,
-    );
-
-    /** Fire Event */
-    handleBorrow(borrowEvent);
-    const repayBorrowEvent = createRepayBorrowEvent(
-      vTokenAddress,
-      payer,
-      borrower,
-      borrowAmount,
-      accountBorrows,
-      totalBorrows,
-    );
-
-    /** Fire Event */
-    handleRepayBorrow(repayBorrowEvent);
-
-    assert.fieldEquals(
-      'BorrowerAccount',
-      borrower.toHexString(),
-      'address',
-      borrower.toHexString(),
-    );
-    assert.fieldEquals(
-      'BorrowerAccount',
-      borrower.toHexString(),
-      'effective_balance',
-      accountBorrows.toString(),
-    );
-  });
-
   test('registers accrue interest event', () => {
     /** Constants */
     const cashPrior = BigInt.fromString('3000000000000000000');
     const interestAccumulated = BigInt.fromI32(26454);
     const borrowIndex = BigInt.fromI32(1);
     const totalBorrows = BigInt.fromString('80000000000000000000');
+    const reserves = BigInt.fromString('2000000000000000000');
 
     /** Setup test */
     const minter = user1Address;
@@ -218,9 +136,23 @@ describe('VToken', () => {
       accountBorrows,
       totalBorrows,
     );
-
-    createAccountVTokenBalanceOfMock(vTokenAddress, user1Address, zeroBigInt32, accountBorrows);
-    createAccountVTokenBalanceOfMock(vTokenAddress, user2Address, zeroBigInt32, accountBorrows);
+    createBep20Mock(underlyingAddress, vTokenAddress, cashPrior);
+    createAccountVTokenBalanceOfMock(
+      vTokenAddress,
+      user1Address,
+      zeroBigInt32,
+      accountBorrows,
+      totalBorrows,
+      reserves,
+    );
+    createAccountVTokenBalanceOfMock(
+      vTokenAddress,
+      user2Address,
+      zeroBigInt32,
+      accountBorrows,
+      totalBorrows,
+      reserves,
+    );
 
     /** Fire Event */
     handleBorrow(borrowEvent);
@@ -242,12 +174,7 @@ describe('VToken', () => {
       'address',
       user1Address.toHexString(),
     );
-    assert.fieldEquals(
-      'SupplierAccount',
-      user1Address.toHexString(),
-      'effective_balance',
-      '10000000000000000000',
-    );
+    assert.fieldEquals('SupplierAccount', user1Address.toHexString(), 'effective_balance', '0');
 
     assert.fieldEquals(
       'BorrowerAccount',
