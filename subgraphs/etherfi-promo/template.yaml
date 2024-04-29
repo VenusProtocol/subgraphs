@@ -27,12 +27,8 @@ dataSources:
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256,uint256)
           handler: handleMint
-        - event: Redeem(indexed address,uint256,uint256,uint256)
-          handler: handleRedeem
         - event: Borrow(indexed address,uint256,uint256,uint256)
           handler: handleBorrow
-        - event: RepayBorrow(indexed address,indexed address,uint256,uint256,uint256)
-          handler: handleRepayBorrow
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransfer
         - event: AccrueInterest(uint256,uint256,uint256,uint256)

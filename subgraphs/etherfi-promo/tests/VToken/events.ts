@@ -5,8 +5,6 @@ import {
   AccrueInterest as AccrueInterestEvent,
   Borrow as BorrowEvent,
   Mint as MintEvent,
-  Redeem as RedeemEvent,
-  RepayBorrow as RepayBorrowEvent,
   Transfer as TransferEvent,
 } from '../../generated/vWeETH/VToken';
 
@@ -45,44 +43,6 @@ export const createMintEvent = (
   return event;
 };
 
-export const createRedeemEvent = (
-  vTokenAddress: Address,
-  redeemerAddress: Address,
-  redeemAmount: BigInt,
-  redeemTokens: BigInt,
-  accountBalance: BigInt,
-): RedeemEvent => {
-  const event = changetype<RedeemEvent>(newMockEvent());
-  event.address = vTokenAddress;
-  event.parameters = [];
-
-  const redeemerParam = new ethereum.EventParam(
-    'redeemer',
-    ethereum.Value.fromAddress(redeemerAddress),
-  );
-  event.parameters.push(redeemerParam);
-
-  const redeemAmountParam = new ethereum.EventParam(
-    'redeemAmount',
-    ethereum.Value.fromUnsignedBigInt(redeemAmount),
-  );
-  event.parameters.push(redeemAmountParam);
-
-  const redeemTokensParam = new ethereum.EventParam(
-    'redeemTokens',
-    ethereum.Value.fromUnsignedBigInt(redeemTokens),
-  );
-  event.parameters.push(redeemTokensParam);
-
-  const accountBalanceParam = new ethereum.EventParam(
-    'accountBalance',
-    ethereum.Value.fromUnsignedBigInt(accountBalance),
-  );
-  event.parameters.push(accountBalanceParam);
-
-  return event;
-};
-
 export const createBorrowEvent = (
   vTokenAddress: Address,
   borrowerAddress: Address,
@@ -105,48 +65,6 @@ export const createBorrowEvent = (
     ethereum.Value.fromUnsignedBigInt(borrowAmount),
   );
   event.parameters.push(borrowAmountParam);
-
-  const accountBorrowsParam = new ethereum.EventParam(
-    'accountBorrows',
-    ethereum.Value.fromUnsignedBigInt(accountBorrows),
-  );
-  event.parameters.push(accountBorrowsParam);
-
-  const totalBorrowsParam = new ethereum.EventParam(
-    'totalBorrows',
-    ethereum.Value.fromUnsignedBigInt(totalBorrows),
-  );
-  event.parameters.push(totalBorrowsParam);
-
-  return event;
-};
-
-export const createRepayBorrowEvent = (
-  vTokenAddress: Address,
-  payerAddress: Address,
-  borrowerAddress: Address,
-  repayAmount: BigInt,
-  accountBorrows: BigInt,
-  totalBorrows: BigInt,
-): RepayBorrowEvent => {
-  const event = changetype<RepayBorrowEvent>(newMockEvent());
-  event.address = vTokenAddress;
-  event.parameters = [];
-
-  const payerParam = new ethereum.EventParam('payer', ethereum.Value.fromAddress(payerAddress));
-  event.parameters.push(payerParam);
-
-  const borrowerParam = new ethereum.EventParam(
-    'borrower',
-    ethereum.Value.fromAddress(borrowerAddress),
-  );
-  event.parameters.push(borrowerParam);
-
-  const repayAmountParam = new ethereum.EventParam(
-    'repayAmount',
-    ethereum.Value.fromUnsignedBigInt(repayAmount),
-  );
-  event.parameters.push(repayAmountParam);
 
   const accountBorrowsParam = new ethereum.EventParam(
     'accountBorrows',

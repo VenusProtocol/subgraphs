@@ -13,15 +13,35 @@ export const createVBep20Mock = (contractAddress: Address, exchangeRateCurrent: 
   ).returns([ethereum.Value.fromUnsignedBigInt(exchangeRateCurrent)]);
 };
 
+export const createBep20Mock = (
+  contractAddress: Address,
+  accountAddress: Address,
+  balanceOf: BigInt,
+): void => {
+  createMockedFunction(contractAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+    .withArgs([ethereum.Value.fromAddress(accountAddress)])
+    .returns([ethereum.Value.fromUnsignedBigInt(balanceOf)]);
+};
+
 export const createAccountVTokenBalanceOfMock = (
   vTokenAddress: Address,
   accountAddress: Address,
   balance: BigInt,
   borrowBalanceStored: BigInt,
+  totalBorrows: BigInt,
+  totalReserves: BigInt,
 ): void => {
   createMockedFunction(vTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromSignedBigInt(balance)]);
+
+  createMockedFunction(vTokenAddress, 'totalBorrows', 'totalBorrows():(uint256)').returns([
+    ethereum.Value.fromSignedBigInt(totalBorrows),
+  ]);
+
+  createMockedFunction(vTokenAddress, 'totalReserves', 'totalReserves():(uint256)').returns([
+    ethereum.Value.fromSignedBigInt(totalReserves),
+  ]);
 
   createMockedFunction(
     vTokenAddress,
