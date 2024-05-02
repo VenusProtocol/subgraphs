@@ -1,4 +1,4 @@
-pragma solidity 0.8.13;
+pragma solidity 0.8.25;
 
 import { ResilientOracleInterface } from '../../oracle/contracts/interfaces/OracleInterface.sol';
 import 'hardhat/console.sol';

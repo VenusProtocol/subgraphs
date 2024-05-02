@@ -31,7 +31,7 @@ dataSources:
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/legacy/PoolLensR1.sol/PoolLensR1.json
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
@@ -70,7 +70,7 @@ templates:
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/legacy/PoolLensR1.sol/PoolLensR1.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: RewardsDistributor
@@ -124,7 +124,7 @@ templates:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
         - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/legacy/PoolLensR1.sol/PoolLensR1.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256,uint256)
           handler: handleMint

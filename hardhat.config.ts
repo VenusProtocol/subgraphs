@@ -34,44 +34,22 @@ const compilers = {
       },
     },
     {
-      version: '0.8.13',
+      version: "0.8.25",
       settings: {
         optimizer: {
           enabled: true,
+          details: {
+            yul: !process.env.CI,
+          },
         },
+        evmVersion: "paris",
         outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
+          "*": {
+            "*": ["storageLayout"],
           },
         },
       },
     },
-    {
-      version: '0.8.17',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
-    {
-      version: '0.8.20',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    }
   ],
 }
 
