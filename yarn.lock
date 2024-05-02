@@ -15280,7 +15280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-node@npm:^10.9.1":
+"ts-node@npm:^10.9.1, ts-node@npm:^10.9.2":
   version: 10.9.2
   resolution: "ts-node@npm:10.9.2"
   dependencies:
@@ -15930,6 +15930,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "vai-subgraph@workspace:subgraphs/vai"
   dependencies:
+    "@graphprotocol/graph-cli": ^0.67.1
+    "@venusprotocol/venus-protocol": 5.2.0
     apollo-fetch: ^0.7.0
     urql: ^3.0.3
     venus-subgraph-utils: 0.0.0
@@ -16002,8 +16004,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "venus-subgraph@workspace:subgraphs/venus"
   dependencies:
+    "@graphprotocol/graph-cli": ^0.67.1
     "@venusprotocol/venus-protocol": 5.2.0
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
+    ts-node: ^10.9.2
   languageName: unknown
   linkType: soft
 

@@ -45,8 +45,6 @@ import {
  *    AccrueInterest is emitted before Mint
  *    Transfer event is emitted after Mint if successful
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
- *    No need to updateCommonVTokenStats, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
@@ -80,8 +78,6 @@ export function handleMint(event: Mint): void {
  *  Notes
  *    Transfer event will always get emitted with this
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
- *    No need to updateCommonVTokenStats, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;

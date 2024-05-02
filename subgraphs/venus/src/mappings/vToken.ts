@@ -20,6 +20,7 @@ import {
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { Mint, MintBehalf, Redeem } from '../../generated/templates/VTokenUpdatedEvents/VToken';
 import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
+import { nullAddress } from '../constants/addresses';
 import {
   createBorrowEvent,
   createLiquidationEvent,
@@ -51,8 +52,6 @@ import { exponentToBigInt } from '../utilities/exponentToBigInt';
  * Notes
  *    Transfer event will always get emitted with this
  *    Mints originate from the vToken address, not 0x000000, which is typical of ERC-20s
- *    No need to update AccountVToken, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleMint(event: Mint): void {
   const marketAddress = event.address;
@@ -70,6 +69,17 @@ export function handleMint(event: Mint): void {
   market.save();
 
   createMintEvent<Mint>(event);
+
+  const account = getOrCreateAccount(event.params.minter.toHex());
+  account.save();
+
+  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.plus(
+    event.params.mintTokens,
+  );
+  accountVToken.totalUnderlyingSuppliedMantissa =
+    accountVToken.totalUnderlyingSuppliedMantissa.plus(event.params.mintAmount);
+  accountVToken.save();
 }
 
 export function handleMintBehalf(event: MintBehalf): void {
@@ -88,6 +98,17 @@ export function handleMintBehalf(event: MintBehalf): void {
   market.save();
 
   createMintBehalfEvent<MintBehalf>(event);
+
+  const account = getOrCreateAccount(event.params.receiver.toHex());
+  account.save();
+
+  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
+    event.params.mintTokens,
+  );
+  accountVToken.totalUnderlyingSuppliedMantissa =
+    accountVToken.totalUnderlyingSuppliedMantissa.plus(event.params.mintAmount);
+  accountVToken.save();
 }
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
@@ -99,8 +120,6 @@ export function handleMintBehalf(event: MintBehalf): void {
  *
  *  Notes
  *    Transfer event will always get emitted with this
- *    No need to update AccountVToken, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleRedeem(event: Redeem): void {
   const marketAddress = event.address;
@@ -120,6 +139,18 @@ export function handleRedeem(event: Redeem): void {
   market.save();
 
   createRedeemEvent<Redeem>(event);
+
+  const account = getOrCreateAccount(event.params.redeemer.toHex());
+
+  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
+    event.params.redeemTokens,
+  );
+  accountVToken.totalUnderlyingSuppliedMantissa =
+    accountVToken.totalUnderlyingSuppliedMantissa.minus(event.params.redeemAmount);
+  accountVToken.totalUnderlyingRedeemedMantissa =
+    accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
+  accountVToken.save();
 }
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
@@ -247,13 +278,8 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
  * event.params.amount = amount sent
  *
  * Notes
- *    Possible ways to emit Transfer:
- *      seize() - i.e. a Liquidation Transfer (does not emit anything else)
- *      redeemFresh() - i.e. redeeming your vTokens for underlying asset
- *      mintFresh() - i.e. you are lending underlying assets to create vtokens
- *      transfer() - i.e. a basic transfer
- *    This const handles all 4 cases. Transfer is emitted alongside the mint, redeem, and seize
- *    events. So for those events, we do not update vToken balances.
+ *    This handler on handles the transfer of vTokens between user accounts.
+ *    Transfer events emitted by mint, redeem, and seize are handled by their respective handlers.
  */
 export function handleTransfer(event: Transfer): void {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
@@ -264,10 +290,16 @@ export function handleTransfer(event: Transfer): void {
     .times(event.params.amount)
     .div(exponentToBigInt(18));
 
-  // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
-  // If so, it is a mint, and we don't need to run these calculations
   let accountFromAddress = event.params.from;
-  if (accountFromAddress != Address.fromString(market.id)) {
+  let accountToAddress = event.params.to;
+  // Checking if the tx is FROM the vToken contract or null (i.e. this will not run when minting)
+  // Checking if the tx is TO the vToken contract (i.e. this will not run when redeeming)
+  // @TODO Edge case where someone who accidentally sends vTokens to a vToken contract, where it will not get recorded.
+  if (
+    accountFromAddress != Address.fromString(market.id) &&
+    accountFromAddress != nullAddress &&
+    accountToAddress != Address.fromString(market.id)
+  ) {
     const accountFrom = getOrCreateAccount(accountFromAddress.toHex());
     const accountFromVToken = getOrCreateAccountVToken(
       market.id,
@@ -278,19 +310,12 @@ export function handleTransfer(event: Transfer): void {
     accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
       event.params.amount,
     );
-    accountFromVToken.totalUnderlyingRedeemedMantissa =
-      accountFromVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlying);
+    accountFromVToken.totalUnderlyingSuppliedMantissa =
+      accountFromVToken.totalUnderlyingSuppliedMantissa.minus(amountUnderlying);
     accountFromVToken.save();
 
     getOrCreateAccountVTokenTransaction(accountFromVToken.id, event);
-  }
 
-  // Checking if the tx is TO the vToken contract (i.e. this will not run when redeeming)
-  // If so, we ignore it. this leaves an edge case, where someone who accidentally sends
-  // vTokens to a vToken contract, where it will not get recorded. Right now it would
-  // be messy to include, so we are leaving it out for now TODO fix this in future
-  let accountToAddress = event.params.to;
-  if (accountToAddress != Address.fromString(market.id)) {
     const accountTo = getOrCreateAccount(accountToAddress.toHex());
     const accountToVToken = getOrCreateAccountVToken(market.id, market.symbol, accountTo.id, event);
     accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
