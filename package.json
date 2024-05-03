@@ -48,11 +48,11 @@
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "1.4.0",
-    "@venusprotocol/isolated-pools": "2.6.0",
-    "@venusprotocol/oracle": "^1.9.0",
-    "@venusprotocol/protocol-reserve": "1.4.0",
-    "@venusprotocol/venus-protocol": "7.2.0",
+    "@venusprotocol/governance-contracts": "2.0.0",
+    "@venusprotocol/isolated-pools": "3.1.0",
+    "@venusprotocol/oracle": "2.2.0",
+    "@venusprotocol/protocol-reserve": "2.1.0",
+    "@venusprotocol/venus-protocol": "8.1.0",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",
@@ -83,6 +83,9 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "resolutions": {
+    "@venusprotocol/venus-protocol": "8.1.0"
   },
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {

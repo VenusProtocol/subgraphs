@@ -7,6 +7,23 @@ import { HardhatUserConfig } from 'hardhat/config';
 const compilers = {
   compilers: [
     {
+      version: "0.8.25",
+      settings: {
+        optimizer: {
+          enabled: true,
+          details: {
+            yul: !process.env.CI,
+          },
+        },
+        evmVersion: "paris",
+        outputSelection: {
+          "*": {
+            "*": ["storageLayout"],
+          },
+        },
+      },
+    },
+    {
       version: "0.5.16",
       settings: {
         optimizer: {
@@ -21,19 +38,6 @@ const compilers = {
       }
     },
     {
-      version: '0.6.6',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
-    {
       version: '0.8.13',
       settings: {
         optimizer: {
@@ -46,32 +50,6 @@ const compilers = {
         },
       },
     },
-    {
-      version: '0.8.17',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
-    {
-      version: '0.8.20',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    }
   ],
 }
 
