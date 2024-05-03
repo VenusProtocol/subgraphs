@@ -26,7 +26,6 @@ import {
 import { getAccountVTokenTransactionId, getTransactionId } from '../utilities/ids';
 import { getMarketId } from '../utilities/ids';
 import { updateMarketRates } from './updateMarketRates';
-import { updateMarketTotalSupplyMantissa } from './updateMarketTotalSupplyMantissa';
 
 export function createMarket(marketAddress: Address, event: ethereum.Event): Market {
   const vTokenContract = VToken.bind(marketAddress);
@@ -73,9 +72,9 @@ export function createMarket(marketAddress: Address, event: ethereum.Event): Mar
   market.borrowerCount = zeroBigInt32;
   market.borrowerCountAdjusted = zeroBigInt32;
   market.cashMantissa = zeroBigInt32;
+  market.totalSupplyMantissa = zeroBigInt32;
 
   updateMarketRates(market, vTokenContract);
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
   market.borrowIndexMantissa = vTokenContract.borrowIndex();
   market.totalBorrowsMantissa = vTokenContract.totalBorrows();
   market.reservesMantissa = vTokenContract.totalReserves();

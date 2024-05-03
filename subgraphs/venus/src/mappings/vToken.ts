@@ -34,7 +34,6 @@ import {
 import { getMarket } from '../operations/get';
 import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
 import { updateMarketRates } from '../operations/updateMarketRates';
-import { updateMarketTotalSupplyMantissa } from '../operations/updateMarketTotalSupplyMantissa';
 import { getUnderlyingPrice } from '../utilities';
 import { exponentToBigInt } from '../utilities/exponentToBigInt';
 
@@ -52,7 +51,7 @@ import { exponentToBigInt } from '../utilities/exponentToBigInt';
 export function handleMint(event: Mint): void {
   const marketAddress = event.address;
   const market = getMarket(marketAddress);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (event.params.mintTokens.equals(event.params.totalSupply)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
@@ -60,7 +59,7 @@ export function handleMint(event: Mint): void {
   market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and finally we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.plus(event.params.mintAmount);
 
   market.save();
 
@@ -81,7 +80,7 @@ export function handleMint(event: Mint): void {
 export function handleMintBehalf(event: MintBehalf): void {
   const marketAddress = event.address;
   const market = getMarket(marketAddress);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (event.params.mintTokens.equals(event.params.totalSupply)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
@@ -89,7 +88,7 @@ export function handleMintBehalf(event: MintBehalf): void {
   market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and finally we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.plus(event.params.mintAmount);
 
   market.save();
 
@@ -120,7 +119,7 @@ export function handleMintBehalf(event: MintBehalf): void {
 export function handleRedeem(event: Redeem): void {
   const marketAddress = event.address;
   const market = getMarket(marketAddress);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (event.params.totalSupply.equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
@@ -130,7 +129,7 @@ export function handleRedeem(event: Redeem): void {
   market.cashMantissa = market.cashMantissa.minus(event.params.redeemAmount);
 
   // and finally we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.minus(event.params.redeemAmount);
 
   market.save();
 
@@ -369,9 +368,8 @@ function getVTokenBalance(vTokenAddress: Address, accountAddress: Address): BigI
 }
 
 export function handleMintV1(event: MintV1): void {
-  const marketAddress = event.address;
   const market = getMarket(event.address);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (event.params.mintTokens.equals(getVTokenBalance(event.address, event.params.minter))) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
@@ -379,7 +377,7 @@ export function handleMintV1(event: MintV1): void {
   market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // finally we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.plus(event.params.mintAmount);
 
   market.save();
 
@@ -387,9 +385,8 @@ export function handleMintV1(event: MintV1): void {
 }
 
 export function handleMintBehalfV1(event: MintBehalfV1): void {
-  const marketAddress = event.address;
   const market = getMarket(event.address);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (event.params.mintTokens.equals(getVTokenBalance(event.address, event.params.receiver))) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
@@ -397,7 +394,7 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
   market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and then we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.plus(event.params.mintAmount);
 
   market.save();
 
@@ -405,9 +402,8 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
 }
 
 export function handleRedeemV1(event: RedeemV1): void {
-  const marketAddress = event.address;
   const market = getMarket(event.address);
-  const vTokenContract = VToken.bind(marketAddress);
+
   if (getVTokenBalance(event.address, event.params.redeemer).equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
@@ -416,7 +412,7 @@ export function handleRedeemV1(event: RedeemV1): void {
   market.cashMantissa = market.cashMantissa.minus(event.params.redeemAmount);
 
   // finally we update the market total supply using the latest exchange rate
-  updateMarketTotalSupplyMantissa(market, vTokenContract);
+  market.totalSupplyMantissa = market.totalSupplyMantissa.plus(event.params.redeemAmount);
 
   market.save();
   createRedeemEvent<RedeemV1>(event);
