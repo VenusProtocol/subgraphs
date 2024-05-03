@@ -10,36 +10,36 @@ import {
   NewLiquidationIncentive,
   NewPriceOracle,
 } from '../../generated/Comptroller/Comptroller';
+import { createAccountVTokenTransaction, createMarket } from '../operations/create';
+import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
-  getOrCreateAccountVTokenTransaction,
   getOrCreateComptroller,
-  getOrCreateMarket,
 } from '../operations/getOrCreate';
 
 export function handleMarketListed(event: MarketListed): void {
-  getOrCreateMarket(event.params.vToken, event);
+  createMarket(event.params.vToken, event);
 }
 
 export function handleMarketEntered(event: MarketEntered): void {
-  const market = getOrCreateMarket(event.params.vToken, event);
+  const market = getMarket(event.params.vToken);
   const account = getOrCreateAccount(event.params.account.toHex());
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = true;
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
+  createAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleMarketExited(event: MarketExited): void {
-  const market = getOrCreateMarket(event.params.vToken, event);
+  const market = getMarket(event.params.vToken);
   const account = getOrCreateAccount(event.params.account.toHex());
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = false;
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
+  createAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
@@ -49,7 +49,7 @@ export function handleNewCloseFactor(event: NewCloseFactor): void {
 }
 
 export function handleNewCollateralFactor(event: NewCollateralFactor): void {
-  const market = getOrCreateMarket(event.params.vToken, event);
+  const market = getMarket(event.params.vToken);
   market.collateralFactorMantissa = event.params.newCollateralFactorMantissa;
   market.save();
 }
@@ -69,7 +69,7 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
 
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {
-  const market = getOrCreateMarket(event.params.vToken, event);
+  const market = getMarket(event.params.vToken);
   market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
     event.params.venusDelta,
   );
