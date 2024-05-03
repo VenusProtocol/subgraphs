@@ -745,12 +745,21 @@ describe('VToken', () => {
       'reservesMantissa',
       newTotalReserves.toString(),
     );
+
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'cashMantissa',
+      newTotalReserves.toString(),
+    );
   });
 
   test('registers reserves reduced event', () => {
     const admin = Address.fromString('0x0000000000000000000000000000000000000111');
     const reduceAmount = BigInt.fromString('123456789000000');
     const newTotalReserves = BigInt.fromString('0');
+    // In a real world example we would never reduce cash below zero
+    const startingCash = BigInt.fromString('0');
     const newReservesReducedEvent = createReservesReducedEvent(
       aaaTokenAddress,
       admin,
@@ -765,6 +774,12 @@ describe('VToken', () => {
       aaaTokenAddress.toHex(),
       'reservesMantissa',
       newTotalReserves.toString(),
+    );
+    assert.fieldEquals(
+      'Market',
+      aaaTokenAddress.toHex(),
+      'cashMantissa',
+      startingCash.minus(reduceAmount).toString(),
     );
   });
 });

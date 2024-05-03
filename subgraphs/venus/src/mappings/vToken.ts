@@ -33,7 +33,6 @@ import {
 } from '../operations/create';
 import { getMarket } from '../operations/get';
 import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
-import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
 import { updateMarketRates } from '../operations/updateMarketRates';
 import { updateMarketTotalSupplyMantissa } from '../operations/updateMarketTotalSupplyMantissa';
 import { getUnderlyingPrice } from '../utilities';
@@ -58,7 +57,7 @@ export function handleMint(event: Mint): void {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
   // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and finally we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -87,7 +86,7 @@ export function handleMintBehalf(event: MintBehalf): void {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
   // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and finally we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -128,7 +127,7 @@ export function handleRedeem(event: Redeem): void {
   }
 
   // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.minus(event.params.redeemAmount);
 
   // and finally we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -161,7 +160,6 @@ export function handleRedeem(event: Redeem): void {
 export function handleBorrow(event: Borrow): void {
   const marketAddress = event.address;
   const market = getMarket(marketAddress);
-  const vTokenContract = VToken.bind(marketAddress);
   if (event.params.accountBorrows == event.params.borrowAmount) {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
@@ -170,7 +168,7 @@ export function handleBorrow(event: Borrow): void {
   market.totalBorrowsMantissa = event.params.totalBorrows;
 
   // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.minus(event.params.borrowAmount);
 
   market.save();
 
@@ -205,7 +203,6 @@ export function handleBorrow(event: Borrow): void {
 export function handleRepayBorrow(event: RepayBorrow): void {
   const marketAddress = event.address;
   const market = getMarket(marketAddress);
-  const vTokenContract = VToken.bind(marketAddress);
   if (event.params.accountBorrows.equals(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
     market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
@@ -217,7 +214,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   market.totalBorrowsMantissa = event.params.totalBorrows;
 
   // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.minus(event.params.repayAmount);
 
   market.save();
 
@@ -266,6 +263,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   // the underwater borrower. So we must get that address from the event, and
   // the repay token is the event.address
   createLiquidationEvent<LiquidateBorrow>(event, market.underlyingAddress);
+  market.cashMantissa = market.cashMantissa.plus(event.params.repayAmount);
 }
 
 /* Transferring of vTokens
@@ -337,6 +335,8 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.blockTimestamp = event.block.timestamp.toI32();
   market.borrowIndexMantissa = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
+  // This even will get processed first for convenience we'll set the cash from the event.
+  // Subsequent events in the transaction will increase or decrease the cash appropriately
   market.cashMantissa = event.params.cashPrior;
   market.underlyingPriceCents =
     market.symbol == 'vBNB'
@@ -376,7 +376,7 @@ export function handleMintV1(event: MintV1): void {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
   // we'll first update the cash value of the market and then the rates, since they depend on it
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // finally we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -394,7 +394,7 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
   // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.plus(event.params.mintAmount);
 
   // and then we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -413,7 +413,7 @@ export function handleRedeemV1(event: RedeemV1): void {
     market.supplierCount = market.supplierCount.minus(oneBigInt);
   }
   // we'll first update the cash value of the market and then the rates, since they depend on it
-  updateMarketCashMantissa(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.minus(event.params.redeemAmount);
 
   // finally we update the market total supply using the latest exchange rate
   updateMarketTotalSupplyMantissa(market, vTokenContract);
@@ -429,6 +429,7 @@ export function handleReservesAdded(event: ReservesAdded): void {
 
   market.reservesMantissa = event.params.newTotalReserves;
   updateMarketRates(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.plus(event.params.addAmount);
 
   market.save();
 }
@@ -440,6 +441,7 @@ export function handleReservesReduced(event: ReservesReduced): void {
 
   market.reservesMantissa = event.params.newTotalReserves;
   updateMarketRates(market, vTokenContract);
+  market.cashMantissa = market.cashMantissa.minus(event.params.reduceAmount);
 
   market.save();
 }

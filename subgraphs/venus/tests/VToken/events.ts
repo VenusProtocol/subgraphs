@@ -529,17 +529,17 @@ export const createReservesAddedEvent = (
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const addAmountParam = new ethereum.EventParam(
-    'addAmount',
-    ethereum.Value.fromUnsignedBigInt(addAmount),
-  );
-  event.parameters.push(addAmountParam);
-
   const benefactorParam = new ethereum.EventParam(
     'benefactor',
     ethereum.Value.fromAddress(benefactor),
   );
   event.parameters.push(benefactorParam);
+
+  const addAmountParam = new ethereum.EventParam(
+    'addAmount',
+    ethereum.Value.fromUnsignedBigInt(addAmount),
+  );
+  event.parameters.push(addAmountParam);
 
   const newTotalReservesParam = new ethereum.EventParam(
     'newTotalReserves',
@@ -560,14 +560,14 @@ export const createReservesReducedEvent = (
   event.address = vTokenAddress;
   event.parameters = [];
 
+  const adminParam = new ethereum.EventParam('admin', ethereum.Value.fromAddress(admin));
+  event.parameters.push(adminParam);
+
   const reduceAmountParam = new ethereum.EventParam(
     'reduceAmount',
     ethereum.Value.fromUnsignedBigInt(reduceAmount),
   );
   event.parameters.push(reduceAmountParam);
-
-  const adminParam = new ethereum.EventParam('admin', ethereum.Value.fromAddress(admin));
-  event.parameters.push(adminParam);
 
   const newTotalReservesParam = new ethereum.EventParam(
     'newTotalReserves',
