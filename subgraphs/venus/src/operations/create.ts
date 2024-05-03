@@ -178,7 +178,7 @@ export function createTransferEvent<E>(event: E): void {
 }
 
 export function createAccountVTokenTransaction(
-  accountVTokenId: string,
+  accountVTokenId: Bytes,
   event: ethereum.Event,
 ): AccountVTokenTransaction {
   const id = getAccountVTokenTransactionId(

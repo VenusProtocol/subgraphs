@@ -3,7 +3,7 @@ The Comptroller type has protocol level variables stored
 """
 type Comptroller @entity {
     "ID is set to 1"
-    id: ID!
+    id: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
@@ -18,6 +18,8 @@ type Comptroller @entity {
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
+    "VToken address"
+    id: Bytes!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
@@ -37,8 +39,6 @@ type Market @entity {
     supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
-    "VToken address"
-    id: ID!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
     "Total underlying supplied"
@@ -84,7 +84,7 @@ participated in, along with liquidation information.
 """
 type Account @entity {
     "User BNB address"
-    id: ID!
+    id: Bytes!
     "Array of VTokens user is in"
     tokens: [AccountVToken!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -101,7 +101,7 @@ as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
-    id: ID!
+    id: Bytes!
     "Relation to market"
     market: Market!
     "Symbol of the vToken"
@@ -135,7 +135,7 @@ type AccountVToken @entity {
 Auxiliary entity for AccountVToken
 """
 type AccountVTokenTransaction @entity(immutable: true) {
-  id: ID!
+  id: Bytes!
 
   account: AccountVToken!
 
@@ -154,7 +154,7 @@ RedeemEvent, and LiquidationEvent all use this interface
 """
 interface VTokenTransfer {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "vTokens transferred"
     amountMantissa: BigInt!
     "Account that received tokens"
@@ -173,7 +173,7 @@ transfer between two accounts.
 """
 type TransferEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "vTokens transferred"
     amountMantissa: BigInt!
     "Account that received tokens"
@@ -194,7 +194,7 @@ market address
 """
 type MintEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "vTokens transferred"
     amountMantissa: BigInt!
     "Account that received tokens (minter)"
@@ -217,7 +217,7 @@ vToken market address
 """
 type RedeemEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "vTokens transferred"
     amountMantissa: BigInt!
     "Account that received tokens (VToken contract)"
@@ -240,7 +240,7 @@ the vToken market address.
 """
 type LiquidationEvent implements VTokenTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "vTokens seized"
     amountMantissa: BigInt!
     "Liquidator receiving tokens"
@@ -265,7 +265,7 @@ and repays
 """
 interface UnderlyingTransfer {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "Amount of underlying borrowed"
     amountMantissa: BigInt!
     "Total borrows of this asset the account has"
@@ -285,7 +285,7 @@ BorrowEvent stores information for borrows
 """
 type BorrowEvent implements UnderlyingTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "Amount of underlying borrowed"
     amountMantissa: BigInt!
     "Total borrows of this asset the account has"
@@ -306,7 +306,7 @@ borrower, such as in the event of a Liquidation
 """
 type RepayEvent implements UnderlyingTransfer @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "Amount of underlying repaid"
     amountMantissa: BigInt!
     "Total borrows of this asset the account has"

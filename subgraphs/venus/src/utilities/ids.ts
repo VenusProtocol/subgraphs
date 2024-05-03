@@ -2,26 +2,21 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { Actions } from '../constants';
 
-const SEPERATOR = '-';
+export const getMarketId = (marketAddress: Address): Bytes => marketAddress;
 
-const joinIds = (idArray: Array<string>): string => idArray.join(SEPERATOR);
+export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): Bytes =>
+  marketAddress.concat(accountAddress);
 
-export const getMarketId = (marketAddress: Address): string =>
-  joinIds([marketAddress.toHexString()]);
-
-export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): string =>
-  joinIds([marketAddress.toHexString(), accountAddress.toHexString()]);
-
-export const getTransactionId = (transactionHash: Bytes, logIndex: BigInt): string =>
-  joinIds([transactionHash.toHexString(), logIndex.toString()]);
+export const getTransactionId = (transactionHash: Bytes, logIndex: BigInt): Bytes =>
+  transactionHash.concatI32(logIndex);
 
 export const getAccountVTokenTransactionId = (
-  accountVTokenId: string,
+  accountVTokenId: Bytes,
   transactionHash: Bytes,
   logIndex: BigInt,
-): string => joinIds([accountVTokenId, transactionHash.toHexString(), logIndex.toString()]);
+): Bytes => accountVTokenId.concat(transactionHash).concatI32(logIndex);
 
-export const getMarketActionId = (vTokenAddress: Address, action: i32): string => {
+export const getMarketActionId = (vTokenAddress: Address, action: i32): Bytes => {
   const actionString = Actions[action];
-  return joinIds([vTokenAddress.toHexString(), actionString]);
+  return vTokenAddress.concatI32(actionString);
 };
