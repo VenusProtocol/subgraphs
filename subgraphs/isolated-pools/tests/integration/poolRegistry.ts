@@ -45,30 +45,37 @@ describe('Pool Registry', function () {
     const { pools } = data!;
 
     expect(pools.length).to.equal(2);
+    const poolLens = await ethers.getContract('PoolLens');
 
-    pools.forEach(pool => {
-      const defaultPool = defaultPools.find(dp => pool.id === dp.id);
-      expect(pool.id).to.be.equal(defaultPool?.id);
-      expect(pool.name).to.be.equal(defaultPool?.name);
-      expect(pool.creator).to.be.equal(defaultPool?.creator);
-      expect(pool.blockPosted).to.be.string;
-      expect(pool.category).to.be.equal(defaultPool?.category);
-      expect(pool.logoUrl).to.be.equal(defaultPool?.logoUrl);
-      expect(pool.description).to.be.equal(defaultPool?.description);
-      expect(pool.priceOracleAddress).to.be.equal(defaultPool?.priceOracleAddress);
-      expect(pool.closeFactorMantissa).to.be.equal(defaultPool?.closeFactorMantissa);
-      expect(pool.liquidationIncentiveMantissa).to.be.equal(
-        defaultPool?.liquidationIncentiveMantissa,
-      );
+    pools.forEach(async pool => {
+      const onChainPool = await poolLens.getPoolByComptroller(pool.id);
+      expect(pool.id).to.be.equal(onChainPool?.comptroller);
+      expect(pool.name).to.be.equal(onChainPool?.name);
+      expect(pool.creator).to.be.equal(onChainPool?.creator);
+      expect(pool.blockPosted).to.be.number;
+      expect(pool.category).to.be.equal(onChainPool?.category);
+      expect(pool.logoUrl).to.be.equal(onChainPool?.logoURL);
+      expect(pool.description).to.be.equal(onChainPool?.description);
+      expect(pool.priceOracleAddress).to.be.equal(onChainPool?.priceOracle);
+      expect(pool.closeFactorMantissa).to.be.equal(onChainPool?.closeFactor);
+      expect(pool.liquidationIncentiveMantissa).to.be.equal(onChainPool?.liquidationIncentive);
     });
   });
 
   it('updates and returns metadata from the pool', async function () {
-    const { data: dataBeforeUpdate } = await subgraphClient.getPool(defaultPools[1].id);
+    const { data: dataBeforeUpdate } = await subgraphClient.getPool(
+      defaultPools[1].id.toLowerCase(),
+    );
     const { pool: poolBeforeUpdate } = dataBeforeUpdate!;
-    expect(poolBeforeUpdate.category).to.equal(defaultPools[1].category);
-    expect(poolBeforeUpdate.logoUrl).to.equal(defaultPools[1].logoUrl);
-    expect(poolBeforeUpdate.description).to.equal(defaultPools[1].description);
+
+    const poolLens = await ethers.getContract('PoolLens');
+    const onChainPool = await poolLens.getPoolByComptroller(
+      poolRegistry.address,
+      poolBeforeUpdate.id,
+    );
+    expect(poolBeforeUpdate.category).to.equal(onChainPool.category);
+    expect(poolBeforeUpdate.logoUrl).to.equal('');
+    expect(poolBeforeUpdate.description).to.equal(onChainPool.description);
 
     const tx = await poolRegistry.updatePoolMetadata(defaultPools[1].id, [
       'Games',
@@ -78,7 +85,7 @@ describe('Pool Registry', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPool(poolBeforeUpdate.id);
+    const { data } = await subgraphClient.getPool(poolBeforeUpdate.id.toLowerCase());
     const { pool } = data!;
     expect(pool.category).to.equal(category);
     expect(pool.logoUrl).to.equal(logoUrl);

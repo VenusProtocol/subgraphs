@@ -203,16 +203,20 @@ describe('VToken events', function () {
     const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
     const { market } = data!;
 
-    expect(market?.badDebtMantissa).to.equal('444600002961796');
+    expect(market?.badDebtMantissa).to.equal((await vBnxToken.badDebt()).toString());
 
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
     const { accountVTokens } = accountVTokensData!;
 
-    const vBnxAccountTokens = accountVTokens.find(avt => 
-      avt.id.includes(borrower.address.toLowerCase()) && avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase()
+    const vBnxAccountTokens = accountVTokens.find(
+      avt =>
+        avt.id.includes(borrower.address.toLowerCase()) &&
+        avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase(),
     );
     expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
-    expect(vBnxAccountTokens?.badDebt[0].amountMantissa).to.be.equal('444600002961796');
+    expect(vBnxAccountTokens?.badDebt[0].amountMantissa).to.be.equal(
+      (await vBnxToken.badDebt()).toString(),
+    );
   });
 
   it('handles ReservesAdded event', async function () {

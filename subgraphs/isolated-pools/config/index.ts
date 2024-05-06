@@ -30,8 +30,8 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926',
-      poolLensAddress: '0xe3011a37a904ab90c8881a99bd1f6e21401f1522',
+      poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
+      poolLensAddress: '0xaB7B4c595d3cE8C85e16DA86630f2fc223B05057',
       startBlock: 0,
     },
     mainnet: {
@@ -67,9 +67,9 @@ const main = () => {
     arbitrumSepolia: {
       network: 'arbitrum-sepolia',
       poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
-      poolLensAddress: '0xd08422A9A7b19404cC01FB970a247d19CE4EA7fE',
-      startBlock: '36291882 ',
-      poolLensRevision: '/PoolLens.sol/PoolLens.json',
+      poolLensAddress: arbitrumSepoliaDeployments.addresses.PoolLens,
+      startBlock: '36291882',
+      poolLensRevision: '/legacy/PoolLensR2.sol/PoolLensR2.json',
     },
   };
 

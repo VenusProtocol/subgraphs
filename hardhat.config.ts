@@ -1,6 +1,6 @@
 import 'module-alias/register';
-import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
+import "@nomiclabs/hardhat-ethers";
 import 'hardhat-dependency-compiler';
 import { HardhatUserConfig } from 'hardhat/config';
 

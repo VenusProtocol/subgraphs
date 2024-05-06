@@ -15,7 +15,9 @@ rm ./contracts/oracle/contracts/ResilientOracle.sol
 
 mkdir -p ./contracts/protocol
 cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts
-rm -rf contracts/protocol/contracts/test
+rm -rf contracts/protocol/contracts/test/*
+cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerMock.sol ./contracts/protocol/contracts/test/ComptrollerMock.sol
+cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/MockToken.sol ./contracts/protocol/contracts/test/MockToken.sol
 
 mkdir -p ./contracts/protocol-reserve
 cp -rf ./node_modules/@venusprotocol/protocol-reserve/contracts/ ./contracts/protocol-reserve/contracts
@@ -31,7 +33,6 @@ cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/Governance .
 rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
 rm ./contracts/governance/contracts/Governance/Timelock.sol
 
-rm -rf contracts/protocol/contracts/Lens/VenusLens.sol
 
 mkdir -p ./contracts/mocks
 cp -rf ./mocks/ ./contracts/mocks/contracts
