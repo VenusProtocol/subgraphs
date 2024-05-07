@@ -33,44 +33,54 @@ const main = () => {
       poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
       poolLensAddress: '0xaB7B4c595d3cE8C85e16DA86630f2fc223B05057',
       startBlock: 0,
+      poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
     mainnet: {
       network: 'mainnet',
       poolRegistryAddress: ethereumDeployments.addresses.PoolRegistry,
       poolLensAddress: ethereumDeployments.addresses.PoolLens,
       startBlock: '18968000',
+      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     sepolia: {
       network: 'sepolia',
       poolRegistryAddress: sepoliaDeployments.contracts.PoolRegistry.address,
       poolLensAddress: sepoliaDeployments.contracts.PoolLens.address,
       startBlock: '3930059',
+      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     chapel: {
       network: 'chapel',
       poolRegistryAddress: chapelDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: chapelDeployments.contracts.PoolLens.address,
+      poolLensAddress: chapelDeployments.contracts.PoolLensR1.address,
       startBlock: '30870000',
+      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     bsc: {
       network: 'bsc',
       poolRegistryAddress: mainnetDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: mainnetDeployments.contracts.PoolLens.address,
+      poolLensAddress: mainnetDeployments.contracts.PoolLensR1.address,
       startBlock: '29300000',
+      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     opbnbMainnet: {
       network: 'opbnb-mainnet',
       poolRegistryAddress: opBnbMainnetDeployments.addresses.PoolRegistry,
       poolLensAddress: opBnbMainnetDeployments.addresses.PoolLens,
       startBlock: '16232873',
+      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     arbitrumSepolia: {
       network: 'arbitrum-sepolia',
       poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
       poolLensAddress: arbitrumSepoliaDeployments.addresses.PoolLens,
       startBlock: '36291882',
-      poolLensRevision: '/legacy/PoolLensR2.sol/PoolLensR2.json',
+      poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
+  };
+
+  Mustache.escape = function (text) {
+    return text;
   };
 
   const yamlTemplate = fs.readFileSync('template.yaml', 'utf8');
