@@ -231,12 +231,11 @@ export function handleTransfer(event: Transfer): void {
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
 
-  let market = getOrCreateMarket(vTokenAddress);
-  // We only updateMarket() if accrual block number is not up to date. This will only happen
-  // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
-  if (market.accrualBlockNumber != event.block.number.toI32()) {
-    market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
-  }
+  const market = updateMarket(
+    event.address,
+    event.block.number.toI32(),
+    event.block.timestamp.toI32(),
+  );
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
