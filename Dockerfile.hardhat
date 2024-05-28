@@ -8,11 +8,6 @@ RUN wget https://github.com/ethereum/solidity/releases/download/v0.6.6/solc-stat
 RUN wget https://github.com/ethereum/solidity/releases/download/v0.8.13/solc-static-linux -O /usr/bin/solc-v0.8.13 && chmod +x /usr/bin/solc-v0.8.13
 
 COPY package.json /usr/app/package.json
-# COPY packages/utils/package.json /usr/app/packages/utils/package.json
-# COPY subgraphs/isolated-pools/package.json /usr/app/subgraphs/isolated-pools/package.json
-# COPY subgraphs/protocol-reserve/package.json /usr/app/subgraphs/protocol-reserve/package.json
-# COPY subgraphs/venus/package.json /usr/app/subgraphs/venus/package.json
-# COPY subgraphs/venus-governance/package.json /usr/app/subgraphs/venus-governance/package.json
 COPY yarn.lock /usr/app/yarn.lock
 COPY .yarn /usr/app/.yarn
 COPY .yarnrc.yml /usr/app/.yarnrc.yml
