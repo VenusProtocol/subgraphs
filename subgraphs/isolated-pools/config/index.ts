@@ -1,6 +1,6 @@
 import arbitrumSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumsepolia_addresses.json';
-import mainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet.json';
-import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet.json';
+import bscMainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet_addresses.json';
+import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia.json';
@@ -51,15 +51,15 @@ const main = () => {
     },
     chapel: {
       network: 'chapel',
-      poolRegistryAddress: chapelDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: chapelDeployments.contracts.PoolLensR1.address,
+      poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
+      poolLensAddress: chapelDeployments.addresses.PoolLensR1,
       startBlock: '30870000',
       poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     bsc: {
       network: 'bsc',
-      poolRegistryAddress: mainnetDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: mainnetDeployments.contracts.PoolLensR1.address,
+      poolRegistryAddress: bscMainnetDeployments.addresses.PoolRegistry,
+      poolLensAddress: '0xe12da02820fAD83e0369C6De7Ae30721eaB60E32',
       startBlock: '29300000',
       poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
