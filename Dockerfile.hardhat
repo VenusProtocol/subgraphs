@@ -18,7 +18,4 @@ WORKDIR /usr/app
 
 RUN yarn
 
-# Explicitly installing for hardhat
-RUN yarn add ts-node --dev
-
 EXPOSE 8545

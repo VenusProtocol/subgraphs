@@ -79,27 +79,30 @@ describe('Pools', function () {
 
     expect(markets.length).to.equal(9);
 
-    markets.forEach(m => {
-      const defaultMarket = defaultMarkets.find(dm => m.id === dm.id);
+    markets.forEach(async m => {
+      const defaultMarket = defaultMarkets.find(dm => m.id === dm.id.toLowerCase());
+      const vToken = await ethers.getContractAt('VTokenImpl', m.id);
 
-      expect(m.pool.id).to.equal(defaultMarket?.pool.id);
+      expect(m.pool.id).to.equal(defaultMarket?.pool.id.toLowerCase());
       expect(m.borrowRateMantissa).to.equal(defaultMarket?.borrowRateMantissa);
       expect(m.cashMantissa).to.equal(defaultMarket?.cashMantissa);
       expect(m.collateralFactorMantissa).to.equal(defaultMarket?.collateralFactorMantissa);
       expect(m.exchangeRateMantissa).to.equal(defaultMarket?.exchangeRateMantissa);
-      expect(m.interestRateModelAddress).to.equal(defaultMarket?.interestRateModelAddress);
+      expect(m.interestRateModelAddress).to.equal(
+        defaultMarket?.interestRateModelAddress.toLowerCase(),
+      );
       expect(m.name).to.equal(defaultMarket?.name);
       expect(m.reservesMantissa).to.equal(defaultMarket?.reservesMantissa);
       expect(m.supplyRateMantissa).to.equal(defaultMarket?.supplyRateMantissa);
       expect(m.symbol).to.equal(defaultMarket?.symbol);
-      expect(m.underlyingAddress).to.equal(defaultMarket?.underlyingAddress);
+      expect(m.underlyingAddress).to.equal(defaultMarket?.underlyingAddress.toLowerCase());
       expect(m.underlyingName).to.equal(defaultMarket?.underlyingName);
       expect(m.underlyingSymbol).to.equal(defaultMarket?.underlyingSymbol);
       expect(m.borrowCapMantissa).to.equal(defaultMarket?.borrowCapMantissa);
       expect(m.supplyCapMantissa).to.equal(defaultMarket?.supplyCapMantissa);
       expect(m.accrualBlockNumber).to.equal(defaultMarket?.accrualBlockNumber);
       expect(m.blockTimestamp).to.not.be.equal(defaultMarket?.blockTimestamp);
-      expect(m.borrowIndexMantissa).to.equal(defaultMarket?.borrowIndexMantissa);
+      expect(m.borrowIndexMantissa).to.equal((await vToken.borrowIndex()).toString());
       expect(m.reserveFactorMantissa).to.equal(defaultMarket?.reserveFactorMantissa);
       expect(m.underlyingPriceCents).to.equal(defaultMarket?.underlyingPriceCents);
       expect(m.underlyingDecimals).to.equal(defaultMarket?.underlyingDecimals);
@@ -170,7 +173,11 @@ describe('Pools', function () {
     const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
     const { markets: marketsBeforeEvent } = dataBeforeEvent!;
     const market = marketsBeforeEvent[1];
-    expect(market.collateralFactorMantissa).to.equal('700000000000000000');
+    const poolLens = await ethers.getContract('PoolLens');
+    const vTokenMetadata = await poolLens.vTokenMetadata(market.id);
+    expect(market.collateralFactorMantissa).to.equal(
+      vTokenMetadata.collateralFactorMantissa.toString(),
+    );
 
     const comptrollerProxy = await ethers.getContractAt('Comptroller', market.pool.id);
 
@@ -262,7 +269,9 @@ describe('Pools', function () {
     const { data } = await subgraphClient.getMarkets();
     const { markets: marketsBeforeUpdate } = data!;
 
-    expect(marketsBeforeUpdate[0].borrowCapMantissa).to.equal('1000000000000000000000');
+    const poolLens = await ethers.getContract('PoolLens');
+    let vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
+    expect(marketsBeforeUpdate[0].borrowCapMantissa).to.equal(vTokenMetadata.borrowCaps.toString());
 
     const comptrollerProxy = await ethers.getContractAt(
       'Comptroller',
@@ -275,7 +284,9 @@ describe('Pools', function () {
 
     const { data: marketsData } = await subgraphClient.getMarkets();
     const { markets } = marketsData!;
-    expect(markets[0].borrowCapMantissa).to.equal('0');
+
+    vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
+    expect(markets[0].borrowCapMantissa).to.equal(vTokenMetadata.borrowCaps.toString());
   });
 
   it('handles NewMinLiquidatableCollateral event', async function () {
@@ -302,7 +313,9 @@ describe('Pools', function () {
     const { data } = await subgraphClient.getMarkets();
     const { markets: marketsBeforeUpdate } = data!;
 
-    expect(marketsBeforeUpdate[0].supplyCapMantissa).to.equal('1000000000000000000000');
+    const poolLens = await ethers.getContract('PoolLens');
+    let vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
+    expect(marketsBeforeUpdate[0].supplyCapMantissa).to.equal(vTokenMetadata.supplyCaps.toString());
 
     const comptrollerProxy = await ethers.getContractAt(
       'Comptroller',
@@ -318,6 +331,8 @@ describe('Pools', function () {
 
     const { data: marketsData } = await subgraphClient.getMarkets();
     const { markets } = marketsData!;
-    expect(markets[0].supplyCapMantissa).to.equal('100000000000000000000000');
+
+    vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
+    expect(markets[0].supplyCapMantissa).to.equal(vTokenMetadata.supplyCaps.toString());
   });
 });

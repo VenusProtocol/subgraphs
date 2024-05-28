@@ -11,7 +11,7 @@ export const mockPriceOracleAddress = Address.fromString(
 export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
   pools.forEach((pool): void => {
     // address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
-    const vTokenData = changetype<ethereum.Tuple>([
+    const vTokenData = [
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // address
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // exchangeRateCurrent
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // supplyRatePerBlock
@@ -28,10 +28,10 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // underlyingAssetAddress
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // vTokenDecimals
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // underlyingDecimals
-    ]);
+    ];
 
     // string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,uint256
-    const lensTupleArray: Array<ethereum.Value> = [
+    const lensData: Array<ethereum.Value> = [
       pool[0], // name
       pool[1], // creator
       pool[2], // comptroller
@@ -44,10 +44,11 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
       ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateralMantissa
-      ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
+      ethereum.Value.fromArray([ethereum.Value.fromTuple(changetype<ethereum.Tuple>(vTokenData))]), // vTokens
     ];
-    const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
-    const lensTupleValue = ethereum.Value.fromTuple(lensTuple);
+
+    const lensTuple = changetype<ethereum.Tuple>(lensData);
+    const lensReturnValue = ethereum.Value.fromTuple(lensTuple);
 
     createMockedFunction(
       poolLensAddress,
@@ -55,7 +56,26 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
       'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
     )
       .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
-      .returns([lensTupleValue]);
+      .returns([lensReturnValue]);
+
+    const vTokenData2 = vTokenData.concat([
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)),
+      ethereum.Value.fromBoolean(false),
+    ]);
+    lensData[12] = ethereum.Value.fromArray([
+      ethereum.Value.fromTuple(changetype<ethereum.Tuple>(vTokenData2)),
+    ]);
+
+    const lensTuple2 = changetype<ethereum.Tuple>(lensData);
+    const lensReturnValue2 = ethereum.Value.fromTuple(lensTuple2);
+    // New PoolLens used on Arbitrum
+    createMockedFunction(
+      poolLensAddress,
+      'getPoolByComptroller',
+      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256,uint256)[]))',
+    )
+      .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
+      .returns([lensReturnValue2]);
   });
 };
 
