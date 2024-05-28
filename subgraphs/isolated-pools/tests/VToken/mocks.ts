@@ -72,7 +72,7 @@ export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): voi
     createMockedFunction(
       poolLensAddress,
       'getPoolByComptroller',
-      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256,uint256,bool)[]))',
+      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256,uint256)[]))',
     )
       .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
       .returns([lensReturnValue2]);

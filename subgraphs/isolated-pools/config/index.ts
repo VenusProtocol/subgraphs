@@ -74,7 +74,7 @@ const main = () => {
       network: 'arbitrum-sepolia',
       poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
       poolLensAddress: arbitrumSepoliaDeployments.addresses.PoolLens,
-      startBlock: '36291882',
+      startBlock: '44214769',
       poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
   };
