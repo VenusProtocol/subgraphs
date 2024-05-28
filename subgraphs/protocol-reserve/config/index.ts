@@ -1,5 +1,3 @@
-import mainnetIlDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet_addresses.json';
-import chapelIlDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import mainnetDeployments from '@venusprotocol/protocol-reserve/deployments/bscmainnet_addresses.json';
 import chapelDeployments from '@venusprotocol/protocol-reserve/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
@@ -39,7 +37,7 @@ const main = () => {
       usdcPrimeConverterAddress: chapelDeployments.addresses.USDCPrimeConverter,
       usdtPrimeConverterAddress: chapelDeployments.addresses.USDTPrimeConverter,
       xvsVaultConverterAddress: chapelDeployments.addresses.XVSVaultConverter,
-      riskFundAddress: chapelIlDeployments.addresses.RiskFund,
+      riskFundAddress: chapelDeployments.addresses.RiskFundV2,
       startBlock: '36750497',
     },
     bsc: {
@@ -51,7 +49,7 @@ const main = () => {
       usdcPrimeConverterAddress: mainnetDeployments.addresses.USDCPrimeConverter,
       usdtPrimeConverterAddress: mainnetDeployments.addresses.USDTPrimeConverter,
       xvsVaultConverterAddress: mainnetDeployments.addresses.XVSVaultConverter,
-      riskFundAddress: mainnetIlDeployments.addresses.RiskFund,
+      riskFundAddress: mainnetDeployments.addresses.RiskFundV2,
       startBlock: '32659400',
     },
   };
