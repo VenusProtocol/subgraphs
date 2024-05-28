@@ -172,7 +172,7 @@ export const updateMarket = (
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPriceCents = tokenPriceCents;
+  market.underlyingPriceCentsMantissa = tokenPriceCents;
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),

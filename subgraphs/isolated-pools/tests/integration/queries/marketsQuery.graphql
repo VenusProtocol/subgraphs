@@ -22,7 +22,7 @@ query Markets {
     blockTimestamp
     borrowIndexMantissa
     reserveFactorMantissa
-    underlyingPriceCents
+    underlyingPriceCentsMantissa
     underlyingDecimals
     supplyCapMantissa
     accessControlManagerAddress

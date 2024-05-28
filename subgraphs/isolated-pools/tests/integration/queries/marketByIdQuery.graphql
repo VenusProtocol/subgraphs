@@ -17,7 +17,7 @@ query MarketById($id: ID!) {
     symbol
     underlyingAddress
     underlyingName
-    underlyingPriceCents
+    underlyingPriceCentsMantissa
     underlyingSymbol
     borrowCapMantissa
     supplyCapMantissa

@@ -95,7 +95,7 @@ export function createMarket(
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceCents = underlyingValue;
+  market.underlyingPriceCentsMantissa = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
   market.vTokenDecimals = vTokenContract.decimals();
 

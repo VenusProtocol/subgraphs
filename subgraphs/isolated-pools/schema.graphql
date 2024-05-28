@@ -107,8 +107,8 @@ type Market @entity {
     borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactorMantissa: BigInt!
-    "Underlying token price in USD cents"
-    underlyingPriceCents: BigInt!
+    "Underlying token price in USD cents (updated based on the last received event)"
+    underlyingPriceCentsMantissa: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "vToken decimal length"
