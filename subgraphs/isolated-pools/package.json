@@ -30,6 +30,9 @@
     "test": "yarn prepare:docker && graph test",
     "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
   },
+  "dependencies": {
+    "@venusprotocol/isolated-pools": "2.5.0"
+  },
   "devDependencies": {
     "apollo-fetch": "^0.7.0",
     "urql": "^3.0.3",

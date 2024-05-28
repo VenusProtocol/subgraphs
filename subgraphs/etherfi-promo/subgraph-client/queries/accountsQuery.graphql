@@ -1,0 +1,15 @@
+query Accounts($blockNumber: Int) {
+  supplierAccounts(block:{number: $blockNumber}) {
+    id
+    address
+    effective_balance
+  }
+  borrowerAccounts(block:{number: $blockNumber}) {
+    id
+    address
+    effective_balance
+  }
+  tvl(block:{number: $blockNumber}, id: "TOTAL_VALUE_LOCKED") {
+    tvl
+  }
+}
