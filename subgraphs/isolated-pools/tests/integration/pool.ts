@@ -104,7 +104,7 @@ describe('Pools', function () {
       expect(m.blockTimestamp).to.not.be.equal(defaultMarket?.blockTimestamp);
       expect(m.borrowIndexMantissa).to.equal((await vToken.borrowIndex()).toString());
       expect(m.reserveFactorMantissa).to.equal(defaultMarket?.reserveFactorMantissa);
-      expect(m.underlyingPriceCents).to.equal(defaultMarket?.underlyingPriceCents);
+      expect(m.underlyingPriceCentsMantissa).to.equal(defaultMarket?.underlyingPriceCentsMantissa);
       expect(m.underlyingDecimals).to.equal(defaultMarket?.underlyingDecimals);
       expect(m.supplierCount).to.equal(defaultMarket?.supplierCount);
       expect(m.borrowerCount).to.equal(defaultMarket?.borrowerCount);
