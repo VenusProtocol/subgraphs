@@ -1,0 +1,36 @@
+{
+  "name": "etherfi-promo-subgraph",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/VenusProtocol/subgraphs",
+    "directory": "subgraphs/etherfi-promo"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "yarn graph codegen",
+    "create:docker": "yarn graph create venusprotocol/etherfi-promo  --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
+    "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:integration": "graph deploy venusprotocol/etherfi-promo  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/etherfi-promo --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:sepolia": "yarn prepare:sepolia && graph deploy venusprotocol/etherfi-promo-sepolia --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:ethereum": "yarn prepare:ethereum && graph deploy venusprotocol/etherfi-promo --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
+    "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
+    "test": "graph test",
+    "test:integration": "true"
+  },
+  "dependencies": {
+    "@venusprotocol/isolated-pools": "3.0.0"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.67.1",
+    "ts-node": "^10.9.2",
+    "viem": "^2.9.26"
+  }
+}
