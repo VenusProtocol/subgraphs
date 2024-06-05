@@ -26,11 +26,7 @@ import {
   handleNewSupplyCap,
 } from '../../src/mappings/pool';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import {
-  getAccountVTokenId,
-  getAccountVTokenTransactionId,
-  getMarketActionId,
-} from '../../src/utilities/ids';
+import { getAccountVTokenId, getMarketActionId } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createRewardsDistributorMock } from '../RewardsDistributor/mocks';
 import { createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
@@ -142,20 +138,9 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenTransactionId = getAccountVTokenTransactionId(
-      accountAddress,
-      marketEnteredEvent.transaction.hash,
-      marketEnteredEvent.logIndex,
-    );
     const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
-    assert.fieldEquals(
-      'AccountVTokenTransaction',
-      accountVTokenTransactionId,
-      'id',
-      accountVTokenTransactionId,
-    );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
     assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
     assert.fieldEquals(
@@ -175,20 +160,9 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenTransactionId = getAccountVTokenTransactionId(
-      accountAddress,
-      marketExitedEvent.transaction.hash,
-      marketExitedEvent.logIndex,
-    );
     const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
-    assert.fieldEquals(
-      'AccountVTokenTransaction',
-      accountVTokenTransactionId,
-      'id',
-      accountVTokenTransactionId,
-    );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
     assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'false');
     assert.fieldEquals(

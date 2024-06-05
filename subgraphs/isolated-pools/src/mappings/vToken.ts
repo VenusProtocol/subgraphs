@@ -53,15 +53,7 @@ export function handleMint(event: Mint): void {
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
-  updateAccountVTokenSupply(
-    vTokenAddress,
-    event.params.minter,
-    event.transaction.hash,
-    event.block.timestamp,
-    event.block.number,
-    event.logIndex,
-    suppliedTotal,
-  );
+  updateAccountVTokenSupply(vTokenAddress, event.params.minter, event.block.number, suppliedTotal);
   if (suppliedTotal == event.params.mintTokens) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
@@ -89,10 +81,7 @@ export function handleRedeem(event: Redeem): void {
   updateAccountVTokenSupply(
     vTokenAddress,
     event.params.redeemer,
-    event.transaction.hash,
-    event.block.timestamp,
     event.block.number,
-    event.logIndex,
     currentBalance,
   );
   if (currentBalance == zeroBigInt32) {
@@ -118,10 +107,7 @@ export function handleBorrow(event: Borrow): void {
   updateAccountVTokenBorrow(
     vTokenAddress,
     event.params.borrower,
-    event.transaction.hash,
-    event.block.timestamp,
     event.block.number,
-    event.logIndex,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
   );
@@ -156,10 +142,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   updateAccountVTokenRepayBorrow(
     vTokenAddress,
     event.params.borrower,
-    event.transaction.hash,
-    event.block.timestamp,
     event.block.number,
-    event.logIndex,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
   );
@@ -246,10 +229,7 @@ export function handleTransfer(event: Transfer): void {
     updateAccountVTokenTransferFrom(
       vTokenAddress,
       accountFromAddress,
-      event.transaction.hash,
-      event.block.timestamp,
       event.block.number,
-      event.logIndex,
       event.params.amount,
       market.exchangeRateMantissa,
     );
@@ -262,14 +242,7 @@ export function handleTransfer(event: Transfer): void {
   if (accountToAddress.toHex() != vTokenAddress.toHex()) {
     getOrCreateAccount(accountToAddress);
 
-    updateAccountVTokenTransferTo(
-      vTokenAddress,
-      accountToAddress,
-      event.transaction.hash,
-      event.block.timestamp,
-      event.block.number,
-      event.logIndex,
-    );
+    updateAccountVTokenTransferTo(vTokenAddress, accountToAddress, event.block.number);
   }
 
   createTransferTransaction(event);

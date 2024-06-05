@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
@@ -7,31 +7,16 @@ import { zeroBigInt32 } from '../constants';
 import { exponentToBigInt, valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getTokenPriceInCents } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
-import {
-  getOrCreateAccount,
-  getOrCreateAccountVToken,
-  getOrCreateAccountVTokenTransaction,
-} from './getOrCreate';
+import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
 import { getOrCreatePool } from './getOrCreate';
 
 const updateAccountVToken = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
   const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress, false);
-  getOrCreateAccountVTokenTransaction(
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-    marketAddress,
-  );
   accountVToken.accrualBlockNumber = blockNumber;
   return accountVToken as AccountVToken;
 };
@@ -39,20 +24,10 @@ const updateAccountVToken = (
 export const updateAccountVTokenSupply = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
   accountSupplyBalanceMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
-    marketAddress,
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  );
+  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
   accountVToken.accountSupplyBalanceMantissa = accountSupplyBalanceMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
@@ -61,21 +36,11 @@ export const updateAccountVTokenSupply = (
 export const updateAccountVTokenBorrow = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
-    marketAddress,
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  );
+  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
   accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
@@ -85,21 +50,11 @@ export const updateAccountVTokenBorrow = (
 export const updateAccountVTokenRepayBorrow = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
-    marketAddress,
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  );
+  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
   accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
@@ -109,23 +64,13 @@ export const updateAccountVTokenRepayBorrow = (
 export const updateAccountVTokenTransferFrom = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
   amount: BigInt,
   exchangeRate: BigInt,
 ): AccountVToken => {
   const amountUnderlyingMantissa = exchangeRate.div(exponentToBigInt(18)).times(amount);
 
-  const accountVToken = updateAccountVToken(
-    marketAddress,
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  );
+  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
 
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
@@ -136,19 +81,9 @@ export const updateAccountVTokenTransferFrom = (
 export const updateAccountVTokenTransferTo = (
   marketAddress: Address,
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
   blockNumber: BigInt,
-  logIndex: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
-    marketAddress,
-    accountAddress,
-    txHash,
-    timestamp,
-    blockNumber,
-    logIndex,
-  );
+  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
 
   accountVToken.save();
   return accountVToken as AccountVToken;

@@ -1,11 +1,10 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { VToken } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
   AccountVToken,
-  AccountVTokenTransaction,
   Market,
   Pool,
   RewardSpeed,
@@ -16,7 +15,6 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { zeroBigInt32 } from '../constants';
 import {
   getAccountVTokenId,
-  getAccountVTokenTransactionId,
   getMarketId,
   getPoolId,
   getRewardSpeedId,
@@ -54,35 +52,6 @@ export const getOrCreateAccount = (accountAddress: Address): Account => {
     account = createAccount(accountAddress);
   }
   return account;
-};
-
-export const getOrCreateAccountVTokenTransaction = (
-  accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
-  block: BigInt,
-  logIndex: BigInt,
-  marketId: Address,
-): AccountVTokenTransaction => {
-  const accountVTokenTransactionId = getAccountVTokenTransactionId(
-    accountAddress,
-    txHash,
-    logIndex,
-  );
-  let transaction = AccountVTokenTransaction.load(accountVTokenTransactionId.toString());
-
-  if (transaction == null) {
-    const accountVTokenId = getAccountVTokenId(marketId, accountAddress);
-    transaction = new AccountVTokenTransaction(accountVTokenTransactionId);
-    transaction.accountVToken = accountVTokenId;
-    transaction.txHash = txHash;
-    transaction.timestamp = timestamp;
-    transaction.block = block;
-    transaction.logIndex = logIndex;
-    transaction.save();
-  }
-
-  return transaction;
 };
 
 export const getOrCreateAccountVToken = (

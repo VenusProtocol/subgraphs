@@ -1,9 +1,6 @@
 query AccountFromMarket($marketId: ID!, $accountId: ID!){
   market(id: $marketId) {
     accounts(where: {id: $accountId}) {
-      transactions { 
-        id
-      }
       badDebt {
         id
         amountMantissa

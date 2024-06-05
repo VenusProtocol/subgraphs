@@ -6,14 +6,12 @@ import {
   AccountFromMarketDocument,
   AccountVTokenByAccountAndMarketQueryDocument,
   AccountVTokenByAccountIdDocument,
-  AccountVTokenTransactionsByAccountIdDocument,
-  AccountVTokenTransactionsDocument,
   AccountVTokensDocument,
   MarketActionsDocument,
   MarketByIdDocument,
   MarketsDocument,
+  PoolByIdDocument,
   PoolsDocument,
-  PoolByIdDocument
 } from './.graphclient';
 
 class SubgraphClient {
@@ -64,11 +62,6 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokensTransactions() {
-    const result = await this.query(AccountVTokenTransactionsDocument, {});
-    return result;
-  }
-
   async getMarketActions() {
     const result = await this.query(MarketActionsDocument, {});
     return result;
@@ -88,13 +81,6 @@ class SubgraphClient {
     const result = await this.query(AccountVTokenByAccountAndMarketQueryDocument, {
       accountId,
       marketId,
-    });
-    return result;
-  }
-
-  async getAccountVTokenTransactionsByAccountId(accountVTokenId: string) {
-    const result = await this.query(AccountVTokenTransactionsByAccountIdDocument, {
-      accountVTokenId,
     });
     return result;
   }

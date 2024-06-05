@@ -7,13 +7,6 @@ query AccountVTokenByAccountId($accountId: String!) {
     account {
       id
     }
-    transactions { 
-      id
-      block
-      txHash
-      timestamp
-      logIndex
-    }
     badDebt {
       id
       amountMantissa

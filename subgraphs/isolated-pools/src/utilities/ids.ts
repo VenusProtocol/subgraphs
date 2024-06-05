@@ -14,13 +14,6 @@ export const getMarketId = (vTokenAddress: Address): string =>
 export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): string =>
   joinIds([marketAddress.toHexString(), accountAddress.toHexString()]);
 
-export const getAccountVTokenTransactionId = (
-  accountAddress: Address,
-  transactionHash: Bytes,
-  logIndex: BigInt,
-): string =>
-  joinIds([accountAddress.toHexString(), transactionHash.toHexString(), logIndex.toString()]);
-
 export const getPoolActionId = (poolAddress: Address, action: string): string =>
   joinIds([poolAddress.toHexString(), action]);
 
