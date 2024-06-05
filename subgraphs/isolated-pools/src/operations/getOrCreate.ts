@@ -74,7 +74,7 @@ export const getOrCreateAccountVToken = (
 
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
-    accountVToken.accountSupplyBalanceMantissa = suppliedAmountMantissa;
+    accountVToken.accountVTokenSupplyBalanceMantissa = suppliedAmountMantissa;
     accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;

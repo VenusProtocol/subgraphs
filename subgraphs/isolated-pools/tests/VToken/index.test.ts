@@ -176,7 +176,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountSupplyBalanceMantissa',
+      'accountVTokenSupplyBalanceMantissa',
       accountBalance.toString(),
     );
     assert.fieldEquals(
@@ -252,7 +252,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountSupplyBalanceMantissa',
+      'accountVTokenSupplyBalanceMantissa',
       zeroBigInt32.toString(),
     );
     assert.fieldEquals(

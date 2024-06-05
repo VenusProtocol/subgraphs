@@ -165,9 +165,8 @@ type AccountVToken @entity {
     badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
-    
-    "Amount of tokens supplied to the market"
-    accountSupplyBalanceMantissa: BigInt!
+    "vToken balance representing underlying supplied to the market, underlying balance can be calculated with the exchange rate"
+    accountVTokenSupplyBalanceMantissa: BigInt!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     accountBorrowBalanceMantissa: BigInt!
     "True if user is entered, false if they are exited"
