@@ -1,3 +1,4 @@
+import arbitrumDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumone_addresses.json';
 import arbitrumSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumsepolia_addresses.json';
 import mainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet.json';
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet.json';
@@ -16,6 +17,7 @@ export const getNetwork = () => {
     'docker',
     'opbnbMainnet',
     'arbitrumSepolia',
+    'arbitrum',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -75,6 +77,13 @@ const main = () => {
       poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
       poolLensAddress: arbitrumSepoliaDeployments.addresses.PoolLens,
       startBlock: '44214769',
+      poolLensRevision: '/PoolLens.sol/PoolLens.json',
+    },
+    arbitrum: {
+      network: 'arbitrum-one',
+      poolRegistryAddress: arbitrumDeployments.addresses.PoolRegistry,
+      poolLensAddress: arbitrumDeployments.addresses.PoolLens,
+      startBlock: '216184381',
       poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
   };

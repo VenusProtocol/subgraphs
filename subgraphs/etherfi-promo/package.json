@@ -26,7 +26,7 @@
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.0.0"
+    "@venusprotocol/isolated-pools": "3.3.0"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.73.0",

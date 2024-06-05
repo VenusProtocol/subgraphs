@@ -4281,14 +4281,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/governance-contracts@npm:2.0.0, @venusprotocol/governance-contracts@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@venusprotocol/governance-contracts@npm:2.0.0"
+"@venusprotocol/governance-contracts@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@venusprotocol/governance-contracts@npm:2.1.0"
   dependencies:
     "@venusprotocol/solidity-utilities": 2.0.0
     hardhat-deploy-ethers: ^0.3.0-beta.13
     module-alias: ^2.2.2
-  checksum: 18b56d951c4e68fa1edadc93ed44daa55c8b81294778a4969d940a084de6d949630eacd4702d1b92f04ad5d709963a3a0a790014871ec34b0b2f4806cebc731c
+  checksum: af3f5e8705e54c99a86f47007ce67a04bb1f110c679ad2f9d722f548883b1eb14a28b54c46ee8340d7fa1ba097e1e4d788c98850ee046abe4d91a0315879ec9f
   languageName: node
   linkType: hard
 
@@ -4310,19 +4310,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@venusprotocol/isolated-pools@npm:3.0.0"
+"@venusprotocol/governance-contracts@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@venusprotocol/governance-contracts@npm:2.0.0"
   dependencies:
-    "@nomiclabs/hardhat-ethers": ^2.2.3
-    "@openzeppelin/contracts": ^4.8.3
-    "@openzeppelin/contracts-upgradeable": ^4.8.3
-    "@openzeppelin/hardhat-upgrades": ^1.21.0
-    "@solidity-parser/parser": ^0.13.2
-    ethers: ^5.7.0
-    hardhat-deploy: ^0.11.14
+    "@venusprotocol/solidity-utilities": 2.0.0
+    hardhat-deploy-ethers: ^0.3.0-beta.13
     module-alias: ^2.2.2
-  checksum: 1790bbf0cfc73f258d8c454f5e697f6a6b5d4c5272e9743aa7e253aae6cf73e01571a3403d595c366887129d8832547f488d9ef4628245088a9f26235d625418
+  checksum: 18b56d951c4e68fa1edadc93ed44daa55c8b81294778a4969d940a084de6d949630eacd4702d1b92f04ad5d709963a3a0a790014871ec34b0b2f4806cebc731c
   languageName: node
   linkType: hard
 
@@ -7440,7 +7435,7 @@ __metadata:
   resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
   dependencies:
     "@graphprotocol/graph-cli": ^0.73.0
-    "@venusprotocol/isolated-pools": 3.0.0
+    "@venusprotocol/isolated-pools": 3.3.0
     ts-node: ^10.9.2
     viem: ^2.9.26
   languageName: unknown
@@ -13088,7 +13083,7 @@ __metadata:
     "@types/node": ^20.5.9
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/governance-contracts": 2.0.0
+    "@venusprotocol/governance-contracts": 2.1.0
     "@venusprotocol/isolated-pools": 3.3.0
     "@venusprotocol/oracle": 2.2.0
     "@venusprotocol/protocol-reserve": 2.1.0
