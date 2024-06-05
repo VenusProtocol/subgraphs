@@ -1587,9 +1587,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:^0.67.1":
-  version: 0.67.4
-  resolution: "@graphprotocol/graph-cli@npm:0.67.4"
+"@graphprotocol/graph-cli@npm:^0.73.0":
+  version: 0.73.0
+  resolution: "@graphprotocol/graph-cli@npm:0.73.0"
   dependencies:
     "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
     "@oclif/core": 2.8.6
@@ -1611,6 +1611,7 @@ __metadata:
     ipfs-http-client: 55.0.0
     jayson: 4.0.0
     js-yaml: 3.14.1
+    open: 8.4.2
     prettier: 3.0.3
     semver: 7.4.0
     sync-request: 6.1.0
@@ -1620,44 +1621,7 @@ __metadata:
     yaml: 1.10.2
   bin:
     graph: bin/run
-  checksum: 48149e370a767e02b95d9166fa3eee3c385b1680e4170a8d79b670f0f06752de6b0f8d5ccd51acc70b0f79ca609ceabc1d6211aa7166360e66a6da7fb47d95ba
-  languageName: node
-  linkType: hard
-
-"@graphprotocol/graph-cli@npm:^0.71.0":
-  version: 0.71.0
-  resolution: "@graphprotocol/graph-cli@npm:0.71.0"
-  dependencies:
-    "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
-    "@oclif/core": 2.8.6
-    "@oclif/plugin-autocomplete": ^2.3.6
-    "@oclif/plugin-not-found": ^2.4.0
-    "@whatwg-node/fetch": ^0.8.4
-    assemblyscript: 0.19.23
-    binary-install-raw: 0.0.13
-    chalk: 3.0.0
-    chokidar: 3.5.3
-    debug: 4.3.4
-    docker-compose: 0.23.19
-    dockerode: 2.5.8
-    fs-extra: 9.1.0
-    glob: 9.3.5
-    gluegun: 5.1.6
-    graphql: 15.5.0
-    immutable: 4.2.1
-    ipfs-http-client: 55.0.0
-    jayson: 4.0.0
-    js-yaml: 3.14.1
-    prettier: 3.0.3
-    semver: 7.4.0
-    sync-request: 6.1.0
-    tmp-promise: 3.0.3
-    web3-eth-abi: 1.7.0
-    which: 2.0.2
-    yaml: 1.10.2
-  bin:
-    graph: bin/run
-  checksum: dc1eeb217591cecb3daf51db9e8ad9adbef66e8fc83d7875ad72d17a5c276a968974158938b30cd1fd2cfcfdc77ae73dea26963fac649796de2b1721da00126b
+  checksum: 70d9740eb15eec56d43aaf557f5d13bef012d74969e83947db5156b40c0646c0d78c9afd1a72b681b8337834b9285cf3a62d4f52ecc010c44ce541ae0ca4ffd7
   languageName: node
   linkType: hard
 
@@ -4362,9 +4326,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:3.2.0-dev.10":
-  version: 3.2.0-dev.10
-  resolution: "@venusprotocol/isolated-pools@npm:3.2.0-dev.10"
+"@venusprotocol/isolated-pools@npm:3.3.0":
+  version: 3.3.0
+  resolution: "@venusprotocol/isolated-pools@npm:3.3.0"
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.2.3
     "@openzeppelin/contracts": ^4.8.3
@@ -4375,7 +4339,7 @@ __metadata:
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-  checksum: 5acace3571c980045c0294c774a794fb30529bed73337f1f1130025e373cabe32c3a85a2eea51f0be2b21d0e8119084ed13ccb97bb770610528cbe3a6ed459df
+  checksum: e6d92426500eaa6874fc57d532bd4dfbb57263810dbf1f863308f4c9faa1372839b003657c9a1945f074acaac55712caad41e0f920d7765e6c6e85712fb6eca1
   languageName: node
   linkType: hard
 
@@ -6656,6 +6620,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"define-lazy-prop@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "define-lazy-prop@npm:2.0.0"
+  checksum: 0115fdb065e0490918ba271d7339c42453d209d4cb619dfe635870d906731eff3e1ade8028bb461ea27ce8264ec5e22c6980612d332895977e89c1bbc80fcee2
+  languageName: node
+  linkType: hard
+
 "define-properties@npm:^1.2.0, define-properties@npm:^1.2.1":
   version: 1.2.1
   resolution: "define-properties@npm:1.2.1"
@@ -7468,7 +7439,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
   dependencies:
-    "@graphprotocol/graph-cli": ^0.67.1
+    "@graphprotocol/graph-cli": ^0.73.0
     "@venusprotocol/isolated-pools": 3.0.0
     ts-node: ^10.9.2
     viem: ^2.9.26
@@ -9378,7 +9349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-docker@npm:^2.0.0":
+"is-docker@npm:^2.0.0, is-docker@npm:^2.1.1":
   version: 2.2.1
   resolution: "is-docker@npm:2.2.1"
   bin:
@@ -9686,7 +9657,7 @@ __metadata:
   resolution: "isolated-pools-subgraph@workspace:subgraphs/isolated-pools"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.71.0
+    "@graphprotocol/graph-cli": ^0.73.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     ts-node: ^10.9.2
@@ -11310,6 +11281,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"open@npm:8.4.2":
+  version: 8.4.2
+  resolution: "open@npm:8.4.2"
+  dependencies:
+    define-lazy-prop: ^2.0.0
+    is-docker: ^2.1.1
+    is-wsl: ^2.2.0
+  checksum: 6388bfff21b40cb9bd8f913f9130d107f2ed4724ea81a8fd29798ee322b361ca31fa2cdfb491a5c31e43a3996cfe9566741238c7a741ada8d7af1cb78d85cf26
+  languageName: node
+  linkType: hard
+
 "open@npm:^7.4.2":
   version: 7.4.2
   resolution: "open@npm:7.4.2"
@@ -11883,7 +11865,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "protocol-reserve-subgraph@workspace:subgraphs/protocol-reserve"
   dependencies:
-    "@graphprotocol/graph-cli": ^0.71.0
+    "@graphprotocol/graph-cli": ^0.73.0
     apollo-fetch: ^0.7.0
     ts-node: ^10.9.2
     urql: ^3.0.3
@@ -13093,7 +13075,7 @@ __metadata:
   resolution: "subgraphs@workspace:."
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.71.0
+    "@graphprotocol/graph-cli": ^0.73.0
     "@graphprotocol/graph-ts": ^0.32.0
     "@nomicfoundation/hardhat-network-helpers": ^1.0.4
     "@nomiclabs/hardhat-ethers": ^2.1.1
@@ -13107,7 +13089,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.0.0
-    "@venusprotocol/isolated-pools": 3.2.0-dev.10
+    "@venusprotocol/isolated-pools": 3.3.0
     "@venusprotocol/oracle": 2.2.0
     "@venusprotocol/protocol-reserve": 2.1.0
     "@venusprotocol/venus-protocol": 9.0.0-dev.6
@@ -13991,7 +13973,7 @@ __metadata:
   resolution: "venus-governance-subgraph@workspace:subgraphs/venus-governance"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.71.0
+    "@graphprotocol/graph-cli": ^0.73.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     ts-node: ^10.9.1
@@ -14013,7 +13995,7 @@ __metadata:
   resolution: "venus-subgraph@workspace:subgraphs/venus"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.67.1
+    "@graphprotocol/graph-cli": ^0.73.0
     "@venusprotocol/venus-protocol": 5.2.0
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
     hardhat: ^2.10.2

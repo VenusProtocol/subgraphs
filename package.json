@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
-    "@graphprotocol/graph-cli": "^0.71.0",
+    "@graphprotocol/graph-cli": "^0.73.0",
     "@graphprotocol/graph-ts": "^0.32.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
     "@nomiclabs/hardhat-ethers": "^2.1.1",
@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@venusprotocol/governance-contracts": "2.0.0",
-    "@venusprotocol/isolated-pools": "3.2.0-dev.10",
+    "@venusprotocol/isolated-pools": "3.3.0",
     "@venusprotocol/oracle": "2.2.0",
     "@venusprotocol/protocol-reserve": "2.1.0",
     "@venusprotocol/venus-protocol": "9.0.0-dev.6",

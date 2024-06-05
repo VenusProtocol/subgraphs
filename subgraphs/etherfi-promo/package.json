@@ -16,8 +16,8 @@
     "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/etherfi-promo  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
     "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/etherfi-promo --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:sepolia": "yarn prepare:sepolia && graph deploy venusprotocol/etherfi-promo-sepolia --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:ethereum": "yarn prepare:ethereum && graph deploy venusprotocol/etherfi-promo --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio etherfi-promo-sepolia",
+    "deploy:ethereum": "yarn prepare:ethereum && graph deploy --studio etherfi-promo",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
@@ -29,7 +29,7 @@
     "@venusprotocol/isolated-pools": "3.0.0"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.67.1",
+    "@graphprotocol/graph-cli": "^0.73.0",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
   }
