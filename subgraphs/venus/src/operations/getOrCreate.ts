@@ -2,7 +2,6 @@ import { Address, ethereum, log } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller';
 import { Account, AccountVToken, Comptroller, Market } from '../../generated/schema';
-import { AccountVTokenTransaction } from '../../generated/schema';
 import {
   VToken as VTokenTemplate,
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
@@ -16,7 +15,7 @@ import {
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { getAccountVTokenId, getAccountVTokenTransactionId } from '../utilities/ids';
+import { getAccountVTokenId } from '../utilities/ids';
 import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
 import { updateMarketRates } from './updateMarketRates';
@@ -144,26 +143,4 @@ export function getOrCreateAccountVToken(
     accountVToken.save();
   }
   return accountVToken;
-}
-
-export function getOrCreateAccountVTokenTransaction(
-  accountVTokenId: string,
-  event: ethereum.Event,
-): AccountVTokenTransaction {
-  const id = getAccountVTokenTransactionId(
-    accountVTokenId,
-    event.transaction.hash,
-    event.transactionLogIndex,
-  );
-  let transaction = AccountVTokenTransaction.load(id);
-  if (transaction == null) {
-    transaction = new AccountVTokenTransaction(id);
-    transaction.account = accountVTokenId;
-    transaction.tx_hash = event.transaction.hash; // eslint-disable-line @typescript-eslint/naming-convention
-    transaction.logIndex = event.transactionLogIndex;
-    transaction.timestamp = event.block.timestamp;
-    transaction.block = event.block.number;
-    transaction.save();
-  }
-  return transaction;
 }

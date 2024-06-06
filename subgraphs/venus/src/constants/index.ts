@@ -4,6 +4,7 @@ import { exponentToBigDecimal } from '../utilities';
 
 export const BORROW = 'BORROW';
 export const MINT = 'MINT';
+export const MINT_BEHALF = 'MINT_BEHALF';
 export const REDEEM = 'REDEEM';
 export const REPAY = 'REPAY';
 export const SEIZE = 'SEIZE';

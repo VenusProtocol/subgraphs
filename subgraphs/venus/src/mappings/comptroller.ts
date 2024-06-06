@@ -13,7 +13,6 @@ import {
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
-  getOrCreateAccountVTokenTransaction,
   getOrCreateComptroller,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
@@ -28,8 +27,6 @@ export function handleMarketEntered(event: MarketEntered): void {
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = true;
   accountVToken.save();
-
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleMarketExited(event: MarketExited): void {
@@ -38,8 +35,6 @@ export function handleMarketExited(event: MarketExited): void {
   const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
   accountVToken.enteredMarket = false;
   accountVToken.save();
-
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
