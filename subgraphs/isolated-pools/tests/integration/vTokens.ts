@@ -103,6 +103,14 @@ describe('VToken events', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
+    // Check querying pools by account
+    const { data: positionData } = await subgraphClient.getAccountPositions(
+      supplier1.address.toLowerCase(),
+    );
+    const { account } = positionData!;
+    expect(account.pools.length).to.equal(1);
+    expect(account.pools[0].collateral.length).to.equal(1);
+
     const { data: dataWithNewSupplier } = await subgraphClient.getMarketById(
       vBtcbAddress.toLowerCase(),
     );
@@ -163,6 +171,15 @@ describe('VToken events', function () {
 
     expect(marketAfterBorrow?.borrowerCount).to.equal('1');
 
+    const { data: positionData } = await subgraphClient.getAccountPositions(
+      borrower2.address.toLowerCase(),
+    );
+    const { account } = positionData!;
+
+    expect(account.pools.length).to.equal(1);
+    expect(account.pools[0].borrows.length).to.equal(1);
+    expect(account.pools[0].collateral.length).to.equal(1);
+
     // completely repaying the borrow should decrease the count
     tx = await vBnxToken.connect(borrower2).repayBorrow(borrowAmount.times(1.5).toString());
     await tx.wait(1);
@@ -172,6 +189,13 @@ describe('VToken events', function () {
     const { market } = data!;
 
     expect(market?.borrowerCount).to.equal('0');
+
+    const { data: positionDataAfter } = await subgraphClient.getAccountPositions(
+      borrower2.address.toLowerCase(),
+    );
+    const { account: accountAfter } = positionDataAfter!;
+    expect(accountAfter.pools.length).to.equal(1);
+    expect(accountAfter.pools[0].borrows.length).to.equal(0);
   });
 
   it('handles BadDebtIncreased event', async function () {

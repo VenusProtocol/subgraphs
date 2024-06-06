@@ -12,6 +12,7 @@ import {
 } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
+  AccountPool,
   AccountVTokenBadDebt,
   Market,
   Pool,
@@ -30,6 +31,8 @@ import {
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
 import {
+  getAccountId,
+  getAccountPoolId,
   getAccountVTokenId,
   getBadDebtEventId,
   getPoolId,
@@ -71,6 +74,15 @@ export function createAccount(accountAddress: Address): Account {
   account.hasBorrowed = false;
   account.save();
   return account;
+}
+
+export function createAccountPool(accountAddress: Address, poolAddress: Address): AccountPool {
+  const accountPoolId = getAccountPoolId(accountAddress, poolAddress);
+  const accountPool = new AccountPool(accountPoolId);
+  accountPool.account = getAccountId(accountAddress);
+  accountPool.pool = getPoolId(poolAddress);
+  accountPool.save();
+  return accountPool;
 }
 
 export function createMarket(

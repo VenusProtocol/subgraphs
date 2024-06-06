@@ -27,7 +27,7 @@ import {
   createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createVBep20Mock } from './mocks';
+import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
 
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');

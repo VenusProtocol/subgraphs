@@ -8,6 +8,7 @@ import { getOrCreateAccountVToken } from './getOrCreate';
 
 export const updateOrCreateAccountVToken = (
   accountAddress: Address,
+  poolAddress: Address,
   marketAddress: Address,
   blockNumber: BigInt,
   enteredMarket: Box<boolean> | null = null,
@@ -17,7 +18,12 @@ export const updateOrCreateAccountVToken = (
     enteredMarketBool = enteredMarket.value;
   }
 
-  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress, enteredMarketBool);
+  const accountVToken = getOrCreateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    enteredMarketBool,
+  );
   accountVToken.enteredMarket = enteredMarketBool;
   accountVToken.accrualBlockNumber = blockNumber;
   accountVToken.save();

@@ -1,3 +1,5 @@
+import { Address } from '@graphprotocol/graph-ts';
+
 import {
   AccrueInterest,
   BadDebtIncreased,
@@ -53,7 +55,13 @@ export function handleMint(event: Mint): void {
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
-  updateAccountVTokenSupply(vTokenAddress, event.params.minter, event.block.number, suppliedTotal);
+  updateAccountVTokenSupply(
+    event.params.minter,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
+    event.block.number,
+    suppliedTotal,
+  );
   if (suppliedTotal == event.params.mintTokens) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
@@ -79,8 +87,9 @@ export function handleRedeem(event: Redeem): void {
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
   updateAccountVTokenSupply(
-    vTokenAddress,
     event.params.redeemer,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
     currentBalance,
   );
@@ -105,8 +114,9 @@ export function handleBorrow(event: Borrow): void {
   const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenBorrow(
-    vTokenAddress,
     event.params.borrower,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
@@ -140,8 +150,9 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenRepayBorrow(
-    vTokenAddress,
     event.params.borrower,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
@@ -226,8 +237,9 @@ export function handleTransfer(event: Transfer): void {
     getOrCreateAccount(accountFromAddress);
 
     updateAccountVTokenTransferFrom(
-      vTokenAddress,
       accountFromAddress,
+      Address.fromBytes(market.pool),
+      vTokenAddress,
       event.block.number,
       event.params.amount,
       market.exchangeRateMantissa,
@@ -241,7 +253,12 @@ export function handleTransfer(event: Transfer): void {
   if (accountToAddress.toHex() != vTokenAddress.toHex()) {
     getOrCreateAccount(accountToAddress);
 
-    updateAccountVTokenTransferTo(vTokenAddress, accountToAddress, event.block.number);
+    updateAccountVTokenTransferTo(
+      accountToAddress,
+      Address.fromBytes(market.pool),
+      vTokenAddress,
+      event.block.number,
+    );
   }
 
   createTransferTransaction(event);

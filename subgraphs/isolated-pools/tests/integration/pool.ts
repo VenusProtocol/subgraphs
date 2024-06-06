@@ -119,13 +119,12 @@ describe('Pools', function () {
     const { data } = await subgraphClient.getAccountById(account1Address.toLowerCase());
     const { account } = data!;
     expect(account?.id).to.equal(account1Address.toLowerCase());
-    expect(account?.tokens.length).to.equal(2);
+    expect(account?.pools.length).to.equal(1);
     expect(account?.countLiquidated).to.equal(0);
     expect(account?.countLiquidator).to.equal(0);
     expect(account?.hasBorrowed).to.equal(false);
 
     // check accountVTokens
-    // const accountVTokenId = `${account?.tokens[0].id}-${account1Address}`;
     const { data: accountVTokensData } = await subgraphClient.getAccountVTokensByAccountId(
       account1Address.toLowerCase(),
     );
@@ -133,8 +132,8 @@ describe('Pools', function () {
     const { accountVTokens } = accountVTokensData!;
 
     accountVTokens.forEach((avt, idx) => {
-      expect(avt.id).to.equal(account?.tokens[idx].id);
-      const expectedMarketId = account?.tokens[idx].id.slice(0, 42);
+      expect(avt.id).to.equal(account?.pools[0].tokens[idx].id);
+      const expectedMarketId = account?.pools[0].tokens[idx].id.slice(0, 42);
       expect(avt.market.id).to.equal(expectedMarketId);
       expect(avt.account.id).to.equal(account?.id);
 
