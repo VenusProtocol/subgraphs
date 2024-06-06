@@ -134,7 +134,6 @@ export function getOrCreateAccountVToken(
     const vTokenContract = VToken.bind(Address.fromString(marketId));
     accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(accountId));
 
-    accountVToken.totalUnderlyingSuppliedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingBorrowedMantissa = zeroBigInt32;

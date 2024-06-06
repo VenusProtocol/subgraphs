@@ -126,13 +126,6 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'totalUnderlyingSuppliedMantissa',
-      actualMintAmount.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
       'vTokenBalanceMantissa',
       mintTokens.toString(),
     );
@@ -155,13 +148,6 @@ describe('VToken', () => {
 
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, redeemer);
 
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingSuppliedMantissa',
-      mintEvent.params.mintAmount.toString(),
-    );
-
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
       redeemer,
@@ -182,8 +168,6 @@ describe('VToken', () => {
     );
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'vTokenBalanceMantissa', '0');
-
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingSuppliedMantissa', '0');
 
     assert.fieldEquals(
       'AccountVToken',
@@ -440,18 +424,6 @@ describe('VToken', () => {
       'vTokenBalanceMantissa',
       mintTokens.toString(),
     );
-    const market = getMarket(aaaTokenAddress)!;
-
-    const amountUnderlying = market.exchangeRateMantissa
-      .times(amount)
-      .div(BigInt.fromI64(1000000000000000000));
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingSuppliedMantissa',
-      actualMintAmount.toString(),
-    );
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -462,13 +434,6 @@ describe('VToken', () => {
       accountVTokenId,
       'vTokenBalanceMantissa',
       mintTokens.minus(amount).toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingSuppliedMantissa',
-      actualMintAmount.minus(amountUnderlying).toString(),
     );
   });
 
@@ -513,18 +478,6 @@ describe('VToken', () => {
       accountVTokenId,
       'vTokenBalanceMantissa',
       amount.plus(balanceOf).toString(),
-    );
-
-    const market = getMarket(aaaTokenAddress)!;
-    const amountUnderlying = market.exchangeRateMantissa
-      .times(amount)
-      .div(BigInt.fromI64(1000000000000000000));
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingSuppliedMantissa',
-      amountUnderlying.toString(),
     );
   });
 
