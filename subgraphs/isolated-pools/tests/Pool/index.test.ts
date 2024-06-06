@@ -141,11 +141,16 @@ describe('Pool Events', () => {
     const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
     assert.fieldEquals(
       'AccountVToken',
-      accountVTokenId,
+      accountVTokenId.toHexString(),
+      'id',
+      accountVTokenId.toHexString(),
+    );
+    assert.fieldEquals('AccountVToken', accountVTokenId.toHexString(), 'enteredMarket', 'true');
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId.toHexString(),
       'accrualBlockNumber',
       marketEnteredEvent.block.number.toString(),
     );
@@ -160,7 +165,7 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress).toHexString();
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
@@ -271,7 +276,7 @@ describe('Pool Events', () => {
 
     handleActionPausedMarket(marketActionPausedEvent);
 
-    const id = getMarketActionId(vTokenAddress, action);
+    const id = getMarketActionId(vTokenAddress, action).toHexString();
 
     assert.fieldEquals('MarketAction', id, 'id', id);
     assert.fieldEquals('MarketAction', id, 'vToken', vTokenAddress.toHexString());
@@ -348,8 +353,8 @@ describe('Pool Events', () => {
       comptrollerAddress.toHexString(),
     );
 
-    const pool = Pool.load(comptrollerAddress.toHex())!;
+    const pool = Pool.load(comptrollerAddress)!;
     const rewardsDistributors = pool.rewardsDistributors.load();
-    assert.stringEquals(rewardsDistributorAddress.toHexString(), rewardsDistributors[0].id);
+    assert.bytesEquals(rewardsDistributorAddress, rewardsDistributors[0].id);
   });
 });

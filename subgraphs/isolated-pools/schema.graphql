@@ -201,7 +201,7 @@ enum EventType {
 """
 Entity recording transactions for interacting with markets
 """
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
     "Transaction hash concatenated with log index"
     id: Bytes!
     "enum of event type"
