@@ -15,7 +15,6 @@ import {
 import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
 import {
   getOrCreateAccount,
-  getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
   getOrCreatePool,
   getOrCreateRewardDistributor,
@@ -33,14 +32,6 @@ export function handleMarketEntered(event: MarketEntered): void {
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(true));
-  getOrCreateAccountVTokenTransaction(
-    accountAddress,
-    event.transaction.hash,
-    event.block.timestamp,
-    event.block.number,
-    event.logIndex,
-    vTokenAddress,
-  );
 }
 
 export function handleMarketExited(event: MarketExited): void {
@@ -50,14 +41,6 @@ export function handleMarketExited(event: MarketExited): void {
   getOrCreateAccount(accountAddress);
 
   updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(false));
-  getOrCreateAccountVTokenTransaction(
-    accountAddress,
-    event.transaction.hash,
-    event.block.timestamp,
-    event.block.number,
-    event.logIndex,
-    vTokenAddress,
-  );
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {

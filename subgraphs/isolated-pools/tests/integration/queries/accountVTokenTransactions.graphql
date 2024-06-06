@@ -1,5 +1,0 @@
-query AccountVTokenTransactions {
-  accountVTokenTransactions {
-    id
-  }
-}

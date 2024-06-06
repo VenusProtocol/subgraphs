@@ -7,13 +7,6 @@ query AccountVTokens  {
     account {
       id
     }
-    transactions { 
-      id
-      block
-      txHash
-      timestamp
-      logIndex
-    }
     badDebt {
       id
       amountMantissa
