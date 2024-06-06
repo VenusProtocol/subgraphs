@@ -1,9 +1,9 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { AccountVToken, MarketAction, PoolAction } from '../../generated/schema';
+import { AccountVToken, MarketAction } from '../../generated/schema';
 import { Actions } from '../constants';
 import Box from '../utilities/box';
-import { getMarketActionId, getPoolActionId } from '../utilities/ids';
+import { getMarketActionId } from '../utilities/ids';
 import { getOrCreateAccountVToken } from './getOrCreate';
 
 export const updateOrCreateAccountVToken = (
@@ -23,20 +23,6 @@ export const updateOrCreateAccountVToken = (
   accountVToken.save();
 
   return accountVToken;
-};
-
-export const updateOrCreatePoolAction = (
-  poolAddress: Address,
-  action: string,
-  pauseState: boolean,
-): PoolAction => {
-  const id = getPoolActionId(poolAddress, action);
-  const poolAction = new PoolAction(id);
-  poolAction.pool = poolAddress;
-  poolAction.action = action;
-  poolAction.pauseState = pauseState;
-  poolAction.save();
-  return poolAction;
 };
 
 export const updateOrCreateMarketAction = (

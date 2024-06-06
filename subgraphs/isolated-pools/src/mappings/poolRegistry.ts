@@ -10,6 +10,7 @@ import { Pool } from '../../generated/schema';
 import { Pool as PoolDataSource, VToken as VTokenDataSource } from '../../generated/templates';
 import { createMarket, createPool } from '../operations/create';
 import { updatePoolMetadata } from '../operations/update';
+import { getPoolId } from '../utilities/ids';
 
 export function handlePoolRegistered(event: PoolRegistered): void {
   // Create data source
@@ -19,7 +20,7 @@ export function handlePoolRegistered(event: PoolRegistered): void {
 
 export function handlePoolNameSet(event: PoolNameSet): void {
   const comptroller = event.params.comptroller;
-  const pool = Pool.load(comptroller.toHexString());
+  const pool = Pool.load(getPoolId(comptroller));
   if (pool) {
     pool.name = event.params.newName;
     pool.save();
