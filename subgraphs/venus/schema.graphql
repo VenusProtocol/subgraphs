@@ -117,8 +117,6 @@ type AccountVToken @entity {
 
     "VToken balance of the user"
     vTokenBalanceMantissa: BigInt!
-    "Total amount of underlying supplied"
-    totalUnderlyingSuppliedMantissa: BigInt!
     "Total amount of underlying redeemed"
     totalUnderlyingRedeemedMantissa: BigInt!
     "The value of the borrow index upon users last interaction"

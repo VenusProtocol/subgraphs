@@ -40,7 +40,6 @@ import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa
 import { updateMarketRates } from '../operations/updateMarketRates';
 import { updateMarketTotalSupplyMantissa } from '../operations/updateMarketTotalSupplyMantissa';
 import { getUnderlyingPrice } from '../utilities';
-import { exponentToBigInt } from '../utilities/exponentToBigInt';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -77,8 +76,6 @@ export function handleMint(event: Mint): void {
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.plus(
     event.params.mintTokens,
   );
-  accountVToken.totalUnderlyingSuppliedMantissa =
-    accountVToken.totalUnderlyingSuppliedMantissa.plus(event.params.mintAmount);
   accountVToken.save();
 }
 
@@ -106,8 +103,6 @@ export function handleMintBehalf(event: MintBehalf): void {
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
     event.params.mintTokens,
   );
-  accountVToken.totalUnderlyingSuppliedMantissa =
-    accountVToken.totalUnderlyingSuppliedMantissa.plus(event.params.mintAmount);
   accountVToken.save();
 }
 
@@ -146,8 +141,6 @@ export function handleRedeem(event: Redeem): void {
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
     event.params.redeemTokens,
   );
-  accountVToken.totalUnderlyingSuppliedMantissa =
-    accountVToken.totalUnderlyingSuppliedMantissa.minus(event.params.redeemAmount);
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
   accountVToken.save();
@@ -286,10 +279,6 @@ export function handleTransfer(event: Transfer): void {
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   let market = getOrCreateMarket(event.address, event);
 
-  const amountUnderlying = market.exchangeRateMantissa
-    .times(event.params.amount)
-    .div(exponentToBigInt(18));
-
   let accountFromAddress = event.params.from;
   let accountToAddress = event.params.to;
   // Checking if the tx is FROM the vToken contract or null (i.e. this will not run when minting)
@@ -310,8 +299,6 @@ export function handleTransfer(event: Transfer): void {
     accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
       event.params.amount,
     );
-    accountFromVToken.totalUnderlyingSuppliedMantissa =
-      accountFromVToken.totalUnderlyingSuppliedMantissa.minus(amountUnderlying);
     accountFromVToken.save();
 
     getOrCreateAccountVTokenTransaction(accountFromVToken.id, event);
@@ -321,8 +308,6 @@ export function handleTransfer(event: Transfer): void {
     accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
       event.params.amount,
     );
-    accountToVToken.totalUnderlyingSuppliedMantissa =
-      accountToVToken.totalUnderlyingSuppliedMantissa.plus(amountUnderlying);
     accountToVToken.save();
 
     getOrCreateAccountVTokenTransaction(accountToVToken.id, event);

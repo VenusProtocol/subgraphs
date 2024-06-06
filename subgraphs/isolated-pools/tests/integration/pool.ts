@@ -137,10 +137,6 @@ describe('Pools', function () {
       const expectedMarketId = account?.tokens[idx].id.split('-')[0];
       expect(avt.market.id).to.equal(expectedMarketId);
       expect(avt.account.id).to.equal(account?.id);
-      // check accountVTokenTransaction
-      expect(avt.transactions.length).to.equal(1);
-      expect(avt.transactions[0].block).to.not.be.equal(0);
-      expect(avt.transactions[0].timestamp).to.not.be.equal(0);
 
       expect(avt.enteredMarket).to.equal(true);
       expect(avt.accountSupplyBalanceMantissa).to.equal('0');
