@@ -9,7 +9,7 @@ enum ConversionAccessibility {
 Converter Network entity
 """
 type ConverterNetwork @entity {
-    id: ID!
+    id: Bytes!
     tokenConverters: [TokenConverter!]! @derivedFrom(field: "converterNetwork")
 }
 
@@ -17,7 +17,7 @@ type ConverterNetwork @entity {
 Token Converter entity
 """
 type TokenConverter @entity {
-    id: ID!
+    id: Bytes!
     converterNetwork: ConverterNetwork
     destinationAddress: Bytes!
     baseAsset: Bytes!
@@ -29,7 +29,7 @@ type TokenConverter @entity {
 Token Converter Config
 """
 type TokenConverterConfig @entity {
-    id: ID!
+    id: Bytes!
     tokenConverter: TokenConverter!
     tokenAddressIn: Bytes!
     tokenAddressOut: Bytes!
