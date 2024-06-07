@@ -134,7 +134,7 @@ describe('Pools', function () {
 
     accountVTokens.forEach((avt, idx) => {
       expect(avt.id).to.equal(account?.tokens[idx].id);
-      const expectedMarketId = account?.tokens[idx].id.split('-')[0];
+      const expectedMarketId = account?.tokens[idx].id.slice(0, 42);
       expect(avt.market.id).to.equal(expectedMarketId);
       expect(avt.account.id).to.equal(account?.id);
 

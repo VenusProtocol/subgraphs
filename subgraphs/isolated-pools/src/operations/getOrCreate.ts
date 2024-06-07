@@ -47,7 +47,7 @@ export const getOrCreatePool = (comptroller: Address): Pool => {
 };
 
 export const getOrCreateAccount = (accountAddress: Address): Account => {
-  let account = Account.load(accountAddress.toHexString());
+  let account = Account.load(accountAddress);
   if (!account) {
     account = createAccount(accountAddress);
   }
@@ -63,8 +63,8 @@ export const getOrCreateAccountVToken = (
   let accountVToken = AccountVToken.load(accountVTokenId);
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.account = accountAddress.toHexString();
-    accountVToken.market = marketAddress.toHexString();
+    accountVToken.account = accountAddress;
+    accountVToken.market = marketAddress;
     accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;
     // we need to set an initial real onchain value to this otherwise it will never
@@ -92,8 +92,8 @@ export const getOrCreateRewardSpeed = (
   let rewardSpeed = RewardSpeed.load(id);
   if (!rewardSpeed) {
     rewardSpeed = new RewardSpeed(id);
-    rewardSpeed.rewardsDistributor = rewardsDistributorAddress.toHexString();
-    rewardSpeed.market = marketAddress.toHexString();
+    rewardSpeed.rewardsDistributor = rewardsDistributorAddress;
+    rewardSpeed.market = marketAddress;
     rewardSpeed.borrowSpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.save();
@@ -110,10 +110,9 @@ export const getOrCreateRewardDistributor = (
 
   if (!rewardsDistributor) {
     const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
-    const poolAddress = comptrollerAddress.toHexString();
     const rewardToken = rewardDistributorContract.rewardToken();
     rewardsDistributor = new RewardsDistributor(id);
-    rewardsDistributor.pool = poolAddress;
+    rewardsDistributor.pool = comptrollerAddress;
     rewardsDistributor.reward = rewardToken;
     rewardsDistributor.save();
 

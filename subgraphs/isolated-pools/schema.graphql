@@ -1,21 +1,9 @@
-enum PoolActionType {
-  Transfer
-  Seize
-}
-
-type PoolAction @entity {
-    id: ID!
-    action: PoolActionType!
-    pauseState: Boolean!
-    pool: Bytes!
-}
-
 """
 The Pool entity
 """
 type Pool @entity {
-    "Comptroller of the pool"
-    id: ID!
+    "Pool Address as id"
+    id: Bytes!
     "Name of the pool"
     name: String!
     "Creator of the pool"
@@ -52,9 +40,13 @@ enum MarketPauseGuardianAction {
 }
 """
 type MarketAction @entity {
-    id: ID!
+    "Concatentation of address and action"
+    id: Bytes!
+    "vToken Address affected"
     vToken: Bytes!
+    "Action (Borrow, Mint)"
     action: String!
+    "True if paused, otherwise False if active"
     pauseState: Boolean!
 }
 
@@ -63,7 +55,7 @@ Market stores all high level variables for a vToken market
 """
 type Market @entity {
     "VToken address"
-    id: ID!
+    id: Bytes!
     "Pool the market belongs to"
     pool: Pool!
     #Fields that match Venus API
@@ -139,7 +131,7 @@ participated in, along with liquidation information.
 """
 type Account @entity {
     "User BNB address"
-    id: ID!
+    id: Bytes!
     "Array of VTokens user is in"
     tokens: [AccountVToken!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -156,7 +148,7 @@ as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
-    id: ID!
+    id: Bytes!
     "Relation to market"
     market: Market!
     "Relation to user"
@@ -184,15 +176,16 @@ type AccountVToken @entity {
 Auxiliary entity for AccountVToken indicating when a certain amount of bad debt was healed
 """
 type AccountVTokenBadDebt @entity {
-  id: ID!
-
-  account: AccountVToken!
-
-  amountMantissa: BigInt!
-
-  timestamp: BigInt!
-
-  block: BigInt!
+    "Concatenation of borrower and vToken Address"
+    id: Bytes!
+    "Market that was healed"
+    account: AccountVToken!
+    "Amount that was healed"
+    amountMantissa: BigInt!
+    "Timestamp"
+    timestamp: BigInt!
+    "Block Number"
+    block: BigInt!
 }
 
 enum EventType {
@@ -207,9 +200,9 @@ enum EventType {
 """
 Entity recording transactions for interacting with markets
 """
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "enum of event type"
     type: EventType!
     "The account that sent the transaction, for example sender of vToken"
@@ -229,10 +222,10 @@ An interface for rewards distributor that distribute rewards to isolated pools
 """
 type RewardsDistributor @entity {
     "Address of the rewards distributor"
-    id: ID!
+    id: Bytes!
     "Address of the pool"
     pool: Pool!
-    "Address of the reward distributed"
+    "Address of the reward token"
     reward: Bytes!
     "Distribution rate for suppliers"
     rewardSpeeds: [RewardSpeed!]! @derivedFrom(field:"rewardsDistributor")
@@ -243,7 +236,7 @@ A interface for rewards distributor that distribute rewards to isolated pools
 """
 type RewardSpeed @entity {
     "ID created from the reward distributor and market this speed applies to"
-    id: ID!
+    id: Bytes!
     "Address of rewards distributor"
     rewardsDistributor: RewardsDistributor!
     "Address of the market this speed applies to"

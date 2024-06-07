@@ -65,7 +65,7 @@ export function createPool(comptroller: Address): Pool {
 }
 
 export function createAccount(accountAddress: Address): Account {
-  const account = new Account(accountAddress.toHexString());
+  const account = new Account(accountAddress);
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
@@ -82,9 +82,9 @@ export function createMarket(
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
-  const market = new Market(vTokenAddress.toHexString());
+  const market = new Market(vTokenAddress);
 
-  market.pool = comptroller.toHexString();
+  market.pool = comptroller;
 
   market.name = vTokenContract.name();
   market.interestRateModelAddress = vTokenContract.interestRateModel();
@@ -253,7 +253,7 @@ export const createRewardDistributor = (
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   const rewardsDistributor = new RewardsDistributor(id);
-  rewardsDistributor.pool = comptrollerAddress.toHexString();
+  rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.reward = rewardToken;
   rewardsDistributor.save();
 };

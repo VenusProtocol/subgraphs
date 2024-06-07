@@ -1,4 +1,4 @@
-query AccountFromMarket($marketId: ID!, $accountId: ID!){
+query AccountFromMarket($marketId: ID!, $accountId: Bytes!){
   market(id: $marketId) {
     accounts(where: {id: $accountId}) {
       badDebt {

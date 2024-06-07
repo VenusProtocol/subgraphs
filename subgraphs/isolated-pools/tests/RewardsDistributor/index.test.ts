@@ -66,7 +66,7 @@ describe('Rewards Distributor', () => {
 
     handleRewardTokenBorrowSpeedUpdated(rewardTokenBorrowSpeedUpdatedEvent);
 
-    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress);
+    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress).toHexString();
     assert.fieldEquals('RewardSpeed', rewardId, 'id', rewardId);
     assert.fieldEquals('RewardSpeed', rewardId, 'market', vTokenAddress.toHexString());
     assert.fieldEquals(
@@ -78,9 +78,9 @@ describe('Rewards Distributor', () => {
     assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', '0');
     assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', newBorrowRate);
 
-    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress.toHex())!;
+    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress)!;
     const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
-    assert.stringEquals(rewardId, rewardSpeeds[0].id);
+    assert.stringEquals(rewardId, rewardSpeeds[0].id.toHexString());
   });
 
   test('indexes new supply speed', () => {
@@ -92,7 +92,7 @@ describe('Rewards Distributor', () => {
     );
 
     handleRewardTokenSupplySpeedUpdated(rewardTokenSupplySpeedUpdatedEvent);
-    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress);
+    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress).toHexString();
 
     assert.fieldEquals('RewardSpeed', rewardId, 'id', rewardId);
     assert.fieldEquals('RewardSpeed', rewardId, 'market', vTokenAddress.toHexString());
@@ -105,8 +105,8 @@ describe('Rewards Distributor', () => {
     assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', newSupplyRate);
     assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', '0');
 
-    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress.toHex())!;
+    const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress)!;
     const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
-    assert.stringEquals(rewardId, rewardSpeeds[0].id);
+    assert.stringEquals(rewardId, rewardSpeeds[0].id.toHexString());
   });
 });

@@ -59,7 +59,6 @@ templates:
         - User
         - Market
         - VTokenInfo
-        - PoolAction
       abis:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json

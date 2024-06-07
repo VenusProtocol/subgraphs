@@ -210,7 +210,7 @@ describe('VToken events', function () {
 
     const vBnxAccountTokens = accountVTokens.find(
       avt =>
-        avt.id.includes(borrower.address.toLowerCase()) &&
+        avt.id.includes(borrower.address.slice(2, 42).toLowerCase()) &&
         avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase(),
     );
     expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
