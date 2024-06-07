@@ -33,7 +33,6 @@ import {
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
-  getOrCreateAccountVTokenTransaction,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
 import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
@@ -181,8 +180,7 @@ export function handleBorrow(event: Borrow): void {
     accountVToken.totalUnderlyingBorrowedMantissa.plus(event.params.borrowAmount);
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
-  createBorrowEvent<Borrow>(event, market.underlyingAddress);
+  createBorrowEvent<Borrow>(event);
 }
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
@@ -227,8 +225,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   );
   accountVToken.save();
 
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
-  createRepayEvent<RepayBorrow>(event, market.underlyingAddress);
+  createRepayEvent<RepayBorrow>(event);
 }
 
 /*
@@ -247,8 +244,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  *    add liquidation counts in this handler.
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
-  const market = getOrCreateMarket(event.address, event);
-
   const liquidator = getOrCreateAccount(event.params.liquidator.toHex());
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
@@ -261,7 +256,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   // asset. They seize one of potentially many types of vToken collateral of
   // the underwater borrower. So we must get that address from the event, and
   // the repay token is the event.address
-  createLiquidationEvent<LiquidateBorrow>(event, market.underlyingAddress);
+  createLiquidationEvent<LiquidateBorrow>(event);
 }
 
 /* Transferring of vTokens
@@ -301,16 +296,12 @@ export function handleTransfer(event: Transfer): void {
     );
     accountFromVToken.save();
 
-    getOrCreateAccountVTokenTransaction(accountFromVToken.id, event);
-
     const accountTo = getOrCreateAccount(accountToAddress.toHex());
     const accountToVToken = getOrCreateAccountVToken(market.id, market.symbol, accountTo.id, event);
     accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
       event.params.amount,
     );
     accountToVToken.save();
-
-    getOrCreateAccountVTokenTransaction(accountToVToken.id, event);
   }
   createTransferEvent<Transfer>(event);
 }
