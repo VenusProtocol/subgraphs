@@ -111,7 +111,7 @@ describe('GovernorBravo', function () {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
-      expect(delegate1.votes[1].id).to.equal(`${user1.address.toLowerCase()}-22`);
+      expect(delegate1.votes[1].id).to.equal(`${user1.address.toLowerCase()}16000000`);
       expect(delegate1.votes[1].support).to.equal('AGAINST');
       expect(delegate1.votes[1].votes).to.equal('700000000000000000000000');
       expect(delegate1.votes[1].proposal.id).to.equal('22');
@@ -120,7 +120,7 @@ describe('GovernorBravo', function () {
       const {
         data: { delegate: delegate2 },
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
-      expect(delegate2.votes[1].id).to.equal(`${user2.address.toLowerCase()}-22`);
+      expect(delegate2.votes[1].id).to.equal(`${user2.address.toLowerCase()}16000000`);
       expect(delegate2.votes[1].support).to.equal('FOR');
       expect(delegate2.votes[1].votes).to.equal('200000000000000000000000');
       expect(delegate2.votes[1].proposal.id).to.equal('22');
@@ -331,7 +331,7 @@ describe('GovernorBravo', function () {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
-      expect(delegate1.votes[2].id).to.equal(`${user1.address.toLowerCase()}-24`);
+      expect(delegate1.votes[2].id).to.equal(`${user1.address.toLowerCase()}18000000`);
       expect(delegate1.votes[2].support).to.equal('AGAINST');
       expect(delegate1.votes[2].votes).to.equal('700000000000000000000000');
       expect(delegate1.votes[2].proposal.id).to.equal('24');
@@ -340,7 +340,7 @@ describe('GovernorBravo', function () {
       const {
         data: { delegate: delegate2 },
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
-      expect(delegate2.votes[2].id).to.equal(`${user2.address.toLowerCase()}-24`);
+      expect(delegate2.votes[2].id).to.equal(`${user2.address.toLowerCase()}18000000`);
       expect(delegate2.votes[2].support).to.equal('ABSTAIN');
       expect(delegate2.votes[2].votes).to.equal('200000000000000000000000');
       expect(delegate1.votes[2].proposal.id).to.equal('24');

@@ -12,7 +12,7 @@ export function updateProposalCanceled<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const canceledAction = new ProposalAction(event.transaction.hash.toHexString());
+  const canceledAction = new ProposalAction(event.transaction.hash);
   canceledAction.blockNumber = event.block.number;
   canceledAction.timestamp = event.block.timestamp;
   canceledAction.txHash = event.transaction.hash;
@@ -26,7 +26,7 @@ export function updateProposalQueued<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const queuedAction = new ProposalAction(event.transaction.hash.toHexString());
+  const queuedAction = new ProposalAction(event.transaction.hash);
   queuedAction.blockNumber = event.block.number;
   queuedAction.timestamp = event.block.timestamp;
   queuedAction.txHash = event.transaction.hash;
@@ -41,7 +41,7 @@ export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const executedAction = new ProposalAction(event.transaction.hash.toHexString());
+  const executedAction = new ProposalAction(event.transaction.hash);
   executedAction.blockNumber = event.block.number;
   executedAction.timestamp = event.block.timestamp;
   executedAction.txHash = event.transaction.hash;
@@ -54,8 +54,8 @@ export function updateProposalExecuted<E>(event: E): void {
 export function updateDelegateChanged<E>(event: E): void {
   const governance = getGovernanceEntity();
   const params = event.params;
-  const fromDelegate = params.fromDelegate.toHexString();
-  const toDelegate = params.toDelegate.toHexString();
+  const fromDelegate = params.fromDelegate;
+  const toDelegate = params.toDelegate;
 
   const delegatorResult = getOrCreateDelegate(params.delegator);
   const delegatorEntity = delegatorResult.entity;
@@ -63,26 +63,26 @@ export function updateDelegateChanged<E>(event: E): void {
   delegatorEntity.delegatee = toDelegate;
   delegatorEntity.save();
 
-  if (fromDelegate != nullAddress.toHexString()) {
+  if (fromDelegate != nullAddress) {
     const oldDelegateResult = getOrCreateDelegate(params.fromDelegate);
     const oldDelegate = oldDelegateResult.entity;
     oldDelegate.delegateCount = oldDelegate.delegateCount - 1;
     oldDelegate.save();
   }
 
-  if (fromDelegate == nullAddress.toHexString()) {
+  if (fromDelegate == nullAddress) {
     governance.totalVoters = governance.totalVoters.plus(BIGINT_ONE);
     governance.save();
   }
 
-  if (toDelegate != nullAddress.toHexString()) {
+  if (toDelegate != nullAddress) {
     const newDelegateResult = getOrCreateDelegate(params.toDelegate);
     const newDelegate = newDelegateResult.entity;
     newDelegate.delegateCount = newDelegate.delegateCount + 1;
     newDelegate.save();
   }
 
-  if (toDelegate == nullAddress.toHexString()) {
+  if (toDelegate == nullAddress) {
     governance.totalVoters = governance.totalVoters.minus(BIGINT_ONE);
     governance.save();
   }

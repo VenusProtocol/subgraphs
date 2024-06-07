@@ -1,6 +1,6 @@
 type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
-  id: ID!
+  id: Bytes!
 
   "Amount of XVS this user has staked"
   stakedXvsMantissa: BigInt!
@@ -38,9 +38,9 @@ type _Schema_
     include: [{ entity: "Proposal", fields: [{ name: "description" }] }]
   )
 
-type ProposalAction @entity {
-  "Transaction hash used as the ID"
-  id: ID!
+type ProposalAction @entity(immutable: true) {
+  "Transaction hash used as the id"
+  id: Bytes!
   
   "Transaction hash for the proposal action"
   txHash: Bytes!
@@ -53,7 +53,7 @@ type ProposalAction @entity {
 }
 
 type Proposal @entity {
-  "Internal proposal ID, in this implementation it seems to be a autoincremental id"
+  "Internal proposal id, it is an auto-incrementing id"
   id: ID!
 
   "Delegate that proposed the change"
@@ -117,9 +117,9 @@ enum SUPPORT {
   ABSTAIN
 }
 
-type Vote @entity {
-  "Delegate ID + Proposal ID"
-  id: ID!
+type Vote @entity(immutable: true) {
+  "Delegate id + Proposal id"
+  id: Bytes!
 
   "Whether the vote is in favour or against the proposal"
   support: SUPPORT!
@@ -178,7 +178,7 @@ enum PermissionStatus {
 }
 
 type Permission @entity {
-  "ID generated for each Permission"
+  "Id generated for each Permission"
   id: ID!
 
   "Indicates if the permission was either GRANTED or REVOKED"

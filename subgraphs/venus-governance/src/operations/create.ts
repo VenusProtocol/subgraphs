@@ -20,7 +20,7 @@ export function createProposal<E>(event: E): Proposal {
     Bytes.fromHexString(address.toHexString()),
   );
   proposal.targets = targets;
-  proposal.proposer = event.params.proposer.toHexString();
+  proposal.proposer = event.params.proposer;
   proposal.values = event.params.values;
   proposal.signatures = event.params.signatures;
   proposal.calldatas = event.params.calldatas;
@@ -42,7 +42,7 @@ export function createVoteAlpha(event: VoteCastAlpha): Vote {
   const id = getVoteId(event.params.voter, event.params.proposalId);
   const vote = new Vote(id);
   vote.proposal = event.params.proposalId.toString();
-  vote.voter = event.params.voter.toHexString();
+  vote.voter = event.params.voter;
   vote.votes = event.params.votes;
   vote.support = event.params.support ? FOR : AGAINST;
 

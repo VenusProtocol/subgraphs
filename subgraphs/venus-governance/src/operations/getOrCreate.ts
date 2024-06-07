@@ -21,7 +21,7 @@ export const getOrCreateDelegate = (address: Address): GetOrCreateDelegateReturn
     delegate.totalVotesMantissa = BIGINT_ZERO;
     delegate.delegateCount = 0;
 
-    if (id != nullAddress.toHex()) {
+    if (id != nullAddress) {
       const governance = getGovernanceEntity();
       governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
       governance.save();
