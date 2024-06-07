@@ -14,7 +14,7 @@ query AccountVTokenByAccountId($accountId: String!) {
       block
     }
     enteredMarket
-    accountSupplyBalanceMantissa
+    accountVTokenSupplyBalanceMantissa
     accountBorrowBalanceMantissa
     totalUnderlyingRedeemedMantissa
     accountBorrowIndexMantissa

@@ -8,7 +8,7 @@ query AccountFromMarket($marketId: ID!, $accountId: ID!){
         block
       }
       enteredMarket
-      accountSupplyBalanceMantissa
+      accountVTokenSupplyBalanceMantissa
       accountBorrowBalanceMantissa
       totalUnderlyingRedeemedMantissa
       accountBorrowIndexMantissa

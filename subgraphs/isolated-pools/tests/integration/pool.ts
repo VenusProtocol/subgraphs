@@ -139,7 +139,7 @@ describe('Pools', function () {
       expect(avt.account.id).to.equal(account?.id);
 
       expect(avt.enteredMarket).to.equal(true);
-      expect(avt.accountSupplyBalanceMantissa).to.equal('0');
+      expect(avt.accountVTokenSupplyBalanceMantissa).to.equal('0');
       expect(avt.totalUnderlyingRedeemedMantissa).to.equal('0');
       expect(avt.accountBorrowIndexMantissa).to.equal('0');
       expect(avt.totalUnderlyingRepaidMantissa).to.equal('0');

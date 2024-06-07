@@ -28,7 +28,7 @@ export const updateAccountVTokenSupply = (
   accountSupplyBalanceMantissa: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
-  accountVToken.accountSupplyBalanceMantissa = accountSupplyBalanceMantissa;
+  accountVToken.accountVTokenSupplyBalanceMantissa = accountSupplyBalanceMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
