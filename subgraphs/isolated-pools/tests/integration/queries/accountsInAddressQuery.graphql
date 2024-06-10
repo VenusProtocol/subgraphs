@@ -1,8 +1,11 @@
 query Accounts {
   accounts {
     id
-    tokens {
+    pools {
       id
+      tokens {
+        id
+      }
     }
     countLiquidated
     countLiquidator

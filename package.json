@@ -32,6 +32,7 @@
     "postinstall": "yarn patch-package && ./copy_contracts.sh"
   },
   "devDependencies": {
+    "@chainlink/contracts": "^0.5.1",
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.73.0",
     "@graphprotocol/graph-ts": "^0.32.0",

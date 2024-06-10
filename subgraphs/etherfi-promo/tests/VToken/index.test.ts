@@ -14,6 +14,8 @@ import {
   handleAccrueInterest,
   handleBorrow,
   handleMint,
+  handleRedeem,
+  handleRepayBorrow,
   handleTransfer,
 } from '../../src/mappings/vToken';
 import exponentToBigInt from '../../src/utilities/exponentToBigInt';
@@ -21,6 +23,8 @@ import {
   createAccrueInterestEvent,
   createBorrowEvent,
   createMintEvent,
+  createRedeemEvent,
+  createRepayBorrowEvent,
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
@@ -68,6 +72,41 @@ describe('VToken', () => {
     );
   });
 
+  test('registers redeem event', () => {
+    /** Constants */
+    const redeemer = user2Address;
+    const actualRedeemAmount = BigInt.fromString('5000000000000000000');
+    const redeemTokens = BigInt.fromString('25000000000000000000');
+    const accountBalance = zeroBigInt32;
+    /** Setup test */
+    const redeemEvent = createRedeemEvent(
+      vTokenAddress,
+      redeemer,
+      actualRedeemAmount,
+      redeemTokens,
+      accountBalance,
+    );
+    const mintEvent = createMintEvent(
+      vTokenAddress,
+      redeemer,
+      actualRedeemAmount,
+      redeemTokens,
+      accountBalance,
+    );
+
+    handleMint(mintEvent);
+
+    /** Fire Event */
+    handleRedeem(redeemEvent);
+    assert.fieldEquals(
+      'SupplierAccount',
+      redeemer.toHexString(),
+      'address',
+      redeemer.toHexString(),
+    );
+    assert.fieldEquals('SupplierAccount', redeemer.toHexString(), 'effective_balance', '0');
+  });
+
   test('registers borrow event', () => {
     /** Constants */
     const borrower = user1Address;
@@ -86,6 +125,51 @@ describe('VToken', () => {
 
     /** Fire Event */
     handleBorrow(borrowEvent);
+
+    assert.fieldEquals(
+      'BorrowerAccount',
+      borrower.toHexString(),
+      'address',
+      borrower.toHexString(),
+    );
+    assert.fieldEquals(
+      'BorrowerAccount',
+      borrower.toHexString(),
+      'effective_balance',
+      accountBorrows.toString(),
+    );
+  });
+
+  test('registers repay borrow event', () => {
+    /** Constants */
+    const borrower = user1Address;
+    const payer = user1Address;
+    const borrowAmount = BigInt.fromString('2000000000000000000');
+    const accountBorrows = BigInt.fromString('4000000000000000000');
+    const totalBorrows = BigInt.fromString('80000000000000000000');
+
+    /** Setup test */
+    const borrowEvent = createBorrowEvent(
+      vTokenAddress,
+      borrower,
+      borrowAmount,
+      accountBorrows,
+      totalBorrows,
+    );
+
+    /** Fire Event */
+    handleBorrow(borrowEvent);
+    const repayBorrowEvent = createRepayBorrowEvent(
+      vTokenAddress,
+      payer,
+      borrower,
+      borrowAmount,
+      accountBorrows,
+      totalBorrows,
+    );
+
+    /** Fire Event */
+    handleRepayBorrow(repayBorrowEvent);
 
     assert.fieldEquals(
       'BorrowerAccount',

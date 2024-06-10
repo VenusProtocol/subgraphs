@@ -24,7 +24,7 @@ type Pool @entity {
     closeFactorMantissa: BigInt!
     "The percent bonus liquidators get for liquidating"
     liquidationIncentiveMantissa: BigInt!
-    "Min Liquidable Amount allowed"
+    "Min Liquidatable Amount allowed"
     minLiquidatableCollateralMantissa: BigInt!
     "Markets associated to this pool"
     markets: [Market!]! @derivedFrom(field: "pool")
@@ -132,8 +132,8 @@ participated in, along with liquidation information.
 type Account @entity {
     "User BNB address"
     id: Bytes!
-    "Array of VTokens user is in"
-    tokens: [AccountVToken!]! @derivedFrom(field: "account")
+    "Pools the user is participating on"
+    pools: [AccountPool!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
     countLiquidated: Int!
     "Count user has liquidated others"
@@ -143,12 +143,25 @@ type Account @entity {
 }
 
 """
+Through entity for aggregating positions by pool and account
+"""
+type AccountPool @entity(immutable: true) {
+    "Joined Account address and Pool address"
+    id: Bytes!
+    pool: Pool!
+    account: Account!
+    tokens: [AccountVToken!]! @derivedFrom(field:"accountPool")
+}
+
+"""
 AccountVToken is a single account within a single vToken market, with data such
 as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
     id: Bytes!
+    "Pool of the market"
+    accountPool: AccountPool!
     "Relation to market"
     market: Market!
     "Relation to user"

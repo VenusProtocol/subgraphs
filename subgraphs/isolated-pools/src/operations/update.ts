@@ -11,36 +11,49 @@ import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
 import { getOrCreatePool } from './getOrCreate';
 
 const updateAccountVToken = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
-  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress, false);
+  const accountVToken = getOrCreateAccountVToken(accountAddress, poolAddress, marketAddress, false);
   accountVToken.accrualBlockNumber = blockNumber;
   return accountVToken as AccountVToken;
 };
 
 export const updateAccountVTokenSupply = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
   accountSupplyBalanceMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
+  const accountVToken = updateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    blockNumber,
+  );
   accountVToken.accountVTokenSupplyBalanceMantissa = accountSupplyBalanceMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
 
 export const updateAccountVTokenBorrow = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
+  const accountVToken = updateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    blockNumber,
+  );
   accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
@@ -48,13 +61,19 @@ export const updateAccountVTokenBorrow = (
 };
 
 export const updateAccountVTokenRepayBorrow = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
+  const accountVToken = updateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    blockNumber,
+  );
   accountVToken.accountBorrowBalanceMantissa = accountBorrows;
   accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
   accountVToken.save();
@@ -62,15 +81,21 @@ export const updateAccountVTokenRepayBorrow = (
 };
 
 export const updateAccountVTokenTransferFrom = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
   amount: BigInt,
   exchangeRate: BigInt,
 ): AccountVToken => {
   const amountUnderlyingMantissa = exchangeRate.div(exponentToBigInt(18)).times(amount);
 
-  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
+  const accountVToken = updateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    blockNumber,
+  );
 
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(amountUnderlyingMantissa);
@@ -79,11 +104,17 @@ export const updateAccountVTokenTransferFrom = (
 };
 
 export const updateAccountVTokenTransferTo = (
-  marketAddress: Address,
   accountAddress: Address,
+  poolAddress: Address,
+  marketAddress: Address,
   blockNumber: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(marketAddress, accountAddress, blockNumber);
+  const accountVToken = updateAccountVToken(
+    accountAddress,
+    poolAddress,
+    marketAddress,
+    blockNumber,
+  );
 
   accountVToken.save();
   return accountVToken as AccountVToken;

@@ -845,27 +845,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@defi-wonderland/smock@npm:^2.3.4":
-  version: 2.4.0
-  resolution: "@defi-wonderland/smock@npm:2.4.0"
-  dependencies:
-    "@nomicfoundation/ethereumjs-util": ^9.0.4
-    diff: ^5.0.0
-    lodash.isequal: ^4.5.0
-    lodash.isequalwith: ^4.4.0
-    rxjs: ^7.2.0
-    semver: ^7.3.5
-  peerDependencies:
-    "@ethersproject/abi": ^5
-    "@ethersproject/abstract-provider": ^5
-    "@ethersproject/abstract-signer": ^5
-    "@nomiclabs/hardhat-ethers": ^2
-    ethers: ^5
-    hardhat: ^2.21.0
-  checksum: 421f97cfa9a8f7bbdafc6521723f5ed0c3b7cd0462dc7d1a143a2de9cbdac46dd6acd7db619aa03a09d62695c5337fb17699259db2d5e4ddb530f5f55ef4ef30
-  languageName: node
-  linkType: hard
-
 "@envelop/core@npm:^3.0.4, @envelop/core@npm:^3.0.6":
   version: 3.0.6
   resolution: "@envelop/core@npm:3.0.6"
@@ -3163,7 +3142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nomicfoundation/ethereumjs-util@npm:9.0.4, @nomicfoundation/ethereumjs-util@npm:^9.0.4":
+"@nomicfoundation/ethereumjs-util@npm:9.0.4":
   version: 9.0.4
   resolution: "@nomicfoundation/ethereumjs-util@npm:9.0.4"
   dependencies:
@@ -3191,7 +3170,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nomicfoundation/hardhat-network-helpers@npm:^1.0.4, @nomicfoundation/hardhat-network-helpers@npm:^1.0.8":
+"@nomicfoundation/hardhat-network-helpers@npm:^1.0.4":
   version: 1.0.10
   resolution: "@nomicfoundation/hardhat-network-helpers@npm:1.0.10"
   dependencies:
@@ -3472,7 +3451,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts-upgradeable@npm:^4.6.0, @openzeppelin/contracts-upgradeable@npm:^4.7.3, @openzeppelin/contracts-upgradeable@npm:^4.8.0, @openzeppelin/contracts-upgradeable@npm:^4.8.3":
+"@openzeppelin/contracts-upgradeable@npm:^4.6.0, @openzeppelin/contracts-upgradeable@npm:^4.8.0, @openzeppelin/contracts-upgradeable@npm:^4.8.3":
   version: 4.9.6
   resolution: "@openzeppelin/contracts-upgradeable@npm:4.9.6"
   checksum: 481075e7222cab025ae55304263fca69a2d04305521957bc16d2aece9fa2b86b6914711724822493e3d04df7e793469cd0bcb1e09f0ddd10cb4e360ac7eed12a
@@ -3493,7 +3472,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@openzeppelin/contracts@npm:^4.3.3, @openzeppelin/contracts@npm:^4.4.1, @openzeppelin/contracts@npm:^4.6.0, @openzeppelin/contracts@npm:^4.8.3":
+"@openzeppelin/contracts@npm:^4.3.3, @openzeppelin/contracts@npm:^4.4.1, @openzeppelin/contracts@npm:^4.8.3":
   version: 4.9.6
   resolution: "@openzeppelin/contracts@npm:4.9.6"
   checksum: 274b6e968268294f12d5ca4f0278f6e6357792c8bb4d76664f83dbdc325f780541538a127e6a6e97e4f018088b42f65952014dec9c745c0fa25081f43ef9c4bf
@@ -4299,7 +4278,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/governance-contracts@npm:^1.4.0, @venusprotocol/governance-contracts@npm:^1.4.0-dev.1":
+"@venusprotocol/governance-contracts@npm:^1.4.0":
   version: 1.4.0
   resolution: "@venusprotocol/governance-contracts@npm:1.4.0"
   dependencies:
@@ -4342,19 +4321,15 @@ __metadata:
   version: 2.2.0
   resolution: "@venusprotocol/oracle@npm:2.2.0"
   dependencies:
-    "@chainlink/contracts": ^0.5.1
-    "@defi-wonderland/smock": ^2.3.4
-    "@nomicfoundation/hardhat-network-helpers": ^1.0.8
-    "@openzeppelin/contracts": ^4.6.0
-    "@openzeppelin/contracts-upgradeable": ^4.7.3
-    "@venusprotocol/governance-contracts": ^2.0.0
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
     "@venusprotocol/solidity-utilities": ^2.0.0
-    "@venusprotocol/venus-protocol": ^6.0.0
-    ethers: ^5.6.8
-    hardhat: ^2.16.1
+    ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-    solidity-docgen: ^0.6.0-beta.29
   checksum: 5ff2e0af88dbbe077c423b62f9c92cd0a9173f4a618f79bc9aec9df8b96e6e908e565adc82175dbe78b200c3d77abeb48878506fd85ada2c8c87b8d568dc1a3e
   languageName: node
   linkType: hard
@@ -4377,7 +4352,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/protocol-reserve@npm:^1.1.0, @venusprotocol/protocol-reserve@npm:^1.4.0":
+"@venusprotocol/protocol-reserve@npm:^1.4.0":
   version: 1.5.0
   resolution: "@venusprotocol/protocol-reserve@npm:1.5.0"
   dependencies:
@@ -4490,21 +4465,6 @@ __metadata:
     dotenv: ^16.0.1
     module-alias: ^2.2.2
   checksum: f16ef2e8aed04f32ac5739ad76a86e271d51da7fad7d5e799b0af8f6b361afcce284855d5d868323c65e25ece30993e9c75488bb54a9f4bb6b1285eccc81a539
-  languageName: node
-  linkType: hard
-
-"@venusprotocol/venus-protocol@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@venusprotocol/venus-protocol@npm:6.0.0"
-  dependencies:
-    "@openzeppelin/contracts": 4.9.3
-    "@openzeppelin/contracts-upgradeable": ^4.8.0
-    "@venusprotocol/governance-contracts": ^1.4.0-dev.1
-    "@venusprotocol/protocol-reserve": ^1.1.0
-    bignumber.js: ^9.1.2
-    dotenv: ^16.0.1
-    module-alias: ^2.2.2
-  checksum: 2e819a464626233c24e566be21438f120378b617289e9646024b47859dc6fc7cb785c3af5e6b04fc1fe9a78aac73b98cb51014c48910db93ba6e4b9ff397c17e
   languageName: node
   linkType: hard
 
@@ -6675,13 +6635,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "diff@npm:5.2.0"
-  checksum: 12b63ca9c36c72bafa3effa77121f0581b4015df18bc16bac1f8e263597735649f1a173c26f7eba17fb4162b073fee61788abe49610e6c70a2641fe1895443fd
-  languageName: node
-  linkType: hard
-
 "dir-glob@npm:^3.0.1":
   version: 3.0.1
   resolution: "dir-glob@npm:3.0.1"
@@ -7441,7 +7394,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"ethers@npm:^5.6.8, ethers@npm:^5.7.0, ethers@npm:^5.7.2":
+"ethers@npm:^5.7.0, ethers@npm:^5.7.2":
   version: 5.7.2
   resolution: "ethers@npm:5.7.2"
   dependencies:
@@ -8515,24 +8468,6 @@ __metadata:
   version: 16.8.1
   resolution: "graphql@npm:16.8.1"
   checksum: 8d304b7b6f708c8c5cc164b06e92467dfe36aff6d4f2cf31dd19c4c2905a0e7b89edac4b7e225871131fd24e21460836b369de0c06532644d15b461d55b1ccc0
-  languageName: node
-  linkType: hard
-
-"handlebars@npm:^4.7.7":
-  version: 4.7.8
-  resolution: "handlebars@npm:4.7.8"
-  dependencies:
-    minimist: ^1.2.5
-    neo-async: ^2.6.2
-    source-map: ^0.6.1
-    uglify-js: ^3.1.4
-    wordwrap: ^1.0.0
-  dependenciesMeta:
-    uglify-js:
-      optional: true
-  bin:
-    handlebars: bin/handlebars
-  checksum: 00e68bb5c183fd7b8b63322e6234b5ac8fbb960d712cb3f25587d559c2951d9642df83c04a1172c918c41bcfc81bfbd7a7718bbce93b893e0135fc99edea93ff
   languageName: node
   linkType: hard
 
@@ -10214,13 +10149,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.isequalwith@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isequalwith@npm:4.4.0"
-  checksum: 428ba7a57c47ec05e2dd18c03a4b4c45dac524a46af7ce3f412594bfc7be6a5acaa51acf9ea113d0002598e9aafc6e19ee8d20bc28363145fcb4d21808c9039f
-  languageName: node
-  linkType: hard
-
 "lodash.kebabcase@npm:^4.1.1":
   version: 4.1.1
   resolution: "lodash.kebabcase@npm:4.1.1"
@@ -10694,7 +10622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.0, minimist@npm:^1.2.5, minimist@npm:^1.2.6, minimist@npm:^1.2.7":
+"minimist@npm:^1.2.0, minimist@npm:^1.2.6, minimist@npm:^1.2.7":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
@@ -10984,13 +10912,6 @@ __metadata:
   version: 0.6.3
   resolution: "negotiator@npm:0.6.3"
   checksum: b8ffeb1e262eff7968fc90a2b6767b04cfd9842582a9d0ece0af7049537266e7b2506dfb1d107a32f06dd849ab2aea834d5830f7f4d0e5cb7d36e1ae55d021d9
-  languageName: node
-  linkType: hard
-
-"neo-async@npm:^2.6.2":
-  version: 2.6.2
-  resolution: "neo-async@npm:2.6.2"
-  checksum: deac9f8d00eda7b2e5cd1b2549e26e10a0faa70adaa6fdadca701cc55f49ee9018e427f424bac0c790b7c7e2d3068db97f3093f1093975f2acb8f8818b936ed9
   languageName: node
   linkType: hard
 
@@ -12336,7 +12257,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:^7.2.0, rxjs@npm:^7.5.5":
+"rxjs@npm:^7.5.5":
   version: 7.8.1
   resolution: "rxjs@npm:7.8.1"
   dependencies:
@@ -12723,24 +12644,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"solidity-ast@npm:^0.4.38, solidity-ast@npm:^0.4.51":
+"solidity-ast@npm:^0.4.51":
   version: 0.4.56
   resolution: "solidity-ast@npm:0.4.56"
   dependencies:
     array.prototype.findlast: ^1.2.2
   checksum: 124cd54dc187860c83f4e8a3cbc41f890fbd0aaad4695356763034bdc782046eac414b161b7f354e423e075dba303d6bef213682df8932fee5d143d52135cd4e
-  languageName: node
-  linkType: hard
-
-"solidity-docgen@npm:^0.6.0-beta.29":
-  version: 0.6.0-beta.36
-  resolution: "solidity-docgen@npm:0.6.0-beta.36"
-  dependencies:
-    handlebars: ^4.7.7
-    solidity-ast: ^0.4.38
-  peerDependencies:
-    hardhat: ^2.8.0
-  checksum: 658204db9dc73904bf2e556015d36ca5d120c88b10ecd249f5822b75cb5ea259b039081018ad98d6d00423f0e7691c9a1bf515e640bb84fc51d0def9d80eca3a
   languageName: node
   linkType: hard
 
@@ -12768,7 +12677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.6.0, source-map@npm:^0.6.1":
+"source-map@npm:^0.6.0":
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 59ce8640cf3f3124f64ac289012c2b8bd377c238e316fb323ea22fbfe83da07d81e000071d7242cad7a23cd91c7de98e4df8830ec3f133cb6133a5f6e9f67bc2
@@ -13069,6 +12978,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "subgraphs@workspace:."
   dependencies:
+    "@chainlink/contracts": ^0.5.1
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.73.0
     "@graphprotocol/graph-ts": ^0.32.0
@@ -13724,15 +13634,6 @@ __metadata:
   version: 1.0.37
   resolution: "ua-parser-js@npm:1.0.37"
   checksum: 4d481c720d523366d7762dc8a46a1b58967d979aacf786f9ceceb1cd767de069f64a4bdffb63956294f1c0696eb465ddb950f28ba90571709e33521b4bd75e07
-  languageName: node
-  linkType: hard
-
-"uglify-js@npm:^3.1.4":
-  version: 3.17.4
-  resolution: "uglify-js@npm:3.17.4"
-  bin:
-    uglifyjs: bin/uglifyjs
-  checksum: 7b3897df38b6fc7d7d9f4dcd658599d81aa2b1fb0d074829dd4e5290f7318dbca1f4af2f45acb833b95b1fe0ed4698662ab61b87e94328eb4c0a0d3435baf924
   languageName: node
   linkType: hard
 

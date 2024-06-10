@@ -26,21 +26,35 @@ import {
 import Box from '../utilities/box';
 
 export function handleMarketEntered(event: MarketEntered): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(true));
+  updateOrCreateAccountVToken(
+    accountAddress,
+    poolAddress,
+    vTokenAddress,
+    event.block.number,
+    new Box(true),
+  );
 }
 
 export function handleMarketExited(event: MarketExited): void {
+  const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const accountAddress = event.params.account;
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(accountAddress, vTokenAddress, event.block.number, new Box(false));
+  updateOrCreateAccountVToken(
+    accountAddress,
+    poolAddress,
+    vTokenAddress,
+    event.block.number,
+    new Box(false),
+  );
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {

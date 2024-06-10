@@ -4,6 +4,7 @@ import { VToken } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
+  AccountPool,
   AccountVToken,
   Market,
   Pool,
@@ -14,13 +15,14 @@ import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
 import {
+  getAccountPoolId,
   getAccountVTokenId,
   getMarketId,
   getPoolId,
   getRewardSpeedId,
   getRewardsDistributorId,
 } from '../utilities/ids';
-import { createAccount, createMarket, createPool } from './create';
+import { createAccount, createAccountPool, createMarket, createPool } from './create';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
@@ -54,8 +56,21 @@ export const getOrCreateAccount = (accountAddress: Address): Account => {
   return account;
 };
 
+export const getOrCreateAccountPool = (
+  accountAddress: Address,
+  poolAddress: Address,
+): AccountPool => {
+  const accountPoolId = getAccountPoolId(accountAddress, poolAddress);
+  let accountPool = AccountPool.load(accountPoolId);
+  if (!accountPool) {
+    accountPool = createAccountPool(accountAddress, poolAddress);
+  }
+  return accountPool;
+};
+
 export const getOrCreateAccountVToken = (
   accountAddress: Address,
+  poolAddress: Address,
   marketAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
 ): AccountVToken => {
@@ -64,6 +79,7 @@ export const getOrCreateAccountVToken = (
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.account = accountAddress;
+    accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
     accountVToken.market = marketAddress;
     accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;

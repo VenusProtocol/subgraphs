@@ -4,6 +4,7 @@ import { Client as UrqlClient, createClient } from 'urql/core';
 import {
   AccountByIdDocument,
   AccountFromMarketDocument,
+  AccountPositionsDocument,
   AccountVTokenByAccountAndMarketQueryDocument,
   AccountVTokenByAccountIdDocument,
   AccountVTokensDocument,
@@ -82,6 +83,11 @@ class SubgraphClient {
       accountId,
       marketId,
     });
+    return result;
+  }
+
+  async getAccountPositions(id: string) {
+    const result = await this.query(AccountPositionsDocument, { id });
     return result;
   }
 }
