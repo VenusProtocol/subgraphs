@@ -54,7 +54,7 @@ const main = () => {
     chapel: {
       network: 'chapel',
       poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
-      poolLensAddress: chapelDeployments.addresses.PoolLensR1,
+      poolLensAddress: '0x559936086C5f65b92240012ae0D2F70C082Ac0b0',
       startBlock: '30870000',
       poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
