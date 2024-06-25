@@ -1,4 +1,4 @@
-import { Address, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller';
 import { Account, AccountVToken, Comptroller, Market } from '../../generated/schema';
@@ -22,9 +22,9 @@ import { updateMarketRates } from './updateMarketRates';
 import { updateMarketTotalSupplyMantissa } from './updateMarketTotalSupplyMantissa';
 
 export function getOrCreateComptroller(): Comptroller {
-  let comptroller = Comptroller.load(comptrollerAddress.toHexString());
+  let comptroller = Comptroller.load(comptrollerAddress);
   if (!comptroller) {
-    comptroller = new Comptroller(comptrollerAddress.toHexString());
+    comptroller = new Comptroller(comptrollerAddress);
     const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
     comptroller.priceOracle = comptrollerContract.oracle();
     comptroller.closeFactor = comptrollerContract.closeFactorMantissa();
@@ -40,7 +40,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
   let market = getMarket(marketAddress);
   if (!market) {
     const vTokenContract = VToken.bind(marketAddress);
-    market = new Market(marketAddress.toHexString());
+    market = new Market(marketAddress);
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
@@ -74,7 +74,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.underlyingPriceCents =
       market.symbol == 'vBNB'
         ? zeroBigInt32
-        : getUnderlyingPrice(market.id, market.underlyingDecimals);
+        : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
     market.totalXvsDistributedMantissa = zeroBigInt32;
@@ -100,7 +100,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
   return market;
 }
 
-export function getOrCreateAccount(accountId: string): Account {
+export function getOrCreateAccount(accountId: Bytes): Account {
   let account = Account.load(accountId);
   if (!account) {
     account = new Account(accountId);
@@ -113,25 +113,20 @@ export function getOrCreateAccount(accountId: string): Account {
 }
 
 export function getOrCreateAccountVToken(
-  marketId: string,
-  marketSymbol: string,
-  accountId: string,
+  marketId: Address,
+  accountId: Address,
   event: ethereum.Event,
 ): AccountVToken {
-  const accountVTokenId = getAccountVTokenId(
-    Address.fromString(marketId),
-    Address.fromString(accountId),
-  );
+  const accountVTokenId = getAccountVTokenId(marketId, accountId);
   let accountVToken = AccountVToken.load(accountVTokenId);
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.market = marketId;
-    accountVToken.symbol = marketSymbol;
     accountVToken.account = accountId;
     accountVToken.accrualBlockNumber = event.block.number;
     // we need to set an initial real onchain value to this otherwise it will never be accurate
-    const vTokenContract = VToken.bind(Address.fromString(marketId));
-    accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(Address.fromString(accountId));
+    const vTokenContract = VToken.bind(marketId);
+    accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.accountBorrowIndexMantissa = zeroBigInt32;

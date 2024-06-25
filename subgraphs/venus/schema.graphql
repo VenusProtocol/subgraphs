@@ -2,8 +2,8 @@
 The Comptroller type has protocol level variables stored
 """
 type Comptroller @entity {
-    "ID is set to 1"
-    id: ID!
+    "ID is set to comptroller address"
+    id: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
@@ -38,7 +38,7 @@ type Market @entity {
     "VToken symbol"
     symbol: String!
     "VToken address"
-    id: ID!
+    id: Bytes!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
     "Total underlying supplied"
@@ -84,7 +84,7 @@ participated in, along with liquidation information.
 """
 type Account @entity {
     "User BNB address"
-    id: ID!
+    id: Bytes!
     "Array of VTokens user is in"
     tokens: [AccountVToken!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -101,11 +101,9 @@ as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
-    id: ID!
+    id: Bytes!
     "Relation to market"
     market: Market!
-    "Symbol of the vToken"
-    symbol: String!
     "Relation to user"
     account: Account!
     "Block number this asset was updated at in the contract"
@@ -142,7 +140,7 @@ RedeemEvent, and LiquidationEvent all use this interface
 """
 type Transaction @entity {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "enum of event type"
     type: EventType!
     "The account that sent the tokens, usually vToken"

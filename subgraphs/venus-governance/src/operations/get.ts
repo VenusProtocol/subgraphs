@@ -41,7 +41,7 @@ export const getDelegate = (address: Address): Delegate => {
   const id = getDelegateId(address);
   const delegate = Delegate.load(id);
   if (!delegate) {
-    log.critical('Delegate {} not found', [id]);
+    log.critical('Delegate {} not found', [id.toHexString()]);
   }
   return delegate as Delegate;
 };

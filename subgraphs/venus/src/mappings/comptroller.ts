@@ -1,5 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
+import { Address } from '@graphprotocol/graph-ts';
+
 import {
   DistributedSupplierVenus,
   MarketEntered,
@@ -23,16 +25,24 @@ export function handleMarketListed(event: MarketListed): void {
 
 export function handleMarketEntered(event: MarketEntered): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const account = getOrCreateAccount(event.params.account.toHex());
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  getOrCreateAccount(event.params.account);
+  const accountVToken = getOrCreateAccountVToken(
+    Address.fromBytes(market.id),
+    event.params.account,
+    event,
+  );
   accountVToken.enteredMarket = true;
   accountVToken.save();
 }
 
 export function handleMarketExited(event: MarketExited): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const account = getOrCreateAccount(event.params.account.toHex());
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  getOrCreateAccount(event.params.account);
+  const accountVToken = getOrCreateAccountVToken(
+    Address.fromBytes(market.id),
+    event.params.account,
+    event,
+  );
   accountVToken.enteredMarket = false;
   accountVToken.save();
 }

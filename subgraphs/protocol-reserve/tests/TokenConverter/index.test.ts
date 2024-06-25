@@ -52,10 +52,10 @@ describe('Token Converter', () => {
         '1',
       ),
     );
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
 
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    const tokenConverter = TokenConverter.load(tokenConverterId)!;
+    const tokenConverter = TokenConverter.load(getTokenConverterId(tokenConverter1Address))!;
 
     const tokenConfigs = tokenConverter.configs.load();
     assert.i32Equals(tokenConfigs.length, 1);
@@ -77,10 +77,10 @@ describe('Token Converter', () => {
         '3',
       ),
     );
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
 
-    const tokenConverter = TokenConverter.load(tokenConverterId)!;
+    const tokenConverter = TokenConverter.load(getTokenConverterId(tokenConverter1Address))!;
     const tokenConfigs = tokenConverter.configs.load();
     assert.i32Equals(tokenConfigs.length, 1);
     assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenAddressIn), token1Address);
@@ -91,14 +91,14 @@ describe('Token Converter', () => {
 
   test('should index pausing conversions', () => {
     handleConversionPaused(createConversionPausedEvent(tokenConverter1Address, user));
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals('TokenConverter', tokenConverterId, 'paused', 'true');
   });
 
   test('should index resuming conversions', () => {
     handleConversionResumed(createConversionResumedEvent(tokenConverter1Address, user));
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals('TokenConverter', tokenConverterId, 'paused', 'false');
   });
@@ -114,7 +114,7 @@ describe('Token Converter', () => {
         newConverterNetworkAddress,
       ),
     );
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals(
       'TokenConverter',
@@ -132,7 +132,7 @@ describe('Token Converter', () => {
         destination2Address,
       ),
     );
-    const tokenConverterId = getTokenConverterId(tokenConverter2Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals(
       'TokenConverter',
@@ -146,7 +146,7 @@ describe('Token Converter', () => {
     handleBaseAssetUpdated(
       createBaseAssetUpdatedEvent(tokenConverter2Address, token3Address, token4Address),
     );
-    const tokenConverterId = getTokenConverterId(tokenConverter2Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals(
       'TokenConverter',

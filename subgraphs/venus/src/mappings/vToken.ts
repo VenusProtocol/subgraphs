@@ -68,10 +68,10 @@ export function handleMint(event: Mint): void {
 
   createMintEvent<Mint>(event);
 
-  const account = getOrCreateAccount(event.params.minter.toHex());
+  const account = getOrCreateAccount(event.params.minter);
   account.save();
 
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  const accountVToken = getOrCreateAccountVToken(marketAddress, event.params.minter, event);
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.plus(
     event.params.mintTokens,
   );
@@ -95,10 +95,10 @@ export function handleMintBehalf(event: MintBehalf): void {
 
   createMintBehalfEvent<MintBehalf>(event);
 
-  const account = getOrCreateAccount(event.params.receiver.toHex());
+  const account = getOrCreateAccount(event.params.receiver);
   account.save();
 
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  const accountVToken = getOrCreateAccountVToken(marketAddress, event.params.receiver, event);
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
     event.params.mintTokens,
   );
@@ -134,9 +134,9 @@ export function handleRedeem(event: Redeem): void {
 
   createRedeemEvent<Redeem>(event);
 
-  const account = getOrCreateAccount(event.params.redeemer.toHex());
+  getOrCreateAccount(event.params.redeemer);
 
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  const accountVToken = getOrCreateAccountVToken(marketAddress, event.params.redeemer, event);
   accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
     event.params.redeemTokens,
   );
@@ -169,11 +169,11 @@ export function handleBorrow(event: Borrow): void {
 
   market.save();
 
-  const account = getOrCreateAccount(event.params.borrower.toHex());
+  const account = getOrCreateAccount(event.params.borrower);
   account.hasBorrowed = true;
   account.save();
 
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  const accountVToken = getOrCreateAccountVToken(marketAddress, event.params.borrower, event);
   accountVToken.storedBorrowBalanceMantissa = event.params.accountBorrows;
   accountVToken.accountBorrowIndexMantissa = market.borrowIndexMantissa;
   accountVToken.totalUnderlyingBorrowedMantissa =
@@ -215,9 +215,9 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   market.save();
 
-  const account = getOrCreateAccount(event.params.borrower.toHex());
+  getOrCreateAccount(event.params.borrower);
 
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  const accountVToken = getOrCreateAccountVToken(marketAddress, event.params.borrower, event);
   accountVToken.storedBorrowBalanceMantissa = event.params.accountBorrows;
   accountVToken.accountBorrowIndexMantissa = market.borrowIndexMantissa;
   accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
@@ -244,11 +244,13 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  *    add liquidation counts in this handler.
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
-  const liquidator = getOrCreateAccount(event.params.liquidator.toHex());
+  getOrCreateMarket(event.address, event);
+
+  const liquidator = getOrCreateAccount(event.params.liquidator);
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
 
-  const borrower = getOrCreateAccount(event.params.borrower.toHex());
+  const borrower = getOrCreateAccount(event.params.borrower);
   borrower.countLiquidated = borrower.countLiquidated + 1;
   borrower.save();
 
@@ -280,24 +282,19 @@ export function handleTransfer(event: Transfer): void {
   // Checking if the tx is TO the vToken contract (i.e. this will not run when redeeming)
   // @TODO Edge case where someone who accidentally sends vTokens to a vToken contract, where it will not get recorded.
   if (
-    accountFromAddress != Address.fromString(market.id) &&
+    accountFromAddress != market.id &&
     accountFromAddress != nullAddress &&
-    accountToAddress != Address.fromString(market.id)
+    accountToAddress != market.id
   ) {
-    const accountFrom = getOrCreateAccount(accountFromAddress.toHex());
-    const accountFromVToken = getOrCreateAccountVToken(
-      market.id,
-      market.symbol,
-      accountFrom.id,
-      event,
-    );
+    getOrCreateAccount(accountFromAddress);
+    const accountFromVToken = getOrCreateAccountVToken(event.address, accountFromAddress, event);
     accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
       event.params.amount,
     );
     accountFromVToken.save();
 
-    const accountTo = getOrCreateAccount(accountToAddress.toHex());
-    const accountToVToken = getOrCreateAccountVToken(market.id, market.symbol, accountTo.id, event);
+    getOrCreateAccount(accountToAddress);
+    const accountToVToken = getOrCreateAccountVToken(event.address, accountToAddress, event);
     accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
       event.params.amount,
     );
@@ -320,7 +317,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.underlyingPriceCents =
     market.symbol == 'vBNB'
       ? zeroBigInt32
-      : getUnderlyingPrice(market.id, market.underlyingDecimals);
+      : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
 
   // the AccrueInterest event updates the reserves but does not report the new value in the params
   market.reservesMantissa = vTokenContract.totalReserves();
