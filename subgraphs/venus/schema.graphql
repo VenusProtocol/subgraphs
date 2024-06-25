@@ -2,7 +2,7 @@
 The Comptroller type has protocol level variables stored
 """
 type Comptroller @entity {
-    "Bytes is set to 1"
+    "ID is set to comptroller address"
     id: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
