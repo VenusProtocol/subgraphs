@@ -8,17 +8,32 @@ type Governance @entity {
   "Address of the governance executor contract"
   executor: Bytes!
 
+  "Address of the governance guardian"
+  guardian: Bytes!
+
+  "Flag for if the governance is paused or active"
+  paused: Boolean!
+
   "LayZero chainId for the chain this governance executor is deployed on"
   layerZeroChainId: Int!
 
+  "Source chainId which can send messages"
+  srcChainId: Int!
+
   "Max number of commands that can be sent to this governor in a day"
   maxDailyReceiveLimit: BigInt!
+
+  "Address of the precrime contract"
+  precrime: Bytes
 }
 
 
 type FunctionRegistry @entity {
+  "Function signature as bytes used as id"
+  id: Bytes!
+
   "Function signature that the governor is allowed to call"
-  id: ID!
+  signature: String!
 }
 
 enum PROPOSAL_TYPE {
@@ -85,4 +100,18 @@ type FailedPayload @entity {
   
   "Failure reason"
   reason: String!
+}
+
+type DestinationChain @entity {
+  "Destination Chain Id as Bytes"
+  id: Bytes!
+
+  "Chain Id"
+  chainId: Int!
+
+  "Packet Type"
+  packetType: Int!
+
+  "Minimum gas required to send for execution on destination"
+  minGas: BigInt!
 }

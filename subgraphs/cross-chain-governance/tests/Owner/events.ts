@@ -1,4 +1,4 @@
-import { ethereum } from '@graphprotocol/graph-ts';
+import { ByteArray, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import { FunctionRegistryChanged as FunctionRegistryChangedEvent } from '../../generated/OmnichainExecutorOwner/OmnichainExecutorOwner';
@@ -12,7 +12,7 @@ export const createFunctionRegistryChangedEvent = (
   event.parameters = [];
   const signatureParam = new ethereum.EventParam(
     'signature',
-    ethereum.Value.fromString(functionSignature),
+    ethereum.Value.fromBytes(Bytes.fromByteArray(ByteArray.fromUTF8(functionSignature))),
   );
   event.parameters.push(signatureParam);
 

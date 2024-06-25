@@ -1,3 +1,4 @@
+import { ByteArray, Bytes } from '@graphprotocol/graph-ts';
 import { assert, describe, test } from 'matchstick-as/assembly';
 
 import { handleFunctionRegistryChanged } from '../../src/mappings/omnichainExecutorOwner';
@@ -11,7 +12,13 @@ describe('OmniGovernanceOwner', () => {
     );
 
     handleFunctionRegistryChanged(functionRegistryChangedEvent);
-    assert.fieldEquals('FunctionRegistry', 'acceptAdmin(address)', 'id', 'acceptAdmin(address)');
+
+    assert.fieldEquals(
+      'FunctionRegistry',
+      Bytes.fromByteArray(ByteArray.fromUTF8('acceptAdmin(address)')).toHexString(),
+      'signature',
+      'acceptAdmin(address)',
+    );
     assert.entityCount('FunctionRegistry', 1);
   });
 

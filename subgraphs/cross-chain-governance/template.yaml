@@ -22,7 +22,7 @@ dataSources:
         - name: OmnichainExecutorOwner
           file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
       eventHandlers:
-        - event: FunctionRegistryChanged(string,bool)
+        - event: FunctionRegistryChanged(indexed string,bool)
           handler: handleFunctionRegistryChanged
   - kind: ethereum/contract
     name: OmnichainGovernanceExecutor
@@ -44,6 +44,10 @@ dataSources:
         - name: OmnichainGovernanceExecutor
           file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
       eventHandlers:
+        - event: NewGuardian(indexed address,indexed address)
+          handler: handleNewGuardian
+        - event: Paused(address)
+          handler: handlePaused
         - event: SetMaxDailyReceiveLimit(uint256,uint256)
           handler: handleSetMaxDailyReceiveLimit
         - event: ProposalReceived(indexed uint256,address[],uint256[],string[],bytes[],uint8)
@@ -52,9 +56,21 @@ dataSources:
           handler: handleProposalQueued
         - event: ProposalExecuted(indexed uint256)
           handler: handleProposalExecuted
-        - event: ProposalCancelled(indexed uint256)
-          handler: handleProposalCancelled
-        - event: ReceivePayloadFailed(uint16,bytes,uint64,bytes)
+        - event: ProposalCanceled(indexed uint256)
+          handler: handleProposalCanceled
+        - event: ReceivePayloadFailed(indexed uint16,indexed bytes,uint64,bytes)
           handler: handleReceivePayloadFailed
-        - event: TimelockAdded(indexed address,uint8)
+        - event: RetryMessageSuccess(uint16,bytes,uint64,bytes32)
+          handler: handleRetryMessageSuccess
+        - event: TimelockAdded(uint8,indexed address,indexed address)
           handler: handleTimelockAdded
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: SetMinDstGas(uint16,uint16,uint256)
+          handler: handleSetMinDstGas
+        - event: SetPrecrime(address)
+          handler: handleSetPrecrime
+        - event: SetSrcChainId(indexed uint16,indexed uint16)
+          handler: handleSetSrcChainId
+        - event: SetTrustedRemoteAddress(uint16,bytes)
+          handler: handleSetTrustedRemoteAddress
