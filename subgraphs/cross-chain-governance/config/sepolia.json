@@ -1,8 +1,0 @@
-{
-  "network": "sepolia",
-  "layerZeroChainId": 161,
-  "omnichainGovernanceOwnerAddress": "",
-  "startBlockOmnichainGovernanceOwner": "",
-  "omnichainGovernanceExecutorAddress": "",
-  "startBlockOmnichainGovernanceExecutor": ""
-}

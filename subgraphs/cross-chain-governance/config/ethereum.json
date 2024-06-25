@@ -1,8 +1,0 @@
-{
-  "network": "ethereum",
-  "layerZeroChainId": 101,
-  "omnichainGovernanceOwnerAddress": "",
-  "startBlockOmnichainGovernanceOwner": "",
-  "omnichainGovernanceExecutorAddress": "",
-  "startBlockOmnichainGovernanceExecutor": ""
-}

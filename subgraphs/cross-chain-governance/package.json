@@ -11,20 +11,22 @@
   ],
   "scripts": {
     "codegen": "graph codegen",
-    "create:docker": "npx graph create venusprotocol/venus-subgraph --node http://graph-node:8020/",
-    "build:docker": "npx graph build --ipfs http://ipfs:5001",
-    "build:ethereum": "npx graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
-    "deploy:sepolia": "npx mustache config/sepolia.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:ethereum": "npx mustache config/ethereum.json template.yaml > subgraph.yaml && npx graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:docker": "npx mustache config/docker.json template.yaml > subgraph.yaml && npx mustache config/docker.json src/constants/config-template > src/constants/config.ts",
-    "prepare:sepolia": "npx mustache config/sepolia.json template.yaml > subgraph.yaml && npx mustache config/sepolia.json src/constants/config-template > src/constants/config.ts",
-    "prepare:ethereum": "npx mustache config/ethereum.json template.yaml > subgraph.yaml && npx mustache config/ethereum.json src/constants/config-template > src/constants/config.ts",
+    "create:docker": "yarn graph create venusprotocol/venus-subgraph --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
+    "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:docker": "yarn mustache config/docker.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:sepolia": "yarn mustache config/sepolia.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:ethereum": "yarn mustache config/ethereum.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:sepolia": "yarn mustache config/sepolia.json template.yaml > subgraph.yaml && yarn mustache config/sepolia.json src/constants/config-template > src/constants/config.ts",
+    "prepare:ethereum": "yarn mustache config/ethereum.json template.yaml > subgraph.yaml && yarn mustache config/ethereum.json src/constants/config-template > src/constants/config.ts",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "true"
   },
   "dependencies": {
     "@layerzerolabs/solidity-examples": "^1.0.0",
-    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#dd4434587c752324afc6ad3ad024662892c40b38"
+    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879",
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.2"
   }
 }
