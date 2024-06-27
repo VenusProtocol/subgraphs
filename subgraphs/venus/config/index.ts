@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
-import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/networks/mainnet.json';
-import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/networks/testnet.json';
+import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet_addresses.json';
+import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -24,12 +24,12 @@ const main = () => {
     },
     chapel: {
       network: 'chapel',
-      comptrollerAddress: bscTestnetCoreDeployments.Contracts.Unitroller,
+      comptrollerAddress: bscTestnetCoreDeployments.addresses.Unitroller,
       startBlock: '2470000',
     },
     bsc: {
       network: 'bsc',
-      comptrollerAddress: bscMainnetCoreDeployments.Contracts.Unitroller,
+      comptrollerAddress: bscMainnetCoreDeployments.addresses.Unitroller,
       startBlock: '2470000',
     },
   };
