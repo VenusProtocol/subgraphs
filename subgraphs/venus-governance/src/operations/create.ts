@@ -2,9 +2,21 @@ import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { VoteCast as VoteCastAlpha } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { VoteCast as VoteCastBravo } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import {
+  ExecuteRemoteProposal,
+  StorePayload,
+} from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
 import { Proposal, RemoteProposal, Vote } from '../../generated/schema';
-import { ABSTAIN, AGAINST, BIGINT_ONE, BIGINT_ZERO, FOR, NORMAL } from '../constants';
-import { ExecuteRemoteProposal } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import {
+  ABSTAIN,
+  AGAINST,
+  BIGINT_ONE,
+  BIGINT_ZERO,
+  EXECUTED,
+  FOR,
+  NORMAL,
+  STORED,
+} from '../constants';
 import { getProposalId, getVoteId } from '../utilities/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
 
@@ -69,17 +81,43 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
 }
 
 export function createRemoteProposal(event: ExecuteRemoteProposal): RemoteProposal {
-  const remoteProposal = new RemoteProposal(event.params.nonce);
+  const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
-  const decoded = ethereum.decode(
-    '(address[],uint[],string[],bytes[],uint8)',
-    event.params.payload,
-  );
-  remoteProposal.targets = decoded[0].toArray();
-  remoteProposal.targets = decoded[1].toArray();
-  remoteProposal.signatures = decoded[2].toArray();
-  remoteProposal.calldatas = decoded[3].toArray();
-  remoteProposal.proposalType = decoded[4].toString();
+
+  const decoded = ethereum
+    .decode('(address[],uint[],string[],bytes[],uint8)', event.params.payload)!
+    .toTuple();
+
+  remoteProposal.targets = decoded[0]
+    .toAddressArray()
+    .map<Bytes>(a => Bytes.fromHexString(a.toHexString()));
+  remoteProposal.values = decoded[1].toBigIntArray();
+  remoteProposal.signatures = decoded[2].toStringArray();
+  remoteProposal.calldatas = decoded[3].toBytesArray();
+  remoteProposal.proposalType = decoded[4].toI32();
+  remoteProposal.status = EXECUTED;
   remoteProposal.save();
+  return remoteProposal;
+}
+
+export function createRemoteProposalFromPayload(event: StorePayload): RemoteProposal {
+  const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
+  remoteProposal.remoteChainId = event.params.remoteChainId;
+  remoteProposal.proposalId = event.params.proposalId;
+  const decoded = ethereum
+    .decode('(address[],uint[],string[],bytes[],uint8)', event.params.payload)!
+    .toTuple();
+
+  remoteProposal.targets = decoded[0]
+    .toAddressArray()
+    .map<Bytes>(a => Bytes.fromHexString(a.toHexString()));
+  remoteProposal.values = decoded[1].toBigIntArray();
+  remoteProposal.signatures = decoded[2].toStringArray();
+  remoteProposal.calldatas = decoded[3].toBytesArray();
+  remoteProposal.proposalType = decoded[4].toI32();
+  remoteProposal.status = STORED;
+  remoteProposal.failedReason = event.params.reason;
+  remoteProposal.save();
+  return remoteProposal;
 }

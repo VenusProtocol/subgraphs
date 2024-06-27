@@ -1,9 +1,9 @@
-import { Address, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
-import { Delegate, TrustedRemote } from '../../generated/schema';
+import { Delegate, MaxDailyLimit, TrustedRemote } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
-import { getDelegateId, getTrustedRemoteId } from '../utilities/ids';
+import { getDelegateId, getMaxDailyLimitId, getTrustedRemoteId } from '../utilities/ids';
 import { getGovernanceEntity } from './get';
 
 export class GetOrCreateDelegateReturn {
@@ -48,11 +48,30 @@ export const getOrCreateTrustedRemote = (
   let trustedRemote = TrustedRemote.load(id);
   if (!trustedRemote) {
     trustedRemote = new TrustedRemote(id);
+    trustedRemote.chainId = remoteChainId;
+    trustedRemote.address = Address.fromBytes(remoteAddress);
+    trustedRemote.active = true;
+    created = true;
+    trustedRemote.save();
+  }
+  return { entity: trustedRemote, created };
+};
+
+export class GetOrCreateMaxDailyLimitReturn {
+  entity: MaxDailyLimit;
+  created: boolean;
+}
+
+export const getOrCreateMaxDailyLimit = (chainId: i32): GetOrCreateMaxDailyLimitReturn => {
+  const id = getMaxDailyLimitId(chainId);
+  let created = false;
+  let maxDailyLimit = MaxDailyLimit.load(id);
+  if (!maxDailyLimit) {
+    maxDailyLimit = new MaxDailyLimit(id);
+    maxDailyLimit.destinationChainId = BigInt.fromI32(chainId);
+    maxDailyLimit.max = BigInt.fromI32(0);
+    maxDailyLimit.save();
     created = true;
   }
-
-  trustedRemote.address = Address.fromBytes(remoteAddress);
-  trustedRemote.save();
-
-  return { entity: trustedRemote, created };
+  return { entity: maxDailyLimit, created };
 };

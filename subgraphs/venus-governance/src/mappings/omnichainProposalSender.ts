@@ -1,40 +1,79 @@
+import { ByteArray, Bytes, crypto } from '@graphprotocol/graph-ts';
+
 import {
   ClearPayload,
   ExecuteRemoteProposal,
+  NewAccessControlManager,
+  SetMaxDailyLimit,
   SetTrustedRemoteAddress,
   StorePayload,
-  UpdateValidChainId,
+  TrustedRemoteRemoved,
 } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
-import { nullAddress } from '../constants/addresses';
-import { createRemoteProposal } from '../operations/create';
-import { getRemoteProposal } from '../operations/get';
-import { getOrCreateTrustedRemote } from '../operations/getOrCreate';
-import { getTrustedRemoteId } from '../utilities/ids';
+import { EXECUTED, WITHDRAWN } from '../constants';
+import { createRemoteProposal, createRemoteProposalFromPayload } from '../operations/create';
+import { getOmnichainProposalSenderEntity, getRemoteProposal } from '../operations/get';
+import { getOrCreateMaxDailyLimit, getOrCreateTrustedRemote } from '../operations/getOrCreate';
+import { removeTrustedRemote } from '../operations/remove';
 
-export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress) {
-  getOrCreateTrustedRemote(event.params.remoteChainId, event.params.remoteAddress);
+export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
+  getOrCreateTrustedRemote(event.params.remoteChainId, event.params.newRemoteAddress);
 }
 
-export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal) {
+export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
   const remoteProposal = createRemoteProposal(event);
-  remoteProposal.executed = true;
   remoteProposal.save();
 }
 
-export function handleClearPayload(event: ClearPayload) {
-  const remoteProposal = getRemoteProposal(getTrustedRemoteId(event.params.nonce));
-  remoteProposal.executed = true;
+export function handleClearPayload(event: ClearPayload): void {
+  const remoteProposal = getRemoteProposal(event.params.proposalId);
+  // If receipt includes a withdrawn even the proposal was withdrawn
+  // otherwise it execution was retried and successful
+  if (event.receipt) {
+    const withdrawn = event.receipt!.logs.filter(v => {
+      const topic = Bytes.fromByteArray(
+        crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')),
+      );
+      return v.topics.includes(topic);
+    });
+    if (withdrawn.length > 0) {
+      remoteProposal.status = WITHDRAWN;
+    }
+  } else {
+    remoteProposal.status = EXECUTED;
+  }
   remoteProposal.save();
 }
 
-export function handleStorePayload(event: StorePayload) {
-  const remoteProposal = getRemoteProposal(getTrustedRemoteId(event.params.nonce));
-  remoteProposal.executed = false;
+export function handleStorePayload(event: StorePayload): void {
+  const remoteProposal = createRemoteProposalFromPayload(event);
   remoteProposal.save();
 }
 
-export function handleUpdatedValidChainId(event: UpdateValidChainId) {
-  const trustedRemote = getOrCreateTrustedRemote(event.params.chainId, nullAddress);
-  trustedRemote.active = event.params.isAdded;
-  trustedRemote.save();
+export function handleNewAccessControlManager(event: NewAccessControlManager): void {
+  const omnichainProposalSender = getOmnichainProposalSenderEntity();
+  omnichainProposalSender.accessControlManagerAddress = event.params.newAccessControlManager;
+  omnichainProposalSender.save();
+}
+
+export function handlePaused(): void {
+  const omnichainProposalSender = getOmnichainProposalSenderEntity();
+  omnichainProposalSender.paused = true;
+  omnichainProposalSender.save();
+}
+
+export function handleSetMaxDailyLimit(event: SetMaxDailyLimit): void {
+  const result = getOrCreateMaxDailyLimit(event.params.chainId);
+  const maxDailyLimit = result.entity;
+  maxDailyLimit.max = event.params.newMaxLimit;
+  maxDailyLimit.save();
+}
+
+export function handleTrustedRemoteRemoved(event: TrustedRemoteRemoved): void {
+  removeTrustedRemote(event.params.chainId);
+}
+
+export function handleUnpaused(): void {
+  const omnichainProposalSender = getOmnichainProposalSenderEntity();
+  omnichainProposalSender.paused = false;
+  omnichainProposalSender.save();
 }

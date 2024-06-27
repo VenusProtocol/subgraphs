@@ -220,6 +220,10 @@ dataSources:
       address: "{{ omnichainProposalSenderAddress }}"
       abi: OmnichainProposalSender
       startBlock: {{ omnichainProposalSenderStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
       file: ./src/mappings/omnichainProposalSender.ts
       entities:
         - OmnichainProposalSender
@@ -227,13 +231,21 @@ dataSources:
         - name: OmnichainProposalSender
           file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainProposalSender.sol/OmnichainProposalSender.json
       eventHandlers:
-        - event: SetTrustedRemoteAddress(indexed uint16,bytes)
+        - event: SetTrustedRemoteAddress(indexed uint16,bytes,bytes)
           handler: handleSetTrustedRemoteAddress
-        - event: ExecuteRemoteProposal(indexed uint64,indexed uint16,uint256,bytes)
+        - event: ExecuteRemoteProposal(indexed uint16,uint256,bytes)
           handler: handleExecuteRemoteProposal
-        - event: ClearPayload(indexed uint64,bytes32)
+        - event: ClearPayload(indexed uint256,bytes32)
           handler: handleClearPayload
-        - event: StorePayload(indexed uint64,indexed uint16,bytes,bytes,uint256,bytes)
+        - event: StorePayload(indexed uint256,indexed uint16,bytes,bytes,uint256,bytes)
           handler: handleStorePayload
-        - event: UpdatedValidChainId(uint16,bool)
-          handler: handleUpdatedValidChainId
+        - event: NewAccessControlManager(indexed address,indexed address)
+          handler: handleNewAccessControlManager
+        - event: Paused(address)
+          handler: handlePaused
+        - event: SetMaxDailyLimit(indexed uint16,uint256,uint256)
+          handler: handlerSetMaxDailyLimit
+        - event: TrustedRemoteRemoved(indexed uint16)
+          handler: handleTrustedRemoteRemoved
+        - event: Unpaused(address)
+          handler: handleUnpaused

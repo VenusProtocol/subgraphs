@@ -32,7 +32,7 @@ describe('Permission events', () => {
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
       const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id, key, value);
+      assert.fieldEquals('Permission', id.toHex(), key, value);
     };
 
     assertPermissionGrantedDocument('status', GRANTED);
@@ -51,7 +51,7 @@ describe('Permission events', () => {
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {
       const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id, key, value);
+      assert.fieldEquals('Permission', id.toHex(), key, value);
     };
 
     assertPermissionRevokedDocument('status', REVOKED);
@@ -70,7 +70,7 @@ describe('Permission events', () => {
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
       const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id, key, value);
+      assert.fieldEquals('Permission', id.toHex(), key, value);
     };
 
     assertPermissionGrantedDocument('status', GRANTED);
@@ -87,7 +87,7 @@ describe('Permission events', () => {
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {
       const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id, key, value);
+      assert.fieldEquals('Permission', id.toHex(), key, value);
     };
 
     assertPermissionRevokedDocument('status', REVOKED);
