@@ -218,7 +218,7 @@ index 15f44c1..f8f5685 100644
  contract PriceOracle {
      /// @notice Indicator that this is a PriceOracle contract (for inspection)
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
-index b18dc86..f1b739f 100644
+index 8b0bb60..49eb857 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
 +++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VAI/VAIController.sol
 @@ -6,7 +6,7 @@ import { VAIControllerErrorReporter } from "../../Utils/ErrorReporter.sol";
@@ -228,8 +228,8 @@ index b18dc86..f1b739f 100644
 -import { VToken, EIP20Interface } from "../VTokens/VToken.sol";
 +import { CorePoolVToken as VToken, EIP20Interface } from "../VTokens/VToken.sol";
  import { VAIUnitroller, VAIControllerStorageG4 } from "./VAIUnitroller.sol";
+ import { VAIControllerInterface } from "./VAIControllerInterface.sol";
  import { VAI } from "./VAI.sol";
- import { IPrime } from "../Prime/IPrime.sol";
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBNB.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBNB.sol
 index aa0b516..5352730 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBNB.sol
@@ -243,17 +243,26 @@ index aa0b516..5352730 100644
  /**
   * @title Venus's vBNB Contract
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
-index a20a613..7ce7185 100644
+index a20a613..16468e9 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
 +++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
 @@ -1,6 +1,6 @@
  pragma solidity ^0.5.16;
  
 -import { VToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
-+import { CorePoolVToken as VToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
++import { CorePoolVToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
  import { EIP20Interface } from "../EIP20Interface.sol";
  import { EIP20NonStandardInterface } from "../EIP20NonStandardInterface.sol";
  
+@@ -9,7 +9,7 @@ import { EIP20NonStandardInterface } from "../EIP20NonStandardInterface.sol";
+  * @notice vTokens which wrap an EIP-20 underlying
+  * @author Venus
+  */
+-contract VBep20 is VToken, VBep20Interface {
++contract VBep20 is CorePoolVToken, VBep20Interface {
+     /*** User Interface ***/
+ 
+     /**
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
 index 7dd98f1..964ae46 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
@@ -268,26 +277,14 @@ index 7dd98f1..964ae46 100644
          MathError mathErr;
          uint exchangeRateMantissa;
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
-index adf9c4c..8817cbd 100644
+index adf9c4c..3c2f79e 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
 +++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
 @@ -1,6 +1,6 @@
  pragma solidity ^0.5.16;
  
 -import "../Tokens/VTokens/VToken.sol";
-+import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken, ComptrollerInterface } from  "../Tokens/VTokens/VToken.sol";
  
  /**
   * @title Venus's vBNB Contract
-diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-index 4108562..d13afec 100644
---- a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-+++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-@@ -1,6 +1,6 @@
- pragma solidity ^0.5.16;
- 
--import "../Tokens/VTokens/VToken.sol";
-+import { CorePoolVToken as VToken } from "../Tokens/VTokens/VToken.sol";
- 
- /**
-  * @title Venus's VBep20 Contract
