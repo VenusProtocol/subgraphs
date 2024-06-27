@@ -1,9 +1,21 @@
-import { Address, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
-import { Delegate, Governance, Proposal, RemoteProposal } from '../../generated/schema';
+import { OmnichainProposalSender as OmnichainProposalSenderContract } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import {
+  Delegate,
+  Governance,
+  OmnichainProposalSender,
+  Proposal,
+  RemoteProposal,
+} from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
-import { nullAddress } from '../constants/addresses';
-import { getDelegateId, getGovernanceId } from '../utilities/ids';
+import { nullAddress, omnichainProposalSenderAddress } from '../constants/addresses';
+import {
+  getDelegateId,
+  getGovernanceId,
+  getOmnichainProposalSenderId,
+  getProposalId,
+} from '../utilities/ids';
 
 /**
  * While technically this function does also create, we don't care because it only happens once as the id is a constant.
@@ -29,6 +41,22 @@ export const getGovernanceEntity = (): Governance => {
   return governance as Governance;
 };
 
+export const getOmnichainProposalSenderEntity = (): OmnichainProposalSender => {
+  let omnichainProposalSender = OmnichainProposalSender.load(getOmnichainProposalSenderId());
+  if (!omnichainProposalSender) {
+    const omnichainProposalSenderContract = OmnichainProposalSenderContract.bind(
+      omnichainProposalSenderAddress,
+    );
+    omnichainProposalSender = new OmnichainProposalSender(getOmnichainProposalSenderId());
+    omnichainProposalSender.address = getOmnichainProposalSenderId();
+    omnichainProposalSender.accessControlManagerAddress =
+      omnichainProposalSenderContract.accessControlManager();
+    omnichainProposalSender.paused = false;
+    omnichainProposalSender.save();
+  }
+  return omnichainProposalSender;
+};
+
 export const getProposal = (id: string): Proposal => {
   const proposal = Proposal.load(id);
   if (!proposal) {
@@ -46,10 +74,11 @@ export const getDelegate = (address: Address): Delegate => {
   return delegate as Delegate;
 };
 
-export const getRemoteProposal = (id: string): RemoteProposal => {
-  const remoteProposal = RemoteProposal.load(id);
+export const getRemoteProposal = (proposalId: BigInt): RemoteProposal => {
+  const id = getProposalId(proposalId);
+  const remoteProposal = RemoteProposal.load(id.toString());
   if (!remoteProposal) {
-    log.critical('RemoteProposal {} not found', [id]);
+    log.critical('RemoteProposal {} not found', [id.toString()]);
   }
   return remoteProposal as RemoteProposal;
 };

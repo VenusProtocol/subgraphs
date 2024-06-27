@@ -179,7 +179,7 @@ enum PermissionStatus {
 
 type Permission @entity {
   "Id generated for each Permission"
-  id: ID!
+  id: Bytes!
 
   "Indicates if the permission was either GRANTED or REVOKED"
   status: PermissionStatus!
@@ -194,17 +194,50 @@ type Permission @entity {
   functionSig: String!
 }
 
+type MaxDailyLimit @entity {
+  "Destination Chain Id as bytes"
+  id: Bytes!
+  
+  "Chain Id that is approved to receive messages"
+  destinationChainId: BigInt!
+  
+  "Maximum Number of messages that can be set to the destination chain"
+  max: BigInt!
+}
+
+type OmnichainProposalSender @entity {
+  ""
+  id: Bytes!
+
+  "Address of the Omnichain Proposal Sender"
+  address: Bytes!
+
+  "Access Control Manager for the Omnichain Proposal Sender"
+  accessControlManagerAddress: Bytes!
+
+  "Flag for if the Omnichain Proposal Sender is paused"
+  paused: Boolean!
+}
+
+
 type TrustedRemote @entity {
   "LayerZero Chain id of the trusted remote"
-  id: ID!
+  id: Bytes!
+
+  chainId: Int!
   
   "Governance contract address on the trusted remote"
   address: Bytes
 
-  executedProposals: [RemoteProposal!]!
+  executedProposals: [RemoteProposal!]
 
   active: Boolean!
+}
 
+enum RemoteProposalStatus {
+  STORED,
+  EXECUTED,
+  WITHDRAWN
 }
 
 type RemoteProposal @entity {
@@ -212,7 +245,7 @@ type RemoteProposal @entity {
   id: ID!
 
   "RemoteProposal Id"
-  proposalId: Int!
+  proposalId: BigInt!
 
   remoteChainId: Int!
 
@@ -227,10 +260,13 @@ type RemoteProposal @entity {
 
   "Call data for the change"
   calldatas: [Bytes!]
-  
-  "Type of Proposal can be normal fast track or critical"
-  type: PROPOSAL_TYPE!
+
+  "Proposal Type (Normal, FastTrack, Critical)"
+  proposalType: Int!
 
   "True if executed, False if waiting to be retried"
-  executed: Boolean!
+  status: RemoteProposalStatus!
+
+  "If execution fails and is stored, this property will show the reason"
+  failedReason: Bytes
 }

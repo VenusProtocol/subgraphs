@@ -1,7 +1,7 @@
 import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet.json';
 import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet.json';
-import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet.json';
-import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet.json';
+import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet_addresses.json';
+import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -33,6 +33,8 @@ const main = () => {
       xvsVaultAddress: '0x82e01223d51Eb87e16A03E24687EDF0F294da6f1',
       xvsVaultStartBlock: '0',
       xvsVaultPid: '0',
+      omnichainProposalSenderAddress: '0xBEe6FFc1E8627F51CcDF0b4399a1e1abc5165f15',
+      omnichainProposalSenderStartBlock: '0',
     },
     chapel: {
       network: 'chapel',
@@ -46,11 +48,13 @@ const main = () => {
       governorBravoDelegatorAddress:
         bscTestnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
       governorBravoDelegatorStartBlock: '16002994 ',
-      xvsTokenAddress: bscTestnetCoreDeployments.contracts.XVS.address,
+      xvsTokenAddress: bscTestnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '2802593',
-      xvsVaultAddress: bscTestnetCoreDeployments.contracts.XVSVault.address,
+      xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13937802',
       xvsVaultPid: '1',
+      omnichainProposalSenderAddress: '',
+      omnichainProposalSenderStartBlock: '0',
     },
     bsc: {
       network: 'bsc',
@@ -64,11 +68,13 @@ const main = () => {
       governorBravoDelegatorAddress:
         bscMainnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
       governorBravoDelegatorStartBlock: '13729317',
-      xvsTokenAddress: bscMainnetCoreDeployments.contracts.XVS.address,
+      xvsTokenAddress: bscMainnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '858561',
-      xvsVaultAddress: bscMainnetCoreDeployments.contracts.XVSVault.address,
+      xvsVaultAddress: bscMainnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13018718',
       xvsVaultPid: '0',
+      omnichainProposalSenderAddress: '',
+      omnichainProposalSenderStartBlock: '0',
     },
   };
 

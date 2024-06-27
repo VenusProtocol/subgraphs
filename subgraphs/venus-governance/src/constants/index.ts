@@ -6,7 +6,6 @@ export const BIGDECIMAL_ZERO = new BigDecimal(BIGINT_ZERO);
 
 // Ids
 export const GOVERNANCE = 'GOVERNANCE';
-export const SEPERATOR = '-';
 
 // Vote support
 export const FOR = 'FOR';
@@ -21,3 +20,8 @@ export const CRITICAL = 'CRITICAL';
 // Permission types
 export const GRANTED = 'GRANTED';
 export const REVOKED = 'REVOKED';
+
+// Remote Proposal Status
+export const EXECUTED = 'EXECUTED';
+export const STORED = 'STORED';
+export const WITHDRAWN = 'WITHDRAWN';

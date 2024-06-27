@@ -4,3 +4,5 @@ export const governorBravoDelegatorAddress = '{{ governorBravoDelegatorAddress }
 
 export const xvsVaultPid = '{{ xvsVaultPid }}';
 
+export const omnichainProposalSenderAddress = '{{ omnichainProposalSenderAddress }}';
+
