@@ -1629,44 +1629,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:^0.73.0":
-  version: 0.73.0
-  resolution: "@graphprotocol/graph-cli@npm:0.73.0"
-  dependencies:
-    "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
-    "@oclif/core": 2.8.6
-    "@oclif/plugin-autocomplete": ^2.3.6
-    "@oclif/plugin-not-found": ^2.4.0
-    "@whatwg-node/fetch": ^0.8.4
-    assemblyscript: 0.19.23
-    binary-install-raw: 0.0.13
-    chalk: 3.0.0
-    chokidar: 3.5.3
-    debug: 4.3.4
-    docker-compose: 0.23.19
-    dockerode: 2.5.8
-    fs-extra: 9.1.0
-    glob: 9.3.5
-    gluegun: 5.1.6
-    graphql: 15.5.0
-    immutable: 4.2.1
-    ipfs-http-client: 55.0.0
-    jayson: 4.0.0
-    js-yaml: 3.14.1
-    open: 8.4.2
-    prettier: 3.0.3
-    semver: 7.4.0
-    sync-request: 6.1.0
-    tmp-promise: 3.0.3
-    web3-eth-abi: 1.7.0
-    which: 2.0.2
-    yaml: 1.10.2
-  bin:
-    graph: bin/run
-  checksum: 70d9740eb15eec56d43aaf557f5d13bef012d74969e83947db5156b40c0646c0d78c9afd1a72b681b8337834b9285cf3a62d4f52ecc010c44ce541ae0ca4ffd7
-  languageName: node
-  linkType: hard
-
 "@graphprotocol/graph-cli@npm:^0.77.0":
   version: 0.77.0
   resolution: "@graphprotocol/graph-cli@npm:0.77.0"
@@ -1705,12 +1667,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-ts@npm:^0.32.0":
-  version: 0.32.0
-  resolution: "@graphprotocol/graph-ts@npm:0.32.0"
+"@graphprotocol/graph-ts@npm:^0.35.1":
+  version: 0.35.1
+  resolution: "@graphprotocol/graph-ts@npm:0.35.1"
   dependencies:
     assemblyscript: 0.19.10
-  checksum: 9376ad625d3e439c9026c6aac15c82b43bb704c99469649e758bd27e68c3de3dcf36381a01ca76fea073f9e4ec507bccfa9ee4bb2b82bf67404419855efc735f
+  checksum: 3f6aa6aa2edde80cea4f73b560367d440c206325d161e8c9fa35f18f4cd52db1ffd1f02410890e435122bcb2683cac719c928836d9f9a27e85f6fb65d98e8efd
   languageName: node
   linkType: hard
 
@@ -13193,8 +13155,8 @@ __metadata:
   dependencies:
     "@chainlink/contracts": ^0.5.1
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.73.0
-    "@graphprotocol/graph-ts": ^0.32.0
+    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-ts": ^0.35.1
     "@nomicfoundation/hardhat-network-helpers": ^1.0.4
     "@nomiclabs/hardhat-ethers": ^2.1.1
     "@nomiclabs/hardhat-etherscan": ^3.1.0
@@ -14118,10 +14080,15 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "venus-cross-chain-governance-subgraph@workspace:subgraphs/cross-chain-governance"
   dependencies:
+    "@graphprotocol/client-cli": 3.0.0
+    "@graphprotocol/graph-cli": ^0.77.0
     "@layerzerolabs/solidity-examples": ^1.0.0
     "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879"
+    apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     ts-node: ^10.9.2
+    urql: ^3.0.3
+    venus-subgraph-utils: 0.0.0
   languageName: unknown
   linkType: soft
 
@@ -14159,7 +14126,7 @@ __metadata:
   resolution: "venus-subgraph@workspace:subgraphs/venus"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.73.0
+    "@graphprotocol/graph-cli": ^0.77.0
     "@venusprotocol/venus-protocol": 7.0.0
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
     hardhat: ^2.10.2

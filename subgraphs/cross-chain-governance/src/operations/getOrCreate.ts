@@ -33,7 +33,7 @@ export const getOrCreateFunctionRegistry = (signature: Bytes): FunctionRegistry 
 
 export const getOrCreateGovernance = (): Governance => {
   let governance = Governance.load(getGovernanceId());
-  const governanceContract = OmnichainGovernanceExecutor.bind(omnichainGovernanceOwnerAddress);
+  const governanceContract = OmnichainGovernanceExecutor.bind(omnichainExecutorOwnerAddress);
   if (!governance) {
     governance = new Governance(getGovernanceId());
     governance.address = omnichainGovernanceOwnerAddress;

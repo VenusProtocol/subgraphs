@@ -228,9 +228,11 @@ type TrustedRemote @entity {
   
   "Governance contract address on the trusted remote"
   address: Bytes
-
-  executedProposals: [RemoteProposal!]
-
+  
+  "Array of proposals sent to teh remote"
+  proposals: [RemoteProposal!]
+  
+  "True if active, false if inactive"
   active: Boolean!
 }
 
@@ -247,6 +249,7 @@ type RemoteProposal @entity {
   "RemoteProposal Id"
   proposalId: BigInt!
 
+  "Remote ChainId where the proposal was sent"
   remoteChainId: Int!
 
   "Targets data for the change"

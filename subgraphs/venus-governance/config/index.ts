@@ -53,8 +53,8 @@ const main = () => {
       xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13937802',
       xvsVaultPid: '1',
-      omnichainProposalSenderAddress: '',
-      omnichainProposalSenderStartBlock: '0',
+      omnichainProposalSenderAddress: '0xCfD34AEB46b1CB4779c945854d405E91D27A1899',
+      omnichainProposalSenderStartBlock: '40979674',
     },
     bsc: {
       network: 'bsc',
@@ -73,8 +73,8 @@ const main = () => {
       xvsVaultAddress: bscMainnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13018718',
       xvsVaultPid: '0',
-      omnichainProposalSenderAddress: '',
-      omnichainProposalSenderStartBlock: '0',
+      omnichainProposalSenderAddress: '0x36a69dE601381be7b0DcAc5D5dD058825505F8f6',
+      omnichainProposalSenderStartBlock: '39375361',
     },
   };
 

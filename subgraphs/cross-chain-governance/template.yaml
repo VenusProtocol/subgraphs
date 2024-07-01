@@ -21,6 +21,7 @@ dataSources:
       abis:
         - name: OmnichainExecutorOwner
           file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
+          
       eventHandlers:
         - event: FunctionRegistryChanged(indexed string,bool)
           handler: handleFunctionRegistryChanged
@@ -72,5 +73,3 @@ dataSources:
           handler: handleSetPrecrime
         - event: SetSrcChainId(indexed uint16,indexed uint16)
           handler: handleSetSrcChainId
-        - event: SetTrustedRemoteAddress(uint16,bytes)
-          handler: handleSetTrustedRemoteAddress
