@@ -15,18 +15,28 @@
     "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:docker": "yarn mustache config/docker.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
-    "deploy:sepolia": "yarn mustache config/sepolia.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:ethereum": "yarn mustache config/ethereum.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy:ethereum": "yarn prepare:ethereum && yarn graph deploy --studio venus-governance-ethereum",
+    "deploy:sepolia": "yarn prepare:sepolia && yarn graph deploy --studio venus-governance-sepolia",
+    "deploy:arbitrumSepolia": "yarn prepare:arbitrumSepolia && yarn graph deploy --studio venus-governance-arbisepolia",
+    "deploy:arbitrum": "yarn prepare:arbitrum && yarn graph deploy --studio venus-governance-arbitrum",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
-    "prepare:sepolia": "yarn mustache config/sepolia.json template.yaml > subgraph.yaml && yarn mustache config/sepolia.json src/constants/config-template > src/constants/config.ts",
-    "prepare:ethereum": "yarn mustache config/ethereum.json template.yaml > subgraph.yaml && yarn mustache config/ethereum.json src/constants/config-template > src/constants/config.ts",
+    "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
+    "prepare:opbnbMainnet": "NETWORK=opbnbMainnet yarn ts-node config/index.ts",
+    "prepare:arbitrumSepolia": "NETWORK=arbitrumSepolia yarn ts-node config/index.ts",
+    "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "true"
   },
   "dependencies": {
+    "@graphprotocol/client-cli": "3.0.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
     "@layerzerolabs/solidity-examples": "^1.0.0",
     "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879",
+    "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "urql": "^3.0.3",
+    "venus-subgraph-utils": "0.0.0"
   }
 }

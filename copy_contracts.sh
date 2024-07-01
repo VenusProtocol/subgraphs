@@ -37,7 +37,7 @@ rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
 rm ./contracts/governance/contracts/Governance/Timelock.sol
 
 
-# Copy cross-chain contracts
+# Copy crosschain contracts
 mkdir -p ./contracts/governance/contracts/Cross-chain
 cp -rf ./node_modules/@venusprotocol/cross-chain-governance-contracts/contracts/Cross-chain ./contracts/governance/contracts/
 
