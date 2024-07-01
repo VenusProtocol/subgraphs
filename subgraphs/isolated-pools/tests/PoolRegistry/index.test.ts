@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address } from '@graphprotocol/graph-ts';
 import {
   afterEach,
   assert,
@@ -9,7 +9,7 @@ import {
 } from 'matchstick-as/assembly/index';
 
 import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import { createPoolRegistryMock, mockPriceOracleAddress } from '../VToken/mocks';
+import { PoolInfo, createPoolRegistryMock, mockPriceOracleAddress } from '../VToken/mocks';
 import { createPoolNameSetEvent, createPoolRegisteredEvent } from './events';
 
 const cleanup = (): void => {
@@ -18,27 +18,21 @@ const cleanup = (): void => {
 
 beforeEach(() => {
   createPoolRegistryMock([
-    [
-      ethereum.Value.fromString('Gamer Pool'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
-    [
-      ethereum.Value.fromString('Gamer Pool1'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000064')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
-    [
-      ethereum.Value.fromString('Gamer Pool2'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000025')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
+    new PoolInfo(
+      'Gamer Pool',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      Address.fromString('0x0000000000000000000000000000000000000c0c'),
+    ),
+    new PoolInfo(
+      'Gamer Pool1',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      Address.fromString('0x0000000000000000000000000000000000000064'),
+    ),
+    new PoolInfo(
+      'Gamer Pool2',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      Address.fromString('0x0000000000000000000000000000000000000025'),
+    ),
   ]);
 });
 

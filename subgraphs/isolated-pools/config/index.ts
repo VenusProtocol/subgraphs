@@ -4,13 +4,13 @@ import bscMainnetDeployments from '@venusprotocol/isolated-pools/deployments/bsc
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
-import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia.json';
+import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
   const supportedNetworks = [
-    'mainnet',
+    'ethereum',
     'sepolia',
     'chapel',
     'bsc',
@@ -33,58 +33,42 @@ const main = () => {
     docker: {
       network: 'hardhat',
       poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
-      poolLensAddress: '0xaB7B4c595d3cE8C85e16DA86630f2fc223B05057',
       startBlock: 0,
-      poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
-    mainnet: {
+    ethereum: {
       network: 'mainnet',
       poolRegistryAddress: ethereumDeployments.addresses.PoolRegistry,
-      poolLensAddress: ethereumDeployments.addresses.PoolLens,
       startBlock: '18968000',
-      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     sepolia: {
       network: 'sepolia',
-      poolRegistryAddress: sepoliaDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: sepoliaDeployments.contracts.PoolLens.address,
+      poolRegistryAddress: sepoliaDeployments.addresses.PoolRegistry,
       startBlock: '3930059',
-      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     chapel: {
       network: 'chapel',
       poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
-      poolLensAddress: '0x559936086C5f65b92240012ae0D2F70C082Ac0b0',
       startBlock: '30870000',
-      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     bsc: {
       network: 'bsc',
       poolRegistryAddress: bscMainnetDeployments.addresses.PoolRegistry,
-      poolLensAddress: '0xe12da02820fAD83e0369C6De7Ae30721eaB60E32',
       startBlock: '29300000',
-      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     opbnbMainnet: {
       network: 'opbnb-mainnet',
       poolRegistryAddress: opBnbMainnetDeployments.addresses.PoolRegistry,
-      poolLensAddress: opBnbMainnetDeployments.addresses.PoolLens,
       startBlock: '16232873',
-      poolLensRevision: '/legacy/PoolLensR1.sol/PoolLensR1.json',
     },
     arbitrumSepolia: {
       network: 'arbitrum-sepolia',
       poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
-      poolLensAddress: arbitrumSepoliaDeployments.addresses.PoolLens,
       startBlock: '44214769',
-      poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
     arbitrum: {
       network: 'arbitrum-one',
       poolRegistryAddress: arbitrumDeployments.addresses.PoolRegistry,
-      poolLensAddress: arbitrumDeployments.addresses.PoolLens,
       startBlock: '216184381',
-      poolLensRevision: '/PoolLens.sol/PoolLens.json',
     },
   };
 

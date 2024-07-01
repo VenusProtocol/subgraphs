@@ -29,7 +29,7 @@ import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/pool
 import { getAccountVTokenId, getMarketActionId } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createRewardsDistributorMock } from '../RewardsDistributor/mocks';
-import { createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { PoolInfo, createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import {
   createActionPausedMarketEvent,
   createMarketAddedEvent,
@@ -91,13 +91,11 @@ beforeAll(() => {
     ]);
 
   createPoolRegistryMock([
-    [
-      ethereum.Value.fromString('Gamer Pool'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
+    new PoolInfo(
+      'Gamer Pool',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      comptrollerAddress,
+    ),
   ]);
 
   createMockedFunction(comptrollerAddress, 'getAllMarkets', 'getAllMarkets():(address[])').returns([

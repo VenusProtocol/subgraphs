@@ -56,7 +56,7 @@ import {
   createSpreadReservesReducedEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
+import { PoolInfo, createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
 import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
@@ -93,13 +93,11 @@ beforeAll(() => {
   ]);
 
   createPoolRegistryMock([
-    [
-      ethereum.Value.fromString('Gamer Pool'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
+    new PoolInfo(
+      'Gamer Pool',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      Address.fromString('0x0000000000000000000000000000000000000c0c'),
+    ),
   ]);
 
   createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, zeroBigInt32);
