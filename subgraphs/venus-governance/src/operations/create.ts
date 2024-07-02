@@ -86,16 +86,17 @@ export function createRemoteProposal(event: ExecuteRemoteProposal): RemotePropos
   remoteProposal.proposalId = event.params.proposalId;
 
   const decoded = ethereum
-    .decode('(address[],uint[],string[],bytes[],uint8)', event.params.payload)!
+    .decode('((address[],uint[],string[],bytes[],uint8),uint256)', event.params.payload)!
     .toTuple();
+  const payload = decoded[0].toTuple();
 
-  remoteProposal.targets = decoded[0]
+  remoteProposal.targets = payload[0]
     .toAddressArray()
     .map<Bytes>(a => Bytes.fromHexString(a.toHexString()));
-  remoteProposal.values = decoded[1].toBigIntArray();
-  remoteProposal.signatures = decoded[2].toStringArray();
-  remoteProposal.calldatas = decoded[3].toBytesArray();
-  remoteProposal.proposalType = decoded[4].toI32();
+  remoteProposal.values = payload[1].toBigIntArray();
+  remoteProposal.signatures = payload[2].toStringArray();
+  remoteProposal.calldatas = payload[3].toBytesArray();
+  remoteProposal.proposalType = payload[4].toI32();
   remoteProposal.status = EXECUTED;
   remoteProposal.save();
   return remoteProposal;
@@ -106,16 +107,16 @@ export function createRemoteProposalFromPayload(event: StorePayload): RemoteProp
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
   const decoded = ethereum
-    .decode('(address[],uint[],string[],bytes[],uint8)', event.params.payload)!
+    .decode('((address[],uint[],string[],bytes[],uint8),uint256)', event.params.payload)!
     .toTuple();
-
-  remoteProposal.targets = decoded[0]
+  const payload = decoded[0].toTuple();
+  remoteProposal.targets = payload[0]
     .toAddressArray()
     .map<Bytes>(a => Bytes.fromHexString(a.toHexString()));
-  remoteProposal.values = decoded[1].toBigIntArray();
-  remoteProposal.signatures = decoded[2].toStringArray();
-  remoteProposal.calldatas = decoded[3].toBytesArray();
-  remoteProposal.proposalType = decoded[4].toI32();
+  remoteProposal.values = payload[1].toBigIntArray();
+  remoteProposal.signatures = payload[2].toStringArray();
+  remoteProposal.calldatas = payload[3].toBytesArray();
+  remoteProposal.proposalType = payload[4].toI32();
   remoteProposal.status = STORED;
   remoteProposal.failedReason = event.params.reason;
   remoteProposal.save();
