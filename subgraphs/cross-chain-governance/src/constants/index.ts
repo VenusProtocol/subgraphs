@@ -7,21 +7,7 @@ export const BIGDECIMAL_ZERO = new BigDecimal(BIGINT_ZERO);
 // Ids
 export const GOVERNANCE = 'GOVERNANCE';
 
-// Vote support
-export const FOR = 'FOR';
-export const AGAINST = 'AGAINST';
-export const ABSTAIN = 'ABSTAIN';
-
-// Proposal Type
+// Route Types
 export const NORMAL = 'NORMAL';
 export const FAST_TRACK = 'FAST_TRACK';
 export const CRITICAL = 'CRITICAL';
-
-// Permission types
-export const GRANTED = 'GRANTED';
-export const REVOKED = 'REVOKED';
-
-// Remote Proposal Status
-export const EXECUTED = 'EXECUTED';
-export const STORED = 'STORED';
-export const WITHDRAWN = 'WITHDRAWN';

@@ -33,6 +33,7 @@ services:
       dockerfile: Dockerfile.hardhat
     environment:
       YARN_VERSION: 3.2.2
+      HARDHAT_MAX_MEMORY: 8192
     command:
       - sh
       - -c

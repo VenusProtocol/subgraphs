@@ -25,8 +25,23 @@ $ yarn workspace <WORKSPACE> run test:integration
 
 > Integration tests are temporarily disabled during CI, while the docker setup is debugged.
 
-## Running servies locally
+## Running with docker
 All the required services are networked with a docker-compose and can be brought up using `docker-compose up`.
+
+Once you have the container up you can run commands such as deploying subgraphs, running tests, and generating subgraph types.
+For example:
+
+```
+docker exec -i subgraph-hardhat-node yarn workspace <WORKSPACE> run prepare:docker
+docker exec -i subgraph-hardhat-node yarn workspace <WORKSPACE> run codegen
+docker exec -i subgraph-hardhat-node yarn workspace <WORKSPACE> run create:docker
+docker exec -i subgraph-hardhat-node yarn workspace <WORKSPACE> run deploy:docker
+docker exec -i subgraph-hardhat-node yarn workspace <WORKSPACE> run generate-subgraph-types
+```
+
+### Running locally
+This repo is meant to be run with docker, that being said you can run the stack locally by manually starting IPFS, hardhat and a graph-node. Since the repo networked for docker, you'll need to change the network addresses to get things to work correctly.
+
 ### IPFS local
 First start by initializing ipfs with the test profile and run offline to avoid connecting to the external network. When running the daemon check the port the API server is listening on.
 
@@ -58,6 +73,7 @@ cargo run -p graph-node --release -- \
 Replace `<NETWORK>` with the network indicated by your subgraph.yaml (usually bsc).
 
 ## Testing
+
 ### Unit tests
 Unit tests are run with `matchstick-as`. They can be run with the `test` command at the project or workspace level. Tests are organized by datasource with files for creating events and mocks. A test consists of setting up and creating an event, then passing it to the handler and asserting against changes to the document store.
 
