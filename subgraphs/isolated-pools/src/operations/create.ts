@@ -1,6 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
+import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
+import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   BadDebtIncreased,
   Borrow,
@@ -24,7 +25,7 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
-import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { poolRegistryAddress } from '../constants/addresses';
 import {
   exponentToBigInt,
   getTokenPriceInCents,
@@ -43,24 +44,22 @@ import {
 export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
-  const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  const poolDataFromLens = poolLensContract.getPoolByComptroller(poolRegistryAddress, comptroller);
+  const poolRegistryContract = PoolRegistryContract.bind(poolRegistryAddress);
+  const comptrollerContract = ComptrollerContract.bind(comptroller);
+  const poolData = poolRegistryContract.getPoolByComptroller(comptroller);
+  const poolMetaData = poolRegistryContract.getVenusPoolMetadata(comptroller);
 
-  pool.name = poolDataFromLens.name;
-  pool.creator = poolDataFromLens.creator;
-  pool.blockPosted = poolDataFromLens.blockPosted;
-  pool.timestampPosted = poolDataFromLens.timestampPosted;
-  pool.category = poolDataFromLens.category;
-  pool.logoUrl = poolDataFromLens.logoURL;
-  pool.description = poolDataFromLens.description;
-  pool.priceOracleAddress = poolDataFromLens.priceOracle;
-  pool.closeFactorMantissa = poolDataFromLens.closeFactor
-    ? poolDataFromLens.closeFactor
-    : new BigInt(0);
-  pool.minLiquidatableCollateralMantissa = poolDataFromLens.minLiquidatableCollateral;
-  pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
-    ? poolDataFromLens.liquidationIncentive
-    : new BigInt(0);
+  pool.name = poolData.name;
+  pool.creator = poolData.creator;
+  pool.blockPosted = poolData.blockPosted;
+  pool.timestampPosted = poolData.timestampPosted;
+  pool.category = poolMetaData.category;
+  pool.logoUrl = poolMetaData.logoURL;
+  pool.description = poolMetaData.description;
+  pool.priceOracleAddress = comptrollerContract.oracle();
+  pool.closeFactorMantissa = comptrollerContract.closeFactorMantissa();
+  pool.minLiquidatableCollateralMantissa = comptrollerContract.minLiquidatableCollateral();
+  pool.liquidationIncentiveMantissa = comptrollerContract.liquidationIncentiveMantissa();
   // Note: we don't index vTokens here because when a pool is created it has no markets
   pool.save();
 
