@@ -18,6 +18,8 @@ type Comptroller @entity {
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
+    "VToken address"
+    id: Bytes!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
@@ -37,8 +39,6 @@ type Market @entity {
     supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
-    "VToken address"
-    id: Bytes!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
     "Total underlying supplied"
@@ -127,6 +127,7 @@ type AccountVToken @entity {
 
 enum EventType {
     MINT
+    MINT_BEHALF
     REDEEM
     BORROW
     TRANSFER
