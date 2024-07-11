@@ -167,7 +167,12 @@ describe('VToken', () => {
       redeemEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'vTokenBalanceMantissa', '0');
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'vTokenBalanceMantissa',
+      accountBalance.toString(),
+    );
 
     assert.fieldEquals(
       'AccountVToken',
@@ -227,7 +232,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'totalUnderlyingBorrowedMantissa',
-      borrowAmount.toString(),
+      totalBorrows.toString(),
     );
 
     assert.fieldEquals(

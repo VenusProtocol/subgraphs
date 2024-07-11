@@ -41,8 +41,8 @@ type Market @entity {
     symbol: String!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
-    "Total underlying supplied"
-    totalSupplyMantissa: BigInt!
+    "Total vToken supplied"
+    totalSupplyVTokenMantissa: BigInt!
     "Underlying token address"
     underlyingAddress: Bytes!
     "Underlying token name"

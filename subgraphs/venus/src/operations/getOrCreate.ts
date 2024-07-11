@@ -19,7 +19,6 @@ import { getAccountVTokenId } from '../utilities/ids';
 import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
 import { updateMarketRates } from './updateMarketRates';
-import { updateMarketTotalSupplyMantissa } from './updateMarketTotalSupplyMantissa';
 
 export function getOrCreateComptroller(): Comptroller {
   let comptroller = Comptroller.load(comptrollerAddress);
@@ -85,7 +84,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
 
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
-    updateMarketTotalSupplyMantissa(market, vTokenContract);
+    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
     market.borrowIndexMantissa = vTokenContract.borrowIndex();
     market.totalBorrowsMantissa = vTokenContract.totalBorrows();
     market.reservesMantissa = vTokenContract.totalReserves();
