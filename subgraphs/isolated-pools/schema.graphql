@@ -87,8 +87,8 @@ type Market @entity {
     borrowCapMantissa: BigInt!
     "Total borrowed underlying token"
     totalBorrowsMantissa: BigInt!
-    "Total supplied underlying token"
-    totalSupplyMantissa: BigInt!
+    "Total vToken supplied"
+    totalSupplyVTokenMantissa: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"

@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
+description: Venus is an open-source protocol for algorithmic, efficient Money Markets.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
   file: ./schema.graphql

@@ -26,11 +26,7 @@ import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
 import { poolRegistryAddress } from '../constants/addresses';
-import {
-  exponentToBigInt,
-  getTokenPriceInCents,
-  valueOrNotAvailableIntIfReverted,
-} from '../utilities';
+import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
   getAccountPoolId,
@@ -132,10 +128,7 @@ export function createMarket(
 
   market.totalBorrowsMantissa = vTokenContract.totalBorrows();
 
-  const totalSupplyVTokensMantissa = vTokenContract.totalSupply();
-  market.totalSupplyMantissa = totalSupplyVTokensMantissa
-    .times(exchangeRateMantissa)
-    .div(exponentToBigInt(18));
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
 
   market.badDebtMantissa = vTokenContract.badDebt();
 
