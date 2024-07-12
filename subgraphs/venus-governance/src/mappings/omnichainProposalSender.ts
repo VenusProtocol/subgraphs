@@ -17,7 +17,7 @@ import { removeTrustedRemote } from '../operations/remove';
 
 export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
   const decoded = ethereum.decode('(address,address)', event.params.newRemoteAddress)!.toTuple();
-  getOrCreateTrustedRemote(event.params.remoteChainId, decoded[0].toAddress());
+  getOrCreateTrustedRemote(event.params.remoteChainId, decoded[1].toAddress());
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {

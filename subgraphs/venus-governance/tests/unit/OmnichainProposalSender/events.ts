@@ -10,6 +10,7 @@ import {
   StorePayload,
   TrustedRemoteRemoved,
 } from '../../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import { omnichainProposalSenderAddress } from '../../../src/constants/addresses';
 
 export const createEncodedProposalPayload = (
   targets: Address[],
@@ -17,6 +18,7 @@ export const createEncodedProposalPayload = (
   signatures: string[],
   calldatas: Bytes[],
   proposalType: i32,
+  proposalId: BigInt,
 ): Bytes => {
   const payload = [
     ethereum.Value.fromAddressArray(targets),
@@ -25,7 +27,13 @@ export const createEncodedProposalPayload = (
     ethereum.Value.fromBytesArray(calldatas),
     ethereum.Value.fromI32(proposalType),
   ];
-  const encoded = ethereum.encode(ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payload)))!;
+  const payloadWithId = [
+    ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payload)),
+    ethereum.Value.fromUnsignedBigInt(proposalId),
+  ];
+  const encoded = ethereum.encode(
+    ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payloadWithId)),
+  )!;
   return encoded;
 };
 
@@ -49,12 +57,19 @@ export const createSetTrustedRemoteAddressEvent = (
   );
   event.parameters.push(oldRemoteAddressParam);
 
+  const encoded = ethereum.encode(
+    ethereum.Value.fromTuple(
+      changetype<ethereum.Tuple>([
+        ethereum.Value.fromAddress(newRemoteAddress),
+        ethereum.Value.fromAddress(omnichainProposalSenderAddress),
+      ]),
+    ),
+  )!;
   const newRemoteAddressParam = new ethereum.EventParam(
     'newRemoteAddress',
-    ethereum.Value.fromBytes(newRemoteAddress),
+    ethereum.Value.fromBytes(encoded),
   );
   event.parameters.push(newRemoteAddressParam);
-
   return event;
 };
 
@@ -88,6 +103,7 @@ export const createExecuteRemoteProposalEvent = (
     signatures,
     calldatas,
     proposalType,
+    proposalId,
   );
 
   const payloadParam = new ethereum.EventParam('payload', ethereum.Value.fromBytes(payload));
@@ -161,6 +177,7 @@ export const createStorePayloadEvent = (
     signatures,
     calldatas,
     proposalType,
+    proposalId,
   );
   const payloadParam = new ethereum.EventParam('payload', ethereum.Value.fromBytes(payload));
   event.parameters.push(payloadParam);
