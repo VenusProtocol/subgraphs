@@ -4353,6 +4353,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/cross-chain-governance-contracts@npm:@venusprotocol/governance-contracts@2.2.0-dev.1":
+  version: 2.2.0-dev.1
+  resolution: "@venusprotocol/governance-contracts@npm:2.2.0-dev.1"
+  dependencies:
+    "@venusprotocol/solidity-utilities": 2.0.0
+    hardhat-deploy-ethers: ^0.3.0-beta.13
+    module-alias: ^2.2.2
+  checksum: 9fd23ada118fee60c9b0a140fcc149d409f4a1145a21614d48312cd7f32268d0b38fde43b0595828248ac605b2aba2a6de05959fc45a7cebfb3ebcb99a0b74df
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/governance-contracts@npm:2.1.0":
   version: 2.1.0
   resolution: "@venusprotocol/governance-contracts@npm:2.1.0"
@@ -13222,7 +13233,7 @@ __metadata:
     "@types/node": ^20.5.9
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879"
+    "@venusprotocol/cross-chain-governance-contracts": "npm:@venusprotocol/governance-contracts@2.2.0-dev.1"
     "@venusprotocol/governance-contracts": 2.1.0
     "@venusprotocol/isolated-pools": 3.3.0
     "@venusprotocol/oracle": 2.2.0

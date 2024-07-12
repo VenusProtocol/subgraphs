@@ -49,7 +49,7 @@
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879",
+    "@venusprotocol/cross-chain-governance-contracts": "npm:@venusprotocol/governance-contracts@2.2.0-dev.1",
     "@venusprotocol/governance-contracts": "2.1.0",
     "@venusprotocol/isolated-pools": "3.3.0",
     "@venusprotocol/oracle": "2.2.0",
