@@ -13,5 +13,6 @@ query AccountVTokenByAccountAndMarketQuery($id: ID!) {
     totalUnderlyingRedeemedMantissa
     totalUnderlyingRepaidMantissa
     storedBorrowBalanceMantissa
+    borrowIndex
   }
 }

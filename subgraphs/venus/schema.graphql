@@ -108,6 +108,8 @@ type AccountVToken @entity {
     market: Market!
     "Relation to user"
     account: Account!
+    "Borrow Index this position last accrued interest"
+    borrowIndex: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
     "VToken balance of the user"

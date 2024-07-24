@@ -136,6 +136,7 @@ export function getOrCreateAccountVToken(
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
+    accountVToken.borrowIndex = vTokenContract.borrowIndex();
     accountVToken.enteredMarket = false;
     accountVToken.save();
   }

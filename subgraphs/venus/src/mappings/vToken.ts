@@ -185,6 +185,7 @@ export function handleBorrow(event: Borrow): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.borrower);
   const accountVToken = result.entity;
+  accountVToken.borrowIndex = vTokenContract.borrowIndex();
   accountVToken.storedBorrowBalanceMantissa = event.params.accountBorrows;
   accountVToken.save();
 
@@ -230,6 +231,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.borrower);
   const accountVToken = result.entity;
+  accountVToken.borrowIndex = vTokenContract.borrowIndex();
   accountVToken.storedBorrowBalanceMantissa = event.params.accountBorrows;
   accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
     event.params.repayAmount,
@@ -276,6 +278,7 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const vTokenContract = VToken.bind(event.address);
   const result = getOrCreateAccountVToken(event.address, event.params.borrower);
   const accountVToken = result.entity;
+  accountVToken.borrowIndex = vTokenContract.borrowIndex();
   accountVToken.storedBorrowBalanceMantissa = vTokenContract.borrowBalanceCurrent(
     event.params.borrower,
   );

@@ -6,6 +6,7 @@ query AccountById($id: ID!) {
       vTokenBalanceMantissa
       totalUnderlyingRedeemedMantissa
       storedBorrowBalanceMantissa
+      borrowIndex
     }
     countLiquidated
     countLiquidator

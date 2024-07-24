@@ -35,13 +35,14 @@ const checkBorrows = async (account: string, vToken: Contract) => {
     accountId: account,
   });
   const accountContractBalance = await vToken.borrowBalanceStored(account);
+  const borrowIndex = await vToken.borrowIndex();
   expect(accountVToken?.storedBorrowBalanceMantissa || '0').to.equal(
     accountContractBalance.toString(),
   );
+  expect(accountVToken?.borrowIndex || '0').to.equal(borrowIndex);
   expect(accountVToken.account.hasBorrowed).to.equal(true);
   // on market
   const accrualBlockNumber = await vToken.accrualBlockNumber();
-  const borrowIndex = await vToken.borrowIndex();
   const {
     data: { market },
   } = await subgraphClient.getMarketById(vToken.address.toLowerCase());
@@ -587,6 +588,7 @@ describe('VToken events', function () {
         ),
         1e11,
       );
+      expect(accountVToken?.borrowIndex || '0').to.equal(await vDogeToken.borrowIndex());
 
       const {
         data: { account: accountBorrower },
@@ -1049,6 +1051,7 @@ describe('VToken events', function () {
         ),
         1e11,
       );
+      expect(accountVToken?.borrowIndex || '0').to.equal(await vEthToken.borrowIndex());
 
       const {
         data: { account: accountBorrower },
