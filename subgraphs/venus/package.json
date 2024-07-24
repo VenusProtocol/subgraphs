@@ -17,7 +17,7 @@
     "deploy:integration": "graph deploy venusprotocol/venus-subgraph  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
     "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/venus-subgraph --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-subgraph-chapel",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-subgraph",
+    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-core-pool-subgraph",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
