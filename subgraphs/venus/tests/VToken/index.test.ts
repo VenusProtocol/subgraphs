@@ -163,13 +163,6 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accrualBlockNumber',
-      redeemEvent.block.number.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
       'vTokenBalanceMantissa',
       accountBalance.toString(),
     );
@@ -214,33 +207,11 @@ describe('VToken', () => {
     /** Fire Event */
     handleBorrow(borrowEvent);
 
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower).toHexString();
     const market = getMarket(aaaTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
     }
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      borrowEvent.block.number.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingBorrowedMantissa',
-      totalBorrows.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accountBorrowIndexMantissa',
-      market.borrowIndexMantissa.toString(),
-    );
   });
 
   test('registers repay borrow event', () => {
@@ -284,20 +255,6 @@ describe('VToken', () => {
     if (!market) {
       return;
     }
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      repayBorrowEvent.block.number.toString(),
-    );
-
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accountBorrowIndexMantissa',
-      market.borrowIndexMantissa.toString(),
-    );
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingBorrowedMantissa', '0');
   });
@@ -471,13 +428,6 @@ describe('VToken', () => {
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, to).toHexString();
 
     /** AccountVToken */
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
-    );
-
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,

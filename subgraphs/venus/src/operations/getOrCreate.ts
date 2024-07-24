@@ -70,10 +70,11 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       vTokenContract.try_reserveFactorMantissa(),
       'vBEP20 try_reserveFactorMantissa()',
     );
-    market.underlyingPriceCents =
+    market.lastUnderlyingPriceCents =
       market.symbol == 'vBNB'
         ? zeroBigInt32
         : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+    market.lastUnderlyingPriceBlockNumber = event.block.number;
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
     market.totalXvsDistributedMantissa = zeroBigInt32;
@@ -111,29 +112,32 @@ export function getOrCreateAccount(accountId: Bytes): Account {
   return account;
 }
 
+export class GetOrCreateAccountVTokenReturn {
+  entity: AccountVToken;
+  created: boolean;
+}
+
 export function getOrCreateAccountVToken(
   marketId: Address,
   accountId: Address,
-  event: ethereum.Event,
-): AccountVToken {
+): GetOrCreateAccountVTokenReturn {
   const accountVTokenId = getAccountVTokenId(marketId, accountId);
   let accountVToken = AccountVToken.load(accountVTokenId);
+  let created = false;
   if (!accountVToken) {
+    created = true;
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.market = marketId;
     accountVToken.account = accountId;
-    accountVToken.accrualBlockNumber = event.block.number;
     // we need to set an initial real onchain value to this otherwise it will never be accurate
     const vTokenContract = VToken.bind(marketId);
     accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
-    accountVToken.totalUnderlyingBorrowedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
     accountVToken.enteredMarket = false;
     accountVToken.save();
   }
-  return accountVToken;
+  return { entity: accountVToken, created };
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ts-node
-import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/networks/mainnet.json';
-import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/networks/testnet.json';
+import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet_addresses.json';
+import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -19,17 +19,17 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      comptrollerAddress: '0x94d1820b2D1c7c7452A163983Dc888CEC546b77D',
+      comptrollerAddress: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
       startBlock: '0',
     },
     chapel: {
       network: 'chapel',
-      comptrollerAddress: bscTestnetCoreDeployments.Contracts.Unitroller,
+      comptrollerAddress: bscTestnetCoreDeployments.addresses.Unitroller,
       startBlock: '2470000',
     },
     bsc: {
       network: 'bsc',
-      comptrollerAddress: bscMainnetCoreDeployments.Contracts.Unitroller,
+      comptrollerAddress: bscMainnetCoreDeployments.addresses.Unitroller,
       startBlock: '2470000',
     },
   };

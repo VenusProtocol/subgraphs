@@ -1,0 +1,28 @@
+query MarketById($id: ID!) {
+  market(id: $id) {
+    id
+    borrowRateMantissa
+    cashMantissa
+    collateralFactorMantissa
+    exchangeRateMantissa
+    interestRateModelAddress
+    name
+    reservesMantissa
+    supplyRateMantissa
+    symbol
+    underlyingAddress
+    underlyingName
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
+    underlyingSymbol
+    accrualBlockNumber
+    blockTimestamp
+    borrowIndexMantissa
+    totalSupplyVTokenMantissa
+    totalBorrowsMantissa
+    underlyingDecimals
+    supplierCount
+    borrowerCount
+    borrowerCountAdjusted
+  }
+}

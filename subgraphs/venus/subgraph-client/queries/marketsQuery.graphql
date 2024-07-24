@@ -1,0 +1,26 @@
+query Markets {
+  markets {
+    id
+    borrowRateMantissa
+    cashMantissa
+    collateralFactorMantissa
+    exchangeRateMantissa
+    interestRateModelAddress
+    name
+    reservesMantissa
+    supplyRateMantissa
+    symbol
+    underlyingAddress
+    underlyingName
+    underlyingSymbol
+    accrualBlockNumber
+    blockTimestamp
+    borrowIndexMantissa
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
+    underlyingDecimals
+    supplierCount
+    borrowerCount
+    borrowerCountAdjusted
+  }
+}

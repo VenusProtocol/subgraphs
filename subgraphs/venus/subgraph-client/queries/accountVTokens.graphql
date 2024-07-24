@@ -1,0 +1,14 @@
+query AccountVTokens  {
+  accountVTokens {
+    id
+    market {
+      id
+    }
+    account {
+      id
+    }
+    enteredMarket
+    totalUnderlyingRedeemedMantissa
+    totalUnderlyingRepaidMantissa
+  }
+}

@@ -59,8 +59,10 @@ type Market @entity {
     borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactor: BigInt!
-    "Underlying token price in USD cents"
-    underlyingPriceCents: BigInt!
+    "Last recorded Underlying token price in USD cents"
+    lastUnderlyingPriceCents: BigInt!
+    "Block price was last updated"
+    lastUnderlyingPriceBlockNumber: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "Total XVS Distributed for this market"
@@ -106,22 +108,15 @@ type AccountVToken @entity {
     market: Market!
     "Relation to user"
     account: Account!
-    "Block number this asset was updated at in the contract"
-    accrualBlockNumber: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
-
     "VToken balance of the user"
     vTokenBalanceMantissa: BigInt!
     "Total amount of underlying redeemed"
     totalUnderlyingRedeemedMantissa: BigInt!
-    "The value of the borrow index upon users last interaction"
-    accountBorrowIndexMantissa: BigInt!
-    "Total amount underlying borrowed, exclusive of interest"
-    totalUnderlyingBorrowedMantissa: BigInt!
     "Total amount underlying repaid"
     totalUnderlyingRepaidMantissa: BigInt!
-    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+    "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     storedBorrowBalanceMantissa: BigInt!
 }
 

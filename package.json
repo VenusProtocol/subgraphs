@@ -29,13 +29,14 @@
     "test": "yarn workspaces foreach run test",
     "node:integration": "yarn hardhat node --hostname 0.0.0.0",
     "test:integration": "yarn workspaces foreach run test:integration",
-    "postinstall": "yarn patch-package && ./copy_contracts.sh"
+    "postinstall": "yarn patch-package"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.5.1",
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.73.0",
     "@graphprotocol/graph-ts": "^0.32.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
     "@nomiclabs/hardhat-ethers": "^2.1.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
@@ -51,7 +52,7 @@
     "@venusprotocol/isolated-pools": "3.3.0",
     "@venusprotocol/oracle": "2.2.0",
     "@venusprotocol/protocol-reserve": "2.3.0-dev.1",
-    "@venusprotocol/venus-protocol": "9.0.0-dev.6",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.2",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",

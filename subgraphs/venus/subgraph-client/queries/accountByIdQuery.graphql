@@ -1,0 +1,14 @@
+query AccountById($id: ID!) {
+  account(id: $id) {
+    id
+    tokens {
+      id
+      vTokenBalanceMantissa
+      totalUnderlyingRedeemedMantissa
+      storedBorrowBalanceMantissa
+    }
+    countLiquidated
+    countLiquidator
+    hasBorrowed
+  }
+}
