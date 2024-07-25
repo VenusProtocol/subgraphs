@@ -86,7 +86,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
     market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-    market.borrowIndexMantissa = vTokenContract.borrowIndex();
+    market.borrowIndex = vTokenContract.borrowIndex();
     market.totalBorrowsMantissa = vTokenContract.totalBorrows();
     market.reservesMantissa = vTokenContract.totalReserves();
 

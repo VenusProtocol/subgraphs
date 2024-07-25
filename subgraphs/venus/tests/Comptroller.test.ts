@@ -68,7 +68,7 @@ describe('handleMarketListing', () => {
     assertMarketDocument('totalSupplyMantissa', '0');
     assertMarketDocument('accrualBlockNumber', '100');
     assertMarketDocument('blockTimestamp', '1');
-    assertMarketDocument('borrowIndexMantissa', '0');
+    assertMarketDocument('borrowIndex', '0');
     assertMarketDocument('reserveFactor', '100');
   });
 });

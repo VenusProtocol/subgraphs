@@ -256,7 +256,7 @@ export const createAccrueInterestEvent = (
   event.parameters.push(interestAccumulatedParam);
 
   const borrowIndexParam = new ethereum.EventParam(
-    'borrowIndexMantissa',
+    'borrowIndex',
     ethereum.Value.fromUnsignedBigInt(borrowIndex),
   );
   event.parameters.push(borrowIndexParam);

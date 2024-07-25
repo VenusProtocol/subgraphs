@@ -47,7 +47,7 @@ const checkBorrows = async (account: string, vToken: Contract) => {
     data: { market },
   } = await subgraphClient.getMarketById(vToken.address.toLowerCase());
   expect(market?.accrualBlockNumber.toString()).to.equal(accrualBlockNumber.toString());
-  expect(market?.borrowIndexMantissa.toString()).to.equal(borrowIndex.toString());
+  expect(market?.borrowIndex.toString()).to.equal(borrowIndex.toString());
 };
 
 describe('VToken events', function () {
@@ -528,7 +528,7 @@ describe('VToken events', function () {
 
         await waitForSubgraphToBeSynced(syncDelay);
         expect(market.accrualBlockNumber).to.be.greaterThanOrEqual(prevAccrualBlockNumber);
-        expect(market.borrowIndexMantissa).to.be.greaterThanOrEqual(prevBorrowIndex);
+        expect(market.borrowIndex).to.be.greaterThanOrEqual(prevBorrowIndex);
         expect(market.totalBorrowsMantissa).to.greaterThanOrEqual(prevTotalBorrows);
         expect(market.cashMantissa).to.lessThanOrEqual(prevCash);
       }
@@ -997,7 +997,7 @@ describe('VToken events', function () {
 
         await waitForSubgraphToBeSynced(syncDelay);
         expect(market.accrualBlockNumber).to.be.greaterThanOrEqual(prevAccrualBlockNumber);
-        expect(market.borrowIndexMantissa).to.be.greaterThanOrEqual(prevBorrowIndex);
+        expect(market.borrowIndex).to.be.greaterThanOrEqual(prevBorrowIndex);
         expect(market.totalBorrowsMantissa).to.greaterThanOrEqual(prevTotalBorrows);
         expect(market.cashMantissa).to.lessThanOrEqual(prevCash);
       }

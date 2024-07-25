@@ -56,7 +56,7 @@ type Market @entity {
     "Timestamp the market was most recently updated"
     blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndexMantissa: BigInt!
+    borrowIndex: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactor: BigInt!
     "Last recorded Underlying token price in USD cents"

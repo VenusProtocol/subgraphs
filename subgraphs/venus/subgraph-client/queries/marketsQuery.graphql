@@ -15,7 +15,7 @@ query Markets {
     underlyingSymbol
     accrualBlockNumber
     blockTimestamp
-    borrowIndexMantissa
+    borrowIndex
     lastUnderlyingPriceCents
     lastUnderlyingPriceBlockNumber
     underlyingDecimals

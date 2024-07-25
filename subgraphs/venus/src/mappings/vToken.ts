@@ -341,7 +341,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
 
   market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
   market.blockTimestamp = event.block.timestamp.toI32();
-  market.borrowIndexMantissa = event.params.borrowIndex;
+  market.borrowIndex = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);
   market.lastUnderlyingPriceCents =
