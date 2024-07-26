@@ -9,3 +9,5 @@ export const getTokenConverterConfigId = (
   tokenAddressIn: Address,
   tokenAddressOut: Address,
 ): Bytes => tokenConverterAddress.concat(tokenAddressIn).concat(tokenAddressOut);
+
+export const getAssetId = (asset: Address): Bytes => asset;

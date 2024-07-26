@@ -14,6 +14,20 @@ type ConverterNetwork @entity {
 }
 
 """
+Token
+"""
+type Token @entity(immutable: true) {
+    "Address of the asset"
+    id: Bytes!
+    "Address of the asset"
+    address: Bytes!
+    "Symbol of the asset"
+    symbol: String
+    "Decimals of the asset"
+    decimals: Int!
+}
+
+"""
 Token Converter entity
 """
 type TokenConverter @entity {
@@ -31,8 +45,8 @@ Token Converter Config
 type TokenConverterConfig @entity {
     id: Bytes!
     tokenConverter: TokenConverter!
-    tokenAddressIn: Bytes!
-    tokenAddressOut: Bytes!
+    tokenIn: Token!
+    tokenOut: Token!
     incentive: BigInt!
     access: ConversionAccessibility!
 }

@@ -48,6 +48,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -80,6 +82,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -112,6 +116,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -144,6 +150,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -176,6 +184,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
