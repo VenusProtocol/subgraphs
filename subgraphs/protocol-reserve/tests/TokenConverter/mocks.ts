@@ -16,3 +16,13 @@ export const createTokenConverterMock = (
     ethereum.Value.fromAddress(baseAssetAddress),
   ]);
 };
+
+export const createTokenMock = (address: Address, symbol: string): void => {
+  createMockedFunction(address, 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(symbol),
+  ]);
+
+  createMockedFunction(address, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromI32(18),
+  ]);
+};

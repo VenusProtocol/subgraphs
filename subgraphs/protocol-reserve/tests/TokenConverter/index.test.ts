@@ -19,7 +19,7 @@ import {
   createConverterNetworkAddressUpdatedEvent,
   createDestinationAddressUpdatedEvent,
 } from './events';
-import { createTokenConverterMock } from './mocks';
+import { createTokenConverterMock, createTokenMock } from './mocks';
 
 const user = Address.fromString('0x0000000000000000000000000000000000000aaa');
 const converterNetworkAddress = Address.fromString('0x0000000000000000000000000000000000000ccc');
@@ -37,6 +37,10 @@ const destination2Address = Address.fromString('0x000000000000000000000000000000
 beforeAll(() => {
   createTokenConverterMock(tokenConverter1Address, destination1Address, token3Address);
   createTokenConverterMock(tokenConverter2Address, destination1Address, token3Address);
+  createTokenMock(token1Address, 'BNB');
+  createTokenMock(token2Address, 'BTC');
+  createTokenMock(token3Address, 'USDC');
+  createTokenMock(token4Address, 'ETH');
 });
 
 describe('Token Converter', () => {
@@ -59,8 +63,8 @@ describe('Token Converter', () => {
 
     const tokenConfigs = tokenConverter.configs.load();
     assert.i32Equals(tokenConfigs.length, 1);
-    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenAddressIn), token1Address);
-    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenAddressOut), token2Address);
+    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenIn), token1Address);
+    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenOut), token2Address);
     assert.stringEquals(tokenConfigs[0].incentive.toString(), '300000000000000000');
     assert.stringEquals(tokenConfigs[0].access, 'ALL');
   });
@@ -83,8 +87,8 @@ describe('Token Converter', () => {
     const tokenConverter = TokenConverter.load(getTokenConverterId(tokenConverter1Address))!;
     const tokenConfigs = tokenConverter.configs.load();
     assert.i32Equals(tokenConfigs.length, 1);
-    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenAddressIn), token1Address);
-    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenAddressOut), token2Address);
+    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenIn), token1Address);
+    assert.addressEquals(Address.fromBytes(tokenConfigs[0].tokenOut), token2Address);
     assert.stringEquals(tokenConfigs[0].incentive.toString(), '400000000000000000');
     assert.stringEquals(tokenConfigs[0].access, 'ONLY_FOR_USERS');
   });
