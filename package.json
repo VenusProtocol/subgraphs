@@ -52,7 +52,7 @@
     "@venusprotocol/isolated-pools": "3.3.0",
     "@venusprotocol/oracle": "2.2.0",
     "@venusprotocol/protocol-reserve": "2.3.0-dev.1",
-    "@venusprotocol/venus-protocol": "9.2.0-dev.2",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.5",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",

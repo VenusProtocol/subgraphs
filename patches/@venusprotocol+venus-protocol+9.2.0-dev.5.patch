@@ -267,39 +267,3 @@ index 7dd98f1..964ae46 100644
      struct MintLocalVars {
          MathError mathErr;
          uint exchangeRateMantissa;
-diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/legacy/VTokenInterfaceR1.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/legacy/VTokenInterfaceR1.sol
-index 7a058db..82c6352 100644
---- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/legacy/VTokenInterfaceR1.sol
-+++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/legacy/VTokenInterfaceR1.sol
-@@ -2,6 +2,7 @@ pragma solidity ^0.5.16;
- 
- import "../../../Comptroller/ComptrollerInterface.sol";
- import "../../../InterestRateModels/InterestRateModel.sol";
-+import "../VTokenInterfaces.sol";
- 
- contract VTokenInterfaceR1 is VTokenStorage {
-     /**
-diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
-index adf9c4c..e8dcfb3 100644
---- a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
-+++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
-@@ -1,6 +1,6 @@
- pragma solidity ^0.5.16;
- 
--import "../Tokens/VTokens/VToken.sol";
-+import { CorePoolVToken as VToken, ComptrollerInterface, InterestRateModel } from "../Tokens/VTokens/VToken.sol";
- 
- /**
-  * @title Venus's vBNB Contract
-diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-index 4108562..279d1cb 100644
---- a/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-+++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/VBep20MockDelegate.sol
-@@ -1,6 +1,6 @@
- pragma solidity ^0.5.16;
- 
--import "../Tokens/VTokens/VToken.sol";
-+import { CorePoolVToken as VToken, ComptrollerInterface, InterestRateModel, VBep20Interface, VTokenInterface, EIP20NonStandardInterface, EIP20Interface } from "../Tokens/VTokens/VToken.sol";
- 
- /**
-  * @title Venus's VBep20 Contract
