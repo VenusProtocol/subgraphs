@@ -47,7 +47,7 @@ jobs:
 
       - name: Run Matchstick tests
         run: yarn test
-integration-test-core-pool:
+  integration-test-core-pool:
     runs-on: ubuntu-20.04
     needs: unit-test
     steps:
