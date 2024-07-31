@@ -32,7 +32,7 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
+      poolRegistryAddress: '0x045857BDEAE7C1c7252d611eB24eB55564198b4C',
       startBlock: 0,
     },
     ethereum: {

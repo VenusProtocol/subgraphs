@@ -5,8 +5,6 @@ import deployVBep20 from '@venusprotocol/venus-protocol/dist/deploy/003-deploy-V
 import configureMarkets from '@venusprotocol/venus-protocol/dist/deploy/004-support-markets';
 import deployVTreasuryV8 from '@venusprotocol/venus-protocol/dist/deploy/005-deploy-VTreasuryV8';
 import deployPsm from '@venusprotocol/venus-protocol/dist/deploy/006-deploy-psm';
-import deploySwaprouter from '@venusprotocol/venus-protocol/dist/deploy/006-deploy-swaprouter';
-import deployLiquidator from '@venusprotocol/venus-protocol/dist/deploy/006-update-liquidator';
 import deployVBNBAdmin from '@venusprotocol/venus-protocol/dist/deploy/007-deploy-VBNBAdmin';
 import deployMockTokens from '@venusprotocol/venus-protocol/dist/deploy/007-deploy-mock-tokens';
 import deployXvs from '@venusprotocol/venus-protocol/dist/deploy/007-deploy-xvs';
@@ -29,8 +27,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await configureMarkets(hre);
   await deployVTreasuryV8(hre);
   await deployPsm(hre);
-  await deploySwaprouter(hre);
-  await deployLiquidator(hre);
   await deployMockTokens(hre);
   await deployVBNBAdmin(hre);
   await deployXvs(hre);
