@@ -1,4 +1,4 @@
-import { ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts';
+import { Address, ByteArray, Bytes, crypto } from '@graphprotocol/graph-ts';
 
 import {
   ClearPayload,
@@ -16,8 +16,10 @@ import { getOrCreateMaxDailyLimit, getOrCreateTrustedRemote } from '../operation
 import { removeTrustedRemote } from '../operations/remove';
 
 export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
-  const decoded = ethereum.decode('(address,address)', event.params.newRemoteAddress)!.toTuple();
-  getOrCreateTrustedRemote(event.params.remoteChainId, decoded[1].toAddress());
+  getOrCreateTrustedRemote(
+    event.params.remoteChainId,
+    Address.fromString(event.params.newRemoteAddress.toHexString().slice(0, 42)),
+  );
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {

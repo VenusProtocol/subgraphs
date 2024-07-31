@@ -1,0 +1,10 @@
+query TrustedRemoteById($id: ID!) {
+  trustedRemote(id: $id) {
+    chainId
+    address
+    proposals {
+      id
+    }
+    active
+  }
+}

@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Delegate, MaxDailyLimit, TrustedRemote } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
@@ -41,7 +41,7 @@ export class GetOrCreateTrustedRemoteReturn {
 
 export const getOrCreateTrustedRemote = (
   remoteChainId: i32,
-  remoteAddress: Bytes,
+  remoteAddress: Address,
 ): GetOrCreateTrustedRemoteReturn => {
   let created = false;
   const id = getTrustedRemoteId(remoteChainId);
@@ -49,7 +49,7 @@ export const getOrCreateTrustedRemote = (
   if (!trustedRemote) {
     trustedRemote = new TrustedRemote(id);
     trustedRemote.chainId = remoteChainId;
-    trustedRemote.address = Address.fromBytes(remoteAddress);
+    trustedRemote.address = remoteAddress;
     trustedRemote.active = true;
     created = true;
     trustedRemote.save();
