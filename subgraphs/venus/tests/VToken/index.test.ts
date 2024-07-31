@@ -50,7 +50,7 @@ import {
   createReservesReducedEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock } from './mocks';
+import { createAccountVTokenBalanceOfMock, createBorrowBalanceCurrentMock } from './mocks';
 import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
@@ -107,7 +107,7 @@ describe('VToken', () => {
     const minter = user1Address;
     const actualMintAmount = BigInt.fromString('124620530798726345');
     const mintTokens = BigInt.fromString('37035970026454');
-
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, mintTokens);
     const accountBalance = mintTokens;
     const mintEvent = createMintEvent(
       aaaTokenAddress,
@@ -256,7 +256,12 @@ describe('VToken', () => {
       return;
     }
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingBorrowedMantissa', '0');
+    assert.fieldEquals(
+      'AccountVToken',
+      accountVTokenId,
+      'storedBorrowBalanceMantissa',
+      accountBorrows.toString(),
+    );
   });
 
   test('registers liquidate borrow event', () => {
@@ -268,6 +273,7 @@ describe('VToken', () => {
     const vTokenCollateral = aaaTokenAddress;
 
     /** Setup test */
+    createBorrowBalanceCurrentMock(vTokenCollateral, borrower, repayAmount);
     const liquidateBorrowEvent = createLiquidateBorrowEvent(
       aaaTokenAddress,
       liquidator,
@@ -316,7 +322,7 @@ describe('VToken', () => {
     assertMarketDocument('borrowIndex', newBorrowIndex.toString());
     assertMarketDocument('reservesMantissa', '5128924555022289393');
     assertMarketDocument('totalBorrowsMantissa', newTotalBorrows.toString());
-    assertMarketDocument('cashMantissa', cashPrior.toString());
+    assertMarketDocument('cashMantissa', '1418171344423412457'); // get cash mock return
     assertMarketDocument('borrowRateMantissa', '12678493');
     assertMarketDocument('supplyRateMantissa', '12678493');
   });
@@ -408,7 +414,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, balanceOf);
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, amount.plus(balanceOf));
     createMockedFunction(
       aaaTokenAddress,
       'getAccountSnapshot',
