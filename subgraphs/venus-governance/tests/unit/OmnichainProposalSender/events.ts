@@ -57,17 +57,9 @@ export const createSetTrustedRemoteAddressEvent = (
   );
   event.parameters.push(oldRemoteAddressParam);
 
-  const encoded = ethereum.encode(
-    ethereum.Value.fromTuple(
-      changetype<ethereum.Tuple>([
-        ethereum.Value.fromAddress(newRemoteAddress),
-        ethereum.Value.fromAddress(omnichainProposalSenderAddress),
-      ]),
-    ),
-  )!;
   const newRemoteAddressParam = new ethereum.EventParam(
     'newRemoteAddress',
-    ethereum.Value.fromBytes(encoded),
+    ethereum.Value.fromBytes(newRemoteAddress.concat(omnichainProposalSenderAddress)),
   );
   event.parameters.push(newRemoteAddressParam);
   return event;

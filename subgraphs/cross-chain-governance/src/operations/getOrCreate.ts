@@ -25,7 +25,7 @@ export const getOrCreateFunctionRegistry = (signature: Bytes): FunctionRegistry 
   let functionRegistry = FunctionRegistry.load(signature);
   if (!functionRegistry) {
     functionRegistry = new FunctionRegistry(signature);
-    functionRegistry.signature = signature.toString();
+    functionRegistry.signature = signature.toHexString();
   }
   functionRegistry.save();
   return functionRegistry;
