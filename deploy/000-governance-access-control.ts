@@ -1,4 +1,4 @@
-import timelockDeploy from '@venusprotocol/governance-contracts/dist/deploy/001-timelock';
+import timelockDeploy from '@venusprotocol/governance-contracts/dist/deploy/001-source-timelocks';
 import accessControlDeploy from '@venusprotocol/governance-contracts/dist/deploy/002-access-control';
 import { DeployFunction } from 'hardhat-deploy/types';
 import { HardhatRuntimeEnvironment } from 'hardhat/types';

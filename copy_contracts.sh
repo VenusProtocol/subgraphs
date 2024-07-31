@@ -21,6 +21,7 @@ rm -rf contracts/protocol/contracts/Liquidator/*
 rm -rf contracts/protocol/contracts/test/*
 cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerMock.sol ./contracts/protocol/contracts/test/ComptrollerMock.sol
 cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/MockToken.sol ./contracts/protocol/contracts/test/MockToken.sol
+# Remove extra contracts
 
 mkdir -p ./contracts/protocol-reserve
 cp -r ./node_modules/@venusprotocol/protocol-reserve/contracts/ ./contracts/protocol-reserve/contracts
@@ -37,10 +38,9 @@ cp -r ./node_modules/@venusprotocol/governance-contracts/contracts/Cross-chain .
 rm ./contracts/governance/contracts/Governance/AccessControlManager.sol
 rm ./contracts/governance/contracts/Governance/Timelock.sol
 
-
 # Copy crosschain contracts
 mkdir -p ./contracts/governance/contracts/Cross-chain
-cp -rf ./node_modules/@venusprotocol/cross-chain-governance-contracts/contracts/Cross-chain ./contracts/governance/contracts/
+cp -rf ./node_modules/@venusprotocol/governance-contracts/contracts/Cross-chain ./contracts/governance/contracts/
 
 mkdir -p ./contracts/mocks
 cp -rf ./mocks/ ./contracts/mocks/contracts

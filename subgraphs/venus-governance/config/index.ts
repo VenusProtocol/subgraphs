@@ -33,7 +33,7 @@ const main = () => {
       xvsVaultAddress: '0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3',
       xvsVaultStartBlock: '0',
       xvsVaultPid: '0',
-      omnichainProposalSenderAddress: '0xBEe6FFc1E8627F51CcDF0b4399a1e1abc5165f15',
+      omnichainProposalSenderAddress: '0x627b9A657eac8c3463AD17009a424dFE3FDbd0b1',
       omnichainProposalSenderStartBlock: '0',
     },
     chapel: {

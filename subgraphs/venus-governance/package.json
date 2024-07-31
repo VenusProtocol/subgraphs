@@ -28,7 +28,7 @@
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.77.0",
-    "@venusprotocol/cross-chain-governance-contracts": "https://github.com/VenusProtocol/governance-contracts#2915ea772d86d9cc63f88fb6e804eaae53193879",
+    "@venusprotocol/governance-contracts": "2.2.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.1",
