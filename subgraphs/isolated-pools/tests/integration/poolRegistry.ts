@@ -5,22 +5,22 @@ import { ethers } from 'hardhat';
 import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
-import { defaultPools } from './constants';
 
 describe('Pool Registry', function () {
   let root: SignerWithAddress;
   let accessControlManager: Contract;
+  let poolRegistry: Contract;
+  let poolLens: Contract;
   const category = 'Games';
   const logoUrl = 'https://images.com/gamer-cat.png';
   const description = 'Cat Games';
-
-  let poolRegistry: any;
 
   const syncDelay = 2000;
 
   before(async function () {
     [root] = await ethers.getSigners();
     poolRegistry = await ethers.getContract('PoolRegistry');
+    poolLens = await ethers.getContract('PoolLens');
 
     // Permissions for easy testing
     accessControlManager = await ethers.getContract('AccessControlManager');
@@ -45,7 +45,6 @@ describe('Pool Registry', function () {
     const { pools } = data!;
 
     expect(pools.length).to.equal(2);
-    const poolLens = await ethers.getContract('PoolLens');
 
     pools.forEach(async pool => {
       const onChainPool = await poolLens.getPoolByComptroller(pool.id);
@@ -63,12 +62,11 @@ describe('Pool Registry', function () {
   });
 
   it('updates and returns metadata from the pool', async function () {
+    const pools = await poolLens.getAllPools(poolRegistry.address);
     const { data: dataBeforeUpdate } = await subgraphClient.getPool(
-      defaultPools[1].id.toLowerCase(),
+      pools[1].comptroller.toLowerCase(),
     );
     const { pool: poolBeforeUpdate } = dataBeforeUpdate!;
-
-    const poolLens = await ethers.getContract('PoolLens');
     const onChainPool = await poolLens.getPoolByComptroller(
       poolRegistry.address,
       poolBeforeUpdate.id,
@@ -77,7 +75,7 @@ describe('Pool Registry', function () {
     expect(poolBeforeUpdate.logoUrl).to.equal('');
     expect(poolBeforeUpdate.description).to.equal(onChainPool.description);
 
-    const tx = await poolRegistry.updatePoolMetadata(defaultPools[1].id, [
+    const tx = await poolRegistry.updatePoolMetadata(pools[1].comptroller, [
       'Games',
       logoUrl,
       description,

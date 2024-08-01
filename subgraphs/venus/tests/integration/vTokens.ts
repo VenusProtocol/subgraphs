@@ -138,6 +138,13 @@ describe('VToken events', function () {
     vFdusdToken = await ethers.getContract('vFDUSD');
     vUsdtToken = await ethers.getContract('vUSDT');
 
+    await comptroller.connect(rootSigner)._supportMarket(vUsdcToken.address);
+    await comptroller.connect(rootSigner)._supportMarket(vWBnbToken.address);
+    await comptroller.connect(rootSigner)._supportMarket(vEthToken.address);
+    await comptroller.connect(rootSigner)._supportMarket(vDogeToken.address);
+    await comptroller.connect(rootSigner)._supportMarket(vFdusdToken.address);
+    await comptroller.connect(rootSigner)._supportMarket(vUsdtToken.address);
+
     // Set Prices
     oracle = await ethers.getContract('MockPriceOracleUnderlyingPrice');
     // USDC $1

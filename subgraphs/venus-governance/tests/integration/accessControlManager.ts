@@ -19,7 +19,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(32);
+      expect(permissions.length).to.be.equal(58);
 
       permissions.forEach(pe => {
         expect(pe.status).to.be.equal('GRANTED');
@@ -38,7 +38,7 @@ describe('AccessControlManager', function () {
 
       const { data } = await subgraphClient.getPermissions();
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(32);
+      expect(permissions.length).to.be.equal(58);
 
       const { data: permissionByIdData } = await subgraphClient.getPermission(
         `${account}-${nullAddress}-${functionSig}`,
@@ -61,7 +61,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(32);
+      expect(permissions.length).to.be.equal(58);
       const { data: permissionByIdData } = await subgraphClient.getPermission(
         `${account}-${nullAddress}-${functionSig}`,
       );

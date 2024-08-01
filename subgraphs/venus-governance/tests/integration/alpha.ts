@@ -112,6 +112,13 @@ describe('GovernorAlpha', function () {
     });
 
     it('should transition to canceled', async () => {
+      let votingPeriod = +(await governorAlpha.votingPeriod());
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+      await governorAlpha.queue(1);
+      await mine(1);
       await governorAlpha.connect(signers[0]).cancel('1');
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);

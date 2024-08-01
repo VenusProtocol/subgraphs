@@ -43,12 +43,13 @@ describe('GovernorBravo', function () {
 
     await timelock.connect(timelockSigner).setPendingAdmin(governorBravoDelegator.address);
 
+    await governorBravo._initiate(governorAlpha2.address);
+
     await network.provider.request({
       method: 'hardhat_stopImpersonatingAccount',
       params: [timelock.address],
     });
 
-    await governorBravo._initiate(governorAlpha2.address);
     // Finished setup
     await waitForSubgraphToBeSynced(SYNC_DELAY);
   });
