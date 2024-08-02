@@ -143,12 +143,12 @@ describe('OmnichainProposalSender events', () => {
 
   test('handles StorePayload event', () => {
     const storePayloadEvent = createStorePayloadEvent(
-      13,
-      BigInt.fromI32(4),
-      [MOCK_CONTRACT_ADDRESS],
+      10102,
+      BigInt.fromI32(1),
+      [Address.fromString('0x4826533B4897376654Bb4d4AD88B7faFD0C98528')],
       [BigInt.fromI32(0)],
-      ['test()'],
-      [Bytes.fromUTF8('')],
+      ['setDelay(uint256)'],
+      [Bytes.fromI32(3600)],
       0,
       Bytes.fromUTF8(''),
       0,
@@ -156,7 +156,7 @@ describe('OmnichainProposalSender events', () => {
     );
     handleStorePayload(storePayloadEvent);
     const assertRemoteProposalDocument = (key: string, value: string): void => {
-      const id = getProposalId(BigInt.fromI32(4));
+      const id = getProposalId(BigInt.fromI32(1));
       assert.fieldEquals('RemoteProposal', id, key, value);
     };
     assertRemoteProposalDocument('status', 'STORED');

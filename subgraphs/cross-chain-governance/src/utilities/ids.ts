@@ -12,5 +12,3 @@ export const getFailedPayloadId = (nonce: BigInt): string => nonce.toString();
 
 export const getDestinationChainId = (destinationChainId: i32): Bytes =>
   Bytes.fromI32(destinationChainId);
-
-export const getRemoteChainId = (remoteChainId: i32): Bytes => Bytes.fromI32(remoteChainId);

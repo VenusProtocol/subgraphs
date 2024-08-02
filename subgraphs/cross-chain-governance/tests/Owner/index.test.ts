@@ -17,7 +17,7 @@ describe('OmniGovernanceOwner', () => {
       'FunctionRegistry',
       Bytes.fromByteArray(ByteArray.fromUTF8('acceptAdmin(address)')).toHexString(),
       'signature',
-      'acceptAdmin(address)',
+      '0x61636365707441646d696e286164647265737329',
     );
     assert.entityCount('FunctionRegistry', 1);
   });

@@ -6,7 +6,6 @@ import {
   FunctionRegistry,
   Governance,
   GovernanceRoute,
-  TrustedRemote,
 } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import {
@@ -14,12 +13,7 @@ import {
   omnichainGovernanceOwnerAddress,
 } from '../constants/addresses';
 import { layerZeroChainId } from '../constants/config';
-import {
-  getDestinationChainId,
-  getGovernanceId,
-  getGovernanceRouteId,
-  getRemoteChainId,
-} from '../utilities/ids';
+import { getDestinationChainId, getGovernanceId, getGovernanceRouteId } from '../utilities/ids';
 
 export const getOrCreateFunctionRegistry = (signature: Bytes): FunctionRegistry => {
   let functionRegistry = FunctionRegistry.load(signature);
@@ -68,12 +62,4 @@ export const getOrCreateDestinationChain = (destinationChainId: i32): Destinatio
     destinationChain.chainId = destinationChainId;
   }
   return destinationChain;
-};
-
-export const getOrCreateTrustedRemote = (remoteChainId: i32): TrustedRemote => {
-  let trustedRemote = TrustedRemote.load(getRemoteChainId(remoteChainId));
-  if (!trustedRemote) {
-    trustedRemote = new TrustedRemote(getRemoteChainId(remoteChainId));
-  }
-  return trustedRemote;
 };

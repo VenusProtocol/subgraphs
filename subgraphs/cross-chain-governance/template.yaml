@@ -20,7 +20,7 @@ dataSources:
         - Governance
       abis:
         - name: OmnichainExecutorOwner
-          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
           
       eventHandlers:
         - event: FunctionRegistryChanged(indexed string,bool)
@@ -43,7 +43,7 @@ dataSources:
         - Proposal
       abis:
         - name: OmnichainGovernanceExecutor
-          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
       eventHandlers:
         - event: NewGuardian(indexed address,indexed address)
           handler: handleNewGuardian

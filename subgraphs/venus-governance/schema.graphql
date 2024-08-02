@@ -229,7 +229,7 @@ type TrustedRemote @entity {
   "Governance contract address on the trusted remote"
   address: Bytes
   
-  "Array of proposals sent to teh remote"
+  "Array of proposals sent to the remote"
   proposals: [RemoteProposal!]
   
   "True if active, false if inactive"

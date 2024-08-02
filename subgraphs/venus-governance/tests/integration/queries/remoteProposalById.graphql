@@ -1,0 +1,14 @@
+query RemoteProposalById($id: ID!) {
+  remoteProposal(id: $id) {
+    id
+    proposalId
+    remoteChainId
+    targets
+    values
+    signatures
+    calldatas
+    proposalType
+    status
+    failedReason
+  }
+}

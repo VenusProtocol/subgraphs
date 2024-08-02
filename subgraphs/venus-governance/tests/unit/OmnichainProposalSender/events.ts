@@ -10,6 +10,7 @@ import {
   StorePayload,
   TrustedRemoteRemoved,
 } from '../../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import { DYNAMIC_TUPLE_BYTES_PREFIX } from '../../../src/constants';
 import { omnichainProposalSenderAddress } from '../../../src/constants/addresses';
 
 export const createEncodedProposalPayload = (
@@ -27,14 +28,25 @@ export const createEncodedProposalPayload = (
     ethereum.Value.fromBytesArray(calldatas),
     ethereum.Value.fromI32(proposalType),
   ];
-  const payloadWithId = [
+  const encodePayload = ethereum.encode(
     ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payload)),
+  )!;
+
+  const payloadWithId = [
+    ethereum.Value.fromBytes(
+      Bytes.fromHexString(
+        encodePayload.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'),
+      ),
+    ),
     ethereum.Value.fromUnsignedBigInt(proposalId),
   ];
   const encoded = ethereum.encode(
     ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payloadWithId)),
   )!;
-  return encoded;
+
+  return Bytes.fromHexString(
+    encoded.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'),
+  );
 };
 
 export const createSetTrustedRemoteAddressEvent = (
@@ -171,6 +183,7 @@ export const createStorePayloadEvent = (
     proposalType,
     proposalId,
   );
+
   const payloadParam = new ethereum.EventParam('payload', ethereum.Value.fromBytes(payload));
   event.parameters.push(payloadParam);
 

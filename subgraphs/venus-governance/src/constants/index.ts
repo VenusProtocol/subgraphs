@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
+import { BigDecimal, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 export const BIGINT_ZERO = BigInt.fromI32(0);
 export const BIGINT_ONE = BigInt.fromI32(1);
@@ -25,3 +25,7 @@ export const REVOKED = 'REVOKED';
 export const EXECUTED = 'EXECUTED';
 export const STORED = 'STORED';
 export const WITHDRAWN = 'WITHDRAWN';
+
+export const DYNAMIC_TUPLE_BYTES_PREFIX = Bytes.fromHexString(
+  '0x0000000000000000000000000000000000000000000000000000000000000020',
+);

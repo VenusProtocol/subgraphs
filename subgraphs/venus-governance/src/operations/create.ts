@@ -12,6 +12,7 @@ import {
   AGAINST,
   BIGINT_ONE,
   BIGINT_ZERO,
+  DYNAMIC_TUPLE_BYTES_PREFIX,
   EXECUTED,
   FOR,
   NORMAL,
@@ -85,10 +86,17 @@ export function createRemoteProposal(event: ExecuteRemoteProposal): RemotePropos
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
 
-  const decoded = ethereum
-    .decode('((address[],uint[],string[],bytes[],uint8),uint256)', event.params.payload)!
+  const decoded = ethereum.decode(
+    '(bytes,uint256)',
+    DYNAMIC_TUPLE_BYTES_PREFIX.concat(event.params.payload),
+  );
+  const decodedTuple = decoded!.toTuple()!;
+  const payload = ethereum
+    .decode(
+      '(address[],uint256[],string[],bytes[],uint8)',
+      DYNAMIC_TUPLE_BYTES_PREFIX.concat(decodedTuple[0].toBytes()),
+    )!
     .toTuple();
-  const payload = decoded[0].toTuple();
 
   remoteProposal.targets = payload[0]
     .toAddressArray()
@@ -106,10 +114,19 @@ export function createRemoteProposalFromPayload(event: StorePayload): RemoteProp
   const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
-  const decoded = ethereum
-    .decode('((address[],uint[],string[],bytes[],uint8),uint256)', event.params.payload)!
+
+  const decoded = ethereum.decode(
+    '(bytes,uint256)',
+    DYNAMIC_TUPLE_BYTES_PREFIX.concat(event.params.payload),
+  );
+  const decodedTuple = decoded!.toTuple()!;
+  const payload = ethereum
+    .decode(
+      '(address[],uint256[],string[],bytes[],uint8)',
+      DYNAMIC_TUPLE_BYTES_PREFIX.concat(decodedTuple[0].toBytes()),
+    )!
     .toTuple();
-  const payload = decoded[0].toTuple();
+
   remoteProposal.targets = payload[0]
     .toAddressArray()
     .map<Bytes>(a => Bytes.fromHexString(a.toHexString()));
