@@ -9,6 +9,15 @@ import { SYNC_DELAY, nullAddress } from './utils/constants';
 const functionSig = 'swapPoolsAssets(address[],uint256[],address[][])';
 const account = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
+const getPermissionId = (account: string, contract: string, functionSig: string) => {
+  const utf8Encode = new TextEncoder();
+  const arr = utf8Encode.encode(functionSig);
+  let output = '';
+  arr.forEach(code => {
+    output += code.toString(16);
+  });
+  return `${account}${contract.replace('0x', '')}${output}`;
+};
 describe('AccessControlManager', function () {
   before(async function () {
     await waitForSubgraphToBeSynced(SYNC_DELAY);
@@ -19,8 +28,7 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(58);
-
+      expect(permissions.length).to.be.equal(66);
       permissions.forEach(pe => {
         expect(pe.status).to.be.equal('GRANTED');
       });
@@ -38,10 +46,10 @@ describe('AccessControlManager', function () {
 
       const { data } = await subgraphClient.getPermissions();
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(58);
+      expect(permissions.length).to.be.equal(66);
 
       const { data: permissionByIdData } = await subgraphClient.getPermission(
-        `${account}-${nullAddress}-${functionSig}`,
+        getPermissionId(account, nullAddress, functionSig),
       );
 
       const { permission } = permissionByIdData!;
@@ -61,9 +69,10 @@ describe('AccessControlManager', function () {
       const { data } = await subgraphClient.getPermissions();
 
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(58);
+      expect(permissions.length).to.be.equal(66);
       const { data: permissionByIdData } = await subgraphClient.getPermission(
-        `${account}-${nullAddress}-${functionSig}`,
+        // `${account}-${nullAddress}-${functionSig}`,
+        getPermissionId(account, nullAddress, functionSig),
       );
 
       const { permission } = permissionByIdData!;

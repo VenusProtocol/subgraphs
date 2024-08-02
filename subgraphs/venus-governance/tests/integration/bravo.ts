@@ -129,6 +129,16 @@ describe('GovernorBravo', function () {
     });
 
     it('should index cancelled proposal event', async function () {
+      const [_, _1, _2, user3, user4] = signers;
+      await governorBravo.connect(user3).castVote('22', 1);
+      await governorBravo.connect(user4).castVote('22', 1);
+      let votingPeriod = +(await governorBravo.votingPeriod());
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+      await governorBravo.queue(22);
+      await mine(1);
       await governorBravo.connect(signers[0]).cancel('22');
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
@@ -354,6 +364,13 @@ describe('GovernorBravo', function () {
     });
 
     it('should index cancelled proposal event', async function () {
+      let votingPeriod = +(await governorBravo.votingPeriod());
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+      await governorBravo.queue(24);
+      await mine(1);
       await governorBravo.connect(signers[0]).cancel('24');
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
