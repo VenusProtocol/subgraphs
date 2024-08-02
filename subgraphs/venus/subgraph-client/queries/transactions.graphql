@@ -1,0 +1,11 @@
+query Transactions {
+  transactions {
+    id
+    type
+    from
+    amountMantissa
+    to
+    blockNumber
+    blockTime
+  }
+}

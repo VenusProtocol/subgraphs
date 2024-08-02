@@ -54,7 +54,8 @@ describe('handleMarketListing', () => {
     assertMarketDocument('underlyingDecimals', '18');
     assertMarketDocument('underlyingName', 'BNB');
     assertMarketDocument('underlyingSymbol', 'BNB');
-    assertMarketDocument('underlyingPriceCents', '0');
+    assertMarketDocument('lastUnderlyingPriceCents', '0');
+    assertMarketDocument('lastUnderlyingPriceBlockNumber', '1');
     assertMarketDocument('borrowRateMantissa', '0');
     assertMarketDocument('cashMantissa', '0');
     assertMarketDocument('collateralFactorMantissa', '0');
@@ -65,10 +66,10 @@ describe('handleMarketListing', () => {
     assertMarketDocument('supplyRateMantissa', '0');
     assertMarketDocument('symbol', 'vBNB');
     assertMarketDocument('totalBorrowsMantissa', '0');
-    assertMarketDocument('totalSupplyMantissa', '0');
+    assertMarketDocument('totalSupplyVTokenMantissa', '0');
     assertMarketDocument('accrualBlockNumber', '100');
     assertMarketDocument('blockTimestamp', '1');
-    assertMarketDocument('borrowIndexMantissa', '0');
+    assertMarketDocument('borrowIndex', '0');
     assertMarketDocument('reserveFactor', '100');
   });
 });

@@ -15,8 +15,7 @@ jobs:
           cache: "yarn"
 
       - name: Install deps
-        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
-        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
+        run: yarn
 
       - name: Lint
         run: yarn lint
@@ -36,8 +35,7 @@ jobs:
           cache: "yarn"
 
       - name: Install deps
-        # enabeling updating the lock file for a bug in yarn berry likely related to installing github
-        run: YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
+        run: yarn
 
       - name: Prepare
         run: yarn prepare:docker
@@ -47,6 +45,38 @@ jobs:
 
       - name: Run Matchstick tests
         run: yarn test
+  integration-test-core-pool:
+    runs-on: ubuntu-20.04
+    needs: unit-test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Start containers
+        run: docker compose up -d
+      
+      - name: Sleep to allow graph-node to become accessible
+        shell: bash
+        run: sleep 45s
+
+      - name: Generate Core Pool graphql types
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run deploy:docker
+          sleep 5s
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run generate-subgraph-types
+      
+      - name: Run Core Pool integration tests
+        run: |
+          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run test:integration --bail
+      
+      - name: Stop containers
+        if: always()
+        run: |
+          docker compose down -v
+          docker system prune -f -a --volumes
 
   integration-test-isolated-pools:
     runs-on: ubuntu-20.04

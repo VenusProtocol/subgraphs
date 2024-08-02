@@ -1,0 +1,8 @@
+sources:
+  - name: venus-subgraph
+    handler:
+      graphql:
+        endpoint: http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph
+
+documents:
+  - '../**/*.graphql'

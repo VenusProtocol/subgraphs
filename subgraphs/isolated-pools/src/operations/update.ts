@@ -3,7 +3,6 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
 import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
-import { zeroBigInt32 } from '../constants';
 import { exponentToBigInt, valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getTokenPriceInCents } from '../utilities';
 import { getOrCreateMarket } from './getOrCreate';
@@ -166,12 +165,9 @@ export const updateMarket = (
   );
 
   market.totalBorrowsMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalBorrows());
-  market.totalSupplyMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalSupply());
-  if (market.totalSupplyMantissa.gt(zeroBigInt32) && exchangeRateMantissa.gt(zeroBigInt32)) {
-    market.totalSupplyMantissa = market.totalSupplyMantissa
-      .times(exchangeRateMantissa)
-      .div(exponentToBigInt(18));
-  }
+  market.totalSupplyVTokenMantissa = valueOrNotAvailableIntIfReverted(
+    marketContract.try_totalSupply(),
+  );
 
   market.save();
   return market as Market;

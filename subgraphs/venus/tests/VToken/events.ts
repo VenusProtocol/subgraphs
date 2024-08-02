@@ -137,7 +137,7 @@ export const createBorrowEvent = (
   event.parameters.push(accountBorrowsParam);
 
   const totalBorrowsParam = new ethereum.EventParam(
-    'totalBorrowsMantissa',
+    'totalBorrows',
     ethereum.Value.fromUnsignedBigInt(totalBorrows),
   );
   event.parameters.push(totalBorrowsParam);
@@ -256,7 +256,7 @@ export const createAccrueInterestEvent = (
   event.parameters.push(interestAccumulatedParam);
 
   const borrowIndexParam = new ethereum.EventParam(
-    'borrowIndexMantissa',
+    'borrowIndex',
     ethereum.Value.fromUnsignedBigInt(borrowIndex),
   );
   event.parameters.push(borrowIndexParam);

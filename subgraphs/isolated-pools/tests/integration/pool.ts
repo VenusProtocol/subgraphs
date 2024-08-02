@@ -11,15 +11,19 @@ describe('Pools', function () {
   let acc1: Signer;
   let root: SignerWithAddress;
   let accessControlManager: Contract;
+  let poolRegistry: Contract;
+  let poolLens: Contract;
 
   const syncDelay = 6000;
 
   before(async function () {
     const signers = await ethers.getSigners();
-    [root] = await ethers.getSigners();
-    acc1 = signers[1];
+    [root, acc1] = signers;
 
     accessControlManager = await ethers.getContract('AccessControlManager');
+
+    poolRegistry = await ethers.getContract('PoolRegistry');
+    poolLens = await ethers.getContract('PoolLens');
 
     let tx = await accessControlManager.giveCallPermission(
       ethers.constants.AddressZero,
@@ -112,6 +116,11 @@ describe('Pools', function () {
   });
 
   it('handles MarketEntered and MarketExited events', async function () {
+
+    const pools = await poolLens.getAllPools(poolRegistry.address);
+    const pool1Comptroller = await ethers.getContractAt('Comptroller', pools[0].comptroller);
+
+    await pool1Comptroller.connect(acc1).enterMarkets(pools[0].vTokens.map(m => m.vToken));
     const account1Address = await acc1.getAddress();
     await waitForSubgraphToBeSynced(syncDelay);
 

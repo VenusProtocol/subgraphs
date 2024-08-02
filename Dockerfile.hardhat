@@ -16,6 +16,4 @@ COPY copy_contracts.sh /usr/app/copy_contracts.sh
 
 WORKDIR /usr/app
 
-RUN yarn
-
 EXPOSE 8545
