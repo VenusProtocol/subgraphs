@@ -229,7 +229,7 @@ dataSources:
         - OmnichainProposalSender
       abis:
         - name: OmnichainProposalSender
-          file: ../../artifacts/contracts/governance/contracts/Cross-chain/OmnichainProposalSender.sol/OmnichainProposalSender.json
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainProposalSender.sol/OmnichainProposalSender.json
       eventHandlers:
         - event: SetTrustedRemoteAddress(indexed uint16,bytes,bytes)
           handler: handleSetTrustedRemoteAddress
