@@ -32,7 +32,7 @@
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.77.0",
     "@layerzerolabs/solidity-examples": "^1.0.0",
-    "@venusprotocol/governance-contracts": "2.2.0",
+    "@venusprotocol/governance-contracts": "2.3.0-dev.2",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2",

@@ -49,3 +49,12 @@ mv ./contracts/mocks/contracts/VBep20DelegatorR1.sol ./contracts/protocol/contra
 
 mkdir -p ./contracts/utilities
 cp -rf ./node_modules/@venusprotocol/solidity-utilities/contracts ./contracts/utilities
+
+mkdir -p ./contracts/layerzero/mocks
+mkdir -p ./contracts/layerzero/interfaces
+mkdir -p ./contracts/layerzero/libs
+cp ./node_modules/@layerzerolabs/solidity-examples/contracts/lzApp/mocks/LZEndpointMock.sol ./contracts/layerzero/mocks/LZEndpointMock.sol
+cp ./node_modules/@layerzerolabs/solidity-examples/contracts/lzApp/interfaces/ILayerZeroReceiver.sol ./contracts/layerzero/interfaces/ILayerZeroReceiver.sol
+cp ./node_modules/@layerzerolabs/solidity-examples/contracts/lzApp/interfaces/ILayerZeroEndpoint.sol ./contracts/layerzero/interfaces/ILayerZeroEndpoint.sol
+cp ./node_modules/@layerzerolabs/solidity-examples/contracts/lzApp/interfaces/ILayerZeroUserApplicationConfig.sol ./contracts/layerzero/interfaces/ILayerZeroUserApplicationConfig.sol
+cp ./node_modules/@layerzerolabs/solidity-examples/contracts/lzApp/libs/LzLib.sol ./contracts/layerzero/libs/LzLib.sol
