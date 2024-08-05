@@ -52,7 +52,7 @@ export function handleProposalExecuted(event: ProposalExecuted): void {
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
   const proposal = getProposal(event.params.id);
-  proposal.cancelled = true;
+  proposal.canceled = true;
   proposal.save();
 }
 

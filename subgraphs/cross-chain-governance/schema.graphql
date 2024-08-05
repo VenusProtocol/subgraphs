@@ -70,8 +70,8 @@ type Proposal @entity {
   "Whether a proposal has been executed"
   executed: Boolean
 
-  "Whether a proposal has been cancelled"
-  cancelled: Boolean
+  "Whether a proposal has been canceled"
+  canceled: Boolean
 }
 
 type GovernanceRoute @entity {

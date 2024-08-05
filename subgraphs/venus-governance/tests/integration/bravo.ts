@@ -128,7 +128,7 @@ describe('GovernorBravo', function () {
       expect(delegate2.proposals).to.deep.equal([]);
     });
 
-    it('should index cancelled proposal event', async function () {
+    it('should index canceled proposal event', async function () {
       const [_, _1, _2, user3, user4] = signers;
       await governorBravo.connect(user3).castVote('22', 1);
       await governorBravo.connect(user4).castVote('22', 1);
@@ -363,7 +363,7 @@ describe('GovernorBravo', function () {
       expect(delegate4.proposals.length).to.equal(4);
     });
 
-    it('should index cancelled proposal event', async function () {
+    it('should index canceled proposal event', async function () {
       let votingPeriod = +(await governorBravo.votingPeriod());
       while (votingPeriod > 0) {
         votingPeriod--;

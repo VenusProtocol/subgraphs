@@ -71,7 +71,6 @@ describe('AccessControlManager', function () {
       const { permissions } = data!;
       expect(permissions.length).to.be.equal(66);
       const { data: permissionByIdData } = await subgraphClient.getPermission(
-        // `${account}-${nullAddress}-${functionSig}`,
         getPermissionId(account, nullAddress, functionSig),
       );
 

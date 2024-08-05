@@ -87,7 +87,7 @@ describe('OmniGovernanceExecutor', () => {
     assert.fieldEquals('Proposal', '1', 'executed', 'true');
   });
 
-  test('should record cancelled proposal', () => {
+  test('should record canceled proposal', () => {
     const proposalReceivedEvent = createProposalReceivedEvent(
       2,
       [MOCK_TIMELOCK_ADDRESS],
@@ -102,7 +102,7 @@ describe('OmniGovernanceExecutor', () => {
     handleProposalCanceled(proposalCanceledEventEvent);
 
     assert.entityCount('Proposal', 2);
-    assert.fieldEquals('Proposal', '2', 'cancelled', 'true');
+    assert.fieldEquals('Proposal', '2', 'canceled', 'true');
   });
 
   test('should record receive payload failed', () => {
