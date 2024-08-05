@@ -1,4 +1,9 @@
 #!/usr/bin/env ts-node
+import arbitrumDeployments from '@venusprotocol/governance-contracts/deployments/arbitrumone_addresses.json';
+import arbitrumSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/arbitrumsepolia_addresses.json';
+import ethereumDeployments from '@venusprotocol/governance-contracts/deployments/ethereum_addresses.json';
+import opBnBMainnetDeployments from '@venusprotocol/governance-contracts/deployments/opbnbmainnet_addresses.json';
+import sepoliaDeployments from '@venusprotocol/governance-contracts/deployments/sepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -33,41 +38,42 @@ const main = () => {
     sepolia: {
       network: 'sepolia',
       layerZeroChainId: 10161,
-      omnichainGovernanceOwnerAddress: '0xf964158C67439D01e5f17F0A3F39DfF46823F27A',
+      omnichainGovernanceOwnerAddress: sepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '6049722',
-      omnichainExecutorOwnerAddress: '0xD9B18a43Ee9964061c1A1925Aa907462F0249109',
+      omnichainExecutorOwnerAddress: sepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '6049686',
     },
     ethereum: {
       network: 'mainnet',
       layerZeroChainId: 101,
-      omnichainGovernanceOwnerAddress: '0x87Ed3Fd3a25d157637b955991fb1B41B566916Ba',
+      omnichainGovernanceOwnerAddress: ethereumDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '20037893',
-      omnichainExecutorOwnerAddress: '0xd70ffB56E4763078b8B814C0B48938F35D83bE0C',
+      omnichainExecutorOwnerAddress: ethereumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '20032813',
     },
     opbnbMainnet: {
       network: 'opbnb-mainnet',
       layerZeroChainId: 202,
-      omnichainGovernanceOwnerAddress: '0xf7e4c81Cf4A03d52472a4d00c3d9Ef35aF127E45',
+      omnichainGovernanceOwnerAddress: opBnBMainnetDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '26957477',
-      omnichainExecutorOwnerAddress: '0x82598878Adc43F1013A27484E61ad663c5d50A03',
+      omnichainExecutorOwnerAddress: opBnBMainnetDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '26952944',
     },
     arbitrumSepolia: {
       network: 'arbitrum-sepolia',
       layerZeroChainId: 10231,
-      omnichainGovernanceOwnerAddress: '0xfCA70dd553b7dF6eB8F813CFEA6a9DD039448878',
+      omnichainGovernanceOwnerAddress: arbitrumSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '54236728',
-      omnichainExecutorOwnerAddress: '0xcf3e6972a8e9c53D33b642a2592938944956f138',
+      omnichainExecutorOwnerAddress:
+        arbitrumSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '54235048',
     },
     arbitrum: {
       network: 'arbitrum-one',
       layerZeroChainId: 110,
-      omnichainGovernanceOwnerAddress: '0xf72C1Aa0A1227B4bCcB28E1B1015F0616E2db7fD',
+      omnichainGovernanceOwnerAddress: arbitrumDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '221744426',
-      omnichainExecutorOwnerAddress: '0xc1858cCE6c28295Efd3eE742795bDa316D7c7526',
+      omnichainExecutorOwnerAddress: arbitrumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '221743592',
     },
   };
