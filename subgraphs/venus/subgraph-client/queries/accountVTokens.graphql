@@ -1,8 +1,10 @@
-query AccountVTokens  {
-  accountVTokens {
+query AccountVTokens($first: Int, $skip: Int)  {
+  accountVTokens(first: $first, skip: $skip) {
     id
     market {
       id
+      symbol
+      borrowIndex
     }
     account {
       id
@@ -10,5 +12,8 @@ query AccountVTokens  {
     enteredMarket
     totalUnderlyingRedeemedMantissa
     totalUnderlyingRepaidMantissa
+    vTokenBalanceMantissa
+    storedBorrowBalanceMantissa
+    borrowIndex
   }
 }
