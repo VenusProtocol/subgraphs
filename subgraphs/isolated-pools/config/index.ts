@@ -5,6 +5,7 @@ import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctest
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
+import zksyncSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/zksyncsepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -18,6 +19,7 @@ export const getNetwork = () => {
     'opbnbMainnet',
     'arbitrumSepolia',
     'arbitrum',
+    'zksyncSepolia',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -69,6 +71,11 @@ const main = () => {
       network: 'arbitrum-one',
       poolRegistryAddress: arbitrumDeployments.addresses.PoolRegistry,
       startBlock: '216184381',
+    },
+    zksyncSepolia: {
+      network: 'zksync-era-sepolia',
+      poolRegistryAddress: zksyncSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '3535723',
     },
   };
 

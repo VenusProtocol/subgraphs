@@ -90,7 +90,13 @@ const config: HardhatUserConfig = {
     liquidator3: 9, 
     acc1: 10,
     acc2: 11
-  }
+  },
+  dependencyCompiler: {
+    paths: [
+      "hardhat-deploy/solc_0.8/proxy/OptimizedTransparentUpgradeableProxy.sol",
+      "hardhat-deploy/solc_0.8/openzeppelin/proxy/transparent/ProxyAdmin.sol",
+    ],
+  },
 };
 
 export default config;

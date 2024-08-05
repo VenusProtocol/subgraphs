@@ -1661,6 +1661,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphprotocol/graph-cli@npm:^0.80.0":
+  version: 0.80.1
+  resolution: "@graphprotocol/graph-cli@npm:0.80.1"
+  dependencies:
+    "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
+    "@oclif/core": 2.8.6
+    "@oclif/plugin-autocomplete": ^2.3.6
+    "@oclif/plugin-not-found": ^2.4.0
+    "@whatwg-node/fetch": ^0.8.4
+    assemblyscript: 0.19.23
+    binary-install-raw: 0.0.13
+    chalk: 3.0.0
+    chokidar: 3.5.3
+    debug: 4.3.4
+    docker-compose: 0.23.19
+    dockerode: 2.5.8
+    fs-extra: 9.1.0
+    glob: 9.3.5
+    gluegun: 5.1.6
+    graphql: 15.5.0
+    immutable: 4.2.1
+    ipfs-http-client: 55.0.0
+    jayson: 4.0.0
+    js-yaml: 3.14.1
+    open: 8.4.2
+    prettier: 3.0.3
+    semver: 7.4.0
+    sync-request: 6.1.0
+    tmp-promise: 3.0.3
+    web3-eth-abi: 1.7.0
+    which: 2.0.2
+    yaml: 1.10.2
+  bin:
+    graph: bin/run
+  checksum: 2984d504a1bd94767c076455cf2a363b0e7e37bd1ba646ad180f2df51fbb053c3fe39255088145dbbfec78b750fd022090362114d66ab954c620299b8af8c597
+  languageName: node
+  linkType: hard
+
 "@graphprotocol/graph-ts@npm:^0.35.1":
   version: 0.35.1
   resolution: "@graphprotocol/graph-ts@npm:0.35.1"
@@ -4380,6 +4418,23 @@ __metadata:
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
   checksum: e6d92426500eaa6874fc57d532bd4dfbb57263810dbf1f863308f4c9faa1372839b003657c9a1945f074acaac55712caad41e0f920d7765e6c6e85712fb6eca1
+  languageName: node
+  linkType: hard
+
+"@venusprotocol/isolated-pools@npm:3.5.0-dev.3":
+  version: 3.5.0-dev.3
+  resolution: "@venusprotocol/isolated-pools@npm:3.5.0-dev.3"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": ^2.0.0
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: ed5bdb02fcf7bb2716601f47c41649834e944629bef288395d1410e7a954772324ab7409cdb16da2212518ec19cb70487ec829fc213e2083c5b01c07e9c28eec
   languageName: node
   linkType: hard
 
@@ -13105,7 +13160,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.3.0-dev.4
-    "@venusprotocol/isolated-pools": 3.3.0
+    "@venusprotocol/isolated-pools": 3.5.0-dev.3
     "@venusprotocol/oracle": 2.2.0
     "@venusprotocol/protocol-reserve": 2.3.0-dev.1
     "@venusprotocol/solidity-utilities": ^2.0.3
@@ -14052,7 +14107,7 @@ __metadata:
   resolution: "venus-subgraph@workspace:subgraphs/venus"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     "@venusprotocol/venus-protocol": 9.2.0-dev.6
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
     hardhat: ^2.10.2
