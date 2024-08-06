@@ -86,6 +86,9 @@ type Proposal @entity {
 
   "Executed Transaction"
   executed: Transaction
+
+  "Proposal Governance Route (normal fast track or critical)"
+  route: GovernanceRoute!
 }
 
 type GovernanceRoute @entity {

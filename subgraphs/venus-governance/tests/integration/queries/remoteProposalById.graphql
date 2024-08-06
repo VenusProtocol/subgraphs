@@ -8,7 +8,21 @@ query RemoteProposalById($id: ID!) {
     signatures
     calldatas
     proposalType
-    status
+    stored {
+      txHash
+      blockNumber
+      timestamp
+    }
+    executed {
+      txHash
+      blockNumber
+      timestamp
+    }
+    withdrawn {
+      txHash
+      blockNumber
+      timestamp
+    }
     failedReason
   }
 }

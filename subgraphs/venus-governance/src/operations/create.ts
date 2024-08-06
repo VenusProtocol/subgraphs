@@ -13,13 +13,12 @@ import {
   BIGINT_ONE,
   BIGINT_ZERO,
   DYNAMIC_TUPLE_BYTES_PREFIX,
-  EXECUTED,
   FOR,
   NORMAL,
-  STORED,
 } from '../constants';
 import { getProposalId, getVoteId } from '../utilities/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
+import { getOrCreateTransaction } from './getOrCreate';
 
 export function createProposal<E>(event: E): Proposal {
   const id = getProposalId(event.params.id);
@@ -82,7 +81,9 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
   return vote as Vote;
 }
 
-export function createRemoteProposal(event: ExecuteRemoteProposal): RemoteProposal {
+export function createRemoteProposalFromExecuteRemoteProposal(
+  event: ExecuteRemoteProposal,
+): RemoteProposal {
   const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
@@ -106,12 +107,13 @@ export function createRemoteProposal(event: ExecuteRemoteProposal): RemotePropos
   remoteProposal.signatures = payload[2].toStringArray();
   remoteProposal.calldatas = payload[3].toBytesArray();
   remoteProposal.proposalType = payload[4].toI32();
-  remoteProposal.status = EXECUTED;
+  const transaction = getOrCreateTransaction(event);
+  remoteProposal.executed = transaction.id;
   remoteProposal.save();
   return remoteProposal;
 }
 
-export function createRemoteProposalFromPayload(event: StorePayload): RemoteProposal {
+export function createRemoteProposalFromStorePayloadEvent(event: StorePayload): RemoteProposal {
   const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
@@ -135,7 +137,8 @@ export function createRemoteProposalFromPayload(event: StorePayload): RemoteProp
   remoteProposal.signatures = payload[2].toStringArray();
   remoteProposal.calldatas = payload[3].toBytesArray();
   remoteProposal.proposalType = payload[4].toI32();
-  remoteProposal.status = STORED;
+  const transaction = getOrCreateTransaction(event);
+  remoteProposal.stored = transaction.id;
   remoteProposal.failedReason = event.params.reason;
   remoteProposal.save();
   return remoteProposal;

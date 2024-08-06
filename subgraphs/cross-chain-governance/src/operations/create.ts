@@ -20,7 +20,7 @@ export const createProposal = (event: ProposalReceived): Proposal => {
   proposal.signatures = event.params.signatures;
   proposal.calldatas = event.params.calldatas;
   const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
-  proposal.type = indexProposalTypeConstant[event.params.proposalType];
+  proposal.route = indexProposalTypeConstant[event.params.proposalType];
   proposal.save();
   return proposal;
 };

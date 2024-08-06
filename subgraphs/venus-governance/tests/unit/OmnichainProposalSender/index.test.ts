@@ -89,7 +89,10 @@ describe('OmnichainProposalSender events', () => {
     assertRemoteProposalDocument('signatures', '[test()]');
     assertRemoteProposalDocument('calldatas', '[0x]');
     assertRemoteProposalDocument('proposalType', '0');
-    assertRemoteProposalDocument('status', 'EXECUTED');
+    assertRemoteProposalDocument(
+      'executed',
+      executeRemoteProposalEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('handles fallback withdraw', () => {
@@ -114,7 +117,7 @@ describe('OmnichainProposalSender events', () => {
       const id = getProposalId(BigInt.fromI32(2));
       assert.fieldEquals('RemoteProposal', id, key, value);
     };
-    assertRemoteProposalDocument('status', 'WITHDRAWN');
+    assertRemoteProposalDocument('withdrawn', clearPayloadEvent.transaction.hash.toHexString());
   });
 
   test('handles retry execution', () => {
@@ -138,7 +141,10 @@ describe('OmnichainProposalSender events', () => {
       const id = getProposalId(BigInt.fromI32(3));
       assert.fieldEquals('RemoteProposal', id, key, value);
     };
-    assertRemoteProposalDocument('status', 'EXECUTED');
+    assertRemoteProposalDocument(
+      'executed',
+      executeRemoteProposalEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('handles StorePayload event', () => {
@@ -159,7 +165,7 @@ describe('OmnichainProposalSender events', () => {
       const id = getProposalId(BigInt.fromI32(1));
       assert.fieldEquals('RemoteProposal', id, key, value);
     };
-    assertRemoteProposalDocument('status', 'STORED');
+    assertRemoteProposalDocument('stored', storePayloadEvent.transaction.hash.toHexString());
 
     assertRemoteProposalDocument('failedReason', Bytes.fromUTF8('Failed').toHex());
   });

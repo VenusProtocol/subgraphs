@@ -38,14 +38,14 @@ type _Schema_
     include: [{ entity: "Proposal", fields: [{ name: "description" }] }]
   )
 
-type ProposalAction @entity(immutable: true) {
+type Transaction @entity(immutable: true) {
   "Transaction hash used as the id"
   id: Bytes!
   
   "Transaction hash for the proposal action"
   txHash: Bytes!
   
-  "Block number of the proposal action"
+  "Block number of the transaction"
   blockNumber: BigInt!
   
   "Timestamp of the transaction block"
@@ -86,14 +86,14 @@ type Proposal @entity {
   "Once the proposal is queued for execution it will have an ETA of the execution"
   executionEta: BigInt
   
-  "Whether a proposal has been queued"
-  queued: ProposalAction
+  "Queued Transaction"
+  queued: Transaction
 
-  "Whether a proposal has been canceled"
-  canceled: ProposalAction
+  "Canceled Transaction"
+  canceled: Transaction
 
-  "Whether a proposal has been executed"
-  executed: ProposalAction
+  "Executed Transaction"
+  executed: Transaction
 
   "Total of for votes on the proposal"
   forVotes: BigInt!
@@ -239,12 +239,6 @@ type TrustedRemote @entity {
   active: Boolean!
 }
 
-enum RemoteProposalStatus {
-  STORED,
-  EXECUTED,
-  WITHDRAWN
-}
-
 type RemoteProposal @entity {
   "RemoteProposal Id"
   id: ID!
@@ -270,8 +264,14 @@ type RemoteProposal @entity {
   "Proposal Type (Normal, FastTrack, Critical)"
   proposalType: Int!
 
-  "True if executed, False if waiting to be retried"
-  status: RemoteProposalStatus!
+  "Transaction Remote Proposal was sent"
+  stored: Transaction
+
+  "Transaction Remote Proposal was executed (usually the same as stored)"
+  executed: Transaction
+
+  "Transaction Remote Proposal was withdrawn"
+  withdrawn: Transaction
 
   "If execution fails and is stored, this property will show the reason"
   failedReason: Bytes

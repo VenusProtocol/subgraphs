@@ -1,6 +1,6 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
-import { Delegate, MaxDailyLimit, TrustedRemote } from '../../generated/schema';
+import { Delegate, MaxDailyLimit, Transaction, TrustedRemote } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import { getDelegateId, getMaxDailyLimitId, getTrustedRemoteId } from '../utilities/ids';
@@ -74,4 +74,16 @@ export const getOrCreateMaxDailyLimit = (chainId: i32): GetOrCreateMaxDailyLimit
     created = true;
   }
   return { entity: maxDailyLimit, created };
+};
+
+export const getOrCreateTransaction = (event: ethereum.Event): Transaction => {
+  let transaction = Transaction.load(event.transaction.hash);
+  if (!transaction) {
+    transaction = new Transaction(event.transaction.hash);
+    transaction.blockNumber = event.block.number;
+    transaction.timestamp = event.block.timestamp;
+    transaction.txHash = event.transaction.hash;
+    transaction.save();
+  }
+  return transaction;
 };

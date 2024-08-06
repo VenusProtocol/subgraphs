@@ -21,11 +21,6 @@ export const CRITICAL = 'CRITICAL';
 export const GRANTED = 'GRANTED';
 export const REVOKED = 'REVOKED';
 
-// Remote Proposal Status
-export const EXECUTED = 'EXECUTED';
-export const STORED = 'STORED';
-export const WITHDRAWN = 'WITHDRAWN';
-
 export const DYNAMIC_TUPLE_BYTES_PREFIX = Bytes.fromHexString(
   '0x0000000000000000000000000000000000000000000000000000000000000020',
 );

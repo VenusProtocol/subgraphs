@@ -9,10 +9,16 @@ import {
   StorePayload,
   TrustedRemoteRemoved,
 } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
-import { EXECUTED, WITHDRAWN } from '../constants';
-import { createRemoteProposal, createRemoteProposalFromPayload } from '../operations/create';
+import {
+  createRemoteProposalFromExecuteRemoteProposal,
+  createRemoteProposalFromStorePayloadEvent,
+} from '../operations/create';
 import { getOmnichainProposalSenderEntity, getRemoteProposal } from '../operations/get';
-import { getOrCreateMaxDailyLimit, getOrCreateTrustedRemote } from '../operations/getOrCreate';
+import {
+  getOrCreateMaxDailyLimit,
+  getOrCreateTransaction,
+  getOrCreateTrustedRemote,
+} from '../operations/getOrCreate';
 import { removeTrustedRemote } from '../operations/remove';
 
 export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
@@ -23,7 +29,7 @@ export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): v
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
-  const remoteProposal = createRemoteProposal(event);
+  const remoteProposal = createRemoteProposalFromExecuteRemoteProposal(event);
   remoteProposal.save();
 }
 
@@ -31,6 +37,7 @@ export function handleClearPayload(event: ClearPayload): void {
   const remoteProposal = getRemoteProposal(event.params.proposalId);
   // If receipt includes a withdrawn even the proposal was withdrawn
   // otherwise it execution was retried and successful
+  const transaction = getOrCreateTransaction(event);
   if (event.receipt) {
     const withdrawn = event.receipt!.logs.filter(v => {
       const topic = Bytes.fromByteArray(
@@ -39,16 +46,16 @@ export function handleClearPayload(event: ClearPayload): void {
       return v.topics.includes(topic);
     });
     if (withdrawn.length > 0) {
-      remoteProposal.status = WITHDRAWN;
+      remoteProposal.withdrawn = transaction.id;
     }
   } else {
-    remoteProposal.status = EXECUTED;
+    remoteProposal.executed = transaction.id;
   }
   remoteProposal.save();
 }
 
 export function handleStorePayload(event: StorePayload): void {
-  const remoteProposal = createRemoteProposalFromPayload(event);
+  const remoteProposal = createRemoteProposalFromStorePayloadEvent(event);
   remoteProposal.save();
 }
 

@@ -66,7 +66,7 @@ describe('OmniGovernanceExecutor', () => {
     assert.fieldEquals('Proposal', '1', 'values', '[0]');
     assert.fieldEquals('Proposal', '1', 'signatures', '[acceptAdmin()]');
     assert.fieldEquals('Proposal', '1', 'calldatas', '[0x63616c6c64617461]');
-    assert.fieldEquals('Proposal', '1', 'type', 'NORMAL');
+    assert.fieldEquals('Proposal', '1', 'route', 'NORMAL');
   });
 
   test('should record queued proposal', () => {
@@ -74,7 +74,12 @@ describe('OmniGovernanceExecutor', () => {
     handleProposalQueued(proposalQueuedEvent);
 
     assert.entityCount('Proposal', 1);
-    assert.fieldEquals('Proposal', '1', 'queued', 'true');
+    assert.fieldEquals(
+      'Proposal',
+      '1',
+      'queued',
+      proposalQueuedEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('should record executed proposal', () => {
@@ -83,8 +88,12 @@ describe('OmniGovernanceExecutor', () => {
 
     assert.entityCount('Proposal', 1);
     assert.fieldEquals('Proposal', '1', 'executionEta', '123456789');
-    assert.fieldEquals('Proposal', '1', 'queued', 'true');
-    assert.fieldEquals('Proposal', '1', 'executed', 'true');
+    assert.fieldEquals(
+      'Proposal',
+      '1',
+      'executed',
+      proposalExecutedEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('should record canceled proposal', () => {
@@ -102,7 +111,12 @@ describe('OmniGovernanceExecutor', () => {
     handleProposalCanceled(proposalCanceledEventEvent);
 
     assert.entityCount('Proposal', 2);
-    assert.fieldEquals('Proposal', '2', 'canceled', 'true');
+    assert.fieldEquals(
+      'Proposal',
+      '2',
+      'canceled',
+      proposalCanceledEventEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('should record receive payload failed', () => {

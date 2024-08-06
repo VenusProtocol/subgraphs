@@ -1,4 +1,4 @@
-import { Address, Bytes } from '@graphprotocol/graph-ts';
+import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { OmnichainGovernanceExecutor } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import {
@@ -6,6 +6,7 @@ import {
   FunctionRegistry,
   Governance,
   GovernanceRoute,
+  Transaction,
 } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import {
@@ -62,4 +63,16 @@ export const getOrCreateDestinationChain = (destinationChainId: i32): Destinatio
     destinationChain.chainId = destinationChainId;
   }
   return destinationChain;
+};
+
+export const getOrCreateTransaction = (event: ethereum.Event): Transaction => {
+  let transaction = Transaction.load(event.transaction.hash);
+  if (!transaction) {
+    transaction = new Transaction(event.transaction.hash);
+    transaction.blockNumber = event.block.number;
+    transaction.timestamp = event.block.timestamp;
+    transaction.txHash = event.transaction.hash;
+    transaction.save();
+  }
+  return transaction;
 };

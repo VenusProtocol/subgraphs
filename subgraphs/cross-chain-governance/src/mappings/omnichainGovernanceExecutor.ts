@@ -18,6 +18,7 @@ import {
   getOrCreateDestinationChain,
   getOrCreateGovernance,
   getOrCreateGovernanceRoute,
+  getOrCreateTransaction,
 } from '../operations/getOrCreate';
 import { removeFailedPayload } from '../operations/remove';
 
@@ -39,20 +40,20 @@ export function handleProposalReceived(event: ProposalReceived): void {
 
 export function handleProposalQueued(event: ProposalQueued): void {
   const proposal = getProposal(event.params.id);
-  proposal.queued = true;
+  proposal.queued = getOrCreateTransaction(event).id;
   proposal.executionEta = event.params.eta;
   proposal.save();
 }
 
 export function handleProposalExecuted(event: ProposalExecuted): void {
   const proposal = getProposal(event.params.id);
-  proposal.executed = true;
+  proposal.executed = getOrCreateTransaction(event).id;
   proposal.save();
 }
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
   const proposal = getProposal(event.params.id);
-  proposal.canceled = true;
+  proposal.canceled = getOrCreateTransaction(event).id;
   proposal.save();
 }
 
