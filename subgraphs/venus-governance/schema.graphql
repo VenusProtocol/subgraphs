@@ -56,6 +56,9 @@ type Proposal @entity {
   "Internal proposal id, it is an auto-incrementing id"
   id: ID!
 
+  "Proposal Id"
+  proposalId: BigInt!
+
   "Delegate that proposed the change"
   proposer: Delegate!
 

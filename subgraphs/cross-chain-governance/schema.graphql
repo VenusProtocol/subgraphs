@@ -42,9 +42,26 @@ enum PROPOSAL_TYPE {
   CRITICAL
 }
 
+type Transaction @entity(immutable: true) {
+  "Transaction hash used as the id"
+  id: Bytes!
+  
+  "Transaction hash for the proposal action"
+  txHash: Bytes!
+  
+  "Block number of the transaction"
+  blockNumber: BigInt!
+  
+  "Timestamp of the transaction block"
+  timestamp: BigInt!
+}
+
 type Proposal @entity {
-  "Proposal ID"
+  "Internal proposal id, it is an auto-incrementing id"
   id: ID!
+
+  "Proposal Id"
+  proposalId: BigInt!
 
   "Targets data for the change"
   targets: [Bytes!]
@@ -57,21 +74,18 @@ type Proposal @entity {
 
   "Call data for the change"
   calldatas: [Bytes!]
-  
-  "Type of Proposal can be normal fast track or critical"
-  type: PROPOSAL_TYPE!
 
   "Once the proposal is queued for execution it will have an ETA of the execution"
   executionEta: BigInt
   
-  "Whether a proposal has been queued"
-  queued: Boolean
+  "Queued Transaction"
+  queued: Transaction
 
-  "Whether a proposal has been executed"
-  executed: Boolean
+  "Canceled Transaction"
+  canceled: Transaction
 
-  "Whether a proposal has been canceled"
-  canceled: Boolean
+  "Executed Transaction"
+  executed: Transaction
 }
 
 type GovernanceRoute @entity {

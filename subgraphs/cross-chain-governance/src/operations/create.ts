@@ -14,7 +14,7 @@ export const createProposal = (event: ProposalReceived): Proposal => {
   const targets = event.params.targets.map<Bytes>((address: Address) =>
     Bytes.fromHexString(address.toHexString()),
   );
-
+  proposal.proposalId = event.params.proposalId;
   proposal.targets = targets;
   proposal.values = event.params.values;
   proposal.signatures = event.params.signatures;

@@ -32,6 +32,7 @@ export function createProposal<E>(event: E): Proposal {
   const targets = event.params.targets.map<Bytes>((address: Address) =>
     Bytes.fromHexString(address.toHexString()),
   );
+  proposal.proposalId = event.params.id;
   proposal.targets = targets;
   proposal.proposer = event.params.proposer;
   proposal.values = event.params.values;
