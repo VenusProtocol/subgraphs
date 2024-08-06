@@ -79,6 +79,7 @@ export function getOrCreateToken(asset: Address): Token {
     tokenEntity.address = asset;
     tokenEntity.symbol = erc20.symbol();
     tokenEntity.decimals = erc20.decimals();
+    tokenEntity.save();
   }
   return tokenEntity;
 }
