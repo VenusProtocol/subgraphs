@@ -112,6 +112,9 @@ type Proposal @entity {
 
   "Type of Proposal can be normal fast track or critical"
   type: PROPOSAL_TYPE!
+
+  "Remote Proposals created from this proposal"
+  remoteProposals: [RemoteProposal!]! @derivedFrom(field: "sourceProposalId")
 }
 
 enum SUPPORT {
@@ -275,4 +278,7 @@ type RemoteProposal @entity {
 
   "If execution fails and is stored, this property will show the reason"
   failedReason: Bytes
+
+  "Proposal Id for the originating BNB Chain proposal"
+  sourceProposalId: Proposal
 }

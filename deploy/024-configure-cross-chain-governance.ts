@@ -12,6 +12,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const accessControlManager = await ethers.getContract('AccessControlManager');
   const omnichainExecutorOwner = await ethers.getContract('OmnichainExecutorOwner');
+  const normalTimeLock = await ethers.getContract('NormalTimelock');
+
   await accessControlManager.giveCallPermission(
     ethers.constants.AddressZero,
     'execute(uint16,bytes,bytes,address)',
@@ -19,11 +21,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   );
   await accessControlManager.giveCallPermission(
     ethers.constants.AddressZero,
+    'execute(uint16,bytes,bytes,address)',
+    normalTimeLock.address,
+  );
+  await accessControlManager.giveCallPermission(
+    ethers.constants.AddressZero,
     'setTrustedRemoteAddress(uint16,bytes)',
     deployer,
   );
-
-  const normalTimeLock = await ethers.getContract('NormalTimelock');
 
   await omnichainProposalSender.setTrustedRemoteAddress(10102, omnichainExecutorOwner.address);
 

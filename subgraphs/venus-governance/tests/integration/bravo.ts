@@ -8,15 +8,20 @@ import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
 import { SYNC_DELAY, mockAddress } from './utils/constants';
+import { makePayload } from './utils/proposal';
 
 describe('GovernorBravo', function () {
   let signers: SignerWithAddress[];
   let governorBravo: Contract;
   let governorBravoDelegator: Contract;
+  let omnichainProposalSender: Contract;
+  let normalTimelock: Contract;
 
   before(async function () {
     signers = await ethers.getSigners();
     governorBravoDelegator = await ethers.getContract('GovernorBravoDelegator');
+    omnichainProposalSender = await ethers.getContract('OmnichainProposalSender');
+    normalTimelock = await ethers.getContract('NormalTimelock');
     const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
     governorBravo = await ethers.getContractAt(
       'GovernorBravoDelegateV1',
@@ -27,27 +32,24 @@ describe('GovernorBravo', function () {
     await governorBravoDelegator._setImplementation(governorBravoDelegateV1.address);
     const governorAlpha2 = await ethers.getContract('GovernorAlpha2');
 
-    // Impersonating timelock for convenience
-    const timelock = await ethers.getContract('NormalTimelock');
-
     await signers[0].sendTransaction({
-      to: timelock.address,
+      to: normalTimelock.address,
       value: ethers.utils.parseEther('1.0'), // Sends exactly 1.0 ether
     });
 
     await network.provider.request({
       method: 'hardhat_impersonateAccount',
-      params: [timelock.address],
+      params: [normalTimelock.address],
     });
-    const timelockSigner = await ethers.getSigner(timelock.address);
+    const timelockSigner = await ethers.getSigner(normalTimelock.address);
 
-    await timelock.connect(timelockSigner).setPendingAdmin(governorBravoDelegator.address);
+    await normalTimelock.connect(timelockSigner).setPendingAdmin(governorBravoDelegator.address);
 
     await governorBravo._initiate(governorAlpha2.address);
 
     await network.provider.request({
       method: 'hardhat_stopImpersonatingAccount',
-      params: [timelock.address],
+      params: [normalTimelock.address],
     });
 
     // Finished setup
@@ -178,10 +180,9 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(23);
 
-      const timelock = await ethers.getContract('NormalTimelock');
       const eta =
         (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await timelock.delay());
+        +(await normalTimelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -220,7 +221,6 @@ describe('GovernorBravo', function () {
 
   describe('GovernorBravo2', function () {
     it('should update GovernorEntity when setting implementation', async function () {
-      const timelock = await ethers.getContract('NormalTimelock');
       const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
       // Assert original values
       let {
@@ -266,7 +266,7 @@ describe('GovernorBravo', function () {
         },
       ];
 
-      const timelocks = [timelock.address, timelock.address, timelock.address];
+      const timelocks = [normalTimelock.address, normalTimelock.address, normalTimelock.address];
 
       await governorBravo.initialize(
         xvsVault.address,
@@ -417,10 +417,9 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(25);
 
-      const governorBravoTimelock = await ethers.getContract('NormalTimelock');
       const eta =
         (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await governorBravoTimelock.delay());
+        +(await normalTimelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -455,6 +454,76 @@ describe('GovernorBravo', function () {
       expect(typeof proposal.executed.blockNumber).to.equal('string');
       expect(typeof proposal.executed.txHash).to.equal('string');
       expect(typeof proposal.executed.timestamp).to.equal('string');
+    });
+
+    it('should should index remote propose with source correctly', async function () {
+      const user3 = signers[3];
+      const user4 = signers[4];
+      const remoteChainId = 10102;
+      const proposalType = 0;
+      const payload26 = await makePayload(
+        [normalTimelock.address],
+        [0],
+        ['setDelay(uint256)'],
+        [ethers.utils.defaultAbiCoder.encode(['uint256'], [2500])],
+        proposalType,
+      );
+      const proposalId = +(await omnichainProposalSender.proposalCount()) + 1;
+      const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 500000]);
+      const payloadWithIdEncoded = ethers.utils.defaultAbiCoder.encode(
+        ['bytes', 'uint256'],
+        [payload26, proposalId],
+      );
+      const nativeFee = await omnichainProposalSender.estimateFees(
+        remoteChainId,
+        payloadWithIdEncoded,
+        false,
+        adapterParams,
+      );
+      const proposal26 = [
+        [omnichainProposalSender.address], // targets
+        [ethers.utils.parseEther((nativeFee[0] / 1e18 + 0.00001).toString())], // values
+        ['execute(uint16,bytes,bytes,address)'], // signatures
+        [
+          ethers.utils.defaultAbiCoder.encode(
+            ['uint16', 'bytes', 'bytes', 'address'],
+            [remoteChainId, payload26, '0x', ethers.constants.AddressZero],
+          ),
+        ], // params
+        'Test proposal 26', // description
+        0, // route
+      ];
+
+      await governorBravo.connect(user3).propose(...proposal26);
+      await mine(1);
+      await governorBravo.connect(user3).castVote('26', 1);
+      await governorBravo.connect(user4).castVote('26', 1);
+
+      let votingPeriod = +(await governorBravo.proposalConfigs(0)).votingPeriod;
+
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+
+      await governorBravo.connect(user3).queue('26');
+
+      const eta26 = +(await governorBravo.proposals('26')).eta;
+      while (
+        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp <= eta26
+      ) {
+        await mine(1);
+      }
+      await governorBravo.connect(user3).execute('26');
+
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const {
+        data: { proposal: proposal26Indexed },
+      } = await subgraphClient.getProposalById('26');
+
+      expect(proposal26Indexed.remoteProposals.length).to.equal(1);
+      expect(proposal26Indexed.remoteProposals[0].proposalId).to.equal('1');
     });
   });
 });
