@@ -1,11 +1,12 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, Bytes } from '@graphprotocol/graph-ts';
 
 export const user1 = Address.fromString('0x0000000000000000000000000000000000000101');
 export const user2 = Address.fromString('0x0000000000000000000000000000000000000202');
 export const user3 = Address.fromString('0x0000000000000000000000000000000000000303');
 
-export const mockContractAddress = Address.fromString('0x0000000000000000000000000000000000000999');
-export const mockFunctionSig = 'mockFunc()';
+export const mockRole = Bytes.fromHexString(
+  '0x611a2749915766fd36ec1ee3a34749468d30b9e44a677e423124856ac4947231',
+);
 
 // Mocked Governor return values
 export const mockImplementationAddress = Address.fromString(

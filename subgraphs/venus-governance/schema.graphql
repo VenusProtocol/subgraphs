@@ -191,13 +191,16 @@ type Permission @entity {
   status: PermissionStatus!
 
   "The target account of the event"
-  account: Bytes!
+  accountAddress: Bytes!
 
-  "The target contract for the permission event"
-  contractAddress: Bytes!
+  "The role made of the contract address and function signature encode packed"
+  role: Bytes!
 
-  "The function name for the permission event"
-  functionSig: String!
+  "Created At Transaction Hash"
+  createdAt: Bytes!
+
+  "UpdatedAt At Transaction Hash"
+  updatedAt: Bytes!
 }
 
 type MaxDailyLimit @entity {

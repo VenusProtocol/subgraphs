@@ -2,8 +2,9 @@ query PermissionById($id: ID!) {
   permission(id: $id) {
     id
     status
-    account
-    contractAddress
-    functionSig
+    accountAddress
+    role
+    createdAt
+    updatedAt
   }
 }

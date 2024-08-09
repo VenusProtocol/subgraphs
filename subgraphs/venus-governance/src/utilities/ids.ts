@@ -1,4 +1,4 @@
-import { Address, BigInt, ByteArray, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { GOVERNANCE } from '../constants';
 import { omnichainProposalSenderAddress } from '../constants/addresses';
@@ -6,17 +6,7 @@ import { omnichainProposalSenderAddress } from '../constants/addresses';
 export const getVoteId = (voter: Address, proposalId: BigInt): Bytes =>
   voter.concatI32(proposalId.toI32());
 
-export const getPermissionId = (
-  accountAddress: Address,
-  contractAddress: Address,
-  functionSig: string,
-): Bytes =>
-  accountAddress
-    .concat(contractAddress)
-    .concat(Bytes.fromByteArray(ByteArray.fromUTF8(functionSig)));
-
-export const getRoleId = (role: Bytes, account: Address, sender: Address): Bytes =>
-  role.concat(account).concat(sender);
+export const getRoleId = (account: Address, role: Bytes): Bytes => account.concat(role);
 
 export const getDelegateId = (account: Address): Bytes => account;
 

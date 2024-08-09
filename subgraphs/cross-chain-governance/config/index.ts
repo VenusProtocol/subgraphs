@@ -34,6 +34,8 @@ const main = () => {
       startBlockOmnichainGovernanceOwner: '0',
       omnichainExecutorOwnerAddress: '0xeAd789bd8Ce8b9E94F5D0FCa99F8787c7e758817',
       startBlockOmnichainGovernanceExecutor: '0',
+      accessControlManagerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
+      accessControlManagerStartBlock: '0',
     },
     sepolia: {
       network: 'sepolia',
@@ -42,6 +44,8 @@ const main = () => {
       startBlockOmnichainGovernanceOwner: '6049722',
       omnichainExecutorOwnerAddress: sepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '6049686',
+      accessControlManagerAddress: sepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '4204345',
     },
     ethereum: {
       network: 'mainnet',
@@ -50,6 +54,8 @@ const main = () => {
       startBlockOmnichainGovernanceOwner: '20037893',
       omnichainExecutorOwnerAddress: ethereumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '20032813',
+      accessControlManagerAddress: ethereumDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '18641314',
     },
     opbnbMainnet: {
       network: 'opbnb-mainnet',
@@ -58,6 +64,8 @@ const main = () => {
       startBlockOmnichainGovernanceOwner: '26957477',
       omnichainExecutorOwnerAddress: opBnBMainnetDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '26952944',
+      accessControlManagerAddress: opBnBMainnetDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '10895878',
     },
     arbitrumSepolia: {
       network: 'arbitrum-sepolia',
@@ -67,6 +75,8 @@ const main = () => {
       omnichainExecutorOwnerAddress:
         arbitrumSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '54235048',
+      accessControlManagerAddress: arbitrumSepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '25350320',
     },
     arbitrum: {
       network: 'arbitrum-one',
@@ -75,6 +85,8 @@ const main = () => {
       startBlockOmnichainGovernanceOwner: '221744426',
       omnichainExecutorOwnerAddress: arbitrumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '221743592',
+      accessControlManagerAddress: arbitrumDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '201597544',
     },
   };
 

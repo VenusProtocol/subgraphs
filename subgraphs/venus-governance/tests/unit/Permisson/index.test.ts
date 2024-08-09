@@ -1,17 +1,14 @@
 import { afterEach, assert, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import {
-  PermissionGranted,
-  PermissionRevoked,
-} from '../../../generated/AccessControlManager/AccessControlManger';
+  RoleGranted,
+  RoleRevoked,
+} from '../../../generated/AccessControlManagerV5/AccessControlMangerV5';
 import { GRANTED, REVOKED } from '../../../src/constants';
-import {
-  handlePermissionGranted,
-  handlePermissionRevoked,
-} from '../../../src/mappings/accessControlManager';
-import { getPermissionId } from '../../../src/utilities/ids';
-import { mockContractAddress, mockFunctionSig, user1 } from '../../common/constants';
-import { createPermission } from '../../common/events';
+import { handleRoleGranted, handleRoleRevoked } from '../../../src/mappings/accessControlManager';
+import { getRoleId } from '../../../src/utilities/ids';
+import { mockRole, user1 } from '../../common/constants';
+import { createRole } from '../../common/events';
 
 const cleanup = (): void => {
   clearStore();
@@ -21,78 +18,58 @@ afterEach(() => {
   cleanup();
 });
 
-describe('Permission events', () => {
+describe('Role events', () => {
   test('handles permission granted event', () => {
-    const permissionGrantedEvent = createPermission<PermissionGranted>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
-    handlePermissionGranted(permissionGrantedEvent);
+    const permissionGrantedEvent = createRole<RoleGranted>(user1, mockRole);
+    handleRoleGranted(permissionGrantedEvent);
 
-    const assertPermissionGrantedDocument = (key: string, value: string): void => {
-      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id.toHex(), key, value);
+    const assertRoleGrantedDocument = (key: string, value: string): void => {
+      const id = getRoleId(user1, mockRole);
+      assert.fieldEquals('Permission', id.toHexString(), key, value);
     };
 
-    assertPermissionGrantedDocument('status', GRANTED);
-    assertPermissionGrantedDocument('account', user1.toHexString());
-    assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
-    assertPermissionGrantedDocument('functionSig', mockFunctionSig);
+    assertRoleGrantedDocument('status', GRANTED);
+    assertRoleGrantedDocument('accountAddress', user1.toHexString());
+    assertRoleGrantedDocument('role', mockRole.toHexString());
   });
 
   test('handles permission revoked', () => {
-    const permissionRevokedEvent = createPermission<PermissionRevoked>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
-    handlePermissionRevoked(permissionRevokedEvent);
+    const permissionRevokedEvent = createRole<RoleRevoked>(user1, mockRole);
+    handleRoleRevoked(permissionRevokedEvent);
 
-    const assertPermissionRevokedDocument = (key: string, value: string): void => {
-      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id.toHex(), key, value);
+    const assertRoleRevokedDocument = (key: string, value: string): void => {
+      const id = getRoleId(user1, mockRole);
+      assert.fieldEquals('Permission', id.toHexString(), key, value);
     };
 
-    assertPermissionRevokedDocument('status', REVOKED);
-    assertPermissionRevokedDocument('account', user1.toHexString());
-    assertPermissionRevokedDocument('contractAddress', mockContractAddress.toHexString());
-    assertPermissionRevokedDocument('functionSig', mockFunctionSig);
+    assertRoleRevokedDocument('status', REVOKED);
+    assertRoleRevokedDocument('accountAddress', user1.toHexString());
+    assertRoleRevokedDocument('role', mockRole.toHexString());
   });
 
   test('handles updating a previously granted permission record', () => {
-    const permissionGrantedEvent = createPermission<PermissionGranted>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
-    handlePermissionGranted(permissionGrantedEvent);
+    const permissionGrantedEvent = createRole<RoleGranted>(user1, mockRole);
+    handleRoleGranted(permissionGrantedEvent);
 
-    const assertPermissionGrantedDocument = (key: string, value: string): void => {
-      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
+    const assertRoleGrantedDocument = (key: string, value: string): void => {
+      const id = getRoleId(user1, mockRole);
+      assert.fieldEquals('Permission', id.toHexString(), key, value);
+    };
+
+    assertRoleGrantedDocument('status', GRANTED);
+    assertRoleGrantedDocument('accountAddress', user1.toHexString());
+    assertRoleGrantedDocument('role', mockRole.toHexString());
+
+    const permissionRevokedEvent = createRole<RoleRevoked>(user1, mockRole);
+    handleRoleRevoked(permissionRevokedEvent);
+
+    const assertRoleRevokedDocument = (key: string, value: string): void => {
+      const id = getRoleId(user1, mockRole);
       assert.fieldEquals('Permission', id.toHex(), key, value);
     };
 
-    assertPermissionGrantedDocument('status', GRANTED);
-    assertPermissionGrantedDocument('account', user1.toHexString());
-    assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
-    assertPermissionGrantedDocument('functionSig', mockFunctionSig);
-
-    const permissionRevokedEvent = createPermission<PermissionRevoked>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
-    handlePermissionRevoked(permissionRevokedEvent);
-
-    const assertPermissionRevokedDocument = (key: string, value: string): void => {
-      const id = getPermissionId(user1, mockContractAddress, mockFunctionSig);
-      assert.fieldEquals('Permission', id.toHex(), key, value);
-    };
-
-    assertPermissionRevokedDocument('status', REVOKED);
-    assertPermissionRevokedDocument('account', user1.toHexString());
-    assertPermissionRevokedDocument('contractAddress', mockContractAddress.toHexString());
-    assertPermissionRevokedDocument('functionSig', mockFunctionSig);
+    assertRoleRevokedDocument('status', REVOKED);
+    assertRoleRevokedDocument('accountAddress', user1.toHexString());
+    assertRoleRevokedDocument('role', mockRole.toHexString());
   });
 });

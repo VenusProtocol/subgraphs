@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ startBlockOmnichainGovernanceOwner }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/omnichainExecutorOwner.ts
       entities:
@@ -34,7 +34,7 @@ dataSources:
       startBlock: {{ startBlockOmnichainGovernanceExecutor }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/mappings/omnichainGovernanceExecutor.ts
       entities:
@@ -73,3 +73,25 @@ dataSources:
           handler: handleSetPrecrime
         - event: SetSrcChainId(indexed uint16,indexed uint16)
           handler: handleSetSrcChainId
+  - kind: ethereum/contract
+    name: AccessControlManager
+    network: {{ network }}
+    source:
+      address: "{{ accessControlManagerAddress }}"
+      abi: AccessControlManger
+      startBlock: {{ accessControlManagerStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/accessControlManager.ts
+      entities:
+        - Permission
+      abis:
+        - name: AccessControlManger
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
+      eventHandlers:
+        - event: PermissionGranted(address,address,string)
+          handler: handlePermissionGranted
+        - event: PermissionRevoked(address,address,string)
+          handler: handlePermissionRevoked

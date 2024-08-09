@@ -11,3 +11,6 @@ export const GOVERNANCE = 'GOVERNANCE';
 export const NORMAL = 'NORMAL';
 export const FAST_TRACK = 'FAST_TRACK';
 export const CRITICAL = 'CRITICAL';
+
+export const GRANTED = 'GRANTED';
+export const REVOKED = 'REVOKED';

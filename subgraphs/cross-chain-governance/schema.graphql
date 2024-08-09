@@ -132,3 +132,31 @@ type DestinationChain @entity {
   "Minimum gas required to send for execution on destination"
   minGas: BigInt!
 }
+
+enum PermissionStatus {
+  GRANTED,
+  REVOKED
+}
+
+type Permission @entity {
+  "Id generated for each Permission"
+  id: Bytes!
+
+  "Indicates if the permission was either GRANTED or REVOKED"
+  status: PermissionStatus!
+
+  "The target account of the event"
+  accountAddress: Bytes!
+
+  "The target contract for the permission event"
+  contractAddress: Bytes!
+
+  "The function name for the permission event"
+  functionSignature: String!
+
+  "Created At Transaction Hash"
+  createdAt: Bytes!
+
+  "UpdatedAt At Transaction Hash"
+  updatedAt: Bytes!
+}
