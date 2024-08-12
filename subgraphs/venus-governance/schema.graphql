@@ -114,7 +114,7 @@ type Proposal @entity {
   type: PROPOSAL_TYPE!
 
   "Remote Proposals created from this proposal"
-  remoteProposals: [RemoteProposal!]! @derivedFrom(field: "sourceProposalId")
+  remoteProposals: [RemoteProposal!]! @derivedFrom(field: "sourceProposal")
 }
 
 enum SUPPORT {
@@ -283,5 +283,5 @@ type RemoteProposal @entity {
   failedReason: Bytes
 
   "Proposal Id for the originating BNB Chain proposal"
-  sourceProposalId: Proposal
+  sourceProposal: Proposal
 }

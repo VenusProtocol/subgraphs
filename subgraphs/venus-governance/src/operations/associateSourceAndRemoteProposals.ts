@@ -52,7 +52,7 @@ const associateSourceAndRemoteProposals = (event: ethereum.Event): void => {
 
     organizedProposals.proposals.forEach(p => {
       const remoteProposal = getRemoteProposal(p[1]);
-      remoteProposal.sourceProposalId = p[0].toString();
+      remoteProposal.sourceProposal = p[0].toString();
       remoteProposal.save();
     });
   }
