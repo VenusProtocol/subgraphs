@@ -267,8 +267,8 @@ type RemoteProposal @entity {
   "Call data for the change"
   calldatas: [Bytes!]
 
-  "Proposal Type (Normal, FastTrack, Critical)"
-  proposalType: Int!
+  "Proposal (route) Type (Normal, FastTrack, Critical)"
+  type: Int!
 
   "Transaction Remote Proposal was sent"
   stored: Transaction

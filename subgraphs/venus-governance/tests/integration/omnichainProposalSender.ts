@@ -78,7 +78,7 @@ describe('OmnichainProposalSender', function () {
     expect(remoteProposal.values[0]).to.be.equal('0');
     expect(remoteProposal.signatures[0]).to.be.equal('setDelay(uint256)');
     expect(remoteProposal.calldatas[0]).to.be.equal(calldata);
-    expect(remoteProposal.proposalType).to.be.equal(0);
+    expect(remoteProposal.type).to.be.equal(0);
     expect(remoteProposal.stored.txHash).to.be.equal(tx.hash);
   });
 });

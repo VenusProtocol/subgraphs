@@ -106,7 +106,7 @@ export function createRemoteProposalFromExecuteRemoteProposal(
   remoteProposal.values = payload[1].toBigIntArray();
   remoteProposal.signatures = payload[2].toStringArray();
   remoteProposal.calldatas = payload[3].toBytesArray();
-  remoteProposal.proposalType = payload[4].toI32();
+  remoteProposal.type = payload[4].toI32();
   const transaction = getOrCreateTransaction(event);
   remoteProposal.executed = transaction.id;
   remoteProposal.save();
@@ -136,7 +136,7 @@ export function createRemoteProposalFromStorePayloadEvent(event: StorePayload): 
   remoteProposal.values = payload[1].toBigIntArray();
   remoteProposal.signatures = payload[2].toStringArray();
   remoteProposal.calldatas = payload[3].toBytesArray();
-  remoteProposal.proposalType = payload[4].toI32();
+  remoteProposal.type = payload[4].toI32();
   const transaction = getOrCreateTransaction(event);
   remoteProposal.stored = transaction.id;
   remoteProposal.failedReason = event.params.reason;
