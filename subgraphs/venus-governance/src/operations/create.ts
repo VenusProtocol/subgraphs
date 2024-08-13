@@ -45,6 +45,7 @@ export function createProposal<E>(event: E): Proposal {
   proposal.againstVotes = BIGINT_ZERO;
   proposal.abstainVotes = BIGINT_ZERO;
   proposal.passing = false;
+  proposal.created = getOrCreateTransaction(event as ethereum.Event).id;
 
   proposal.save();
 

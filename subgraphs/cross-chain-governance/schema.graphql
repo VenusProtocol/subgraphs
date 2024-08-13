@@ -78,7 +78,7 @@ type Proposal @entity {
   "Once the proposal is queued for execution it will have an ETA of the execution"
   executionEta: BigInt
   
-  "Queued Transaction"
+  "Queued (Created) Transaction"
   queued: Transaction
 
   "Canceled Transaction"
