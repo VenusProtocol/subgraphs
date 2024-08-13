@@ -1,8 +1,15 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
-import { Delegate, MaxDailyLimit, Transaction, TrustedRemote } from '../../generated/schema';
+import {
+  Delegate,
+  MaxDailyLimit,
+  RemoteProposal,
+  Transaction,
+  TrustedRemote,
+} from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
+import { getProposalId } from '../utilities/ids';
 import { getDelegateId, getMaxDailyLimitId, getTrustedRemoteId } from '../utilities/ids';
 import { getGovernanceEntity } from './get';
 
@@ -86,4 +93,21 @@ export const getOrCreateTransaction = (event: ethereum.Event): Transaction => {
     transaction.save();
   }
   return transaction;
+};
+
+export const getOrCreateDefaultRemoteProposal = (proposalId: BigInt): RemoteProposal => {
+  const id = getProposalId(proposalId);
+  let remoteProposal = RemoteProposal.load(id);
+  if (!remoteProposal) {
+    remoteProposal = new RemoteProposal(id);
+    remoteProposal.remoteChainId = 0; // default value replaced in event handler
+    remoteProposal.type = 0; // default value replaced in event handler
+    remoteProposal.proposalId = proposalId;
+
+    remoteProposal.values = [];
+    remoteProposal.signatures = [];
+    remoteProposal.calldatas = [];
+    remoteProposal.save();
+  }
+  return remoteProposal;
 };

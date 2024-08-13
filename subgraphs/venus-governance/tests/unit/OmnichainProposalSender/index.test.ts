@@ -88,7 +88,7 @@ describe('OmnichainProposalSender events', () => {
     assertRemoteProposalDocument('values', '[0]');
     assertRemoteProposalDocument('signatures', '[test()]');
     assertRemoteProposalDocument('calldatas', '[0x]');
-    assertRemoteProposalDocument('proposalType', '0');
+    assertRemoteProposalDocument('type', '0');
     assertRemoteProposalDocument(
       'executed',
       executeRemoteProposalEvent.transaction.hash.toHexString(),

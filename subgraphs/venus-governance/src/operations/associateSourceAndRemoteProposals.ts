@@ -1,7 +1,7 @@
 import { BigInt, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts';
 
 import { DYNAMIC_TUPLE_BYTES_PREFIX } from '../constants';
-import { getRemoteProposal } from './get';
+import { getOrCreateDefaultRemoteProposal } from './getOrCreate';
 
 type RemoteProposalArray = BigInt[];
 
@@ -51,7 +51,7 @@ const associateSourceAndRemoteProposals = (event: ethereum.Event): void => {
     }, new RemoteToSourceProposalMap());
 
     organizedProposals.proposals.forEach(p => {
-      const remoteProposal = getRemoteProposal(p[1]);
+      const remoteProposal = getOrCreateDefaultRemoteProposal(p[1]);
       remoteProposal.sourceProposal = p[0].toString();
       remoteProposal.save();
     });

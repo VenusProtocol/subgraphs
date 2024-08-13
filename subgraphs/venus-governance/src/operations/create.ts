@@ -18,7 +18,7 @@ import {
 } from '../constants';
 import { getProposalId, getVoteId } from '../utilities/ids';
 import { getDelegate, getGovernanceEntity, getProposal } from './get';
-import { getOrCreateTransaction } from './getOrCreate';
+import { getOrCreateDefaultRemoteProposal, getOrCreateTransaction } from './getOrCreate';
 
 export function createProposal<E>(event: E): Proposal {
   const id = getProposalId(event.params.id);
@@ -84,7 +84,7 @@ export function createVoteBravo(event: VoteCastBravo): Vote {
 export function createRemoteProposalFromExecuteRemoteProposal(
   event: ExecuteRemoteProposal,
 ): RemoteProposal {
-  const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
+  const remoteProposal = getOrCreateDefaultRemoteProposal(event.params.proposalId);
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
 
@@ -114,7 +114,7 @@ export function createRemoteProposalFromExecuteRemoteProposal(
 }
 
 export function createRemoteProposalFromStorePayloadEvent(event: StorePayload): RemoteProposal {
-  const remoteProposal = new RemoteProposal(getProposalId(event.params.proposalId));
+  const remoteProposal = getOrCreateDefaultRemoteProposal(event.params.proposalId);
   remoteProposal.remoteChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
 

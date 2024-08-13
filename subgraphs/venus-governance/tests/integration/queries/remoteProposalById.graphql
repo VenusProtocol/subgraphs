@@ -7,7 +7,7 @@ query RemoteProposalById($id: ID!) {
     values
     signatures
     calldatas
-    proposalType
+    type
     stored {
       txHash
       blockNumber
