@@ -4,10 +4,14 @@ import { Contract } from 'ethers';
 import hre, { ethers } from 'hardhat';
 import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
 
 const { parseUnits, formatUnits } = ethers.utils;
 const { MaxUint256 } = ethers.constants;
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph',
+);
 
 const checkSupply = async (account: string, vToken: Contract) => {
   const {

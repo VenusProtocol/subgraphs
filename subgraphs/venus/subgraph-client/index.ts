@@ -43,8 +43,11 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokens() {
-    const result = await this.query(AccountVTokensDocument, {});
+  async getAccountVTokens({ first = 25, skip = 0 }: { first: number; skip: number }) {
+    const result = await this.query(AccountVTokensDocument, { first, skip } as unknown as {
+      first: string;
+      skip: string;
+    });
     return result;
   }
 
@@ -67,6 +70,6 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph',
-);
+const createSubgraphClient = (url: string) => new SubgraphClient(url);
+
+export default createSubgraphClient;
