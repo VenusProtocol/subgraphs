@@ -52,6 +52,7 @@ export const getOrCreateGovernanceRoute = (
     governanceRoute = new GovernanceRoute(getGovernanceRouteId(routeType));
   }
   governanceRoute.timelockAddress = timelockAddress;
+  governanceRoute.type = routeType.toString();
   governanceRoute.save();
   return governanceRoute;
 };

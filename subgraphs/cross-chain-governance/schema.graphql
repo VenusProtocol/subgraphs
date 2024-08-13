@@ -92,11 +92,11 @@ type Proposal @entity {
 }
 
 type GovernanceRoute @entity {
-  "Governance Route index"
+  "Governance Route index / type"
   id: ID!
 
   "Route type enum"
-  type: PROPOSAL_TYPE
+  type: PROPOSAL_TYPE!
   
   "Address for the route"
   timelockAddress: Bytes!
