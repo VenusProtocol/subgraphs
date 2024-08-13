@@ -1,5 +1,5 @@
-import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet.json';
-import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet.json';
+import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet_addresses.json';
+import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet_addresses.json';
 import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet_addresses.json';
 import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
@@ -38,15 +38,14 @@ const main = () => {
     },
     chapel: {
       network: 'chapel',
-      accessControlManagerAddress:
-        bscTestnetGovernanceDeployments.contracts.AccessControlManager.address,
+      accessControlManagerAddress: bscTestnetGovernanceDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '24711629',
-      governorAlphaAddress: bscTestnetGovernanceDeployments.contracts.GovernorAlpha.address,
+      governorAlphaAddress: bscTestnetGovernanceDeployments.addresses.GovernorAlpha,
       governorAlphaStartBlock: '8205736',
       governorAlpha2Address: '0x7116894ed34FC4B27D5b84f46B70Af48397a6C24',
       governorAlpha2StartBlock: '13584539',
       governorBravoDelegatorAddress:
-        bscTestnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+        bscTestnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '16002994 ',
       xvsTokenAddress: bscTestnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '2802593',
@@ -58,15 +57,14 @@ const main = () => {
     },
     bsc: {
       network: 'bsc',
-      accessControlManagerAddress:
-        bscMainnetGovernanceDeployments.contracts.AccessControlManager.address,
+      accessControlManagerAddress: bscMainnetGovernanceDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '21968138',
-      governorAlphaAddress: bscMainnetGovernanceDeployments.contracts.GovernorAlpha.address,
+      governorAlphaAddress: bscMainnetGovernanceDeployments.addresses.GovernorAlpha,
       governorAlphaStartBlock: '2474351',
-      governorAlpha2Address: bscMainnetGovernanceDeployments.contracts.GovernorAlpha2.address,
+      governorAlpha2Address: bscMainnetGovernanceDeployments.addresses.GovernorAlpha2,
       governorAlpha2StartBlock: '11934064',
       governorBravoDelegatorAddress:
-        bscMainnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+        bscMainnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '13729317',
       xvsTokenAddress: bscMainnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '858561',
