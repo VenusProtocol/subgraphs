@@ -8,7 +8,7 @@ import {
   GovernanceRoute,
   Transaction,
 } from '../../generated/schema';
-import { BIGINT_ZERO } from '../constants';
+import { BIGINT_ZERO, indexProposalTypeConstant } from '../constants';
 import {
   omnichainExecutorOwnerAddress,
   omnichainGovernanceOwnerAddress,
@@ -52,7 +52,7 @@ export const getOrCreateGovernanceRoute = (
     governanceRoute = new GovernanceRoute(getGovernanceRouteId(routeType));
   }
   governanceRoute.timelockAddress = timelockAddress;
-  governanceRoute.type = routeType.toString();
+  governanceRoute.type = indexProposalTypeConstant[routeType];
   governanceRoute.save();
   return governanceRoute;
 };

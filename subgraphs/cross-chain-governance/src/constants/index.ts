@@ -14,3 +14,5 @@ export const CRITICAL = 'CRITICAL';
 
 export const GRANTED = 'GRANTED';
 export const REVOKED = 'REVOKED';
+
+export const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];

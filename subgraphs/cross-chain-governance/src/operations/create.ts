@@ -5,7 +5,7 @@ import {
   ReceivePayloadFailed,
 } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import { FailedPayload, Proposal } from '../../generated/schema';
-import { CRITICAL, FAST_TRACK, NORMAL } from '../constants';
+import { indexProposalTypeConstant } from '../constants';
 import { getFailedPayloadId, getProposalId } from '../utilities/ids';
 
 export const createProposal = (event: ProposalReceived): Proposal => {
@@ -19,7 +19,7 @@ export const createProposal = (event: ProposalReceived): Proposal => {
   proposal.values = event.params.values;
   proposal.signatures = event.params.signatures;
   proposal.calldatas = event.params.calldatas;
-  const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
+
   proposal.route = indexProposalTypeConstant[event.params.proposalType];
   proposal.save();
   return proposal;
