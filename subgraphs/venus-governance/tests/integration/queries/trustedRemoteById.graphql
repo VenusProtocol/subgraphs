@@ -1,6 +1,6 @@
 query TrustedRemoteById($id: ID!) {
   trustedRemote(id: $id) {
-    chainId
+    layerZeroChainId
     address
     proposals {
       id

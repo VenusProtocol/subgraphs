@@ -35,7 +35,7 @@ describe('OmnichainProposalSender', function () {
   it('should index execute remote proposal', async function () {
     const calldata = ethers.utils.defaultAbiCoder.encode(['uint256'], [3600]);
     const proposalType = 0;
-    const remoteChainId = 10102;
+    const layerZeroChainId = 10102;
     const payload = await makePayload(
       [normalTimelock.address],
       [0],
@@ -51,7 +51,7 @@ describe('OmnichainProposalSender', function () {
       [payload, proposalId],
     );
     const nativeFee = await omnichainProposalSender.estimateFees(
-      remoteChainId,
+      layerZeroChainId,
       payloadWithIdEncoded,
       false,
       adapterParams,
@@ -73,7 +73,7 @@ describe('OmnichainProposalSender', function () {
 
     expect(+remoteProposal.id).to.be.equal(proposalId);
     expect(+remoteProposal.proposalId).to.be.equal(proposalId);
-    expect(remoteProposal.remoteChainId).to.be.equal(remoteChainId);
+    expect(remoteProposal.layerZeroChainId).to.be.equal(layerZeroChainId);
     expect(remoteProposal.targets[0]).to.be.equal(normalTimelock.address.toLowerCase());
     expect(remoteProposal.values[0]).to.be.equal('0');
     expect(remoteProposal.signatures[0]).to.be.equal('setDelay(uint256)');

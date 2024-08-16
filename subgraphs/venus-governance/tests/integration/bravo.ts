@@ -459,7 +459,7 @@ describe('GovernorBravo', function () {
     it('should should index remote propose with source correctly', async function () {
       const user3 = signers[3];
       const user4 = signers[4];
-      const remoteChainId = 10102;
+      const layerZeroChainId = 10102;
       const proposalType = 0;
       const payload26 = await makePayload(
         [normalTimelock.address],
@@ -475,7 +475,7 @@ describe('GovernorBravo', function () {
         [payload26, proposalId],
       );
       const nativeFee = await omnichainProposalSender.estimateFees(
-        remoteChainId,
+        layerZeroChainId,
         payloadWithIdEncoded,
         false,
         adapterParams,
@@ -487,7 +487,7 @@ describe('GovernorBravo', function () {
         [
           ethers.utils.defaultAbiCoder.encode(
             ['uint16', 'bytes', 'bytes', 'address'],
-            [remoteChainId, payload26, '0x', ethers.constants.AddressZero],
+            [layerZeroChainId, payload26, '0x', ethers.constants.AddressZero],
           ),
         ], // params
         'Test proposal 26', // description

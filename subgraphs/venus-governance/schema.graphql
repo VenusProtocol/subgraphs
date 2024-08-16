@@ -236,7 +236,7 @@ type TrustedRemote @entity {
   "LayerZero Chain id of the trusted remote"
   id: Bytes!
 
-  chainId: Int!
+  layerZeroChainId: Int!
   
   "Governance contract address on the trusted remote"
   address: Bytes
@@ -256,7 +256,7 @@ type RemoteProposal @entity {
   proposalId: BigInt!
 
   "Remote ChainId where the proposal was sent"
-  remoteChainId: Int!
+  layerZeroChainId: Int!
 
   "Targets data for the change"
   targets: [Bytes!]

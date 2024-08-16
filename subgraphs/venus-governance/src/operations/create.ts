@@ -86,7 +86,7 @@ export function createRemoteProposalFromExecuteRemoteProposal(
   event: ExecuteRemoteProposal,
 ): RemoteProposal {
   const remoteProposal = getOrCreateDefaultRemoteProposal(event.params.proposalId);
-  remoteProposal.remoteChainId = event.params.remoteChainId;
+  remoteProposal.layerZeroChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
 
   const decoded = ethereum.decode(
@@ -116,7 +116,7 @@ export function createRemoteProposalFromExecuteRemoteProposal(
 
 export function createRemoteProposalFromStorePayloadEvent(event: StorePayload): RemoteProposal {
   const remoteProposal = getOrCreateDefaultRemoteProposal(event.params.proposalId);
-  remoteProposal.remoteChainId = event.params.remoteChainId;
+  remoteProposal.layerZeroChainId = event.params.remoteChainId;
   remoteProposal.proposalId = event.params.proposalId;
 
   const decoded = ethereum.decode(

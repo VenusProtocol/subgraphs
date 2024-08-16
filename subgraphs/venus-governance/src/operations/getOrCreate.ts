@@ -47,15 +47,15 @@ export class GetOrCreateTrustedRemoteReturn {
 }
 
 export const getOrCreateTrustedRemote = (
-  remoteChainId: i32,
+  layerZeroChainId: i32,
   remoteAddress: Address,
 ): GetOrCreateTrustedRemoteReturn => {
   let created = false;
-  const id = getTrustedRemoteId(remoteChainId);
+  const id = getTrustedRemoteId(layerZeroChainId);
   let trustedRemote = TrustedRemote.load(id);
   if (!trustedRemote) {
     trustedRemote = new TrustedRemote(id);
-    trustedRemote.chainId = remoteChainId;
+    trustedRemote.layerZeroChainId = layerZeroChainId;
     trustedRemote.address = remoteAddress;
     trustedRemote.active = true;
     created = true;
@@ -100,7 +100,7 @@ export const getOrCreateDefaultRemoteProposal = (proposalId: BigInt): RemoteProp
   let remoteProposal = RemoteProposal.load(id);
   if (!remoteProposal) {
     remoteProposal = new RemoteProposal(id);
-    remoteProposal.remoteChainId = 0; // default value replaced in event handler
+    remoteProposal.layerZeroChainId = 0; // default value replaced in event handler
     remoteProposal.type = 0; // default value replaced in event handler
     remoteProposal.proposalId = proposalId;
 

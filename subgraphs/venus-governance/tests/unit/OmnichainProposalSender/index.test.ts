@@ -61,7 +61,7 @@ describe('OmnichainProposalSender events', () => {
       assert.fieldEquals('TrustedRemote', id.toHexString(), key, value);
     };
 
-    assertTrustedRemoteDocument('chainId', '21');
+    assertTrustedRemoteDocument('layerZeroChainId', '21');
     assertTrustedRemoteDocument('address', MOCK_DESTINATION_ADDRESS.toHexString());
     assertTrustedRemoteDocument('active', 'true');
   });
@@ -83,7 +83,7 @@ describe('OmnichainProposalSender events', () => {
       assert.fieldEquals('RemoteProposal', id, key, value);
     };
     assertRemoteProposalDocument('proposalId', '1');
-    assertRemoteProposalDocument('remoteChainId', '1');
+    assertRemoteProposalDocument('layerZeroChainId', '1');
     assertRemoteProposalDocument('targets', `[${MOCK_CONTRACT_ADDRESS.toHexString()}]`);
     assertRemoteProposalDocument('values', '[0]');
     assertRemoteProposalDocument('signatures', '[test()]');

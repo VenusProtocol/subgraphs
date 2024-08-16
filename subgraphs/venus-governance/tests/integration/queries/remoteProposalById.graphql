@@ -2,7 +2,7 @@ query RemoteProposalById($id: ID!) {
   remoteProposal(id: $id) {
     id
     proposalId
-    remoteChainId
+    layerZeroChainId
     targets
     values
     signatures
