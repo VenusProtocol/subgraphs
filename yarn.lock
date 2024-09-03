@@ -1662,8 +1662,8 @@ __metadata:
   linkType: hard
 
 "@graphprotocol/graph-cli@npm:^0.80.0":
-  version: 0.80.1
-  resolution: "@graphprotocol/graph-cli@npm:0.80.1"
+  version: 0.80.0
+  resolution: "@graphprotocol/graph-cli@npm:0.80.0"
   dependencies:
     "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
     "@oclif/core": 2.8.6
@@ -1695,7 +1695,7 @@ __metadata:
     yaml: 1.10.2
   bin:
     graph: bin/run
-  checksum: 2984d504a1bd94767c076455cf2a363b0e7e37bd1ba646ad180f2df51fbb053c3fe39255088145dbbfec78b750fd022090362114d66ab954c620299b8af8c597
+  checksum: 072244e374f832fd0cae1dd301c3e64e2cf8a71be585b6a373dc5d207a3cca7cad0d104bacb3a161161490fba4636d47c7e1dd946abfd710d6587513942a2443
   languageName: node
   linkType: hard
 
@@ -4416,9 +4416,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/isolated-pools@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@venusprotocol/isolated-pools@npm:3.3.0"
+"@venusprotocol/isolated-pools@npm:3.5.0-dev.10":
+  version: 3.5.0-dev.10
+  resolution: "@venusprotocol/isolated-pools@npm:3.5.0-dev.10"
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.2.3
     "@openzeppelin/contracts": ^4.8.3
@@ -4429,24 +4429,7 @@ __metadata:
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-  checksum: e6d92426500eaa6874fc57d532bd4dfbb57263810dbf1f863308f4c9faa1372839b003657c9a1945f074acaac55712caad41e0f920d7765e6c6e85712fb6eca1
-  languageName: node
-  linkType: hard
-
-"@venusprotocol/isolated-pools@npm:3.5.0-dev.3":
-  version: 3.5.0-dev.3
-  resolution: "@venusprotocol/isolated-pools@npm:3.5.0-dev.3"
-  dependencies:
-    "@nomiclabs/hardhat-ethers": ^2.2.3
-    "@openzeppelin/contracts": ^4.8.3
-    "@openzeppelin/contracts-upgradeable": ^4.8.3
-    "@openzeppelin/hardhat-upgrades": ^1.21.0
-    "@solidity-parser/parser": ^0.13.2
-    "@venusprotocol/solidity-utilities": ^2.0.0
-    ethers: ^5.7.0
-    hardhat-deploy: ^0.11.14
-    module-alias: ^2.2.2
-  checksum: ed5bdb02fcf7bb2716601f47c41649834e944629bef288395d1410e7a954772324ab7409cdb16da2212518ec19cb70487ec829fc213e2083c5b01c07e9c28eec
+  checksum: 5cb5b050cdabb79227ad512f2f1a1ad103bb6e658b3dd8c8a96cc309dbf1d080dacd53f0cdf1dc2cccdee26913435d855740b0296b62c308eb7082e0f79cdc4f
   languageName: node
   linkType: hard
 
@@ -7535,8 +7518,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
   dependencies:
-    "@graphprotocol/graph-cli": ^0.77.0
-    "@venusprotocol/isolated-pools": 3.3.0
+    "@graphprotocol/graph-cli": ^0.80.0
+    "@venusprotocol/isolated-pools": 3.5.0-dev.10
     ts-node: ^10.9.2
     viem: ^2.9.26
   languageName: unknown
@@ -13157,7 +13140,7 @@ __metadata:
   dependencies:
     "@chainlink/contracts": ^0.5.1
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     "@graphprotocol/graph-ts": ^0.35.1
     "@layerzerolabs/solidity-examples": ^1.1.0
     "@nomicfoundation/hardhat-chai-matchers": ^1.0.3
@@ -13173,7 +13156,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.3.0-dev.4
-    "@venusprotocol/isolated-pools": 3.5.0-dev.3
+    "@venusprotocol/isolated-pools": 3.5.0-dev.10
     "@venusprotocol/oracle": 2.2.0
     "@venusprotocol/protocol-reserve": 2.3.0-dev.1
     "@venusprotocol/solidity-utilities": ^2.0.3

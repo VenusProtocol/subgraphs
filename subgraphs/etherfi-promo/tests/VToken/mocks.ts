@@ -25,9 +25,10 @@ export const createBep20Mock = (
 
 export const createAccountVTokenBalanceOfMock = (
   vTokenAddress: Address,
+  underlyingAddress: Address,
   accountAddress: Address,
   balance: BigInt,
-  borrowBalanceStored: BigInt,
+  borrowBalanceCurrent: BigInt,
   totalBorrows: BigInt,
   totalReserves: BigInt,
 ): void => {
@@ -35,19 +36,25 @@ export const createAccountVTokenBalanceOfMock = (
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromSignedBigInt(balance)]);
 
-  createMockedFunction(vTokenAddress, 'totalBorrows', 'totalBorrows():(uint256)').returns([
-    ethereum.Value.fromSignedBigInt(totalBorrows),
-  ]);
+  createMockedFunction(
+    vTokenAddress,
+    'totalBorrowsCurrent',
+    'totalBorrowsCurrent():(uint256)',
+  ).returns([ethereum.Value.fromSignedBigInt(totalBorrows)]);
 
   createMockedFunction(vTokenAddress, 'totalReserves', 'totalReserves():(uint256)').returns([
     ethereum.Value.fromSignedBigInt(totalReserves),
   ]);
 
+  createMockedFunction(vTokenAddress, 'underlying', 'underlying():(address)').returns([
+    ethereum.Value.fromAddress(underlyingAddress),
+  ]);
+
   createMockedFunction(
     vTokenAddress,
-    'borrowBalanceStored',
-    'borrowBalanceStored(address):(uint256)',
+    'borrowBalanceCurrent',
+    'borrowBalanceCurrent(address):(uint256)',
   )
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
-    .returns([ethereum.Value.fromUnsignedBigInt(borrowBalanceStored)]);
+    .returns([ethereum.Value.fromUnsignedBigInt(borrowBalanceCurrent)]);
 };

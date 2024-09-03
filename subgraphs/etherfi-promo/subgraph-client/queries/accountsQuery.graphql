@@ -1,15 +1,21 @@
-query Accounts($blockNumber: Int) {
-  supplierAccounts(block:{number: $blockNumber}) {
+query Accounts($blockNumber: Int, $token: String, $tokenId: ID!) {
+  supplierAccounts(block:{number: $blockNumber}, where: {token: $token}) {
     id
     address
     effective_balance
+    token {
+      id
+    }
   }
-  borrowerAccounts(block:{number: $blockNumber}) {
+  borrowerAccounts(block:{number: $blockNumber}, where: {token: $token}) {
     id
     address
     effective_balance
+    token {
+      id
+    }
   }
-  tvl(block:{number: $blockNumber}, id: "TOTAL_VALUE_LOCKED") {
+  tvl(block:{number: $blockNumber}, id: $tokenId) {
     tvl
   }
 }

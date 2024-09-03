@@ -2,7 +2,7 @@
 TVL
 """
 type TVL @entity {
-    id: ID!
+    id: Bytes!
     tvl: BigInt!
 }
 
@@ -10,44 +10,44 @@ type TVL @entity {
 Entity to iterate over suppliers
 """
 type Supply @entity {
-    "SUPPLY"
-    id: ID!
-    suppliers: [SupplierAccount!]! @derivedFrom(field: "type")
+    "Token Address"
+    id: Bytes!
+    suppliers: [SupplierAccount!]! @derivedFrom(field: "token")
 }
 
 """
 Entity to iterate over borrowers
 """
 type Borrow @entity {
-    "BORROW"
-    id: ID!
-    borrowers: [BorrowerAccount!]! @derivedFrom(field: "type")
+    "Token Address"
+    id: Bytes!
+    borrowers: [BorrowerAccount!]! @derivedFrom(field: "token")
 }
 
 """
 Supplier Account 
 """
 type SupplierAccount @entity {
-    "Account address"
-    id: ID!
+    "Account Address - Token Address"
+    id: Bytes!
     "Account address"
     address: Bytes!
     "Underlying balance"
     effective_balance: BigInt!
-    "SUPPLY"
-    type: Supply!
+    "Token Address"
+    token: Supply!
 }
 
 """
 Borrower Account 
 """
 type BorrowerAccount @entity {
-    "Account address"
-    id: ID!
+    "Account Address - Token Address"
+    id: Bytes!
     "Account address"
     address: Bytes!
     "Underlying balance"
     effective_balance: BigInt!
-    "BORROW"
-    type: Borrow!
+    "Token Address"
+    token: Borrow!
 }

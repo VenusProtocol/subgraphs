@@ -1,7 +1,7 @@
 import { DocumentNode } from 'graphql';
-import { Client as UrqlClient, createClient } from 'urql/core';
+import { OperationResult, Client as UrqlClient, createClient } from 'urql/core';
 
-import { AccountsDocument } from './.graphclient';
+import { AccountsDocument, AccountsQuery } from './.graphclient';
 
 class SubgraphClient {
   urqlClient: UrqlClient;
@@ -21,8 +21,16 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccounts(blockNumber: number) {
-    const result = await this.query(AccountsDocument, { blockNumber });
+  async getAccounts(
+    blockNumber: number,
+    token: string,
+    tokenId: string,
+  ): Promise<OperationResult<AccountsQuery>> {
+    const result = await this.query(AccountsDocument, {
+      blockNumber,
+      token: token.toLowerCase(),
+      tokenId: tokenId.toLowerCase(),
+    });
     return result;
   }
 }

@@ -26,10 +26,10 @@
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.3.0"
+    "@venusprotocol/isolated-pools": "3.5.0-dev.10"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
   }
