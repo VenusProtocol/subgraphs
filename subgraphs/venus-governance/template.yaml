@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 1.2.0
 description: Venus Governance Subgraph
 repository: https://github.com/protofire/venus-governance-subgraph
 schema:
@@ -15,7 +15,7 @@ dataSources:
       startBlock: {{ governorAlphaStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
       entities:
@@ -48,7 +48,7 @@ dataSources:
       startBlock: {{ governorAlpha2StartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
       entities:
@@ -81,7 +81,7 @@ dataSources:
       startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
       entities:
@@ -103,6 +103,7 @@ dataSources:
           handler: handleProposalQueued
         - event: ProposalExecuted(uint256)
           handler: handleProposalExecuted
+          receipt: true
         - event: VoteCast(indexed address,uint256,uint8,uint256,string)
           handler: handleBravoVoteCast
         - event: NewImplementation(address,address)
@@ -124,7 +125,7 @@ dataSources:
       startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
       entities:
@@ -149,7 +150,7 @@ dataSources:
       startBlock: {{ xvsVaultStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/xvsVault.ts
       entities:
@@ -169,28 +170,6 @@ dataSources:
         - event: DelegateVotesChangedV2(indexed address,uint256,uint256)
           handler: handleDelegateVotesChanged
   - kind: ethereum/contract
-    name: AccessControlManager
-    network: {{ network }}
-    source:
-      address: "{{ accessControlManagerAddress }}"
-      abi: AccessControlManger
-      startBlock: {{ accessControlManagerStartBlock }}
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      file: ./src/mappings/accessControlManager.ts
-      entities:
-        - Permission
-      abis:
-        - name: AccessControlManger
-          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
-      eventHandlers:
-        - event: PermissionGranted(address,address,string)
-          handler: handlePermissionGranted
-        - event: PermissionRevoked(address,address,string)
-          handler: handlePermissionRevoked
-  - kind: ethereum/contract
     name: AccessControlManagerV5
     network: {{ network }}
     source:
@@ -199,7 +178,7 @@ dataSources:
       startBlock: {{ accessControlManagerStartBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/accessControlManager.ts
       entities:
@@ -213,3 +192,39 @@ dataSources:
         - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
           handler: handleRoleRevoked
 
+  - kind: ethereum/contract
+    name: OmnichainProposalSender
+    network: {{ network }}
+    source:
+      address: "{{ omnichainProposalSenderAddress }}"
+      abi: OmnichainProposalSender
+      startBlock: {{ omnichainProposalSenderStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/omnichainProposalSender.ts
+      entities:
+        - OmnichainProposalSender
+      abis:
+        - name: OmnichainProposalSender
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainProposalSender.sol/OmnichainProposalSender.json
+      eventHandlers:
+        - event: SetTrustedRemoteAddress(indexed uint16,bytes,bytes)
+          handler: handleSetTrustedRemoteAddress
+        - event: ExecuteRemoteProposal(indexed uint16,uint256,bytes)
+          handler: handleExecuteRemoteProposal
+        - event: ClearPayload(indexed uint256,bytes32)
+          handler: handleClearPayload
+        - event: StorePayload(indexed uint256,indexed uint16,bytes,bytes,uint256,bytes)
+          handler: handleStorePayload
+        - event: NewAccessControlManager(indexed address,indexed address)
+          handler: handleNewAccessControlManager
+        - event: Paused(address)
+          handler: handlePaused
+        - event: SetMaxDailyLimit(indexed uint16,uint256,uint256)
+          handler: handleSetMaxDailyLimit
+        - event: TrustedRemoteRemoved(indexed uint16)
+          handler: handleTrustedRemoteRemoved
+        - event: Unpaused(address)
+          handler: handleUnpaused

@@ -1,0 +1,42 @@
+{
+  "name": "venus-cross-chain-governance-subgraph",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/VenusProtocol/subgraphs",
+    "directory": "subgraphs/venus"
+  },
+  "files": [
+    "generated"
+  ],
+  "scripts": {
+    "codegen": "graph codegen",
+    "create:docker": "yarn graph create venusprotocol/venus-subgraph --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
+    "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
+    "deploy:docker": "yarn mustache config/docker.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:ethereum": "yarn prepare:ethereum && yarn graph deploy --studio venus-governance-ethereum",
+    "deploy:sepolia": "yarn prepare:sepolia && yarn graph deploy --studio venus-governance-sepolia",
+    "deploy:arbitrumSepolia": "yarn prepare:arbitrumSepolia && yarn graph deploy --studio venus-governance-arbisepolia",
+    "deploy:arbitrum": "yarn prepare:arbitrum && yarn graph deploy --studio venus-governance-arbitrum",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
+    "prepare:opbnbMainnet": "NETWORK=opbnbMainnet yarn ts-node config/index.ts",
+    "prepare:arbitrumSepolia": "NETWORK=arbitrumSepolia yarn ts-node config/index.ts",
+    "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
+    "test": "yarn prepare:docker && graph test",
+    "test:integration": "true"
+  },
+  "dependencies": {
+    "@graphprotocol/client-cli": "3.0.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
+    "@layerzerolabs/solidity-examples": "^1.0.0",
+    "@venusprotocol/governance-contracts": "2.3.0-dev.4",
+    "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.2",
+    "urql": "^3.0.3",
+    "venus-subgraph-utils": "0.0.0"
+  }
+}

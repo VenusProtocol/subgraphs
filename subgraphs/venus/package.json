@@ -21,14 +21,14 @@
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
-    "test": "graph test",
+    "test": "yarn prepare:docker && graph test",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
     "@graphprotocol/client-cli": "3.0.0",
-    "@graphprotocol/graph-cli": "^0.73.0",
-    "@venusprotocol/venus-protocol": "9.2.0-dev.5",
+    "@graphprotocol/graph-cli": "^0.77.0",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.6",
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2"

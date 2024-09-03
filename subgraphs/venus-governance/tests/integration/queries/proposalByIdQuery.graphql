@@ -37,5 +37,8 @@ query ProposalById($id: ID!) {
         votes
         support
       }
+      remoteProposals {
+        proposalId
+      }
     }
 }

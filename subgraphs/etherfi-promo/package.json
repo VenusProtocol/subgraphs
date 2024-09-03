@@ -29,7 +29,7 @@
     "@venusprotocol/isolated-pools": "3.3.0"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.73.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
   }

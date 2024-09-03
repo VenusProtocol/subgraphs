@@ -1,0 +1,162 @@
+type Governance @entity {
+  "Unique entity used to keep track of common aggregated data"
+  id: ID!
+
+  "Address of the governance owner contract"
+  address: Bytes!
+  
+  "Address of the governance executor contract"
+  executor: Bytes!
+
+  "Address of the governance guardian"
+  guardian: Bytes!
+
+  "Flag for if the governance is paused or active"
+  paused: Boolean!
+
+  "LayZero chainId for the chain this governance executor is deployed on"
+  layerZeroChainId: Int!
+
+  "Source chainId which can send messages"
+  srcChainId: Int!
+
+  "Max number of commands that can be sent to this governor in a day"
+  maxDailyReceiveLimit: BigInt!
+
+  "Address of the precrime contract"
+  precrime: Bytes
+}
+
+
+type FunctionRegistry @entity {
+  "Function signature as bytes used as id"
+  id: Bytes!
+
+  "Function signature that the governor is allowed to call"
+  signature: String!
+}
+
+enum PROPOSAL_TYPE {
+  NORMAL
+  FAST_TRACK
+  CRITICAL
+}
+
+type Transaction @entity(immutable: true) {
+  "Transaction hash used as the id"
+  id: Bytes!
+  
+  "Transaction hash for the proposal action"
+  txHash: Bytes!
+  
+  "Block number of the transaction"
+  blockNumber: BigInt!
+  
+  "Timestamp of the transaction block"
+  timestamp: BigInt!
+}
+
+type Proposal @entity {
+  "Internal proposal id, it is an auto-incrementing id"
+  id: ID!
+
+  "Proposal Id"
+  proposalId: BigInt!
+
+  "Targets data for the change"
+  targets: [Bytes!]
+
+  "Values data for the change"
+  values: [BigInt!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [Bytes!]
+
+  "Once the proposal is queued for execution it will have an ETA of the execution"
+  executionEta: BigInt
+  
+  "Queued (Created) Transaction"
+  queued: Transaction
+
+  "Canceled Transaction"
+  canceled: Transaction
+
+  "Executed Transaction"
+  executed: Transaction
+
+  "Proposal Governance Route (normal fast track or critical)"
+  route: GovernanceRoute!
+}
+
+type GovernanceRoute @entity {
+  "Governance Route index / type"
+  id: ID!
+
+  "Route type enum"
+  type: PROPOSAL_TYPE!
+  
+  "Address for the route"
+  timelockAddress: Bytes!
+}
+
+type FailedPayload @entity {
+  "Nonce of received payload"
+  id: ID!
+
+  "Chain id where the message came from"
+  srcChainId: Int!
+  
+  "Address of the contract that sent the message"
+  srcAddress: Bytes!
+  
+  "Message nonce"
+  nonce: BigInt!
+  
+  "Failure reason"
+  reason: String!
+}
+
+type DestinationChain @entity {
+  "Destination Chain Id as Bytes"
+  id: Bytes!
+
+  "Chain Id"
+  chainId: Int!
+
+  "Packet Type"
+  packetType: Int!
+
+  "Minimum gas required to send for execution on destination"
+  minGas: BigInt!
+}
+
+enum PermissionStatus {
+  GRANTED,
+  REVOKED
+}
+
+type Permission @entity {
+  "Id generated for each Permission"
+  id: Bytes!
+
+  "Indicates if the permission was either GRANTED or REVOKED"
+  status: PermissionStatus!
+
+  "The target account of the event"
+  accountAddress: Bytes!
+
+  "The target contract for the permission event"
+  contractAddress: Bytes!
+
+  "The function name for the permission event"
+  functionSignature: String!
+
+  "Created At Transaction Hash"
+  createdAt: Bytes!
+
+  "UpdatedAt At Transaction Hash"
+  updatedAt: Bytes!
+}

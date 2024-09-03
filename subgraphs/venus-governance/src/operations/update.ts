@@ -1,7 +1,7 @@
 import { BigInt } from '@graphprotocol/graph-ts';
 
 import { GovernorBravoDelegate2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
-import { Governance, ProposalAction } from '../../generated/schema';
+import { Governance, Transaction } from '../../generated/schema';
 import { BIGINT_ONE } from '../constants';
 import { governorBravoDelegatorAddress, nullAddress } from '../constants/addresses';
 import { getGovernanceId } from '../utilities/ids';
@@ -12,7 +12,7 @@ export function updateProposalCanceled<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const canceledAction = new ProposalAction(event.transaction.hash);
+  const canceledAction = new Transaction(event.transaction.hash);
   canceledAction.blockNumber = event.block.number;
   canceledAction.timestamp = event.block.timestamp;
   canceledAction.txHash = event.transaction.hash;
@@ -26,7 +26,7 @@ export function updateProposalQueued<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const queuedAction = new ProposalAction(event.transaction.hash);
+  const queuedAction = new Transaction(event.transaction.hash);
   queuedAction.blockNumber = event.block.number;
   queuedAction.timestamp = event.block.timestamp;
   queuedAction.txHash = event.transaction.hash;
@@ -41,7 +41,7 @@ export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
   const proposal = getProposal(params.id.toString());
 
-  const executedAction = new ProposalAction(event.transaction.hash);
+  const executedAction = new Transaction(event.transaction.hash);
   executedAction.blockNumber = event.block.number;
   executedAction.timestamp = event.block.timestamp;
   executedAction.txHash = event.transaction.hash;

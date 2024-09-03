@@ -2,8 +2,9 @@ query Permissions {
   permissions {
     id
     status
-    account
-    contractAddress
-    functionSig
+    accountAddress
+    role
+    createdAt
+    updatedAt
   }
 }

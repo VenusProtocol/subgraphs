@@ -27,15 +27,15 @@
     "lint:fix": "yarn lint --fix",
     "pretty": "prettier '**/*.ts' --write",
     "test": "yarn workspaces foreach run test",
-    "node:integration": "yarn hardhat node --hostname 0.0.0.0",
+    "node:integration": "yarn hardhat --max-memory 16384 node --hostname 0.0.0.0",
     "test:integration": "yarn workspaces foreach run test:integration",
     "postinstall": "yarn patch-package && ./copy_contracts.sh"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.5.1",
     "@graphprotocol/client-cli": "3.0.0",
-    "@graphprotocol/graph-cli": "^0.73.0",
-    "@graphprotocol/graph-ts": "^0.32.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-ts": "^0.35.1",
     "@layerzerolabs/solidity-examples": "^1.1.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.3",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
@@ -49,11 +49,12 @@
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "2.1.0",
+    "@venusprotocol/governance-contracts": "2.3.0-dev.4",
     "@venusprotocol/isolated-pools": "3.3.0",
     "@venusprotocol/oracle": "2.2.0",
     "@venusprotocol/protocol-reserve": "2.3.0-dev.1",
-    "@venusprotocol/venus-protocol": "9.2.0-dev.5",
+    "@venusprotocol/solidity-utilities": "^2.0.3",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.6",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "eslint": "^8.25.0",
@@ -78,6 +79,10 @@
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0",
     "typescript": "^4.8.4"
+  },
+  "resolutions": {
+    "@venusprotocol/governance-contracts": "2.3.0-dev.4",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.6"
   },
   "husky": {
     "hooks": {

@@ -115,7 +115,7 @@ index 46bb333..15f4ad1 100644
  
  /**
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
-index 684d76f..4e8ce87 100644
+index 684d76f..b585587 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
 +++ b/node_modules/@venusprotocol/venus-protocol/contracts/Comptroller/Diamond/interfaces/IMarketFacet.sol
 @@ -2,7 +2,7 @@
@@ -123,7 +123,7 @@ index 684d76f..4e8ce87 100644
  pragma solidity 0.5.16;
  
 -import { VToken } from "../../../Tokens/VTokens/VToken.sol";
-+import { CorePoolVToken as VToken } from "../../../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken } from  "../../../Tokens/VTokens/VToken.sol";
  
  interface IMarketFacet {
      function isComptroller() external pure returns (bool);
@@ -243,17 +243,26 @@ index aa0b516..5352730 100644
  /**
   * @title Venus's vBNB Contract
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
-index a20a613..7ce7185 100644
+index a20a613..16468e9 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
 +++ b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VBep20.sol
 @@ -1,6 +1,6 @@
  pragma solidity ^0.5.16;
  
 -import { VToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
-+import { CorePoolVToken as VToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
++import { CorePoolVToken, VBep20Interface, ComptrollerInterface, InterestRateModel, VTokenInterface } from "./VToken.sol";
  import { EIP20Interface } from "../EIP20Interface.sol";
  import { EIP20NonStandardInterface } from "../EIP20NonStandardInterface.sol";
  
+@@ -9,7 +9,7 @@ import { EIP20NonStandardInterface } from "../EIP20NonStandardInterface.sol";
+  * @notice vTokens which wrap an EIP-20 underlying
+  * @author Venus
+  */
+-contract VBep20 is VToken, VBep20Interface {
++contract VBep20 is CorePoolVToken, VBep20Interface {
+     /*** User Interface ***/
+ 
+     /**
 diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol b/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
 index 7dd98f1..964ae46 100644
 --- a/node_modules/@venusprotocol/venus-protocol/contracts/Tokens/VTokens/VToken.sol
@@ -267,3 +276,15 @@ index 7dd98f1..964ae46 100644
      struct MintLocalVars {
          MathError mathErr;
          uint exchangeRateMantissa;
+diff --git a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
+index adf9c4c..3c2f79e 100644
+--- a/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
++++ b/node_modules/@venusprotocol/venus-protocol/contracts/test/MockVBNB.sol
+@@ -1,6 +1,6 @@
+ pragma solidity ^0.5.16;
+ 
+-import "../Tokens/VTokens/VToken.sol";
++import { CorePoolVToken as VToken, ComptrollerInterface } from  "../Tokens/VTokens/VToken.sol";
+ 
+ /**
+  * @title Venus's vBNB Contract
