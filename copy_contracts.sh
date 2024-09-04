@@ -8,10 +8,17 @@ mkdir -p ./contracts/isolated-pools
 cp -r ./node_modules/@venusprotocol/isolated-pools/contracts/ ./contracts/isolated-pools/contracts
 rm -rf contracts/isolated-pools/contracts/test
 
-mkdir -p ./contracts/oracle
-cp -r ./node_modules/@venusprotocol/oracle/contracts/ ./contracts/oracle/contracts
-rm -rf contracts/oracle/contracts/test
-rm ./contracts/oracle/contracts/ResilientOracle.sol
+mkdir -p ./contracts/oracle/contracts/interfaces
+mkdir -p ./contracts/oracle/contracts/oracles/mocks
+cp ./node_modules/@venusprotocol/oracle/contracts/interfaces/OracleInterface.sol ./contracts/oracle/contracts/interfaces/OracleInterface.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/interfaces/VBep20Interface.sol ./contracts/oracle/contracts/interfaces/VBep20Interface.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/oracles/BoundValidator.sol ./contracts/oracle/contracts/oracles/BoundValidator.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/oracles/PythOracle.sol ./contracts/oracle/contracts/oracles/PythOracle.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/interfaces/PythInterface.sol ./contracts/oracle/contracts/interfaces/PythInterface.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/oracles/mocks/MockChainlinkOracle.sol ./contracts/oracle/contracts/oracles/mocks/MockChainlinkOracle.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/oracles/mocks/MockPythOracle.sol ./contracts/oracle/contracts/oracles/mocks/MockPythOracle.sol
+cp ./node_modules/@venusprotocol/oracle/contracts/oracles/mocks/MockBinanceOracle.sol ./contracts/oracle/contracts/oracles/mocks/MockBinanceOracle.sol
+
 
 mkdir -p ./contracts/protocol
 cp -rf ./node_modules/@venusprotocol/venus-protocol/contracts/ ./contracts/protocol/contracts
@@ -21,8 +28,8 @@ rm -rf contracts/protocol/contracts/Liquidator/*
 rm -rf contracts/protocol/contracts/test/*
 cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/ComptrollerMock.sol ./contracts/protocol/contracts/test/ComptrollerMock.sol
 cp -p ./node_modules/@venusprotocol/venus-protocol/contracts/test/MockToken.sol ./contracts/protocol/contracts/test/MockToken.sol
-# Remove extra contracts
 
+# Remove extra contracts
 mkdir -p ./contracts/protocol-reserve
 cp -r ./node_modules/@venusprotocol/protocol-reserve/contracts/ ./contracts/protocol-reserve/contracts
 rm -rf contracts/protocol-reserve/contracts/Test
