@@ -33,6 +33,14 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     .connect(rootSigner)
     .giveCallPermission(comptroller.address, '_setCloseFactor(uint256)', root);
 
+  await acm
+    .connect(rootSigner)
+    .giveCallPermission(comptroller.address, '_setActionsPaused(address[],uint8[],bool)', root);
+
+  await acm
+    .connect(rootSigner)
+    .giveCallPermission(comptroller.address, 'unlistMarket(address)', root);
+
   await vUsdcToken.connect(rootSigner).setAccessControlManager(acm.address);
   await vWBnbToken.connect(rootSigner).setAccessControlManager(acm.address);
   await vEthToken.connect(rootSigner).setAccessControlManager(acm.address);
@@ -140,24 +148,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await oracle.setPrice(vWBnbToken.address, parseUnits('500', 18).toString());
   // // ETH $5000
   await oracle.setPrice(vEthToken.address, parseUnits('5000', 18).toString());
-
-  await comptroller._supportMarket(vUsdcToken.address);
-  await comptroller._supportMarket(vWBnbToken.address);
-  await comptroller._supportMarket(vEthToken.address);
-
-  await comptroller._setCollateralFactor(vUsdcToken.address, parseUnits('0.9'));
-  await comptroller._setCollateralFactor(vWBnbToken.address, parseUnits('0.9'));
-  await comptroller._setCollateralFactor(vEthToken.address, parseUnits('0.9'));
-
-  await comptroller._setMarketSupplyCaps(
-    [vUsdcToken.address, vWBnbToken.address, vEthToken.address],
-    [parseUnits('500000'), parseUnits('500'), parseUnits('500')],
-  );
-  await comptroller._setMarketBorrowCaps(
-    [vUsdcToken.address, vWBnbToken.address, vEthToken.address],
-    [parseUnits('500000'), parseUnits('500'), parseUnits('500')],
-  );
-  await comptroller._setCloseFactor(parseUnits('0.1'));
 };
 
 export default func;

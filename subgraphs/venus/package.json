@@ -28,7 +28,7 @@
   "dependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
-    "@venusprotocol/venus-protocol": "9.2.0-dev.6",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.13",
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2"

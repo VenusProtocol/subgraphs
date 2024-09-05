@@ -30,6 +30,7 @@ import {
   createRepayEvent,
   createTransferEvent,
 } from '../operations/create';
+import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
@@ -37,6 +38,8 @@ import {
 } from '../operations/getOrCreate';
 import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
 import { updateMarketRates } from '../operations/updateMarketRates';
+import { updateXvsBorrowState } from '../operations/updateXvsBorrowState';
+import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 import { getUnderlyingPrice } from '../utilities';
 
 /* Account supplies assets into market and receives vTokens in exchange
@@ -66,8 +69,9 @@ export function handleMint(event: Mint): void {
 
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
-
   market.save();
+
+  updateXvsSupplyState(market);
 
   createMintEvent<Mint>(event);
 
@@ -97,6 +101,8 @@ export function handleMintBehalf(event: MintBehalf): void {
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
   market.save();
+
+  updateXvsSupplyState(market);
 
   createMintBehalfEvent<MintBehalf>(event);
 
@@ -140,6 +146,8 @@ export function handleRedeem(event: Redeem): void {
   );
   market.save();
 
+  updateXvsSupplyState(market);
+
   createRedeemEvent<Redeem>(event);
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.redeemer);
@@ -178,6 +186,8 @@ export function handleBorrow(event: Borrow): void {
   // we'll update the cash value of the market
   updateMarketCashMantissa(market, vTokenContract);
   market.save();
+
+  updateXvsBorrowState(market);
 
   const account = getOrCreateAccount(event.params.borrower);
   account.hasBorrowed = true;
@@ -228,6 +238,8 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   updateMarketCashMantissa(market, vTokenContract);
 
   market.save();
+
+  updateXvsBorrowState(market);
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.borrower);
   const accountVToken = result.entity;
@@ -367,6 +379,8 @@ export function handleTransfer(event: Transfer): void {
     }
   }
   createTransferEvent<Transfer>(event);
+  const market = getMarket(event.address)!;
+  updateXvsSupplyState(market);
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {

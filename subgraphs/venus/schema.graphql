@@ -21,6 +21,8 @@ type Market @entity {
     "VToken address"
     id: Bytes!
     #Fields that match Venus API
+    "Flag indicating if the market is listed"
+    isListed: Boolean!
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
@@ -49,6 +51,14 @@ type Market @entity {
     underlyingName: String!
     "Underlying token symbol"
     underlyingSymbol: String!
+    "XVS Supply Distribution Block"
+    xvsSupplyStateBlock:  BigInt!
+    "XVS Supply Distribution Index"
+    xvsSupplyStateIndex:  BigInt!
+    "XVS Reward Distribution Block"
+    xvsBorrowStateBlock:  BigInt!
+    "XVS Reward Distribution Index"
+    xvsBorrowStateIndex:  BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"

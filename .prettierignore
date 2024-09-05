@@ -8,3 +8,4 @@ typechain-types
 
 /subgraphs/venus-governance/tests/integration/index.ts
 /subgraphs/isolated-pools/tests/integration/index.ts
+/subgraphs/venus/tests/integration/index.ts

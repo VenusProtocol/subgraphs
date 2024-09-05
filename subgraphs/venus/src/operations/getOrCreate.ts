@@ -1,4 +1,4 @@
-import { Address, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller';
 import { Account, AccountVToken, Comptroller, Market } from '../../generated/schema';
@@ -40,6 +40,11 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
   if (!market) {
     const vTokenContract = VToken.bind(marketAddress);
     market = new Market(marketAddress);
+    market.isListed = true;
+    market.xvsBorrowStateBlock = event.block.number;
+    market.xvsSupplyStateBlock = event.block.number;
+    market.xvsSupplyStateIndex = BigInt.fromString('1000000000000000000000000000000000000');
+    market.xvsBorrowStateIndex = BigInt.fromString('1000000000000000000000000000000000000');
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
