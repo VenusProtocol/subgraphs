@@ -7,6 +7,7 @@ rm -rf ./contracts
 mkdir -p ./contracts/isolated-pools
 cp -r ./node_modules/@venusprotocol/isolated-pools/contracts/ ./contracts/isolated-pools/contracts
 rm -rf contracts/isolated-pools/contracts/test
+rm -rf contracts/isolated-pools/contracts/Gateway
 
 mkdir -p ./contracts/oracle/contracts/interfaces
 mkdir -p ./contracts/oracle/contracts/oracles/mocks
@@ -56,6 +57,7 @@ mv ./contracts/mocks/contracts/VBep20DelegatorR1.sol ./contracts/protocol/contra
 
 mkdir -p ./contracts/utilities
 cp -rf ./node_modules/@venusprotocol/solidity-utilities/contracts ./contracts/utilities
+rm -rf ./node_modules/@venusprotocol/solidity-utilities/contracts/test
 
 mkdir -p ./contracts/layerzero/mocks
 mkdir -p ./contracts/layerzero/interfaces
