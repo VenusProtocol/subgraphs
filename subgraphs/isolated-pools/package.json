@@ -1,6 +1,6 @@
 {
   "name": "isolated-pools-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
