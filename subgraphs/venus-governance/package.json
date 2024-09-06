@@ -1,6 +1,6 @@
 {
   "name": "venus-governance-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.10",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
