@@ -1,11 +1,12 @@
 import { DocumentNode } from 'graphql';
-import { Client as UrqlClient, createClient } from 'urql/core';
+import { OperationResult, Client as UrqlClient, createClient } from 'urql/core';
 
 import {
   AccountByIdDocument,
   AccountFromMarketDocument,
   AccountPositionsDocument,
   AccountVTokenByAccountAndMarketQueryDocument,
+  AccountVTokenByAccountAndMarketQueryQuery,
   AccountVTokenByAccountIdDocument,
   AccountVTokensDocument,
   MarketActionsDocument,
@@ -78,7 +79,10 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokenByAccountAndMarket(accountId: string, marketId: string) {
+  async getAccountVTokenByAccountAndMarket(
+    accountId: string,
+    marketId: string,
+  ): Promise<OperationResult<AccountVTokenByAccountAndMarketQueryQuery>> {
     const result = await this.query(AccountVTokenByAccountAndMarketQueryDocument, {
       accountId,
       marketId,

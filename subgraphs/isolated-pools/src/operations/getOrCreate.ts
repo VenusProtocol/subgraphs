@@ -68,36 +68,48 @@ export const getOrCreateAccountPool = (
   return accountPool;
 };
 
+export class GetOrCreateAccountVTokenReturn {
+  entity: AccountVToken;
+  created: boolean;
+}
+
 export const getOrCreateAccountVToken = (
   accountAddress: Address,
   poolAddress: Address,
   marketAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
-): AccountVToken => {
+): GetOrCreateAccountVTokenReturn => {
   const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
   let accountVToken = AccountVToken.load(accountVTokenId);
+  let created = false;
   if (!accountVToken) {
+    created = true;
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.account = accountAddress;
     accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
     accountVToken.market = marketAddress;
     accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;
-    // we need to set an initial real onchain value to this otherwise it will never
-    // be accurate
     const vTokenContract = VToken.bind(marketAddress);
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
 
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
+
     accountVToken.accountVTokenSupplyBalanceMantissa = suppliedAmountMantissa;
     accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
+    // @TODO
+    // accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
+    // accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
+    // accountVToken.borrowIndex = vTokenContract.borrowIndex();
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
+    accountVToken.enteredMarket = false;
+    accountVToken.save();
   }
-  return accountVToken;
+  return { entity: accountVToken, created };
 };
 
 export const getOrCreateRewardSpeed = (

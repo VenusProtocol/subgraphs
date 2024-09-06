@@ -611,6 +611,24 @@ describe('VToken events', function () {
       } = await subgraphClient.getAccountById(liquidator1Signer._address);
       expect(accountLiquidator.countLiquidator).to.equal(1);
 
+      // Counts liquidator as borrower
+      const {
+        data: { market },
+      } = await subgraphClient.getMarketById(vFdusdToken.address.toLowerCase());
+      expect(market?.supplierCount).to.equal('6');
+
+      const { data: liquidatorAccountVTokenData } =
+        await subgraphClient.getAccountVTokenByAccountAndMarket({
+          accountId: liquidator1Signer._address.toLowerCase(),
+          marketId: vFdusdToken.address.toLowerCase(),
+        });
+      const { accountVToken: liquidatorAccountVToken } = liquidatorAccountVTokenData!;
+
+      expect(liquidatorAccountVToken.vTokenBalanceMantissa).to.be.approximately(
+        ethers.BigNumber.from(await vFdusdToken.balanceOf(liquidator1Signer._address)),
+        1e11,
+      );
+
       // Reset prices
       await oracle.setPrice(vFdusdToken.address, parseUnits('1', 18).toString());
       await oracle.setPrice(vDogeToken.address, parseUnits('.5', 18).toString());

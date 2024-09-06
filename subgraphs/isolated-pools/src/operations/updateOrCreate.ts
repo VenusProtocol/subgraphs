@@ -18,12 +18,13 @@ export const updateOrCreateAccountVToken = (
     enteredMarketBool = enteredMarket.value;
   }
 
-  const accountVToken = getOrCreateAccountVToken(
+  const result = getOrCreateAccountVToken(
     accountAddress,
     poolAddress,
     marketAddress,
     enteredMarketBool,
   );
+  const accountVToken = result.entity;
   accountVToken.enteredMarket = enteredMarketBool;
   accountVToken.accrualBlockNumber = blockNumber;
   accountVToken.save();

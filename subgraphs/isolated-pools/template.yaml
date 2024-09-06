@@ -129,6 +129,8 @@ templates:
           handler: handleRepayBorrow
         - event: LiquidateBorrow(indexed address,indexed address,uint256,indexed address,uint256)
           handler: handleLiquidateBorrow
+        - event: ProtocolSeize(indexed address,indexed address,uint256)
+          handler: handleProtocolSeize
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
         - event: NewReserveFactor(uint256,uint256)
