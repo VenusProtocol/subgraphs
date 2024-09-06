@@ -6,6 +6,7 @@ import { nullAddress } from '../constants';
 import { getBorrow, getSupply } from '../operations/get';
 import { getOrCreateBorrowerAccount, getOrCreateSupplierAccount } from '../operations/getOrCreate';
 import { updateBorrowerAccount, updateSupplierAccount, updateTvl } from '../operations/update';
+import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import exponentToBigInt from '../utilities/exponentToBigInt';
 
 export function handleMint(event: Mint): void {
@@ -14,14 +15,20 @@ export function handleMint(event: Mint): void {
   updateSupplierAccount(
     minter,
     event.address,
-    supplierAccount.effective_balance.plus(event.params.mintAmount),
+    supplierAccount.effective_balance.plus(
+      event.params.mintAmount.toBigDecimal().div(exponentToBigDecimal(18)),
+    ),
   );
 }
 
 export function handleBorrow(event: Borrow): void {
   const borrower = event.params.borrower;
   getOrCreateBorrowerAccount(borrower, event.address);
-  updateBorrowerAccount(borrower, event.address, event.params.accountBorrows);
+  updateBorrowerAccount(
+    borrower,
+    event.address,
+    event.params.accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)),
+  );
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -45,19 +52,22 @@ export function handleTransfer(event: Transfer): void {
     updateSupplierAccount(
       fromAccountAddress,
       event.address,
-      fromAccount.effective_balance.minus(amountUnderlying),
+      fromAccount.effective_balance.minus(
+        amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18)),
+      ),
     );
     // To
     const toAccount = getOrCreateSupplierAccount(toAccountAddress, event.address);
     updateSupplierAccount(
       toAccountAddress,
       event.address,
-      toAccount.effective_balance.plus(amountUnderlying),
+      toAccount.effective_balance.plus(
+        amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18)),
+      ),
     );
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleAccrueInterest(event: AccrueInterest): void {
   const supply = getSupply(event.address);
   supply.suppliers.load().forEach(supplier => {
@@ -66,7 +76,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
     const exchangeRateMantissa = vTokenContract.exchangeRateCurrent();
     const vTokenBalance = vTokenContract.balanceOf(Address.fromBytes(supplier.address));
     const amountUnderlying = exchangeRateMantissa.times(vTokenBalance).div(exponentToBigInt(18));
-    supplier.effective_balance = amountUnderlying;
+    supplier.effective_balance = amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18));
     supplier.save();
   });
 
@@ -76,7 +86,9 @@ export function handleAccrueInterest(event: AccrueInterest): void {
     const underlyingBorrowBalance = vTokenContract.borrowBalanceCurrent(
       Address.fromBytes(borrower.address),
     );
-    borrower.effective_balance = underlyingBorrowBalance;
+    borrower.effective_balance = underlyingBorrowBalance
+      .toBigDecimal()
+      .div(exponentToBigDecimal(18));
     borrower.save();
   });
 

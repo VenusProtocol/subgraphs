@@ -15,6 +15,7 @@ import {
   handleMint,
   handleTransfer,
 } from '../../src/mappings/vToken';
+import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import exponentToBigInt from '../../src/utilities/exponentToBigInt';
 import { getPositionId } from '../../src/utilities/ids';
 import {
@@ -69,7 +70,7 @@ describe('VToken', () => {
       'SupplierAccount',
       getPositionId(minter, vTokenAddress).toHexString(),
       'effective_balance',
-      actualMintAmount.toString(),
+      actualMintAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
     );
   });
 
@@ -102,7 +103,7 @@ describe('VToken', () => {
       'BorrowerAccount',
       getPositionId(borrower, vTokenAddress).toHexString(),
       'effective_balance',
-      accountBorrows.toString(),
+      accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
     );
   });
 
@@ -198,7 +199,7 @@ describe('VToken', () => {
       'BorrowerAccount',
       getPositionId(user2Address, vTokenAddress).toHexString(),
       'effective_balance',
-      accountBorrows.toString(),
+      accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
     );
   });
 
@@ -237,7 +238,11 @@ describe('VToken', () => {
       'SupplierAccount',
       getPositionId(from, vTokenAddress).toHexString(),
       'effective_balance',
-      actualMintAmount.minus(underlyingAmount).toString(),
+      actualMintAmount
+        .minus(underlyingAmount)
+        .toBigDecimal()
+        .div(exponentToBigDecimal(18))
+        .toString(),
     );
 
     assert.fieldEquals(
@@ -250,7 +255,7 @@ describe('VToken', () => {
       'SupplierAccount',
       getPositionId(to, vTokenAddress).toHexString(),
       'effective_balance',
-      underlyingAmount.toString(),
+      underlyingAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
     );
   });
 });

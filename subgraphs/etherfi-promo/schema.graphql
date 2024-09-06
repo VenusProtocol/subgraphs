@@ -33,7 +33,7 @@ type SupplierAccount @entity {
     "Account address"
     address: Bytes!
     "Underlying balance"
-    effective_balance: BigInt!
+    effective_balance: BigDecimal!
     "Token Address"
     token: Supply!
 }
@@ -47,7 +47,7 @@ type BorrowerAccount @entity {
     "Account address"
     address: Bytes!
     "Underlying balance"
-    effective_balance: BigInt!
+    effective_balance: BigDecimal!
     "Token Address"
     token: Borrow!
 }

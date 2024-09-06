@@ -1,7 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts';
 
 import { BorrowerAccount, SupplierAccount } from '../../generated/schema';
-import { zeroBigInt32 } from '../constants';
+import { zeroBigDecimal } from '../constants';
 import { getBorrow, getSupply } from '../operations/get';
 import { getPositionId } from '../utilities/ids';
 
@@ -14,7 +14,7 @@ export const getOrCreateSupplierAccount = (
     const supply = getSupply(tokenAddress);
     supplierAccount = new SupplierAccount(getPositionId(accountAddress, tokenAddress));
     supplierAccount.address = accountAddress;
-    supplierAccount.effective_balance = zeroBigInt32;
+    supplierAccount.effective_balance = zeroBigDecimal;
     supplierAccount.token = supply.id;
     supplierAccount.save();
   }
@@ -30,7 +30,7 @@ export const getOrCreateBorrowerAccount = (
     const borrow = getBorrow(tokenAddress);
     borrowerAccount = new BorrowerAccount(getPositionId(accountAddress, tokenAddress));
     borrowerAccount.address = accountAddress;
-    borrowerAccount.effective_balance = zeroBigInt32;
+    borrowerAccount.effective_balance = zeroBigDecimal;
     borrowerAccount.token = borrow.id;
     borrowerAccount.save();
   }

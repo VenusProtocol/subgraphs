@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, BigDecimal, ethereum } from '@graphprotocol/graph-ts';
 
 import { BorrowerAccount, SupplierAccount, TVL } from '../../generated/schema';
 import { ERC20 as ERC20Contract } from '../../generated/vWeETH/ERC20';
@@ -8,7 +8,7 @@ import { getBorrowerAccount, getSupplierAccount, getTvl } from './get';
 export function updateSupplierAccount(
   accountAddress: Address,
   tokenAddress: Address,
-  amount: BigInt,
+  amount: BigDecimal,
 ): SupplierAccount {
   const account = getSupplierAccount(accountAddress, tokenAddress)!;
   account.effective_balance = amount;
@@ -19,7 +19,7 @@ export function updateSupplierAccount(
 export function updateBorrowerAccount(
   accountAddress: Address,
   tokenAddress: Address,
-  amount: BigInt,
+  amount: BigDecimal,
 ): BorrowerAccount {
   const account = getBorrowerAccount(accountAddress, tokenAddress)!;
   account.effective_balance = amount;
