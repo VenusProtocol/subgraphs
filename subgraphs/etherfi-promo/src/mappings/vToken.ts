@@ -1,51 +1,34 @@
 import { Address } from '@graphprotocol/graph-ts';
 
-import {
-  AccrueInterest,
-  Borrow,
-  Mint,
-  Redeem,
-  RepayBorrow,
-  Transfer,
-} from '../../generated/vWeETH/VToken';
+import { AccrueInterest, Borrow, Mint, Transfer } from '../../generated/vWeETH/VToken';
 import { VToken as VTokenContract } from '../../generated/vWeETH/VToken';
 import { nullAddress } from '../constants';
-import { vWeEthAddress } from '../constants/addresses';
-import { createBorrowerAccount, createSupplierAccount } from '../operations/create';
-import { getBorrow, getBorrowerAccount, getSupplierAccount, getSupply } from '../operations/get';
+import { getBorrow, getSupply } from '../operations/get';
+import { getOrCreateBorrowerAccount, getOrCreateSupplierAccount } from '../operations/getOrCreate';
 import { updateBorrowerAccount, updateSupplierAccount, updateTvl } from '../operations/update';
+import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 import exponentToBigInt from '../utilities/exponentToBigInt';
 
 export function handleMint(event: Mint): void {
   const minter = event.params.minter;
-  const supplierAccount = getSupplierAccount(minter);
-  if (supplierAccount) {
-    updateSupplierAccount(minter, supplierAccount.effective_balance.plus(event.params.mintAmount));
-  } else {
-    createSupplierAccount(minter, event.params.mintAmount);
-  }
-}
-
-export function handleRedeem(event: Redeem): void {
-  const redeemer = event.params.redeemer;
-  const supplierAccount = getSupplierAccount(redeemer)!;
+  const supplierAccount = getOrCreateSupplierAccount(minter, event.address);
   updateSupplierAccount(
-    redeemer,
-    supplierAccount.effective_balance.minus(event.params.redeemAmount),
+    minter,
+    event.address,
+    supplierAccount.effective_balance.plus(
+      event.params.mintAmount.toBigDecimal().div(exponentToBigDecimal(18)),
+    ),
   );
 }
 
 export function handleBorrow(event: Borrow): void {
   const borrower = event.params.borrower;
-  const borrowerAccount = getBorrowerAccount(borrower);
-  if (!borrowerAccount) {
-    createBorrowerAccount(borrower, event.params.accountBorrows);
-  }
-}
-
-export function handleRepayBorrow(event: RepayBorrow): void {
-  const borrower = event.params.borrower;
-  updateBorrowerAccount(borrower, event.params.accountBorrows);
+  getOrCreateBorrowerAccount(borrower, event.address);
+  updateBorrowerAccount(
+    borrower,
+    event.address,
+    event.params.accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)),
+  );
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -55,49 +38,59 @@ export function handleTransfer(event: Transfer): void {
   // If the to account is the vToken address we assume it was a redeem
   const toAccountAddress = event.params.to;
 
-  if (fromAccountAddress != nullAddress && fromAccountAddress != event.address) {
+  if (
+    fromAccountAddress.notEqual(event.address) &&
+    fromAccountAddress.notEqual(nullAddress) &&
+    toAccountAddress.notEqual(event.address)
+  ) {
     const vTokenContract = VTokenContract.bind(event.address);
     const exchangeRateMantissa = vTokenContract.exchangeRateCurrent();
     const amountUnderlying = exchangeRateMantissa
       .times(event.params.amount)
       .div(exponentToBigInt(18));
-    const fromAccount = getSupplierAccount(fromAccountAddress)!;
+    const fromAccount = getOrCreateSupplierAccount(fromAccountAddress, event.address);
     updateSupplierAccount(
       fromAccountAddress,
-      fromAccount.effective_balance.minus(amountUnderlying),
+      event.address,
+      fromAccount.effective_balance.minus(
+        amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18)),
+      ),
     );
     // To
-    const toAccount = getSupplierAccount(toAccountAddress);
-    if (toAccount) {
-      updateSupplierAccount(toAccountAddress, toAccount.effective_balance.plus(amountUnderlying));
-    } else if (toAccountAddress != event.address) {
-      createSupplierAccount(toAccountAddress, amountUnderlying);
-    }
+    const toAccount = getOrCreateSupplierAccount(toAccountAddress, event.address);
+    updateSupplierAccount(
+      toAccountAddress,
+      event.address,
+      toAccount.effective_balance.plus(
+        amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18)),
+      ),
+    );
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleAccrueInterest(event: AccrueInterest): void {
-  const supply = getSupply();
+  const supply = getSupply(event.address);
   supply.suppliers.load().forEach(supplier => {
-    const vTokenContract = VTokenContract.bind(vWeEthAddress);
+    const vTokenContract = VTokenContract.bind(Address.fromBytes(supplier.token));
 
     const exchangeRateMantissa = vTokenContract.exchangeRateCurrent();
     const vTokenBalance = vTokenContract.balanceOf(Address.fromBytes(supplier.address));
     const amountUnderlying = exchangeRateMantissa.times(vTokenBalance).div(exponentToBigInt(18));
-    supplier.effective_balance = amountUnderlying;
+    supplier.effective_balance = amountUnderlying.toBigDecimal().div(exponentToBigDecimal(18));
     supplier.save();
   });
 
-  const borrow = getBorrow();
+  const borrow = getBorrow(event.address);
   borrow.borrowers.load().forEach(borrower => {
-    const vTokenContract = VTokenContract.bind(vWeEthAddress);
-    const underlyingBorrowBalance = vTokenContract.borrowBalanceStored(
+    const vTokenContract = VTokenContract.bind(Address.fromBytes(borrower.token));
+    const underlyingBorrowBalance = vTokenContract.borrowBalanceCurrent(
       Address.fromBytes(borrower.address),
     );
-    borrower.effective_balance = underlyingBorrowBalance;
+    borrower.effective_balance = underlyingBorrowBalance
+      .toBigDecimal()
+      .div(exponentToBigDecimal(18));
     borrower.save();
   });
 
-  updateTvl();
+  updateTvl(event);
 }

@@ -2,7 +2,7 @@ sources:
   - name: venus-etherfi-promo-sepolia
     handler:
       graphql:
-        endpoint: https://api.studio.thegraph.com/query/51310/venus-etherfi-promo-sepolia/version/latest
+        endpoint: http://127.0.0.1:8000/subgraphs/name/venusprotocol/etherfi-promo
 
 documents:
   - '../**/*.graphql'

@@ -1,6 +1,6 @@
 {
   "name": "etherfi-promo-subgraph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -26,10 +26,10 @@
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.3.0"
+    "@venusprotocol/isolated-pools": "3.5.0-dev.10"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
   }
