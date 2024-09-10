@@ -1,12 +1,13 @@
 import { Address } from '@graphprotocol/graph-ts';
 
 import { Borrow, BorrowerAccount, SupplierAccount, Supply, TVL } from '../../generated/schema';
-import { BORROW, SUPPLY, TOTAL_VALUE_LOCKED, zeroBigInt32 } from '../constants';
+import { zeroBigInt32 } from '../constants';
+import { getPositionId } from '../utilities/ids';
 
-export const getTvl = (): TVL => {
-  let tvl = TVL.load(TOTAL_VALUE_LOCKED);
+export const getTvl = (vTokenAddress: Address): TVL => {
+  let tvl = TVL.load(vTokenAddress);
   if (!tvl) {
-    tvl = new TVL(TOTAL_VALUE_LOCKED);
+    tvl = new TVL(vTokenAddress);
     tvl.tvl = zeroBigInt32;
     tvl.save();
   }
@@ -14,30 +15,36 @@ export const getTvl = (): TVL => {
   return tvl;
 };
 
-export const getSupply = (): Supply => {
-  let supply = Supply.load(SUPPLY);
+export const getSupply = (tokenAddress: Address): Supply => {
+  let supply = Supply.load(tokenAddress);
   if (!supply) {
-    supply = new Supply(SUPPLY);
+    supply = new Supply(tokenAddress);
   }
   supply.save();
   return supply;
 };
 
-export const getSupplierAccount = (accountAddress: Address): SupplierAccount | null => {
-  const supplierAccount = SupplierAccount.load(accountAddress.toHexString());
+export const getSupplierAccount = (
+  accountAddress: Address,
+  tokenAddress: Address,
+): SupplierAccount | null => {
+  const supplierAccount = SupplierAccount.load(getPositionId(accountAddress, tokenAddress));
   return supplierAccount;
 };
 
-export const getBorrow = (): Borrow => {
-  let borrow = Borrow.load(BORROW);
+export const getBorrow = (tokenAddress: Address): Borrow => {
+  let borrow = Borrow.load(tokenAddress);
   if (!borrow) {
-    borrow = new Borrow(BORROW);
+    borrow = new Borrow(tokenAddress);
   }
   borrow.save();
   return borrow;
 };
 
-export const getBorrowerAccount = (accountAddress: Address): BorrowerAccount | null => {
-  const borrowerAccount = BorrowerAccount.load(accountAddress.toHexString());
+export const getBorrowerAccount = (
+  accountAddress: Address,
+  tokenAddress: Address,
+): BorrowerAccount | null => {
+  const borrowerAccount = BorrowerAccount.load(getPositionId(accountAddress, tokenAddress));
   return borrowerAccount;
 };

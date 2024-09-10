@@ -1,7 +1,6 @@
-version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node:v0.32.0
+    image: graphprotocol/graph-node:v0.35.1
     ports:
       - 8000:8000
       - 8001:8001
@@ -17,6 +16,7 @@ services:
         condition: service_started
     environment:
       ETHEREUM_REORG_THRESHOLD: 1
+      GRAPH_ALLOW_NON_DETERMINISTIC_FULLTEXT_SEARCH: "true"
       postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
@@ -33,6 +33,7 @@ services:
       dockerfile: Dockerfile.hardhat
     environment:
       YARN_VERSION: 3.2.2
+      HARDHAT_MAX_MEMORY: 8192
     command:
       - sh
       - -c
@@ -48,7 +49,7 @@ services:
     healthcheck:
         test: ["CMD", "node", "./hardhat-healthcheck.js"]
         interval: 30s
-        timeout: 12s
+        timeout: 120s
         retries: 10
   ipfs:
     image: ipfs/go-ipfs:v0.4.23

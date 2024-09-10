@@ -1,6 +1,6 @@
 {
   "name": "protocol-reserve-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.5",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -10,24 +10,30 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "npx graph codegen",
-    "create:docker": "npx graph create venusprotocol/venus-protocol-reserve --node http://graph-node:8020/",
-    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "codegen": "yarn graph codegen",
+    "create:docker": "yarn graph create venusprotocol/venus-protocol-reserve --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-protocol-reserve --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/venus-protocol-reserve --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:chapel": "yarn prepare:chapel && graph deploy venusprotocol/venus-protocol-reserve-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy venusprotocol/venus-protocol-reserve --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
-    "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
-    "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
+    "deploy:docker": "yarn prepare:docker && yarn graph deploy --studio venus-protocol-reserve --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-protocol-reserve-chapel",
+    "deploy:ethereum": "yarn prepare:ethereum && graph deploy --studio venus-protocol-reserve-eth",
+    "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio venus-protocol-reserve-sepolia",
+    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-protocol-reserve",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
+    "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
+    "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
+    "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:docker && graph test",
-    "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
+    "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.77.0",
     "apollo-fetch": "^0.7.0",
+    "ts-node": "^10.9.2",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }

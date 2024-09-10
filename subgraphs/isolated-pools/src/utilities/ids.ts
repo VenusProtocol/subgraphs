@@ -1,46 +1,30 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
-import { Actions } from '../constants';
+export const getPoolId = (comptroller: Address): Bytes => comptroller;
 
-const SEPERATOR = '-';
+export const getMarketId = (vTokenAddress: Address): Bytes => vTokenAddress;
 
-const joinIds = (idArray: Array<string>): string => idArray.join(SEPERATOR);
+export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): Bytes =>
+  marketAddress.concat(accountAddress);
 
-export const getPoolId = (comptroller: Address): string => joinIds([comptroller.toHexString()]);
+export const getAccountId = (accountAddress: Address): Bytes => accountAddress;
 
-export const getMarketId = (vTokenAddress: Address): string =>
-  joinIds([vTokenAddress.toHexString()]);
-
-export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): string =>
-  joinIds([marketAddress.toHexString(), accountAddress.toHexString()]);
-
-export const getAccountVTokenTransactionId = (
-  accountAddress: Address,
-  transactionHash: Bytes,
-  logIndex: BigInt,
-): string =>
-  joinIds([accountAddress.toHexString(), transactionHash.toHexString(), logIndex.toString()]);
-
-export const getPoolActionId = (poolAddress: Address, action: string): string =>
-  joinIds([poolAddress.toHexString(), action]);
-
-export const getMarketActionId = (vTokenAddress: Address, action: i32): string => {
-  const actionString = Actions[action];
-  return joinIds([vTokenAddress.toHexString(), actionString]);
+export const getMarketActionId = (vTokenAddress: Address, action: i32): Bytes => {
+  return vTokenAddress.concat(Bytes.fromI32(action));
 };
 
-export const getTransactionEventId = (
-  transactionHash: Bytes,
-  transactionLogIndex: BigInt,
-): string => joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
+export const getTransactionEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): Bytes =>
+  transactionHash.concat(Bytes.fromI32(transactionLogIndex.toI32()));
 
-export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): string =>
-  joinIds([transactionHash.toHexString(), transactionLogIndex.toString()]);
+export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: BigInt): Bytes =>
+  transactionHash.concat(Bytes.fromI32(transactionLogIndex.toI32()));
 
-export const getRewardsDistributorId = (rewardsDistributor: Address): string =>
-  joinIds([rewardsDistributor.toHexString()]);
+export const getRewardsDistributorId = (rewardsDistributor: Address): Bytes => rewardsDistributor;
 
 export const getRewardSpeedId = (
   rewardsDistributorAddress: Address,
   marketAddress: Address,
-): string => joinIds([rewardsDistributorAddress.toHexString(), marketAddress.toHexString()]);
+): Bytes => rewardsDistributorAddress.concat(marketAddress);
+
+export const getAccountPoolId = (accountAddress: Address, poolAddress: Address): Bytes =>
+  accountAddress.concat(poolAddress);

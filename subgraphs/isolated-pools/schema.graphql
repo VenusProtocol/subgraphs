@@ -1,21 +1,9 @@
-enum PoolActionType {
-  Transfer
-  Seize
-}
-
-type PoolAction @entity {
-    id: ID!
-    action: PoolActionType!
-    pauseState: Boolean!
-    pool: Bytes!
-}
-
 """
 The Pool entity
 """
 type Pool @entity {
-    "Comptroller of the pool"
-    id: ID!
+    "Pool Address as id"
+    id: Bytes!
     "Name of the pool"
     name: String!
     "Creator of the pool"
@@ -36,7 +24,7 @@ type Pool @entity {
     closeFactorMantissa: BigInt!
     "The percent bonus liquidators get for liquidating"
     liquidationIncentiveMantissa: BigInt!
-    "Min Liquidable Amount allowed"
+    "Min Liquidatable Amount allowed"
     minLiquidatableCollateralMantissa: BigInt!
     "Markets associated to this pool"
     markets: [Market!]! @derivedFrom(field: "pool")
@@ -52,9 +40,13 @@ enum MarketPauseGuardianAction {
 }
 """
 type MarketAction @entity {
-    id: ID!
+    "Concatentation of address and action"
+    id: Bytes!
+    "vToken Address affected"
     vToken: Bytes!
+    "Action (Borrow, Mint)"
     action: String!
+    "True if paused, otherwise False if active"
     pauseState: Boolean!
 }
 
@@ -63,7 +55,7 @@ Market stores all high level variables for a vToken market
 """
 type Market @entity {
     "VToken address"
-    id: ID!
+    id: Bytes!
     "Pool the market belongs to"
     pool: Pool!
     #Fields that match Venus API
@@ -95,8 +87,8 @@ type Market @entity {
     borrowCapMantissa: BigInt!
     "Total borrowed underlying token"
     totalBorrowsMantissa: BigInt!
-    "Total supplied underlying token"
-    totalSupplyMantissa: BigInt!
+    "Total vToken supplied"
+    totalSupplyVTokenMantissa: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"
@@ -107,8 +99,8 @@ type Market @entity {
     borrowIndexMantissa: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactorMantissa: BigInt!
-    "Underlying token price in USD cents"
-    underlyingPriceCents: BigInt!
+    "Underlying token price in USD cents (updated based on the last received event)"
+    underlyingPriceCentsMantissa: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "vToken decimal length"
@@ -139,9 +131,9 @@ participated in, along with liquidation information.
 """
 type Account @entity {
     "User BNB address"
-    id: ID!
-    "Array of VTokens user is in"
-    tokens: [AccountVToken!]! @derivedFrom(field: "account")
+    id: Bytes!
+    "Pools the user is participating on"
+    pools: [AccountPool!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
     countLiquidated: Int!
     "Count user has liquidated others"
@@ -151,25 +143,35 @@ type Account @entity {
 }
 
 """
+Through entity for aggregating positions by pool and account
+"""
+type AccountPool @entity(immutable: true) {
+    "Joined Account address and Pool address"
+    id: Bytes!
+    pool: Pool!
+    account: Account!
+    tokens: [AccountVToken!]! @derivedFrom(field:"accountPool")
+}
+
+"""
 AccountVToken is a single account within a single vToken market, with data such
 as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
-    id: ID!
+    id: Bytes!
+    "Pool of the market"
+    accountPool: AccountPool!
     "Relation to market"
     market: Market!
     "Relation to user"
     account: Account!
-    "Transactions data"
-    transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"accountVToken")
     "Bad debt data for the account in the market"
     badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
-    
-    "Amount of tokens supplied to the market"
-    accountSupplyBalanceMantissa: BigInt!
+    "vToken balance representing underlying supplied to the market, underlying balance can be calculated with the exchange rate"
+    accountVTokenSupplyBalanceMantissa: BigInt!
     "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     accountBorrowBalanceMantissa: BigInt!
     "True if user is entered, false if they are exited"
@@ -184,41 +186,19 @@ type AccountVToken @entity {
 }
 
 """
-Auxiliary entity for AccountVToken
-"""
-type AccountVTokenTransaction @entity {
-  "Concatenation of the transaction hash and the log index"
-  id: ID!
-
-  "ID of the corresponding account and VToken"
-  accountVToken: AccountVToken!
-
-  "Transaction Hash"
-  txHash: Bytes!
-
-  "Transaction timestamp"
-  timestamp: BigInt!
-
-  "Transaction block"
-  block: BigInt!
-
-  "Index of the log in the block logs"
-  logIndex: BigInt!
-}
-
-"""
 Auxiliary entity for AccountVToken indicating when a certain amount of bad debt was healed
 """
 type AccountVTokenBadDebt @entity {
-  id: ID!
-
-  account: AccountVToken!
-
-  amountMantissa: BigInt!
-
-  timestamp: BigInt!
-
-  block: BigInt!
+    "Concatenation of borrower and vToken Address"
+    id: Bytes!
+    "Market that was healed"
+    account: AccountVToken!
+    "Amount that was healed"
+    amountMantissa: BigInt!
+    "Timestamp"
+    timestamp: BigInt!
+    "Block Number"
+    block: BigInt!
 }
 
 enum EventType {
@@ -231,15 +211,14 @@ enum EventType {
 }
 
 """
-An interface for a transfer of any vToken. TransferEvent, MintEvent,
-RedeemEvent, and LiquidationEvent all use this interface
+Entity recording transactions for interacting with markets
 """
-type Transaction @entity {
+type Transaction @entity(immutable: true) {
     "Transaction hash concatenated with log index"
-    id: ID!
+    id: Bytes!
     "enum of event type"
     type: EventType!
-    "The account that sent the tokens, usually vToken"
+    "The account that sent the transaction, for example sender of vToken"
     from: Bytes!
     "count of vTokens transferred"
     amountMantissa: BigInt!
@@ -256,10 +235,10 @@ An interface for rewards distributor that distribute rewards to isolated pools
 """
 type RewardsDistributor @entity {
     "Address of the rewards distributor"
-    id: ID!
+    id: Bytes!
     "Address of the pool"
     pool: Pool!
-    "Address of the reward distributed"
+    "Address of the reward token"
     reward: Bytes!
     "Distribution rate for suppliers"
     rewardSpeeds: [RewardSpeed!]! @derivedFrom(field:"rewardsDistributor")
@@ -270,7 +249,7 @@ A interface for rewards distributor that distribute rewards to isolated pools
 """
 type RewardSpeed @entity {
     "ID created from the reward distributor and market this speed applies to"
-    id: ID!
+    id: Bytes!
     "Address of rewards distributor"
     rewardsDistributor: RewardsDistributor!
     "Address of the market this speed applies to"

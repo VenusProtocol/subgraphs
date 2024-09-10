@@ -1,6 +1,6 @@
 type Delegate @entity {
   "A Delegate is any address that has been delegated with voting tokens by a token holder, id is the blockchain address of said delegate"
-  id: ID!
+  id: Bytes!
 
   "Amount of XVS this user has staked"
   stakedXvsMantissa: BigInt!
@@ -30,9 +30,34 @@ enum PROPOSAL_TYPE {
   CRITICAL
 }
 
+type _Schema_
+  @fulltext(
+    name: "proposalSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Proposal", fields: [{ name: "description" }] }]
+  )
+
+type Transaction @entity(immutable: true) {
+  "Transaction hash used as the id"
+  id: Bytes!
+  
+  "Transaction hash for the proposal action"
+  txHash: Bytes!
+  
+  "Block number of the transaction"
+  blockNumber: BigInt!
+  
+  "Timestamp of the transaction block"
+  timestamp: BigInt!
+}
+
 type Proposal @entity {
-  "Internal proposal ID, in this implementation it seems to be a autoincremental id"
+  "Internal proposal id, it is an auto-incrementing id"
   id: ID!
+
+  "Proposal Id"
+  proposalId: BigInt!
 
   "Delegate that proposed the change"
   proposer: Delegate!
@@ -60,21 +85,39 @@ type Proposal @entity {
 
   "Once the proposal is queued for execution it will have an ETA of the execution"
   executionEta: BigInt
+
+  "Created Transaction"
+  created: Transaction
   
-  "Whether a proposal has been queued"
-  queued: Boolean
+  "Queued Transaction"
+  queued: Transaction
 
-  "Whether a proposal has been canceled"
-  canceled: Boolean
+  "Canceled Transaction"
+  canceled: Transaction
 
-  "Whether a proposal has been executed"
-  executed: Boolean
+  "Executed Transaction"
+  executed: Transaction
+
+  "Total of for votes on the proposal"
+  forVotes: BigInt!
+
+  "Total of against votes on the proposal"
+  againstVotes: BigInt!
+
+  "Total of abstain votes on the proposal"
+  abstainVotes: BigInt!
+
+  "Difference between for and against"
+  passing: Boolean!
 
   "Votes associated to this proposal"
   votes: [Vote!]! @derivedFrom(field: "proposal")
 
   "Type of Proposal can be normal fast track or critical"
   type: PROPOSAL_TYPE!
+
+  "Remote Proposals created from this proposal"
+  remoteProposals: [RemoteProposal!]! @derivedFrom(field: "sourceProposal")
 }
 
 enum SUPPORT {
@@ -83,9 +126,9 @@ enum SUPPORT {
   ABSTAIN
 }
 
-type Vote @entity {
-  "Delegate ID + Proposal ID"
-  id: ID!
+type Vote @entity(immutable: true) {
+  "Delegate id + Proposal id"
+  id: Bytes!
 
   "Whether the vote is in favour or against the proposal"
   support: SUPPORT!
@@ -144,18 +187,104 @@ enum PermissionStatus {
 }
 
 type Permission @entity {
-  "ID generated for each Permission"
-  id: ID!
+  "Id generated for each Permission"
+  id: Bytes!
 
   "Indicates if the permission was either GRANTED or REVOKED"
   status: PermissionStatus!
 
   "The target account of the event"
-  account: Bytes!
+  accountAddress: Bytes!
 
-  "The target contract for the permission event"
-  contractAddress: Bytes!
+  "The role made of the contract address and function signature encode packed"
+  role: Bytes!
 
-  "The function name for the permission event"
-  functionSig: String!
+  "Created At Transaction Hash"
+  createdAt: Bytes!
+
+  "UpdatedAt At Transaction Hash"
+  updatedAt: Bytes!
+}
+
+type MaxDailyLimit @entity {
+  "Destination Chain Id as bytes"
+  id: Bytes!
+  
+  "Chain Id that is approved to receive messages"
+  destinationChainId: BigInt!
+  
+  "Maximum Number of messages that can be set to the destination chain"
+  max: BigInt!
+}
+
+type OmnichainProposalSender @entity {
+  ""
+  id: Bytes!
+
+  "Address of the Omnichain Proposal Sender"
+  address: Bytes!
+
+  "Access Control Manager for the Omnichain Proposal Sender"
+  accessControlManagerAddress: Bytes!
+
+  "Flag for if the Omnichain Proposal Sender is paused"
+  paused: Boolean!
+}
+
+
+type TrustedRemote @entity {
+  "LayerZero Chain id of the trusted remote"
+  id: Bytes!
+
+  layerZeroChainId: Int!
+  
+  "Governance contract address on the trusted remote"
+  address: Bytes
+  
+  "Array of proposals sent to the remote"
+  proposals: [RemoteProposal!]
+  
+  "True if active, false if inactive"
+  active: Boolean!
+}
+
+type RemoteProposal @entity {
+  "RemoteProposal Id"
+  id: ID!
+
+  "RemoteProposal Id"
+  proposalId: BigInt!
+
+  "Remote ChainId where the proposal was sent"
+  layerZeroChainId: Int!
+
+  "Targets data for the change"
+  targets: [Bytes!]
+
+  "Values data for the change"
+  values: [BigInt!]
+
+  "Signature data for the change"
+  signatures: [String!]
+
+  "Call data for the change"
+  calldatas: [Bytes!]
+
+  "Proposal (route) Type (Normal, FastTrack, Critical)"
+  type: Int!
+
+  "Transaction Remote Proposal was sent"
+  stored: Transaction
+
+  "Transaction Remote Proposal was executed (usually the same as stored)"
+  executed: Transaction
+
+  "Transaction Remote Proposal was withdrawn"
+  withdrawn: Transaction
+
+  "If execution fails and is stored, this property will show the reason"
+  failedReason: Bytes
+
+  "Proposal Id for the originating BNB Chain proposal"
+  sourceProposal: Proposal
 }

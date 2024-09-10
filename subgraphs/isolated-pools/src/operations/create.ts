@@ -1,6 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { PoolLens as PoolLensContract } from '../../generated/PoolRegistry/PoolLens';
+import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
+import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
 import {
   BadDebtIncreased,
   Borrow,
@@ -12,6 +13,7 @@ import {
 } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
+  AccountPool,
   AccountVTokenBadDebt,
   Market,
   Pool,
@@ -23,13 +25,11 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
-import { poolLensAddress, poolRegistryAddress } from '../constants/addresses';
+import { poolRegistryAddress } from '../constants/addresses';
+import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
-  exponentToBigInt,
-  getTokenPriceInCents,
-  valueOrNotAvailableIntIfReverted,
-} from '../utilities';
-import {
+  getAccountId,
+  getAccountPoolId,
   getAccountVTokenId,
   getBadDebtEventId,
   getPoolId,
@@ -40,24 +40,22 @@ import {
 export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
   // Fill in pool from pool lens
-  const poolLensContract = PoolLensContract.bind(poolLensAddress);
-  const poolDataFromLens = poolLensContract.getPoolByComptroller(poolRegistryAddress, comptroller);
+  const poolRegistryContract = PoolRegistryContract.bind(poolRegistryAddress);
+  const comptrollerContract = ComptrollerContract.bind(comptroller);
+  const poolData = poolRegistryContract.getPoolByComptroller(comptroller);
+  const poolMetaData = poolRegistryContract.getVenusPoolMetadata(comptroller);
 
-  pool.name = poolDataFromLens.name;
-  pool.creator = poolDataFromLens.creator;
-  pool.blockPosted = poolDataFromLens.blockPosted;
-  pool.timestampPosted = poolDataFromLens.timestampPosted;
-  pool.category = poolDataFromLens.category;
-  pool.logoUrl = poolDataFromLens.logoURL;
-  pool.description = poolDataFromLens.description;
-  pool.priceOracleAddress = poolDataFromLens.priceOracle;
-  pool.closeFactorMantissa = poolDataFromLens.closeFactor
-    ? poolDataFromLens.closeFactor
-    : new BigInt(0);
-  pool.minLiquidatableCollateralMantissa = poolDataFromLens.minLiquidatableCollateral;
-  pool.liquidationIncentiveMantissa = poolDataFromLens.liquidationIncentive
-    ? poolDataFromLens.liquidationIncentive
-    : new BigInt(0);
+  pool.name = poolData.name;
+  pool.creator = poolData.creator;
+  pool.blockPosted = poolData.blockPosted;
+  pool.timestampPosted = poolData.timestampPosted;
+  pool.category = poolMetaData.category;
+  pool.logoUrl = poolMetaData.logoURL;
+  pool.description = poolMetaData.description;
+  pool.priceOracleAddress = comptrollerContract.oracle();
+  pool.closeFactorMantissa = comptrollerContract.closeFactorMantissa();
+  pool.minLiquidatableCollateralMantissa = comptrollerContract.minLiquidatableCollateral();
+  pool.liquidationIncentiveMantissa = comptrollerContract.liquidationIncentiveMantissa();
   // Note: we don't index vTokens here because when a pool is created it has no markets
   pool.save();
 
@@ -65,12 +63,21 @@ export function createPool(comptroller: Address): Pool {
 }
 
 export function createAccount(accountAddress: Address): Account {
-  const account = new Account(accountAddress.toHexString());
+  const account = new Account(accountAddress);
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
   account.save();
   return account;
+}
+
+export function createAccountPool(accountAddress: Address, poolAddress: Address): AccountPool {
+  const accountPoolId = getAccountPoolId(accountAddress, poolAddress);
+  const accountPool = new AccountPool(accountPoolId);
+  accountPool.account = getAccountId(accountAddress);
+  accountPool.pool = getPoolId(poolAddress);
+  accountPool.save();
+  return accountPool;
 }
 
 export function createMarket(
@@ -82,9 +89,9 @@ export function createMarket(
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
-  const market = new Market(vTokenAddress.toHexString());
+  const market = new Market(vTokenAddress);
 
-  market.pool = comptroller.toHexString();
+  market.pool = comptroller;
 
   market.name = vTokenContract.name();
   market.interestRateModelAddress = vTokenContract.interestRateModel();
@@ -95,7 +102,7 @@ export function createMarket(
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceCents = underlyingValue;
+  market.underlyingPriceCentsMantissa = underlyingValue;
   market.underlyingDecimals = underlyingDecimals;
   market.vTokenDecimals = vTokenContract.decimals();
 
@@ -121,10 +128,7 @@ export function createMarket(
 
   market.totalBorrowsMantissa = vTokenContract.totalBorrows();
 
-  const totalSupplyVTokensMantissa = vTokenContract.totalSupply();
-  market.totalSupplyMantissa = totalSupplyVTokensMantissa
-    .times(exchangeRateMantissa)
-    .div(exponentToBigInt(18));
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
 
   market.badDebtMantissa = vTokenContract.badDebt();
 
@@ -253,7 +257,7 @@ export const createRewardDistributor = (
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   const rewardsDistributor = new RewardsDistributor(id);
-  rewardsDistributor.pool = comptrollerAddress.toHexString();
+  rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.reward = rewardToken;
   rewardsDistributor.save();
 };

@@ -1,6 +1,6 @@
 {
   "name": "venus-governance-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.10",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -10,23 +10,28 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "npx graph codegen",
-    "create:docker": "npx graph create venusprotocol/venus-governance --node http://graph-node:8020/",
-    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "codegen": "yarn graph codegen",
+    "create:docker": "yarn graph create venusprotocol/venus-governance --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-governance --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/venus-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:chapel": "yarn prepare:chapel && graph deploy venusprotocol/venus-governance-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy venusprotocol/venus-governance --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
-    "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
-    "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
-    "test": "graph test",
-    "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
+    "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/venus-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-governance-chapel",
+    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-governance",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
+    "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
+    "test": "yarn prepare:docker && graph test",
+    "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
+    "@graphprotocol/client-cli": "3.0.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
+    "@venusprotocol/governance-contracts": "2.3.0-dev.4",
     "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.1",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }

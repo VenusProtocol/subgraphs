@@ -10,6 +10,7 @@ import {
 import { createProposal, createVoteAlpha } from '../operations/create';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateAlphaProposalVotes,
   updateProposalCanceled,
   updateProposalExecuted,
   updateProposalQueued,
@@ -61,8 +62,10 @@ export function handleVoteCast(event: VoteCast): void {
   // Alpha V1 doesn't require staking in the vault so we need to create delegates when casting a vote
   getOrCreateDelegate(event.params.voter);
   createVoteAlpha(event);
+  updateAlphaProposalVotes(event.params.proposalId, event.params.votes, event.params.support);
 }
 
 export function handleVoteCastV2(event: VoteCast): void {
   createVoteAlpha(event);
+  updateAlphaProposalVotes(event.params.proposalId, event.params.votes, event.params.support);
 }

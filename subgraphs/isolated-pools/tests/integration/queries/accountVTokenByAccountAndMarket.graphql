@@ -7,13 +7,6 @@ query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: Strin
     account {
       id
     }
-    transactions { 
-      id
-      block
-      txHash
-      timestamp
-      logIndex
-    }
     badDebt {
       id
       amountMantissa
@@ -21,7 +14,7 @@ query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: Strin
       block
     }
     enteredMarket
-    accountSupplyBalanceMantissa
+    accountVTokenSupplyBalanceMantissa
     accountBorrowBalanceMantissa
     totalUnderlyingRedeemedMantissa
     accountBorrowIndexMantissa

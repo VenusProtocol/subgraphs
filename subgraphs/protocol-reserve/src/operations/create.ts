@@ -6,6 +6,7 @@ import { TokenConverter, TokenConverterConfig } from '../../generated/schema';
 import { riskFundAddress, riskFundConverterAddress } from '../constants/addresses';
 import { valueOrNotAvailableAddressIfReverted } from '../utilities';
 import { getTokenConverterConfigId, getTokenConverterId } from '../utilities/ids';
+import { getOrCreateToken } from './getOrCreate';
 
 export function createTokenConverter(tokenConverterAddress: Address): TokenConverter {
   const tokenConverterContract = TokenConverterContract.bind(tokenConverterAddress);
@@ -36,7 +37,7 @@ export function createTokenConverterConfig(
     getTokenConverterConfigId(tokenConverterAddress, tokenAddressIn, tokenAddressOut),
   );
   tokenConverterConfig.tokenConverter = getTokenConverterId(tokenConverterAddress);
-  tokenConverterConfig.tokenAddressIn = tokenAddressIn;
-  tokenConverterConfig.tokenAddressOut = tokenAddressOut;
+  tokenConverterConfig.tokenIn = getOrCreateToken(tokenAddressIn).id;
+  tokenConverterConfig.tokenOut = getOrCreateToken(tokenAddressOut).id;
   return tokenConverterConfig;
 }

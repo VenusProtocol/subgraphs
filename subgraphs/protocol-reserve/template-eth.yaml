@@ -1,0 +1,201 @@
+specVersion: 0.0.4
+description: Venus Protocol Reserve manages income generated from Venus money markets.
+repository: https://github.com/VenusProtocol/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - name: ConverterNetwork
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      address: "{{ converterNetworkAddress }}"
+      abi: ConverterNetwork
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/converterNetwork.ts
+      entities:
+        - ConverterNetwork
+      abis:
+        - name: ConverterNetwork
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/ConverterNetwork.sol/ConverterNetwork.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+      eventHandlers:
+        - event: ConverterAdded(indexed address)
+          handler: handleConverterAdded
+        - event: ConverterRemoved(indexed address)
+          handler: handleConverterRemoved
+
+  - name: WBTCPrimeConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ wbtcPrimeConverterAddress }}"
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+  - name: WETHPrimeConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ wethPrimeConverterAddress }}"
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+  - name: USDCPrimeConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ usdcPrimeConverterAddress }}"
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+  - name: USDTPrimeConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ usdtPrimeConverterAddress }}"
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+  - name: XVSVaultConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ xvsVaultConverterAddress }}"
+      startBlock: {{ startBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleBaseAssetUpdated

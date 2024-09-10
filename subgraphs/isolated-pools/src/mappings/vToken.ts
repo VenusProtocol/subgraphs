@@ -1,3 +1,5 @@
+import { Address } from '@graphprotocol/graph-ts';
+
 import {
   AccrueInterest,
   BadDebtIncreased,
@@ -45,8 +47,6 @@ import {
  *    AccrueInterest is emitted before Mint
  *    Transfer event is emitted after Mint if successful
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
- *    No need to updateCommonVTokenStats, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
@@ -56,12 +56,10 @@ export function handleMint(event: Mint): void {
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
   updateAccountVTokenSupply(
-    vTokenAddress,
     event.params.minter,
-    event.transaction.hash,
-    event.block.timestamp,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
-    event.logIndex,
     suppliedTotal,
   );
   if (suppliedTotal == event.params.mintTokens) {
@@ -80,8 +78,6 @@ export function handleMint(event: Mint): void {
  *  Notes
  *    Transfer event will always get emitted with this
  *    No need to updateMarket(), handleAccrueInterest() ALWAYS runs before this
- *    No need to updateCommonVTokenStats, handleTransfer() will
- *    No need to update vTokenBalance, handleTransfer() will
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
@@ -91,12 +87,10 @@ export function handleRedeem(event: Redeem): void {
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
   updateAccountVTokenSupply(
-    vTokenAddress,
     event.params.redeemer,
-    event.transaction.hash,
-    event.block.timestamp,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
-    event.logIndex,
     currentBalance,
   );
   if (currentBalance == zeroBigInt32) {
@@ -120,12 +114,10 @@ export function handleBorrow(event: Borrow): void {
   const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenBorrow(
-    vTokenAddress,
     event.params.borrower,
-    event.transaction.hash,
-    event.block.timestamp,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
-    event.logIndex,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
   );
@@ -158,12 +150,10 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   const market = getOrCreateMarket(vTokenAddress);
 
   updateAccountVTokenRepayBorrow(
-    vTokenAddress,
     event.params.borrower,
-    event.transaction.hash,
-    event.block.timestamp,
+    Address.fromBytes(market.pool),
+    vTokenAddress,
     event.block.number,
-    event.logIndex,
     event.params.accountBorrows,
     market.borrowIndexMantissa,
   );
@@ -235,12 +225,11 @@ export function handleTransfer(event: Transfer): void {
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
 
-  let market = getOrCreateMarket(vTokenAddress);
-  // We only updateMarket() if accrual block number is not up to date. This will only happen
-  // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
-  if (market.accrualBlockNumber != event.block.number.toI32()) {
-    market = updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
-  }
+  const market = updateMarket(
+    event.address,
+    event.block.number.toI32(),
+    event.block.timestamp.toI32(),
+  );
 
   // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
   // If so, it is a mint, and we don't need to run these calculations
@@ -248,12 +237,10 @@ export function handleTransfer(event: Transfer): void {
     getOrCreateAccount(accountFromAddress);
 
     updateAccountVTokenTransferFrom(
-      vTokenAddress,
       accountFromAddress,
-      event.transaction.hash,
-      event.block.timestamp,
+      Address.fromBytes(market.pool),
+      vTokenAddress,
       event.block.number,
-      event.logIndex,
       event.params.amount,
       market.exchangeRateMantissa,
     );
@@ -267,12 +254,10 @@ export function handleTransfer(event: Transfer): void {
     getOrCreateAccount(accountToAddress);
 
     updateAccountVTokenTransferTo(
-      vTokenAddress,
       accountToAddress,
-      event.transaction.hash,
-      event.block.timestamp,
+      Address.fromBytes(market.pool),
+      vTokenAddress,
       event.block.number,
-      event.logIndex,
     );
   }
 

@@ -1,0 +1,18 @@
+query AccountVTokenByAccountAndMarketQuery($id: ID!) {
+  accountVToken(id: $id) {
+    id
+    market {
+      id
+    }
+    account {
+      id
+      hasBorrowed
+    }
+    enteredMarket
+    vTokenBalanceMantissa
+    totalUnderlyingRedeemedMantissa
+    totalUnderlyingRepaidMantissa
+    storedBorrowBalanceMantissa
+    borrowIndex
+  }
+}

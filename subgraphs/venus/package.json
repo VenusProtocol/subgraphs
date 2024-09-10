@@ -1,6 +1,6 @@
 {
   "name": "venus-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -10,22 +10,27 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "npx graph codegen",
-    "create:docker": "npx graph create venusprotocol/venus-subgraph  --node http://graph-node:8020/",
-    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "codegen": "yarn graph codegen",
+    "create:docker": "yarn graph create venusprotocol/venus-subgraph  --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-subgraph  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/venus-subgraph --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:chapel": "yarn prepare:chapel && graph deploy venusprotocol/venus-subgraph-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy venusprotocol/venus-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
-    "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
-    "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "test": "graph test",
-    "test:integration": "true"
+    "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/venus-subgraph --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-subgraph-chapel",
+    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-core-pool-subgraph",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
+    "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
+    "test": "yarn prepare:docker && graph test",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
+    "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
-    "@venusprotocol/venus-protocol": "5.2.0",
-    "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1"
+    "@graphprotocol/client-cli": "3.0.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
+    "@venusprotocol/venus-protocol": "9.2.0-dev.6",
+    "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1",
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.2"
   }
 }

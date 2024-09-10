@@ -1,12 +1,26 @@
-import mainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet.json';
-import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet.json';
+import arbitrumDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumone_addresses.json';
+import arbitrumSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumsepolia_addresses.json';
+import bscMainnetDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet_addresses.json';
+import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
-import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia.json';
+import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
+import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
+import zksyncSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/zksyncsepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['mainnet', 'sepolia', 'chapel', 'bsc', 'docker'] as const;
+  const supportedNetworks = [
+    'ethereum',
+    'sepolia',
+    'chapel',
+    'bsc',
+    'docker',
+    'opbnbMainnet',
+    'arbitrumSepolia',
+    'arbitrum',
+    'zksyncSepolia',
+  ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
@@ -20,34 +34,53 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926',
-      poolLensAddress: '0xe3011a37a904ab90c8881a99bd1f6e21401f1522',
+      poolRegistryAddress: '0x045857BDEAE7C1c7252d611eB24eB55564198b4C',
       startBlock: 0,
     },
-    mainnet: {
+    ethereum: {
       network: 'mainnet',
       poolRegistryAddress: ethereumDeployments.addresses.PoolRegistry,
-      poolLensAddress: ethereumDeployments.addresses.PoolLens,
       startBlock: '18968000',
     },
     sepolia: {
       network: 'sepolia',
-      poolRegistryAddress: sepoliaDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: sepoliaDeployments.contracts.PoolLens.address,
+      poolRegistryAddress: sepoliaDeployments.addresses.PoolRegistry,
       startBlock: '3930059',
     },
     chapel: {
       network: 'chapel',
-      poolRegistryAddress: chapelDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: chapelDeployments.contracts.PoolLens.address,
+      poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
       startBlock: '30870000',
     },
     bsc: {
       network: 'bsc',
-      poolRegistryAddress: mainnetDeployments.contracts.PoolRegistry.address,
-      poolLensAddress: mainnetDeployments.contracts.PoolLens.address,
+      poolRegistryAddress: bscMainnetDeployments.addresses.PoolRegistry,
       startBlock: '29300000',
     },
+    opbnbMainnet: {
+      network: 'opbnb-mainnet',
+      poolRegistryAddress: opBnbMainnetDeployments.addresses.PoolRegistry,
+      startBlock: '16232873',
+    },
+    arbitrumSepolia: {
+      network: 'arbitrum-sepolia',
+      poolRegistryAddress: arbitrumSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '44214769',
+    },
+    arbitrum: {
+      network: 'arbitrum-one',
+      poolRegistryAddress: arbitrumDeployments.addresses.PoolRegistry,
+      startBlock: '216184381',
+    },
+    zksyncSepolia: {
+      network: 'zksync-era-sepolia',
+      poolRegistryAddress: zksyncSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '3535723',
+    },
+  };
+
+  Mustache.escape = function (text) {
+    return text;
   };
 
   const yamlTemplate = fs.readFileSync('template.yaml', 'utf8');

@@ -12,14 +12,33 @@ query Proposals {
       endBlock
       description
       executionEta
-      queued
-      canceled
-      executed
+      queued {
+        blockNumber
+        timestamp
+        txHash
+      }
+      canceled {
+        blockNumber
+        timestamp
+        txHash
+      }
+      executed {
+        blockNumber
+        timestamp
+        txHash
+      }
       type
+      forVotes
+      againstVotes
+      abstainVotes
+      passing
       votes {
         id
         votes
         support
+      }
+      remoteProposals {
+        proposalId
       }
     }
 }

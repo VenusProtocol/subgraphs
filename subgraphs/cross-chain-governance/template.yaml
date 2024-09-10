@@ -1,0 +1,97 @@
+specVersion: 0.0.2
+description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
+repository: https://github.com/VenusProtocol/subgraphs
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: OmnichainExecutorOwner
+    network: {{ network }}
+    source:
+      address: "{{ omnichainGovernanceOwnerAddress }}"
+      abi: OmnichainExecutorOwner
+      startBlock: {{ startBlockOmnichainGovernanceOwner }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/omnichainExecutorOwner.ts
+      entities:
+        - Governance
+      abis:
+        - name: OmnichainExecutorOwner
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainExecutorOwner.sol/OmnichainExecutorOwner.json
+          
+      eventHandlers:
+        - event: FunctionRegistryChanged(indexed string,bool)
+          handler: handleFunctionRegistryChanged
+  - kind: ethereum/contract
+    name: OmnichainGovernanceExecutor
+    network: {{ network }}
+    source:
+      address: "{{ omnichainExecutorOwnerAddress }}"
+      abi: OmnichainGovernanceExecutor
+      startBlock: {{ startBlockOmnichainGovernanceExecutor }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/omnichainGovernanceExecutor.ts
+      entities:
+        - Governance
+        - FunctionRegistry
+        - Proposal
+      abis:
+        - name: OmnichainGovernanceExecutor
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Cross-chain/OmnichainGovernanceExecutor.sol/OmnichainGovernanceExecutor.json
+      eventHandlers:
+        - event: NewGuardian(indexed address,indexed address)
+          handler: handleNewGuardian
+        - event: Paused(address)
+          handler: handlePaused
+        - event: SetMaxDailyReceiveLimit(uint256,uint256)
+          handler: handleSetMaxDailyReceiveLimit
+        - event: ProposalReceived(indexed uint256,address[],uint256[],string[],bytes[],uint8)
+          handler: handleProposalReceived
+        - event: ProposalQueued(indexed uint256,uint256)
+          handler: handleProposalQueued
+        - event: ProposalExecuted(indexed uint256)
+          handler: handleProposalExecuted
+        - event: ProposalCanceled(indexed uint256)
+          handler: handleProposalCanceled
+        - event: ReceivePayloadFailed(indexed uint16,indexed bytes,uint64,bytes)
+          handler: handleReceivePayloadFailed
+        - event: RetryMessageSuccess(uint16,bytes,uint64,bytes32)
+          handler: handleRetryMessageSuccess
+        - event: TimelockAdded(uint8,indexed address,indexed address)
+          handler: handleTimelockAdded
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: SetMinDstGas(uint16,uint16,uint256)
+          handler: handleSetMinDstGas
+        - event: SetPrecrime(address)
+          handler: handleSetPrecrime
+        - event: SetSrcChainId(indexed uint16,indexed uint16)
+          handler: handleSetSrcChainId
+  - kind: ethereum/contract
+    name: AccessControlManager
+    network: {{ network }}
+    source:
+      address: "{{ accessControlManagerAddress }}"
+      abi: AccessControlManger
+      startBlock: {{ accessControlManagerStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/mappings/accessControlManager.ts
+      entities:
+        - Permission
+      abis:
+        - name: AccessControlManger
+          file: ../../node_modules/@venusprotocol/governance-contracts/artifacts/contracts/Governance/AccessControlManager.sol/AccessControlManager.json
+      eventHandlers:
+        - event: PermissionGranted(address,address,string)
+          handler: handlePermissionGranted
+        - event: PermissionRevoked(address,address,string)
+          handler: handlePermissionRevoked

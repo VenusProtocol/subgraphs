@@ -83,11 +83,16 @@ describe('GovernorAlpha', function () {
       } = await subgraphClient.getProposalById('1');
       expect(proposal.votes.length).to.be.equal(4);
 
+      expect(proposal.forVotes).to.be.equal(scaleValue(1000000, 18).toFixed());
+      expect(proposal.againstVotes).to.be.equal(scaleValue(100000, 18).toFixed());
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
+
       const {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
-      expect(delegate1.votes[0].id).to.equal(`${user1.address.toLowerCase()}-1`);
+      expect(delegate1.votes[0].id).to.equal(`${user1.address.toLowerCase()}01000000`);
       expect(delegate1.votes[0].support).to.equal('AGAINST');
       expect(delegate1.votes[0].votes).to.equal('100000000000000000000000');
       expect(delegate1.proposals).to.deep.equal([]);
@@ -95,7 +100,7 @@ describe('GovernorAlpha', function () {
       const {
         data: { delegate: delegate2 },
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
-      expect(delegate2.votes[0].id).to.equal(`${user2.address.toLowerCase()}-1`);
+      expect(delegate2.votes[0].id).to.equal(`${user2.address.toLowerCase()}01000000`);
       expect(delegate2.votes[0].support).to.equal('FOR');
       expect(delegate2.votes[0].votes).to.equal('200000000000000000000000');
       expect(delegate2.proposals).to.deep.equal([]);
@@ -107,6 +112,13 @@ describe('GovernorAlpha', function () {
     });
 
     it('should transition to canceled', async () => {
+      let votingPeriod = +(await governorAlpha.votingPeriod());
+      while (votingPeriod > 0) {
+        votingPeriod--;
+        await mine(1);
+      }
+      await governorAlpha.queue(1);
+      await mine(1);
       await governorAlpha.connect(signers[0]).cancel('1');
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
@@ -115,7 +127,9 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('1');
 
-      expect(proposal.canceled).to.equal(true);
+      expect(typeof proposal.canceled.blockNumber).to.equal('string');
+      expect(typeof proposal.canceled.txHash).to.equal('string');
+      expect(typeof proposal.canceled.timestamp).to.equal('string');
     });
   });
 
@@ -157,6 +171,11 @@ describe('GovernorAlpha', function () {
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
+
+      expect(proposal.forVotes).to.be.equal(scaleValue(800000, 18).toFixed());
+      expect(proposal.againstVotes).to.be.equal('0');
+      expect(proposal.abstainVotes).to.be.equal('0');
+      expect(proposal.passing).to.be.equal(true);
     });
 
     it('should transition to queued', async () => {
@@ -180,7 +199,10 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('21');
 
-      expect(proposal.queued).to.equal(true);
+      expect(typeof proposal.queued.blockNumber).to.equal('string');
+      expect(typeof proposal.queued.txHash).to.equal('string');
+      expect(typeof proposal.queued.timestamp).to.equal('string');
+
       expect(proposal.executionEta).to.equal(eta.toString());
       await mine(1);
 
@@ -196,7 +218,9 @@ describe('GovernorAlpha', function () {
         data: { proposal },
       } = await subgraphClient.getProposalById('21');
 
-      expect(proposal.executed).to.equal(true);
+      expect(typeof proposal.executed.blockNumber).to.equal('string');
+      expect(typeof proposal.executed.txHash).to.equal('string');
+      expect(typeof proposal.executed.timestamp).to.equal('string');
     });
   });
 });

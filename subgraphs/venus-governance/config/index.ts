@@ -1,7 +1,7 @@
-import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet.json';
-import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet.json';
-import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet.json';
-import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet.json';
+import bscMainnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bscmainnet_addresses.json';
+import bscTestnetGovernanceDeployments from '@venusprotocol/governance-contracts/deployments/bsctestnet_addresses.json';
+import bscMainnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bscmainnet_addresses.json';
+import bscTestnetCoreDeployments from '@venusprotocol/venus-protocol/deployments/bsctestnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -22,53 +22,57 @@ const main = () => {
       network: 'hardhat',
       accessControlManagerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
       accessControlManagerStartBlock: '0',
-      governorAlphaAddress: '0x512F7469BcC83089497506b5df64c6E246B39925',
+      governorAlphaAddress: '0x325c8Df4CFb5B068675AFF8f62aA668D1dEc3C4B',
       governorAlphaStartBlock: '0',
-      governorAlpha2Address: '0xb932C8342106776E73E39D695F3FFC3A9624eCE0',
+      governorAlpha2Address: '0xa62835D1A6bf5f521C4e2746E1F51c923b8f3483',
       governorAlpha2StartBlock: '0',
-      governorBravoDelegatorAddress: '0x75c68e69775fA3E9DD38eA32E554f6BF259C1135',
+      governorBravoDelegatorAddress: '0x10e38eE9dd4C549b61400Fc19347D00eD3edAfC4',
       governorBravoDelegatorStartBlock: '0',
-      xvsTokenAddress: '0x547382C0D1b23f707918D3c83A77317B71Aa8470',
+      xvsTokenAddress: '0xCD8a1C3ba11CF5ECfa6267617243239504a98d90',
       xvsTokenStartBlock: '0',
-      xvsVaultAddress: '0x0a17FabeA4633ce714F1Fa4a2dcA62C3bAc4758d',
+      xvsVaultAddress: '0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3',
       xvsVaultStartBlock: '0',
       xvsVaultPid: '0',
+      omnichainProposalSenderAddress: '0xd753c12650c280383Ce873Cc3a898F6f53973d16',
+      omnichainProposalSenderStartBlock: '0',
     },
     chapel: {
       network: 'chapel',
-      accessControlManagerAddress:
-        bscTestnetGovernanceDeployments.contracts.AccessControlManager.address,
+      accessControlManagerAddress: bscTestnetGovernanceDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '24711629',
-      governorAlphaAddress: bscTestnetGovernanceDeployments.contracts.GovernorAlpha.address,
+      governorAlphaAddress: bscTestnetGovernanceDeployments.addresses.GovernorAlpha,
       governorAlphaStartBlock: '8205736',
       governorAlpha2Address: '0x7116894ed34FC4B27D5b84f46B70Af48397a6C24',
       governorAlpha2StartBlock: '13584539',
       governorBravoDelegatorAddress:
-        bscTestnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+        bscTestnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '16002994 ',
-      xvsTokenAddress: bscTestnetCoreDeployments.contracts.XVS.address,
+      xvsTokenAddress: bscTestnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '2802593',
-      xvsVaultAddress: bscTestnetCoreDeployments.contracts.XVSVault.address,
+      xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13937802',
       xvsVaultPid: '1',
+      omnichainProposalSenderAddress: '0xCfD34AEB46b1CB4779c945854d405E91D27A1899',
+      omnichainProposalSenderStartBlock: '40979674',
     },
     bsc: {
       network: 'bsc',
-      accessControlManagerAddress:
-        bscMainnetGovernanceDeployments.contracts.AccessControlManager.address,
+      accessControlManagerAddress: bscMainnetGovernanceDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '21968138',
-      governorAlphaAddress: bscMainnetGovernanceDeployments.contracts.GovernorAlpha.address,
+      governorAlphaAddress: bscMainnetGovernanceDeployments.addresses.GovernorAlpha,
       governorAlphaStartBlock: '2474351',
-      governorAlpha2Address: bscMainnetGovernanceDeployments.contracts.GovernorAlpha2.address,
+      governorAlpha2Address: bscMainnetGovernanceDeployments.addresses.GovernorAlpha2,
       governorAlpha2StartBlock: '11934064',
       governorBravoDelegatorAddress:
-        bscMainnetGovernanceDeployments.contracts.GovernorBravoDelegator.address,
+        bscMainnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '13729317',
-      xvsTokenAddress: bscMainnetCoreDeployments.contracts.XVS.address,
+      xvsTokenAddress: bscMainnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '858561',
-      xvsVaultAddress: bscMainnetCoreDeployments.contracts.XVSVault.address,
+      xvsVaultAddress: bscMainnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13018718',
       xvsVaultPid: '0',
+      omnichainProposalSenderAddress: '0x36a69dE601381be7b0DcAc5D5dD058825505F8f6',
+      omnichainProposalSenderStartBlock: '39375361',
     },
   };
 

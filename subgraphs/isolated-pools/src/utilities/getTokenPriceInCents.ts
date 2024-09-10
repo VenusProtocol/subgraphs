@@ -9,7 +9,7 @@ import valueOrNotAvailableIntIfReverted from './valueOrNotAvailableIntIfReverted
 // Used for all vBEP20 contracts
 const getTokenPriceInCents = (
   poolAddress: Address,
-  eventAddress: Address,
+  tokenAddress: Address,
   underlyingDecimals: i32,
 ): BigInt => {
   const pool = getPool(poolAddress);
@@ -17,17 +17,12 @@ const getTokenPriceInCents = (
   let underlyingPrice = NOT_AVAILABLE_BIG_INT;
   if (pool && pool.priceOracleAddress) {
     const oracleAddress = Address.fromBytes(pool.priceOracleAddress);
-    /* PriceOracle2 is used from starting of Comptroller.
-     * This must use the vToken address.
-     *
-     * Note this returns the value without factoring in token decimals and wei, so we must divide
-     * the number by (bnbDecimals - tokenDecimals) and again by the mantissa.
-     */
-    const mantissaDecimalFactor = exponentToBigInt(36 - underlyingDecimals);
+
+    const mantissaDecimalFactor = exponentToBigInt(16 - underlyingDecimals);
     const priceOracle = PriceOracle.bind(oracleAddress);
 
     const underlyingPriceBigInt = valueOrNotAvailableIntIfReverted(
-      priceOracle.try_getUnderlyingPrice(eventAddress),
+      priceOracle.try_getUnderlyingPrice(tokenAddress),
     );
     underlyingPrice = underlyingPriceBigInt.div(mantissaDecimalFactor);
   }

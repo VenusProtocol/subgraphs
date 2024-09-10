@@ -1,0 +1,16 @@
+query AccountVTokenByAccountId($accountId: String!) {
+  accountVTokens(where: { account: $accountId }) {
+    id
+    market {
+      id
+    }
+    account {
+      id
+    }
+    enteredMarket
+    totalUnderlyingRedeemedMantissa
+    totalUnderlyingRepaidMantissa
+  }
+}
+
+

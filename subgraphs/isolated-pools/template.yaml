@@ -1,5 +1,5 @@
 specVersion: 0.0.2
-description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
+description: Venus is an open-source protocol for algorithmic, efficient Money Markets.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
   file: ./schema.graphql
@@ -30,8 +30,6 @@ dataSources:
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
-        - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
@@ -59,7 +57,6 @@ templates:
         - User
         - Market
         - VTokenInfo
-        - PoolAction
       abis:
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
@@ -69,8 +66,6 @@ templates:
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
         - name: BEP20
           file: ../../packages/isolated-pools-abis/Bep20.json
-        - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
         - name: PriceOracle
           file: ../../node_modules/@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json
         - name: RewardsDistributor
@@ -123,8 +118,6 @@ templates:
           file: ../../packages/isolated-pools-abis/Bep20.json
         - name: Comptroller
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json
-        - name: PoolLens
-          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Lens/PoolLens.sol/PoolLens.json
       eventHandlers:
         - event: Mint(indexed address,uint256,uint256,uint256)
           handler: handleMint

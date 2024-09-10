@@ -1,6 +1,6 @@
 {
   "name": "isolated-pools-subgraph",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -10,31 +10,42 @@
     "generated"
   ],
   "scripts": {
-    "codegen": "npx graph codegen",
-    "create:docker": "npx graph create venusprotocol/venus-isolated-pools --node http://graph-node:8020/",
-    "build:docker": "npx graph build --ipfs http://ipfs:5001",
+    "codegen": "yarn graph codegen",
+    "create:docker": "yarn graph create venusprotocol/venus-isolated-pools --node http://graph-node:8020/",
+    "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-isolated-pools --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:chapel": "yarn prepare:chapel && graph deploy venusprotocol/venus-isolated-pools-chapel --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy venusprotocol/venus-isolated-pools --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:ethereum": "yarn prepare:ethereum && npx graph deploy venusprotocol/venus-isolated-pools-ethereum --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "deploy:sepolia": "yarn prepare:sepolia && npx graph deploy venusprotocol/venus-isolated-pools-sepolia --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
-    "prepare:docker": "NETWORK=docker npx ts-node config/index.ts",
-    "prepare:chapel": "NETWORK=chapel npx ts-node config/index.ts",
-    "prepare:bsc": "NETWORK=bsc npx ts-node config/index.ts",
-    "prepare:ethereum": "NETWORK=mainnet npx ts-node config/index.ts",
-    "prepare:sepolia": "NETWORK=sepolia npx ts-node config/index.ts",
-    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
+    "deploy:docker": "yarn prepare:docker && yarn codegen && yarn graph deploy venusprotocol/venus-isolated-pools --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:chapel": "yarn prepare:chapel && yarn codegen && graph deploy --studio venus-isolated-pools-chapel",
+    "deploy:bsc": "yarn prepare:bsc && yarn codegen && graph deploy --studio venus-isolated-pools",
+    "deploy:ethereum": "yarn prepare:ethereum  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-ethereum",
+    "deploy:sepolia": "yarn prepare:sepolia  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-sepolia",
+    "deploy:arbitrumSepolia": "yarn prepare:arbitrumSepolia && yarn codegen && yarn graph deploy --studio venus-il-arbitrumsepolia",
+    "deploy:arbitrum": "yarn prepare:arbitrum  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-arbitrum",
+    "deploy:zksyncSepolia": "yarn prepare:zksyncSepolia  && yarn codegen && yarn graph deploy --studio venus-il-zksync-sepolia",
+    "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
+    "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
+    "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
+    "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
+    "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
+    "prepare:opbnbMainnet": "NETWORK=opbnbMainnet yarn ts-node config/index.ts",
+    "prepare:arbitrumSepolia": "NETWORK=arbitrumSepolia yarn ts-node config/index.ts",
+    "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
+    "prepare:zksyncSepolia": "NETWORK=zksyncSepolia yarn ts-node config/index.ts",
+    "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:docker && graph test",
-    "test:integration": "npx hardhat test tests/integration/index.ts --network localhost"
+    "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "2.5.0"
+    "@venusprotocol/isolated-pools": "3.3.0"
   },
   "devDependencies": {
+    "@graphprotocol/client-cli": "3.0.0",
+    "@graphprotocol/graph-cli": "^0.77.0",
     "apollo-fetch": "^0.7.0",
+    "hardhat": "^2.10.2",
+    "ts-node": "^10.9.2",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }

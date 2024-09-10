@@ -12,10 +12,13 @@ import {
   VoteCast,
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { CRITICAL, FAST_TRACK, NORMAL } from '../constants';
+import { BIGINT_ZERO } from '../constants';
+import associateSourceAndRemoteProposals from '../operations/associateSourceAndRemoteProposals';
 import { createProposal, createVoteBravo } from '../operations/create';
 import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
+  updateBravoProposalVotes,
   updateGovernanceEntity,
   updateProposalCanceled,
   updateProposalExecuted,
@@ -45,10 +48,14 @@ export function handleProposalQueued(event: ProposalQueued): void {
 
 export function handleProposalExecuted(event: ProposalExecuted): void {
   updateProposalExecuted<ProposalExecuted>(event);
+  associateSourceAndRemoteProposals(event);
 }
 
 export function handleBravoVoteCast(event: VoteCast): void {
-  createVoteBravo(event);
+  if (event.params.votes.gt(BIGINT_ZERO)) {
+    createVoteBravo(event);
+    updateBravoProposalVotes(event.params.proposalId, event.params.votes, event.params.support);
+  }
 }
 
 export function handleNewImplementation(event: NewImplementation): void {

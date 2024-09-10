@@ -1,8 +1,11 @@
 query AccountById($id: ID!) {
   account(id: $id) {
     id
-    tokens {
+    pools {
       id
+      tokens {
+        id
+      }
     }
     countLiquidated
     countLiquidator

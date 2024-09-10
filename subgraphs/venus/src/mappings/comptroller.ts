@@ -1,5 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
+import { Address } from '@graphprotocol/graph-ts';
+
 import {
   DistributedSupplierVenus,
   MarketEntered,
@@ -13,7 +15,6 @@ import {
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
-  getOrCreateAccountVTokenTransaction,
   getOrCreateComptroller,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
@@ -24,22 +25,20 @@ export function handleMarketListed(event: MarketListed): void {
 
 export function handleMarketEntered(event: MarketEntered): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const account = getOrCreateAccount(event.params.account.toHex());
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  getOrCreateAccount(event.params.account);
+  const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
+  const accountVToken = result.entity;
   accountVToken.enteredMarket = true;
   accountVToken.save();
-
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleMarketExited(event: MarketExited): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const account = getOrCreateAccount(event.params.account.toHex());
-  const accountVToken = getOrCreateAccountVToken(market.id, market.symbol, account.id, event);
+  getOrCreateAccount(event.params.account);
+  const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
+  const accountVToken = result.entity;
   accountVToken.enteredMarket = false;
   accountVToken.save();
-
-  getOrCreateAccountVTokenTransaction(accountVToken.id, event);
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {

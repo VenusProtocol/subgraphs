@@ -1,5 +1,5 @@
 specVersion: 0.0.4
-description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
+description: Venus Protocol Reserve manages income generated from Venus money markets.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
   file: ./schema.graphql
@@ -48,6 +48,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -80,6 +82,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -112,6 +116,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/RiskFundConverter.sol/RiskFundConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -142,6 +148,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -174,6 +182,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated
@@ -206,6 +216,8 @@ dataSources:
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
         - name: RiskFund
           file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
       eventHandlers:
         - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
           handler: handleConversionConfigUpdated

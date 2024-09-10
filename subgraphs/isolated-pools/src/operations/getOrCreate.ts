@@ -1,11 +1,11 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { VToken } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
+  AccountPool,
   AccountVToken,
-  AccountVTokenTransaction,
   Market,
   Pool,
   RewardSpeed,
@@ -15,14 +15,14 @@ import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
 import {
+  getAccountPoolId,
   getAccountVTokenId,
-  getAccountVTokenTransactionId,
   getMarketId,
   getPoolId,
   getRewardSpeedId,
   getRewardsDistributorId,
 } from '../utilities/ids';
-import { createAccount, createMarket, createPool } from './create';
+import { createAccount, createAccountPool, createMarket, createPool } from './create';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
@@ -49,44 +49,28 @@ export const getOrCreatePool = (comptroller: Address): Pool => {
 };
 
 export const getOrCreateAccount = (accountAddress: Address): Account => {
-  let account = Account.load(accountAddress.toHexString());
+  let account = Account.load(accountAddress);
   if (!account) {
     account = createAccount(accountAddress);
   }
   return account;
 };
 
-export const getOrCreateAccountVTokenTransaction = (
+export const getOrCreateAccountPool = (
   accountAddress: Address,
-  txHash: Bytes,
-  timestamp: BigInt,
-  block: BigInt,
-  logIndex: BigInt,
-  marketId: Address,
-): AccountVTokenTransaction => {
-  const accountVTokenTransactionId = getAccountVTokenTransactionId(
-    accountAddress,
-    txHash,
-    logIndex,
-  );
-  let transaction = AccountVTokenTransaction.load(accountVTokenTransactionId.toString());
-
-  if (transaction == null) {
-    const accountVTokenId = getAccountVTokenId(marketId, accountAddress);
-    transaction = new AccountVTokenTransaction(accountVTokenTransactionId);
-    transaction.accountVToken = accountVTokenId;
-    transaction.txHash = txHash;
-    transaction.timestamp = timestamp;
-    transaction.block = block;
-    transaction.logIndex = logIndex;
-    transaction.save();
+  poolAddress: Address,
+): AccountPool => {
+  const accountPoolId = getAccountPoolId(accountAddress, poolAddress);
+  let accountPool = AccountPool.load(accountPoolId);
+  if (!accountPool) {
+    accountPool = createAccountPool(accountAddress, poolAddress);
   }
-
-  return transaction;
+  return accountPool;
 };
 
 export const getOrCreateAccountVToken = (
   accountAddress: Address,
+  poolAddress: Address,
   marketAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
 ): AccountVToken => {
@@ -94,8 +78,9 @@ export const getOrCreateAccountVToken = (
   let accountVToken = AccountVToken.load(accountVTokenId);
   if (!accountVToken) {
     accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.account = accountAddress.toHexString();
-    accountVToken.market = marketAddress.toHexString();
+    accountVToken.account = accountAddress;
+    accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
+    accountVToken.market = marketAddress;
     accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;
     // we need to set an initial real onchain value to this otherwise it will never
@@ -105,7 +90,7 @@ export const getOrCreateAccountVToken = (
 
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
-    accountVToken.accountSupplyBalanceMantissa = suppliedAmountMantissa;
+    accountVToken.accountVTokenSupplyBalanceMantissa = suppliedAmountMantissa;
     accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
@@ -123,8 +108,8 @@ export const getOrCreateRewardSpeed = (
   let rewardSpeed = RewardSpeed.load(id);
   if (!rewardSpeed) {
     rewardSpeed = new RewardSpeed(id);
-    rewardSpeed.rewardsDistributor = rewardsDistributorAddress.toHexString();
-    rewardSpeed.market = marketAddress.toHexString();
+    rewardSpeed.rewardsDistributor = rewardsDistributorAddress;
+    rewardSpeed.market = marketAddress;
     rewardSpeed.borrowSpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.save();
@@ -141,10 +126,9 @@ export const getOrCreateRewardDistributor = (
 
   if (!rewardsDistributor) {
     const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
-    const poolAddress = comptrollerAddress.toHexString();
     const rewardToken = rewardDistributorContract.rewardToken();
     rewardsDistributor = new RewardsDistributor(id);
-    rewardsDistributor.pool = poolAddress;
+    rewardsDistributor.pool = comptrollerAddress;
     rewardsDistributor.reward = rewardToken;
     rewardsDistributor.save();
 

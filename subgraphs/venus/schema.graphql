@@ -2,8 +2,8 @@
 The Comptroller type has protocol level variables stored
 """
 type Comptroller @entity {
-    "ID is set to 1"
-    id: ID!
+    "ID is set to comptroller address"
+    id: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
@@ -18,6 +18,8 @@ type Comptroller @entity {
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
+    "VToken address"
+    id: Bytes!
     #Fields that match Venus API
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
@@ -37,12 +39,10 @@ type Market @entity {
     supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
-    "VToken address"
-    id: ID!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
-    "Total underlying supplied"
-    totalSupplyMantissa: BigInt!
+    "Total vToken supplied"
+    totalSupplyVTokenMantissa: BigInt!
     "Underlying token address"
     underlyingAddress: Bytes!
     "Underlying token name"
@@ -56,11 +56,13 @@ type Market @entity {
     "Timestamp the market was most recently updated"
     blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndexMantissa: BigInt!
+    borrowIndex: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactor: BigInt!
-    "Underlying token price in USD cents"
-    underlyingPriceCents: BigInt!
+    "Last recorded Underlying token price in USD cents"
+    lastUnderlyingPriceCents: BigInt!
+    "Block price was last updated"
+    lastUnderlyingPriceBlockNumber: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "Total XVS Distributed for this market"
@@ -84,7 +86,7 @@ participated in, along with liquidation information.
 """
 type Account @entity {
     "User BNB address"
-    id: ID!
+    id: Bytes!
     "Array of VTokens user is in"
     tokens: [AccountVToken!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -101,224 +103,52 @@ as interest earned or paid
 """
 type AccountVToken @entity {
     "Concatenation of VToken address and user address"
-    id: ID!
+    id: Bytes!
     "Relation to market"
     market: Market!
-    "Symbol of the vToken"
-    symbol: String!
     "Relation to user"
     account: Account!
-    "Transactions data"
-    transactions: [AccountVTokenTransaction!]! @derivedFrom(field:"account")
-    "Block number this asset was updated at in the contract"
-    accrualBlockNumber: BigInt!
+    "Borrow Index this position last accrued interest"
+    borrowIndex: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
-
     "VToken balance of the user"
     vTokenBalanceMantissa: BigInt!
-    "Total amount of underlying supplied"
-    totalUnderlyingSuppliedMantissa: BigInt!
     "Total amount of underlying redeemed"
     totalUnderlyingRedeemedMantissa: BigInt!
-    "The value of the borrow index upon users last interaction"
-    accountBorrowIndexMantissa: BigInt!
-    "Total amount underlying borrowed, exclusive of interest"
-    totalUnderlyingBorrowedMantissa: BigInt!
     "Total amount underlying repaid"
     totalUnderlyingRepaidMantissa: BigInt!
-    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+    "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
     storedBorrowBalanceMantissa: BigInt!
 }
 
-"""
-Auxiliary entity for AccountVToken
-"""
-type AccountVTokenTransaction @entity(immutable: true) {
-  id: ID!
-
-  account: AccountVToken!
-
-  tx_hash: Bytes!
-
-  timestamp: BigInt!
-
-  block: BigInt!
-
-  logIndex: BigInt!
+enum EventType {
+    MINT
+    MINT_BEHALF
+    REDEEM
+    BORROW
+    TRANSFER
+    LIQUIDATE
+    REPAY
 }
 
 """
 An interface for a transfer of any vToken. TransferEvent, MintEvent,
 RedeemEvent, and LiquidationEvent all use this interface
 """
-interface VTokenTransfer {
+type Transaction @entity {
     "Transaction hash concatenated with log index"
-    id: ID!
-    "vTokens transferred"
+    id: Bytes!
+    "enum of event type"
+    type: EventType!
+    "The account that sent the tokens, usually vToken"
+    from: Bytes!
+    "count of vTokens transferred"
     amountMantissa: BigInt!
     "Account that received tokens"
     to: Bytes!
-    "Account that sent tokens"
-    from: Bytes!
     "Block number"
     blockNumber: Int!
     "Block time"
     blockTime: Int!
-}
-
-"""
-TransferEvent will be stored for every mint, redeem, liquidation, and any normal
-transfer between two accounts.
-"""
-type TransferEvent implements VTokenTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "vTokens transferred"
-    amountMantissa: BigInt!
-    "Account that received tokens"
-    to: Bytes!
-    "Account that sent tokens"
-    from: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the vToken transferred"
-    vTokenAddress: Bytes!
-}
-
-"""
-MintEvent stores information for mints. From address will always be a vToken
-market address
-"""
-type MintEvent implements VTokenTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "vTokens transferred"
-    amountMantissa: BigInt!
-    "Account that received tokens (minter)"
-    to: Bytes!
-    "Account that sent tokens (VToken contract)"
-    from: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the vToken minted"
-    vTokenAddress: Bytes!
-    "Underlying token amount transferred"
-    underlyingAmountMantissa: BigInt!
-}
-
-"""
-RedeemEvent stores information for redeems. To address will always be a
-vToken market address
-"""
-type RedeemEvent implements VTokenTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "vTokens transferred"
-    amountMantissa: BigInt!
-    "Account that received tokens (VToken contract)"
-    to: Bytes!
-    "Account that sent tokens (redeemer)"
-    from: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the vToken transferred"
-    vTokenAddress: Bytes!
-    "Underlying token amount transferred"
-    underlyingAmountMantissa: BigInt!
-}
-
-"""
-LiquidationEvent stores information for liquidations. The event is emitted from
-the vToken market address.
-"""
-type LiquidationEvent implements VTokenTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "vTokens seized"
-    amountMantissa: BigInt!
-    "Liquidator receiving tokens"
-    to: Bytes!
-    "Account being liquidated (borrower)"
-    from: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the vToken that was seized as collateral"
-    vTokenCollateralAddress: Bytes!
-    "Address of the underlying asset repaid through liquidation"
-    underlyingRepaidAddress: Bytes!
-    "Underlying vToken amount that was repaid by liquidator"
-    underlyingRepayAmountMantissa: BigInt!
-}
-
-"""
-Underlying transfers are transfers of underlying collateral for both borrows
-and repays
-"""
-interface UnderlyingTransfer {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "Amount of underlying borrowed"
-    amountMantissa: BigInt!
-    "Total borrows of this asset the account has"
-    accountBorrowsMantissa: BigInt!
-    "Account that borrowed the tokens"
-    borrower: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the  underlying token that was seized as transferred"
-    underlyingAddress: Bytes!
-}
-
-"""
-BorrowEvent stores information for borrows
-"""
-type BorrowEvent implements UnderlyingTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "Amount of underlying borrowed"
-    amountMantissa: BigInt!
-    "Total borrows of this asset the account has"
-    accountBorrowsMantissa: BigInt!
-    "Account that borrowed the tokens"
-    borrower: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the  underlying token that was borrowed"
-    underlyingAddress: Bytes!
-}
-
-"""
-RepayEvent stores information for repays. Payer is not always the same as
-borrower, such as in the event of a Liquidation
-"""
-type RepayEvent implements UnderlyingTransfer @entity(immutable: true) {
-    "Transaction hash concatenated with log index"
-    id: ID!
-    "Amount of underlying repaid"
-    amountMantissa: BigInt!
-    "Total borrows of this asset the account has"
-    accountBorrowsMantissa: BigInt!
-    "Account that borrowed the tokens"
-    borrower: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
-    "Address of the  underlying token that was repaid"
-    underlyingAddress: Bytes!
-    "Payer of the borrow funds"
-    payer: Bytes!
 }

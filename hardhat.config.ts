@@ -1,6 +1,7 @@
 import 'module-alias/register';
-import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-deploy';
+import "@nomicfoundation/hardhat-chai-matchers";
+import "@nomiclabs/hardhat-ethers";
 import 'hardhat-dependency-compiler';
 import { HardhatUserConfig } from 'hardhat/config';
 
@@ -34,44 +35,22 @@ const compilers = {
       },
     },
     {
-      version: '0.8.13',
+      version: "0.8.25",
       settings: {
         optimizer: {
           enabled: true,
+          details: {
+            yul: !process.env.CI,
+          },
         },
+        evmVersion: "paris",
         outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
+          "*": {
+            "*": ["storageLayout"],
           },
         },
       },
     },
-    {
-      version: '0.8.17',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    },
-    {
-      version: '0.8.20',
-      settings: {
-        optimizer: {
-          enabled: true,
-        },
-        outputSelection: {
-          '*': {
-            '*': ['storageLayout'],
-          },
-        },
-      },
-    }
   ],
 }
 
@@ -82,6 +61,12 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 56,
       allowUnlimitedContractSize: true,
+      mining: {
+        auto: true,
+        mempool: {
+          order: "fifo"
+        }
+      }
     },
   },
   paths: {
@@ -94,10 +79,24 @@ const config: HardhatUserConfig = {
   // Hardhat deploy
   namedAccounts: {
     deployer: 0, // here this will by default take the first account as deployer
-    acc1: 1,
-    acc2: 2,
-    proxyAdmin: 3,
-  }
+    supplier1: 1, 
+    supplier2: 2,
+    supplier3: 3,
+    borrower1: 4, 
+    borrower2: 5, 
+    borrower3: 6,
+    liquidator1: 7, 
+    liquidator2: 8, 
+    liquidator3: 9, 
+    acc1: 10,
+    acc2: 11
+  },
+  dependencyCompiler: {
+    paths: [
+      "hardhat-deploy/solc_0.8/proxy/OptimizedTransparentUpgradeableProxy.sol",
+      "hardhat-deploy/solc_0.8/openzeppelin/proxy/transparent/ProxyAdmin.sol",
+    ],
+  },
 };
 
 export default config;

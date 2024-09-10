@@ -9,6 +9,8 @@ import {
   PermissionsDocument,
   ProposalByIdDocument,
   ProposalsDocument,
+  RemoteProposalByIdDocument,
+  TrustedRemoteByIdDocument,
 } from './.graphclient';
 
 class SubgraphClient {
@@ -61,6 +63,16 @@ class SubgraphClient {
 
   async getGovernance() {
     const result = await this.query(GovernanceDocument, {});
+    return result;
+  }
+
+  async getTrustedRemote({ id }: { id: string }) {
+    const result = await this.query(TrustedRemoteByIdDocument, { id: id.toString() });
+    return result;
+  }
+
+  async getRemoteProposal({ id }: { id: string }) {
+    const result = await this.query(RemoteProposalByIdDocument, { id: id.toString() });
     return result;
   }
 }

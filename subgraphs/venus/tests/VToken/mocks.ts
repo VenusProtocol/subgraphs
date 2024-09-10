@@ -222,3 +222,17 @@ export const createAccountVTokenBalanceOfMock = (
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromSignedBigInt(balance)]);
 };
+
+export const createBorrowBalanceCurrentMock = (
+  vTokenAddress: Address,
+  accountAddress: Address,
+  balance: BigInt,
+): void => {
+  createMockedFunction(
+    vTokenAddress,
+    'borrowBalanceCurrent',
+    'borrowBalanceCurrent(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(accountAddress)])
+    .returns([ethereum.Value.fromSignedBigInt(balance)]);
+};

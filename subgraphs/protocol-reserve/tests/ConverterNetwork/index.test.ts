@@ -28,14 +28,19 @@ describe('Converter Network', () => {
     handleConverterAdded(converterAddedEvent);
 
     const converterNetworkId = getConverterNetworkId(converterNetworkAddress);
-    const tokenConverterId = getTokenConverterId(tokenConverter1Address);
+    const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    assert.fieldEquals('TokenConverter', tokenConverterId, 'converterNetwork', converterNetworkId);
+    assert.fieldEquals(
+      'TokenConverter',
+      tokenConverterId,
+      'converterNetwork',
+      converterNetworkId.toHexString(),
+    );
   });
 
   test('should index removing token converter', () => {
-    const tokenConverterId = getTokenConverterId(tokenConverter2Address);
-    const converterNetworkId = getConverterNetworkId(converterNetworkAddress);
+    const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
+    const converterNetworkId = getConverterNetworkId(converterNetworkAddress).toHexString();
     const converterAddedEvent = createConverterAddedEvent(
       converterNetworkAddress,
       tokenConverter2Address,

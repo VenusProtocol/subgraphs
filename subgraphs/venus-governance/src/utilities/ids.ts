@@ -1,20 +1,21 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
-import { GOVERNANCE, SEPERATOR } from '../constants';
+import { GOVERNANCE } from '../constants';
+import { omnichainProposalSenderAddress } from '../constants/addresses';
 
-export const getVoteId = (voter: Address, proposalId: BigInt): string =>
-  [voter.toHexString(), proposalId.toString()].join(SEPERATOR);
+export const getVoteId = (voter: Address, proposalId: BigInt): Bytes =>
+  voter.concatI32(proposalId.toI32());
 
-export const getPermissionId = (
-  accountAddress: Address,
-  contractAddress: Address,
-  functionSig: string,
-): string =>
-  [accountAddress.toHexString(), contractAddress.toHexString(), functionSig].join(SEPERATOR);
+export const getRoleId = (account: Address, role: Bytes): Bytes => account.concat(role);
 
-export const getRoleId = (role: Bytes, account: Address, sender: Address): string =>
-  [role.toHexString(), account.toHexString(), sender.toHexString()].join(SEPERATOR);
-
-export const getDelegateId = (account: Address): string => account.toHexString();
+export const getDelegateId = (account: Address): Bytes => account;
 
 export const getGovernanceId = (): string => GOVERNANCE;
+
+export const getOmnichainProposalSenderId = (): Bytes => omnichainProposalSenderAddress;
+
+export const getProposalId = (id: BigInt): string => id.toString();
+
+export const getTrustedRemoteId = (id: i32): Bytes => Bytes.fromI32(id);
+
+export const getMaxDailyLimitId = (id: i32): Bytes => Bytes.fromI32(id);

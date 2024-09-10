@@ -1,0 +1,38 @@
+query AccountPositions($id: ID!) {
+  account(id: $id) {
+    id
+    pools {
+      id
+      pool {
+        id
+        priceOracleAddress
+        liquidationIncentiveMantissa
+        closeFactorMantissa
+        minLiquidatableCollateralMantissa
+      }
+      collateral: tokens(where: { accountVTokenSupplyBalanceMantissa_gt: 0 }) {
+        id
+        accountVTokenSupplyBalanceMantissa
+        market {
+          id
+          liquidationThresholdMantissa
+          exchangeRateMantissa
+          underlyingAddress
+          vTokenDecimals
+          underlyingDecimals
+        }
+      }
+      borrows: tokens(where: { accountBorrowBalanceMantissa_gt: 0 }) {
+        id
+        accountBorrowBalanceMantissa
+        accountBorrowIndexMantissa
+        market {
+          id
+          underlyingAddress
+          vTokenDecimals
+          underlyingDecimals
+        }
+      } 
+    }
+  }
+}

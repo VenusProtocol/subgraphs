@@ -78,7 +78,7 @@ describe('Alpha', () => {
     assertDelegateDocument('totalVotesMantissa', '0');
     assertDelegateDocument('delegateCount', '0');
 
-    const delegate = Delegate.load(user1.toHex())!;
+    const delegate = Delegate.load(user1)!;
     const proposals = delegate.proposals.load();
     assert.stringEquals('1', proposals[0].id);
 
@@ -106,7 +106,7 @@ describe('Alpha', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('canceled', 'true');
+    assertProposalDocument('canceled', proposalCanceledEvent.transaction.hash.toHexString());
   });
 
   test('queue proposal', () => {
@@ -120,7 +120,7 @@ describe('Alpha', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    assertProposalDocument('queued', 'true');
+    assertProposalDocument('queued', proposalQueuedEvent.transaction.hash.toHexString());
     assertProposalDocument('executionEta', eta.toString());
   });
 
@@ -138,7 +138,7 @@ describe('Alpha', () => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
 
-    assertProposalDocument('executed', 'true');
+    assertProposalDocument('executed', proposalExecutedEvent.transaction.hash.toHexString());
   });
 
   test('vote cast', () => {
@@ -150,9 +150,16 @@ describe('Alpha', () => {
 
     // Vote
     const assertVoteDocument = (key: string, value: string): void => {
-      const voteId = getVoteId(user1, BigInt.fromI32(1));
+      const voteId = getVoteId(user1, BigInt.fromI32(1)).toHexString();
       assert.fieldEquals('Vote', voteId, key, value);
     };
+
+    const assertProposalDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Proposal', '1', key, value);
+    };
+    assertProposalDocument('forVotes', votes.toString());
+    assertProposalDocument('abstainVotes', '0');
+    assertProposalDocument('againstVotes', '0');
 
     assertVoteDocument('proposal', '1');
     assertVoteDocument('voter', user1.toHexString());

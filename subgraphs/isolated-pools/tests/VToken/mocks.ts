@@ -1,61 +1,80 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
-import { poolLensAddress, poolRegistryAddress } from '../../src/constants/addresses';
+import { poolRegistryAddress } from '../../src/constants/addresses';
 
 export const mockPriceOracleAddress = Address.fromString(
   '0xb0b0000000000000000000000000000000000000',
 );
 
-// type PoolsArray = [name: string, creator: Address, comptroller: Address, blockPosted: BigInt, timestampPosted: BigInt][];
-export const createPoolRegistryMock = (pools: Array<Array<ethereum.Value>>): void => {
-  pools.forEach((pool): void => {
-    // address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256
-    const vTokenData = changetype<ethereum.Tuple>([
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // address
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // exchangeRateCurrent
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // supplyRatePerBlock
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // borrowRatePerBlock
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // reserveFactorMantissa
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // supplyCaps
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // borrowCaps
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // totalBorrows
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // totalReserves
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // totalSupply
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // totalCash
-      ethereum.Value.fromBoolean(true), // isListed
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // collateralFactorMantissa
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000000')), // underlyingAssetAddress
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // vTokenDecimals
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(0)), // underlyingDecimals
-    ]);
+export class PoolInfo {
+  name: string;
+  creator: Address;
+  comptroller: Address;
+  constructor(name: string, creator: Address, comptroller: Address) {
+    this.name = name;
+    this.creator = creator;
+    this.comptroller = comptroller;
+  }
+}
 
-    // string,address,address,uint256,uint256,uint8,string,string,string,address,uint256,uint256,uint256,uint256
-    const lensTupleArray: Array<ethereum.Value> = [
-      pool[0], // name
-      pool[1], // creator
-      pool[2], // comptroller
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(100)), // blockPosted
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1662990421')), // timestampPosted
-      ethereum.Value.fromString('Games'), // category
-      ethereum.Value.fromString('/logo.png'), // logoURL
-      ethereum.Value.fromString('Game related tokens'), // description
-      ethereum.Value.fromAddress(mockPriceOracleAddress), // priceOracle
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5)), // closeFactor
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7)), // liquidationIncentive
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6)), // minLiquidatableCollateralMantissa
-      ethereum.Value.fromArray([ethereum.Value.fromTuple(vTokenData)]), // vTokens
-    ];
-    const lensTuple = changetype<ethereum.Tuple>(lensTupleArray);
-    const lensTupleValue = ethereum.Value.fromTuple(lensTuple);
+export const createPoolRegistryMock = (pools: Array<PoolInfo>): void => {
+  pools.forEach((pool): void => {
+    createMockedFunction(
+      poolRegistryAddress,
+      'getPoolByComptroller',
+      'getPoolByComptroller(address):((string,address,address,uint256,uint256))',
+    )
+      .withArgs([ethereum.Value.fromAddress(pool.comptroller)])
+      .returns([
+        ethereum.Value.fromTuple(
+          changetype<ethereum.Tuple>([
+            ethereum.Value.fromString(pool.name),
+            ethereum.Value.fromAddress(pool.creator),
+            ethereum.Value.fromAddress(pool.comptroller),
+            ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(100)),
+            ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1662990421')),
+          ]),
+        ),
+      ]);
 
     createMockedFunction(
-      poolLensAddress,
-      'getPoolByComptroller',
-      'getPoolByComptroller(address,address):((string,address,address,uint256,uint256,string,string,string,address,uint256,uint256,uint256,(address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,uint256,address,uint256,uint256)[]))',
+      poolRegistryAddress,
+      'getVenusPoolMetadata',
+      'getVenusPoolMetadata(address):((string,string,string))',
     )
-      .withArgs([ethereum.Value.fromAddress(poolRegistryAddress), pool[2]])
-      .returns([lensTupleValue]);
+      .withArgs([ethereum.Value.fromAddress(pool.comptroller)])
+      .returns([
+        ethereum.Value.fromTuple(
+          changetype<ethereum.Tuple>([
+            ethereum.Value.fromString('Games'),
+            ethereum.Value.fromString('/logo.png'),
+            ethereum.Value.fromString('Game related tokens'),
+          ]),
+        ),
+      ]);
+
+    createMockedFunction(pool.comptroller, 'oracle', 'oracle():(address)').returns([
+      ethereum.Value.fromAddress(mockPriceOracleAddress),
+    ]);
+
+    createMockedFunction(
+      pool.comptroller,
+      'closeFactorMantissa',
+      'closeFactorMantissa():(uint256)',
+    ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
+
+    createMockedFunction(
+      pool.comptroller,
+      'minLiquidatableCollateral',
+      'minLiquidatableCollateral():(uint256)',
+    ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6))]);
+
+    createMockedFunction(
+      pool.comptroller,
+      'liquidationIncentiveMantissa',
+      'liquidationIncentiveMantissa():(uint256)',
+    ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(7))]);
   });
 };
 

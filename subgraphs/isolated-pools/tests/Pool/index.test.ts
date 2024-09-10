@@ -26,14 +26,10 @@ import {
   handleNewSupplyCap,
 } from '../../src/mappings/pool';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import {
-  getAccountVTokenId,
-  getAccountVTokenTransactionId,
-  getMarketActionId,
-} from '../../src/utilities/ids';
+import { getAccountVTokenId, getMarketActionId } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createRewardsDistributorMock } from '../RewardsDistributor/mocks';
-import { createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { PoolInfo, createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import {
   createActionPausedMarketEvent,
   createMarketAddedEvent,
@@ -95,13 +91,11 @@ beforeAll(() => {
     ]);
 
   createPoolRegistryMock([
-    [
-      ethereum.Value.fromString('Gamer Pool'),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000072')),
-      ethereum.Value.fromAddress(Address.fromString('0x0000000000000000000000000000000000000c0c')),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(9000000)),
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(6235232)),
-    ],
+    new PoolInfo(
+      'Gamer Pool',
+      Address.fromString('0x0000000000000000000000000000000000000072'),
+      comptrollerAddress,
+    ),
   ]);
 
   createMockedFunction(comptrollerAddress, 'getAllMarkets', 'getAllMarkets():(address[])').returns([
@@ -142,25 +136,19 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenTransactionId = getAccountVTokenTransactionId(
-      accountAddress,
-      marketEnteredEvent.transaction.hash,
-      marketEnteredEvent.logIndex,
-    );
     const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
-      'AccountVTokenTransaction',
-      accountVTokenTransactionId,
+      'AccountVToken',
+      accountVTokenId.toHexString(),
       'id',
-      accountVTokenTransactionId,
+      accountVTokenId.toHexString(),
     );
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'true');
+    assert.fieldEquals('AccountVToken', accountVTokenId.toHexString(), 'enteredMarket', 'true');
     assert.fieldEquals(
       'AccountVToken',
-      accountVTokenId,
+      accountVTokenId.toHexString(),
       'accrualBlockNumber',
       marketEnteredEvent.block.number.toString(),
     );
@@ -175,20 +163,9 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenTransactionId = getAccountVTokenTransactionId(
-      accountAddress,
-      marketExitedEvent.transaction.hash,
-      marketExitedEvent.logIndex,
-    );
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress).toHexString();
 
     assertAccountDocument('id', accountAddress.toHexString());
-    assert.fieldEquals(
-      'AccountVTokenTransaction',
-      accountVTokenTransactionId,
-      'id',
-      accountVTokenTransactionId,
-    );
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
     assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'false');
     assert.fieldEquals(
@@ -297,7 +274,7 @@ describe('Pool Events', () => {
 
     handleActionPausedMarket(marketActionPausedEvent);
 
-    const id = getMarketActionId(vTokenAddress, action);
+    const id = getMarketActionId(vTokenAddress, action).toHexString();
 
     assert.fieldEquals('MarketAction', id, 'id', id);
     assert.fieldEquals('MarketAction', id, 'vToken', vTokenAddress.toHexString());
@@ -374,8 +351,8 @@ describe('Pool Events', () => {
       comptrollerAddress.toHexString(),
     );
 
-    const pool = Pool.load(comptrollerAddress.toHex())!;
+    const pool = Pool.load(comptrollerAddress)!;
     const rewardsDistributors = pool.rewardsDistributors.load();
-    assert.stringEquals(rewardsDistributorAddress.toHexString(), rewardsDistributors[0].id);
+    assert.bytesEquals(rewardsDistributorAddress, rewardsDistributors[0].id);
   });
 });
