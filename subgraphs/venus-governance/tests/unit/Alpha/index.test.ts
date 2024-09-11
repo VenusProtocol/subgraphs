@@ -86,7 +86,7 @@ describe('Alpha', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('id', '1');
+
     assertProposalDocument('proposer', user1.toHexString());
     assertProposalDocument('targets', '[0x939bd8d64c0a9583a7dcea9933f7b21697ab6396]');
     assertProposalDocument('values', '[0]');

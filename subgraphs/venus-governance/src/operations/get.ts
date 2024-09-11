@@ -7,6 +7,7 @@ import {
   OmnichainProposalSender,
   Proposal,
   RemoteProposal,
+  RemoteProposalStateTransaction,
 } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import { nullAddress, omnichainProposalSenderAddress } from '../constants/addresses';
@@ -15,6 +16,8 @@ import {
   getGovernanceId,
   getOmnichainProposalSenderId,
   getProposalId,
+  getRemoteProposalId,
+  getRemoteProposalStateTransactionId,
 } from '../utilities/ids';
 
 /**
@@ -57,10 +60,11 @@ export const getOmnichainProposalSenderEntity = (): OmnichainProposalSender => {
   return omnichainProposalSender;
 };
 
-export const getProposal = (id: string): Proposal => {
+export const getProposal = (proposalId: BigInt): Proposal => {
+  const id = getProposalId(proposalId);
   const proposal = Proposal.load(id);
   if (!proposal) {
-    log.critical('Proposal {} not found', [id]);
+    log.critical('Proposal {} not found', [id.toString()]);
   }
   return proposal as Proposal;
 };
@@ -74,11 +78,22 @@ export const getDelegate = (address: Address): Delegate => {
   return delegate as Delegate;
 };
 
-export const getRemoteProposal = (proposalId: BigInt): RemoteProposal => {
-  const id = getProposalId(proposalId);
-  const remoteProposal = RemoteProposal.load(id.toString());
+export const getRemoteProposal = (layerZeroChainId: i32, proposalId: BigInt): RemoteProposal => {
+  const id = getRemoteProposalId(layerZeroChainId, proposalId);
+  const remoteProposal = RemoteProposal.load(id);
   if (!remoteProposal) {
-    log.critical('RemoteProposal {} not found', [id.toString()]);
+    log.critical('RemoteProposal {} not found', [proposalId.toString()]);
   }
   return remoteProposal as RemoteProposal;
+};
+
+export const getRemoteProposalStateTransaction = (
+  proposalId: BigInt,
+): RemoteProposalStateTransaction => {
+  const id = getRemoteProposalStateTransactionId(proposalId);
+  const remoteProposalStateTransaction = RemoteProposalStateTransaction.load(id);
+  if (!remoteProposalStateTransaction) {
+    log.critical('RemoteProposalStateTransaction {} not found', [proposalId.toString()]);
+  }
+  return remoteProposalStateTransaction as RemoteProposalStateTransaction;
 };

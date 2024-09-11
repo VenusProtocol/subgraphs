@@ -16,6 +16,11 @@ export const getOmnichainProposalSenderId = (): Bytes => omnichainProposalSender
 
 export const getProposalId = (id: BigInt): string => id.toString();
 
+export const getRemoteProposalId = (layerZeroChainId: i32, proposalId: BigInt): Bytes =>
+  Bytes.fromI32(layerZeroChainId).concat(Bytes.fromByteArray(Bytes.fromBigInt(proposalId)));
+
+export const getRemoteProposalStateTransactionId = (id: BigInt): string => id.toString();
+
 export const getTrustedRemoteId = (id: i32): Bytes => Bytes.fromI32(id);
 
 export const getMaxDailyLimitId = (id: i32): Bytes => Bytes.fromI32(id);

@@ -242,21 +242,21 @@ type TrustedRemote @entity {
   address: Bytes
   
   "Array of proposals sent to the remote"
-  proposals: [RemoteProposal!]
+  proposals: [RemoteProposal!] @derivedFrom(field: "trustedRemote")
   
   "True if active, false if inactive"
   active: Boolean!
 }
 
 type RemoteProposal @entity {
-  "RemoteProposal Id"
-  id: ID!
+  "Concatenated sourceProposalId and layerZeroChainId"
+  id: Bytes!
 
   "RemoteProposal Id"
-  proposalId: BigInt!
+  proposalId: BigInt
 
   "Remote ChainId where the proposal was sent"
-  layerZeroChainId: Int!
+  trustedRemote: TrustedRemote!
 
   "Targets data for the change"
   targets: [Bytes!]
@@ -273,6 +273,20 @@ type RemoteProposal @entity {
   "Proposal (route) Type (Normal, FastTrack, Critical)"
   type: Int!
 
+  "Proposal Id for the originating BNB Chain proposal"
+  sourceProposal: Proposal!
+
+  "RemoteProposalKey"
+  stateTransactions: RemoteProposalStateTransaction @derivedFrom(field: "key")
+}
+
+type RemoteProposalStateTransaction @entity {
+  "Remote Proposal Id"
+  id: ID!
+
+  "Concatenated sourceProposalId and layerZeroChainId"
+  key: RemoteProposal!
+
   "Transaction Remote Proposal was sent"
   stored: Transaction
 
@@ -284,7 +298,4 @@ type RemoteProposal @entity {
 
   "If execution fails and is stored, this property will show the reason"
   failedReason: Bytes
-
-  "Proposal Id for the originating BNB Chain proposal"
-  sourceProposal: Proposal
 }

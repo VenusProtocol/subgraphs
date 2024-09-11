@@ -3,11 +3,13 @@ import {
   afterEach,
   assert,
   beforeAll,
+  beforeEach,
   clearStore,
   describe,
   test,
 } from 'matchstick-as/assembly/index';
 
+import { RemoteProposalStateTransaction } from '../../../generated/schema';
 import { nullAddress, omnichainProposalSenderAddress } from '../../../src/constants/addresses';
 import {
   handleClearPayload,
@@ -20,7 +22,11 @@ import {
   handleTrustedRemoteRemoved,
   handleUnpaused,
 } from '../../../src/mappings/omnichainProposalSender';
-import { getProposalId, getTrustedRemoteId } from '../../../src/utilities/ids';
+import {
+  getRemoteProposalId,
+  getRemoteProposalStateTransactionId,
+  getTrustedRemoteId,
+} from '../../../src/utilities/ids';
 import {
   createClearPayloadEvent,
   createExecuteRemoteProposalEvent,
@@ -35,12 +41,35 @@ import { createOmnichainProposalSenderMock } from './mocks';
 const MOCK_DESTINATION_ADDRESS = Address.fromString('0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1');
 const MOCK_CONTRACT_ADDRESS = Address.fromString('0xb2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2');
 
+const createRemoteProposalStateTransaction = (
+  layerZeroChainId: i32,
+  proposalId: BigInt,
+  remoteProposalId: BigInt,
+): RemoteProposalStateTransaction => {
+  const key = getRemoteProposalId(layerZeroChainId, proposalId);
+  const id = getRemoteProposalStateTransactionId(remoteProposalId);
+  const remoteProposalStateTransaction = new RemoteProposalStateTransaction(id);
+  remoteProposalStateTransaction.key = key;
+  remoteProposalStateTransaction.save();
+  return remoteProposalStateTransaction;
+};
+
 const cleanup = (): void => {
   clearStore();
 };
 
 afterEach(() => {
   cleanup();
+  createRemoteProposalStateTransaction(1, BigInt.fromI32(1), BigInt.fromI32(1));
+  createRemoteProposalStateTransaction(2, BigInt.fromI32(2), BigInt.fromI32(2));
+  createRemoteProposalStateTransaction(2, BigInt.fromI32(3), BigInt.fromI32(3));
+});
+
+beforeEach(() => {
+  cleanup();
+  createRemoteProposalStateTransaction(1, BigInt.fromI32(1), BigInt.fromI32(1));
+  createRemoteProposalStateTransaction(2, BigInt.fromI32(2), BigInt.fromI32(2));
+  createRemoteProposalStateTransaction(2, BigInt.fromI32(3), BigInt.fromI32(3));
 });
 
 beforeAll(() => {
@@ -78,18 +107,12 @@ describe('OmnichainProposalSender events', () => {
     );
     handleExecuteRemoteProposal(executeRemoteProposalEvent);
 
-    const assertRemoteProposalDocument = (key: string, value: string): void => {
-      const id = getProposalId(BigInt.fromI32(1));
-      assert.fieldEquals('RemoteProposal', id, key, value);
+    const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
+      const id = getRemoteProposalStateTransactionId(BigInt.fromI32(1));
+      assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalDocument('proposalId', '1');
-    assertRemoteProposalDocument('layerZeroChainId', '1');
-    assertRemoteProposalDocument('targets', `[${MOCK_CONTRACT_ADDRESS.toHexString()}]`);
-    assertRemoteProposalDocument('values', '[0]');
-    assertRemoteProposalDocument('signatures', '[test()]');
-    assertRemoteProposalDocument('calldatas', '[0x]');
-    assertRemoteProposalDocument('type', '0');
-    assertRemoteProposalDocument(
+    // stateTransactionKey
+    assertRemoteProposalStateTransactionDocument(
       'executed',
       executeRemoteProposalEvent.transaction.hash.toHexString(),
     );
@@ -113,11 +136,14 @@ describe('OmnichainProposalSender events', () => {
     );
     handleClearPayload(clearPayloadEvent);
 
-    const assertRemoteProposalDocument = (key: string, value: string): void => {
-      const id = getProposalId(BigInt.fromI32(2));
-      assert.fieldEquals('RemoteProposal', id, key, value);
+    const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
+      const id = getRemoteProposalStateTransactionId(BigInt.fromI32(2));
+      assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalDocument('withdrawn', clearPayloadEvent.transaction.hash.toHexString());
+    assertRemoteProposalStateTransactionDocument(
+      'withdrawn',
+      clearPayloadEvent.transaction.hash.toHexString(),
+    );
   });
 
   test('handles retry execution', () => {
@@ -137,11 +163,12 @@ describe('OmnichainProposalSender events', () => {
       false,
     );
     handleClearPayload(clearPayloadEvent);
-    const assertRemoteProposalDocument = (key: string, value: string): void => {
-      const id = getProposalId(BigInt.fromI32(3));
-      assert.fieldEquals('RemoteProposal', id, key, value);
+
+    const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
+      const id = getRemoteProposalStateTransactionId(BigInt.fromI32(3));
+      assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalDocument(
+    assertRemoteProposalStateTransactionDocument(
       'executed',
       executeRemoteProposalEvent.transaction.hash.toHexString(),
     );
@@ -161,13 +188,16 @@ describe('OmnichainProposalSender events', () => {
       Bytes.fromUTF8('Failed'),
     );
     handleStorePayload(storePayloadEvent);
-    const assertRemoteProposalDocument = (key: string, value: string): void => {
-      const id = getProposalId(BigInt.fromI32(1));
-      assert.fieldEquals('RemoteProposal', id, key, value);
-    };
-    assertRemoteProposalDocument('stored', storePayloadEvent.transaction.hash.toHexString());
 
-    assertRemoteProposalDocument('failedReason', Bytes.fromUTF8('Failed').toHex());
+    const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
+      const id = getRemoteProposalStateTransactionId(BigInt.fromI32(1));
+      assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
+    };
+    assertRemoteProposalStateTransactionDocument(
+      'stored',
+      storePayloadEvent.transaction.hash.toHexString(),
+    );
+    assertRemoteProposalStateTransactionDocument('failedReason', Bytes.fromUTF8('Failed').toHex());
   });
 
   test('handles NewAccessControlManager event', () => {

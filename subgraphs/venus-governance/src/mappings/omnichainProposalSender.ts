@@ -9,11 +9,11 @@ import {
   StorePayload,
   TrustedRemoteRemoved,
 } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
+import associateSourceAndRemoteProposals from '../operations/associateSourceAndRemoteProposals';
 import {
-  createRemoteProposalFromExecuteRemoteProposal,
-  createRemoteProposalFromStorePayloadEvent,
-} from '../operations/create';
-import { getOmnichainProposalSenderEntity, getRemoteProposal } from '../operations/get';
+  getOmnichainProposalSenderEntity,
+  getRemoteProposalStateTransaction,
+} from '../operations/get';
 import {
   getOrCreateMaxDailyLimit,
   getOrCreateTransaction,
@@ -29,12 +29,13 @@ export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): v
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
-  const remoteProposal = createRemoteProposalFromExecuteRemoteProposal(event);
-  remoteProposal.save();
+  const transaction = getOrCreateTransaction(event);
+  const remoteProposalStateTransaction = getRemoteProposalStateTransaction(event.params.proposalId);
+  remoteProposalStateTransaction.executed = transaction.id;
+  remoteProposalStateTransaction.save();
 }
 
 export function handleClearPayload(event: ClearPayload): void {
-  const remoteProposal = getRemoteProposal(event.params.proposalId);
   // If receipt includes a withdrawn even the proposal was withdrawn
   // otherwise it execution was retried and successful
   const transaction = getOrCreateTransaction(event);
@@ -46,17 +47,28 @@ export function handleClearPayload(event: ClearPayload): void {
       return v.topics.includes(topic);
     });
     if (withdrawn.length > 0) {
-      remoteProposal.withdrawn = transaction.id;
+      const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
+        event.params.proposalId,
+      );
+      remoteProposalStateTransaction.withdrawn = transaction.id;
+      remoteProposalStateTransaction.save();
     }
   } else {
-    remoteProposal.executed = transaction.id;
+    const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
+      event.params.proposalId,
+    );
+    remoteProposalStateTransaction.executed = transaction.id;
+    remoteProposalStateTransaction.save();
   }
-  remoteProposal.save();
 }
 
 export function handleStorePayload(event: StorePayload): void {
-  const remoteProposal = createRemoteProposalFromStorePayloadEvent(event);
-  remoteProposal.save();
+  associateSourceAndRemoteProposals(event);
+  const transaction = getOrCreateTransaction(event);
+  const remoteProposalStateTransaction = getRemoteProposalStateTransaction(event.params.proposalId);
+  remoteProposalStateTransaction.stored = transaction.id;
+  remoteProposalStateTransaction.failedReason = event.params.reason;
+  remoteProposalStateTransaction.save();
 }
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {
