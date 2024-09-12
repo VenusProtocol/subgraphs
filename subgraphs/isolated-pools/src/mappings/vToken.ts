@@ -235,12 +235,6 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
     collateralMarket.supplierCount = collateralMarket.supplierCount.minus(oneBigInt);
     collateralMarket.save();
   }
-
-  // Check if borrower is still borrowing
-  if (borrowerBorrowAccountVToken.accountBorrowBalanceMantissa.equals(zeroBigInt32)) {
-    borrowMarket.borrowerCount = borrowMarket.borrowerCount.minus(oneBigInt);
-    borrowMarket.save();
-  }
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {

@@ -304,12 +304,6 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
     collateralMarket.save();
   }
 
-  // Check if borrower is still borrowing
-  if (borrowerBorrowAccountVToken.storedBorrowBalanceMantissa.equals(zeroBigInt32)) {
-    borrowMarket.borrowerCount = borrowMarket.borrowerCount.minus(oneBigInt);
-    borrowMarket.save();
-  }
-
   // Check if liquidator is new supplier
   const resultLiquidatorAccountVToken = getOrCreateAccountVToken(
     event.params.vTokenCollateral,

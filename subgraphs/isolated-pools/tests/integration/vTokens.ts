@@ -254,7 +254,7 @@ describe('VToken events', function () {
     const { accountVTokens } = updatedAccountVTokenData!;
 
     expect(accountVTokens[0]?.accountBorrowBalanceMantissa).to.be.approximately(
-      ethers.BigNumber.from(await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address)),
+      await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address),
       1e11,
     );
 
@@ -287,6 +287,33 @@ describe('VToken events', function () {
       ethers.BigNumber.from(await vBtcbToken.balanceOf(liquidator.address)),
       1e11,
     );
+
+    let borrowBalanceCurrent = await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address);
+    await vBnxToken.connect(borrower2).repayBorrow(borrowBalanceCurrent);
+
+    await oracle.setPrice(vBtcbToken.address, parseUnits('1', 18).toString());
+    await oracle.setPrice(vBnxToken.address, parseUnits('1000000', 18).toString());
+
+    borrowBalanceCurrent = await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address);
+
+    // liquidate rest of borrow
+    await comptroller
+      .connect(liquidator)
+      .liquidateAccount(borrower2.address, [
+        {
+          vTokenCollateral: vBtcbToken.address,
+          vTokenBorrowed: vBnxToken.address,
+          repayAmount: borrowBalanceCurrent.add(18098),
+        },
+      ]);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { data: bnxMarketData } = await subgraphClient.getMarketById(
+      vBnxToken.address.toLowerCase(),
+    );
+    const { market: bnxMarket } = bnxMarketData!;
+    expect(bnxMarket.borrowerCount).to.equal('0');
 
     // Reset prices
     await oracle.setPrice(vBnxToken.address, parseUnits('2', 18).toString());
