@@ -90,6 +90,14 @@ beforeAll(() => {
       ethereum.Value.fromSignedBigInt(oneBigInt),
     ]);
 
+  createMockedFunction(
+    vTokenAddress,
+    'borrowBalanceStored',
+    'borrowBalanceStored(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(accountAddress)])
+    .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
+
   createPoolRegistryMock([
     new PoolInfo(
       'Gamer Pool',

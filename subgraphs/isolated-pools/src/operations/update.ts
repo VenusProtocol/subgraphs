@@ -9,7 +9,7 @@ import { getOrCreateMarket } from './getOrCreate';
 import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
 import { getOrCreatePool } from './getOrCreate';
 
-const updateAccountVToken = (
+export const updateAccountVTokenAccrualBlockNumber = (
   accountAddress: Address,
   poolAddress: Address,
   marketAddress: Address,
@@ -17,8 +17,9 @@ const updateAccountVToken = (
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
   const accountVToken = getOrCreateAccountVToken(accountAddress, poolAddress, marketAddress, false);
-  accountVToken.accrualBlockNumber = blockNumber;
-  return accountVToken as AccountVToken;
+  accountVToken.entity.accrualBlockNumber = blockNumber;
+  accountVToken.entity.save();
+  return accountVToken.entity as AccountVToken;
 };
 
 export const updateAccountVTokenSupply = (
@@ -28,7 +29,7 @@ export const updateAccountVTokenSupply = (
   blockNumber: BigInt,
   accountSupplyBalanceMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
+  const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
     poolAddress,
     marketAddress,
@@ -47,7 +48,7 @@ export const updateAccountVTokenBorrow = (
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
+  const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
     poolAddress,
     marketAddress,
@@ -67,7 +68,7 @@ export const updateAccountVTokenRepayBorrow = (
   accountBorrows: BigInt,
   borrowIndexMantissa: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
+  const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
     poolAddress,
     marketAddress,
@@ -89,7 +90,7 @@ export const updateAccountVTokenTransferFrom = (
 ): AccountVToken => {
   const amountUnderlyingMantissa = exchangeRate.div(exponentToBigInt(18)).times(amount);
 
-  const accountVToken = updateAccountVToken(
+  const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
     poolAddress,
     marketAddress,
@@ -108,7 +109,7 @@ export const updateAccountVTokenTransferTo = (
   marketAddress: Address,
   blockNumber: BigInt,
 ): AccountVToken => {
-  const accountVToken = updateAccountVToken(
+  const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
     poolAddress,
     marketAddress,

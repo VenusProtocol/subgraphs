@@ -59,11 +59,13 @@ import {
 import { PoolInfo, createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
 import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
-const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
+const underlying1Address = Address.fromString('0x0000000000000000000000000000000000000111');
+const underlying2Address = Address.fromString('0x0000000000000000000000000000000000000222');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
-const aaaTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');
+const aTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');
+const bTokenAddress = Address.fromString('0x0000000000000000000000000000000000000bbb');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
@@ -75,8 +77,8 @@ const cleanup = (): void => {
 
 beforeAll(() => {
   createVBep20AndUnderlyingMock(
-    aaaTokenAddress,
-    tokenAddress,
+    aTokenAddress,
+    underlying1Address,
     comptrollerAddress,
     'AAA Coin',
     'AAA',
@@ -86,11 +88,21 @@ beforeAll(() => {
     underlyingPrice,
   );
 
-  createMarketMock(aaaTokenAddress);
+  createVBep20AndUnderlyingMock(
+    bTokenAddress,
+    underlying2Address,
+    comptrollerAddress,
+    'AAA Coin',
+    'AAA',
+    BigInt.fromI32(18),
+    BigInt.fromI32(100),
+    interestRateModelAddress,
+    underlyingPrice,
+  );
 
-  createPriceOracleMock([
-    [ethereum.Value.fromAddress(aaaTokenAddress), ethereum.Value.fromI32(99)],
-  ]);
+  createMarketMock(aTokenAddress);
+
+  createPriceOracleMock([[ethereum.Value.fromAddress(aTokenAddress), ethereum.Value.fromI32(99)]]);
 
   createPoolRegistryMock([
     new PoolInfo(
@@ -100,8 +112,37 @@ beforeAll(() => {
     ),
   ]);
 
-  createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, zeroBigInt32);
-  createAccountVTokenBalanceOfMock(aaaTokenAddress, user2Address, zeroBigInt32);
+  createAccountVTokenBalanceOfMock(aTokenAddress, user1Address, zeroBigInt32);
+  createAccountVTokenBalanceOfMock(bTokenAddress, user1Address, zeroBigInt32);
+  const balanceOfAccount = BigInt.fromI32(100);
+  createMockedFunction(
+    bTokenAddress,
+    'getAccountSnapshot',
+    'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(user1Address)])
+    .returns([
+      ethereum.Value.fromSignedBigInt(zeroBigInt32),
+      ethereum.Value.fromSignedBigInt(balanceOfAccount),
+      ethereum.Value.fromSignedBigInt(zeroBigInt32),
+      ethereum.Value.fromSignedBigInt(oneBigInt),
+    ]);
+
+  createMockedFunction(
+    aTokenAddress,
+    'borrowBalanceStored',
+    'borrowBalanceStored(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(user1Address)])
+    .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
+
+  createMockedFunction(
+    aTokenAddress,
+    'borrowBalanceStored',
+    'borrowBalanceStored(address):(uint256)',
+  )
+    .withArgs([ethereum.Value.fromAddress(user2Address)])
+    .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
 });
 
 beforeEach(() => {
@@ -109,9 +150,11 @@ beforeEach(() => {
   const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
   handlePoolRegistered(poolRegisteredEvent);
-  // Add Market
-  const marketAddedEvent = createMarketAddedEvent(comptrollerAddress, aaaTokenAddress);
+  // Add Markets
+  let marketAddedEvent = createMarketAddedEvent(comptrollerAddress, aTokenAddress);
 
+  handleMarketAdded(marketAddedEvent);
+  marketAddedEvent = createMarketAddedEvent(comptrollerAddress, bTokenAddress);
   handleMarketAdded(marketAddedEvent);
 });
 
@@ -126,14 +169,14 @@ describe('VToken', () => {
     const mintTokens = BigInt.fromString('37035970026454');
     const accountBalance = mintTokens;
     const mintEvent = createMintEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       minter,
       actualMintAmount,
       mintTokens,
       accountBalance,
     );
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -145,7 +188,7 @@ describe('VToken', () => {
         ethereum.Value.fromSignedBigInt(oneBigInt),
       ]);
 
-    const market = getMarket(aaaTokenAddress);
+    const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
@@ -165,9 +208,9 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'blockTime', mintEvent.block.timestamp.toString());
 
     // AccountVToken
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, minter).toHexString();
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, minter).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', minter.toHexString());
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aaaTokenAddress.toHexString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
@@ -206,14 +249,14 @@ describe('VToken', () => {
     const redeemTokens = BigInt.fromString('37035970026454');
     const accountBalance = zeroBigInt32;
     const redeemEvent = createRedeemEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       redeemer,
       actualRedeemAmount,
       redeemTokens,
       accountBalance,
     );
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -224,7 +267,7 @@ describe('VToken', () => {
         ethereum.Value.fromSignedBigInt(zeroBigInt32),
         ethereum.Value.fromSignedBigInt(oneBigInt),
       ]);
-    const market = getMarket(aaaTokenAddress);
+    const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
@@ -244,9 +287,9 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'blockTime', redeemEvent.block.timestamp.toString());
 
     // AccountVToken
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, redeemer).toHexString();
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, redeemer).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', redeemer.toHexString());
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aaaTokenAddress.toHexString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
@@ -288,7 +331,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const borrowEvent = createBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower,
       borrowAmount,
       accountBorrows,
@@ -296,7 +339,7 @@ describe('VToken', () => {
     );
 
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -315,8 +358,8 @@ describe('VToken', () => {
       borrowEvent.transaction.hash,
       borrowEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower).toHexString();
-    const market = getMarket(aaaTokenAddress);
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
+    const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
@@ -370,7 +413,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const repayBorrowEvent = createRepayBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       payer,
       borrower,
       repayAmount,
@@ -379,7 +422,7 @@ describe('VToken', () => {
     );
 
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -398,8 +441,8 @@ describe('VToken', () => {
       repayBorrowEvent.transaction.hash,
       repayBorrowEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, borrower).toHexString();
-    const market = getMarket(aaaTokenAddress);
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
+    const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
@@ -453,11 +496,11 @@ describe('VToken', () => {
     const liquidator = user1Address;
     const repayAmount = BigInt.fromString('1246205398726345');
     const seizeTokens = BigInt.fromString('37035970026454');
-    const vTokenCollateral = tokenAddress;
+    const vTokenCollateral = bTokenAddress;
 
     /** Setup test */
     const liquidateBorrowEvent = createLiquidateBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       liquidator,
       borrower,
       repayAmount,
@@ -472,7 +515,7 @@ describe('VToken', () => {
       liquidateBorrowEvent.transaction.hash,
       liquidateBorrowEvent.transactionLogIndex,
     ).toHexString();
-    const market = getMarket(aaaTokenAddress);
+    const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
       return;
@@ -510,7 +553,7 @@ describe('VToken', () => {
 
     /** Setup test */
     const accrueInterestEvent = createAccrueInterestEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       cashPrior,
       interestAccumulated,
       borrowIndex,
@@ -521,7 +564,7 @@ describe('VToken', () => {
     handleAccrueInterest(accrueInterestEvent);
 
     const assertMarketDocument = (key: string, value: string): void => {
-      assert.fieldEquals('Market', aaaTokenAddress.toHexString(), key, value);
+      assert.fieldEquals('Market', aTokenAddress.toHexString(), key, value);
     };
 
     assertMarketDocument('accrualBlockNumber', '999');
@@ -540,16 +583,16 @@ describe('VToken', () => {
     const oldReserveFactor = BigInt.fromI64(12462053079875);
     const newReserveFactor = BigInt.fromI64(37035970026454);
     const reserveFactorEvent = createNewReserveFactorEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       oldReserveFactor,
       newReserveFactor,
     );
 
     handleNewReserveFactor(reserveFactorEvent);
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals('Market', aTokenAddress.toHex(), 'id', aTokenAddress.toHexString());
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHex(),
+      aTokenAddress.toHex(),
       'reserveFactorMantissa',
       newReserveFactor.toString(),
     );
@@ -557,15 +600,15 @@ describe('VToken', () => {
 
   test('registers transfer from event', () => {
     /** Constants */
-    const from = user1Address; // 101
-    const to = aaaTokenAddress;
+    const from = user2Address; // 101
+    const to = user1Address;
     const amount = BigInt.fromString('146205398726345');
     const balanceOf = BigInt.fromString('262059874253345');
 
     /** Setup test */
-    const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
+    const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -584,7 +627,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, from).toHexString();
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, from).toHexString();
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -613,25 +656,20 @@ describe('VToken', () => {
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
 
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingRedeemedMantissa',
-      '53371549778058610525',
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingRedeemedMantissa', '0');
   });
 
   test('registers transfer to event', () => {
     /** Constants */
     const amount = BigInt.fromString('5246205398726345');
-    const from = aaaTokenAddress;
+    const from = user1Address;
     const to = user2Address;
     const balanceOf = BigInt.fromString('262059874253345');
 
     /** Setup test */
-    const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
+    const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -643,7 +681,7 @@ describe('VToken', () => {
         ethereum.Value.fromSignedBigInt(oneBigInt),
       ]);
     createMockedFunction(
-      aaaTokenAddress,
+      aTokenAddress,
       'getAccountSnapshot',
       'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
     )
@@ -662,7 +700,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aaaTokenAddress, to).toHexString();
+    const accountVTokenId = getAccountVTokenId(aTokenAddress, to).toHexString();
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -696,16 +734,16 @@ describe('VToken', () => {
     const oldInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000e0e');
     const newInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000f0f');
     const newMarketInterestRateModelEvent = createNewMarketInterestRateModelEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       oldInterestRateModel,
       newInterestRateModel,
     );
 
     handleNewMarketInterestRateModel(newMarketInterestRateModelEvent);
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'id', aaaTokenAddress.toHexString());
+    assert.fieldEquals('Market', aTokenAddress.toHex(), 'id', aTokenAddress.toHexString());
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHex(),
+      aTokenAddress.toHex(),
       'interestRateModelAddress',
       newInterestRateModel.toHexString(),
     );
@@ -718,7 +756,7 @@ describe('VToken', () => {
     const badDebtNew = BigInt.fromI64(700);
 
     const badDebtIncreasedEvent = createBadDebtIncreasedEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower,
       badDebtDelta,
       badDebtOld,
@@ -733,7 +771,7 @@ describe('VToken', () => {
     handleBadDebtIncreased(badDebtIncreasedEvent);
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHexString(),
+      aTokenAddress.toHexString(),
       'badDebtMantissa',
       badDebtNew.toString(),
     );
@@ -775,7 +813,7 @@ describe('VToken', () => {
     );
 
     const newAccessControlManagerEvent = createNewAccessControlManagerEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       oldAccessControlManager,
       newAccessControlManager,
     );
@@ -783,7 +821,7 @@ describe('VToken', () => {
     handleNewAccessControlManager(newAccessControlManagerEvent);
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHexString(),
+      aTokenAddress.toHexString(),
       'accessControlManagerAddress',
       newAccessControlManager.toHexString(),
     );
@@ -795,7 +833,7 @@ describe('VToken', () => {
     const newTotalReserves = BigInt.fromString('2222334455667788990');
 
     const reservesAddedEvent = createReservesAddedEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       benefactor,
       addAmount,
       newTotalReserves,
@@ -804,7 +842,7 @@ describe('VToken', () => {
     handleReservesAdded(reservesAddedEvent);
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHexString(),
+      aTokenAddress.toHexString(),
       'reservesMantissa',
       newTotalReserves.toString(),
     );
@@ -816,7 +854,7 @@ describe('VToken', () => {
     const newTotalReserves = BigInt.fromString('9111222333444555666');
 
     const reservesReducedEvent = createSpreadReservesReducedEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       benefactor,
       reduceAmount,
       newTotalReserves,
@@ -825,14 +863,14 @@ describe('VToken', () => {
     handleSpreadReservesReduced(reservesReducedEvent);
     assert.fieldEquals(
       'Market',
-      aaaTokenAddress.toHexString(),
+      aTokenAddress.toHexString(),
       'reservesMantissa',
       '9111222333444555666',
     );
   });
 
   test('registers increase and decrease in the market supplier count', () => {
-    const market = getMarket(aaaTokenAddress)!;
+    const market = getMarket(aTokenAddress)!;
     const marketId = market.id.toHexString();
     assert.assertNotNull(market);
     if (!market) {
@@ -848,69 +886,69 @@ describe('VToken', () => {
 
     const supplier01 = user1Address;
     let mintEvent = createMintEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       supplier01,
       actualMintAmount,
       mintTokens,
       accountBalance,
     );
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, mintTokens);
+    createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
     const supplier02 = user2Address;
     mintEvent = createMintEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       supplier02,
       actualMintAmount,
       mintTokens,
       accountBalance,
     );
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, mintTokens);
+    createAccountVTokenBalanceOfMock(aTokenAddress, supplier02, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '2');
 
     let redeemEvent = createRedeemEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       supplier02,
       actualMintAmount,
       mintTokens,
       zeroBigInt32,
     );
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, zeroBigInt32);
+    createAccountVTokenBalanceOfMock(aTokenAddress, supplier02, zeroBigInt32);
 
     handleRedeem(redeemEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
     redeemEvent = createRedeemEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       supplier01,
       halfActualMintAmount,
       halfMintTokens,
       halfMintTokens,
     );
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, halfMintTokens);
+    createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, halfMintTokens);
 
     handleRedeem(redeemEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
     redeemEvent = createRedeemEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       supplier01,
       halfActualMintAmount,
       halfMintTokens,
       zeroBigInt32,
     );
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier01, zeroBigInt32);
+    createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, zeroBigInt32);
 
     handleRedeem(redeemEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '0');
   });
 
   test('registers increase and decrease in the market borrower count', () => {
-    const market = getMarket(aaaTokenAddress)!;
+    const market = getMarket(aTokenAddress)!;
     const marketId = market.id.toHexString();
     assert.assertNotNull(market);
     if (!market) {
@@ -923,7 +961,7 @@ describe('VToken', () => {
 
     const borrower01 = user1Address;
     let borrowEvent = createBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower01,
       borrowAmount,
       borrowAmount,
@@ -935,7 +973,7 @@ describe('VToken', () => {
 
     const borrower02 = user2Address;
     borrowEvent = createBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower02,
       borrowAmount,
       borrowAmount,
@@ -946,7 +984,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', marketId, 'borrowerCount', '2');
 
     let repayEvent = createRepayBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower02,
       borrower02,
       borrowAmount,
@@ -958,7 +996,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', marketId, 'borrowerCount', '1');
 
     repayEvent = createRepayBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower01,
       borrower01,
       halfBorrowAmountTokens,
@@ -970,7 +1008,7 @@ describe('VToken', () => {
     assert.fieldEquals('Market', marketId, 'borrowerCount', '1');
 
     repayEvent = createRepayBorrowEvent(
-      aaaTokenAddress,
+      aTokenAddress,
       borrower01,
       borrower01,
       halfBorrowAmountTokens,

@@ -230,8 +230,8 @@ export const createBorrowBalanceCurrentMock = (
 ): void => {
   createMockedFunction(
     vTokenAddress,
-    'borrowBalanceCurrent',
-    'borrowBalanceCurrent(address):(uint256)',
+    'borrowBalanceStored',
+    'borrowBalanceStored(address):(uint256)',
   )
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromSignedBigInt(balance)]);

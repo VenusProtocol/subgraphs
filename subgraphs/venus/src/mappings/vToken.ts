@@ -270,19 +270,55 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   // the underwater borrower. So we must get that address from the event, and
   // the repay token is the event.address
   createLiquidationEvent<LiquidateBorrow>(event);
-  const vToken = getOrCreateMarket(event.params.vTokenCollateral, event);
-  vToken.totalSupplyVTokenMantissa = vToken.totalSupplyVTokenMantissa.minus(
-    event.params.seizeTokens,
-  );
+  const collateralMarket = getOrCreateMarket(event.params.vTokenCollateral, event);
+  const borrowMarket = getOrCreateMarket(event.address, event);
 
-  const vTokenContract = VToken.bind(event.address);
-  const result = getOrCreateAccountVToken(event.address, event.params.borrower);
-  const accountVToken = result.entity;
-  accountVToken.borrowIndex = vTokenContract.borrowIndex();
-  accountVToken.storedBorrowBalanceMantissa = vTokenContract.borrowBalanceCurrent(
+  const borrowedVTokenContract = VToken.bind(event.address);
+  const collateralContract = VToken.bind(event.params.vTokenCollateral);
+  const borrowerBorrowAccountVTokenResult = getOrCreateAccountVToken(
+    event.address,
     event.params.borrower,
   );
-  accountVToken.save();
+  const borrowerBorrowAccountVToken = borrowerBorrowAccountVTokenResult.entity;
+
+  // Creation updates balance
+  borrowerBorrowAccountVToken.borrowIndex = borrowedVTokenContract.borrowIndex();
+  borrowerBorrowAccountVToken.storedBorrowBalanceMantissa =
+    borrowedVTokenContract.borrowBalanceStored(event.params.borrower);
+  borrowerBorrowAccountVToken.save();
+
+  const borrowerSupplyAccountVTokenResult = getOrCreateAccountVToken(
+    event.params.vTokenCollateral,
+    event.params.borrower,
+  );
+  const borrowerSupplyAccountVToken = borrowerSupplyAccountVTokenResult.entity;
+
+  borrowerSupplyAccountVToken.vTokenBalanceMantissa =
+    borrowerSupplyAccountVToken.vTokenBalanceMantissa.minus(event.params.seizeTokens);
+  borrowerSupplyAccountVToken.save();
+
+  const collateralBalance = collateralContract.balanceOf(event.params.borrower);
+  // Check if borrower is still supplying liquidated asset
+  if (collateralBalance.equals(zeroBigInt32)) {
+    collateralMarket.supplierCount = borrowMarket.supplierCount.minus(oneBigInt);
+    collateralMarket.save();
+  }
+
+  // Check if liquidator is new supplier
+  const resultLiquidatorAccountVToken = getOrCreateAccountVToken(
+    event.params.vTokenCollateral,
+    event.params.liquidator,
+  );
+  const liquidatorAccountVToken = resultLiquidatorAccountVToken.entity;
+  if (!resultLiquidatorAccountVToken.created) {
+    liquidatorAccountVToken.vTokenBalanceMantissa.plus(event.params.seizeTokens);
+    liquidatorAccountVToken.save();
+  }
+
+  if (liquidatorAccountVToken.vTokenBalanceMantissa.equals(event.params.seizeTokens)) {
+    collateralMarket.supplierCount = collateralMarket.supplierCount.plus(oneBigInt);
+    collateralMarket.save();
+  }
 }
 
 /* Transferring of vTokens

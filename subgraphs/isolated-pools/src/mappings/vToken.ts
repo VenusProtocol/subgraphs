@@ -9,12 +9,14 @@ import {
   NewAccessControlManager,
   NewMarketInterestRateModel,
   NewReserveFactor,
+  ProtocolSeize,
   Redeem,
   RepayBorrow,
   ReservesAdded,
   SpreadReservesReduced,
   Transfer,
 } from '../../generated/PoolRegistry/VToken';
+import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import { nullAddress } from '../constants/addresses';
 import { oneBigInt, zeroBigInt32 } from '../constants/index';
 import {
@@ -26,13 +28,18 @@ import {
   createRepayBorrowTransaction,
   createTransferTransaction,
 } from '../operations/create';
-import { getOrCreateAccount, getOrCreateMarket } from '../operations/getOrCreate';
+import { getMarket } from '../operations/get';
 import {
+  getOrCreateAccount,
+  getOrCreateAccountVToken,
+  getOrCreateMarket,
+} from '../operations/getOrCreate';
+import { recordLiquidatorAsSupplier } from '../operations/recordLiquidatorAsSupplier';
+import {
+  updateAccountVTokenAccrualBlockNumber,
   updateAccountVTokenBorrow,
   updateAccountVTokenRepayBorrow,
   updateAccountVTokenSupply,
-  updateAccountVTokenTransferFrom,
-  updateAccountVTokenTransferTo,
   updateMarket,
 } from '../operations/update';
 
@@ -192,6 +199,42 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   borrower.save();
 
   createLiquidateBorrowTransaction(event);
+
+  const borrowMarket = getMarket(event.address)!;
+  const collateralMarket = getMarket(event.params.vTokenCollateral)!;
+
+  const borrowedVTokenContract = VTokenContract.bind(event.address);
+  const collateralContract = VTokenContract.bind(event.params.vTokenCollateral);
+  const borrowerBorrowAccountVTokenResult = getOrCreateAccountVToken(
+    event.params.borrower,
+    Address.fromBytes(borrowMarket.pool),
+    event.address,
+  );
+  const borrowerBorrowAccountVToken = borrowerBorrowAccountVTokenResult.entity;
+
+  // Creation updates balance
+  borrowerBorrowAccountVToken.accountBorrowIndexMantissa = borrowedVTokenContract.borrowIndex();
+  borrowerBorrowAccountVToken.accountBorrowBalanceMantissa =
+    borrowedVTokenContract.borrowBalanceStored(event.params.borrower);
+  borrowerBorrowAccountVToken.save();
+
+  const borrowerSupplyAccountVTokenResult = getOrCreateAccountVToken(
+    event.params.borrower,
+    Address.fromBytes(borrowMarket.pool),
+    event.params.vTokenCollateral,
+  );
+  const borrowerSupplyAccountVToken = borrowerSupplyAccountVTokenResult.entity;
+
+  borrowerSupplyAccountVToken.accountVTokenSupplyBalanceMantissa =
+    borrowerSupplyAccountVToken.accountVTokenSupplyBalanceMantissa.minus(event.params.seizeTokens);
+  borrowerSupplyAccountVToken.save();
+
+  const collateralBalance = collateralContract.balanceOf(event.params.borrower);
+  // Check if borrower is still supplying liquidated asset
+  if (collateralBalance.equals(zeroBigInt32)) {
+    collateralMarket.supplierCount = collateralMarket.supplierCount.minus(oneBigInt);
+    collateralMarket.save();
+  }
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
@@ -203,6 +246,10 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
   const market = getOrCreateMarket(vTokenAddress);
   market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
   market.save();
+}
+
+export function handleProtocolSeize(event: ProtocolSeize): void {
+  recordLiquidatorAsSupplier(event);
 }
 
 /* Transferring of vTokens
@@ -221,44 +268,65 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
  *    events. So for those events, we do not update vToken balances.
  */
 export function handleTransfer(event: Transfer): void {
-  const vTokenAddress = event.address;
-  const accountFromAddress = event.params.from;
-  const accountToAddress = event.params.to;
-
+  // We only updateMarket() if accrual block number is not up to date. This will only happen
+  // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   const market = updateMarket(
     event.address,
     event.block.number.toI32(),
     event.block.timestamp.toI32(),
   );
-
-  // Checking if the tx is FROM the vToken contract (i.e. this will not run when minting)
-  // If so, it is a mint, and we don't need to run these calculations
-  if (accountFromAddress.toHex() != nullAddress.toHex()) {
+  const accountFromAddress = event.params.from;
+  const accountToAddress = event.params.to;
+  // Checking if the event is FROM the vToken contract or null (i.e. this will not run when minting)
+  // Checking if the event is TO the vToken contract (i.e. this will not run when redeeming)
+  // @TODO Edge case where someone who accidentally sends vTokens to a vToken contract, where it will not get recorded.
+  if (
+    accountFromAddress.notEqual(event.address) &&
+    accountFromAddress.notEqual(nullAddress) &&
+    accountToAddress.notEqual(event.address)
+  ) {
     getOrCreateAccount(accountFromAddress);
-
-    updateAccountVTokenTransferFrom(
+    const resultFrom = getOrCreateAccountVToken(
       accountFromAddress,
       Address.fromBytes(market.pool),
-      vTokenAddress,
-      event.block.number,
-      event.params.amount,
-      market.exchangeRateMantissa,
+      event.address,
     );
-  }
+    const accountFromVToken = resultFrom.entity;
 
-  // Checking if the tx is TO the vToken contract (i.e. this will not run when redeeming)
-  // If so, we ignore it. this leaves an edge case, where someone who accidentally sends
-  // vTokens to a vToken contract, where it will not get recorded. Right now it would
-  // be messy to include, so we are leaving it out for now TODO fix this in future
-  if (accountToAddress.toHex() != vTokenAddress.toHex()) {
+    updateAccountVTokenAccrualBlockNumber(
+      accountFromAddress,
+      Address.fromBytes(market.pool),
+      event.address,
+      event.block.number,
+    );
+
+    // Creation updates balance
+    if (!resultFrom.created) {
+      accountFromVToken.accountVTokenSupplyBalanceMantissa =
+        accountFromVToken.accountVTokenSupplyBalanceMantissa.minus(event.params.amount);
+      accountFromVToken.save();
+    }
     getOrCreateAccount(accountToAddress);
-
-    updateAccountVTokenTransferTo(
+    const resultTo = getOrCreateAccountVToken(
       accountToAddress,
       Address.fromBytes(market.pool),
-      vTokenAddress,
+      event.address,
+    );
+    const accountToVToken = resultTo.entity;
+
+    updateAccountVTokenAccrualBlockNumber(
+      accountToAddress,
+      Address.fromBytes(market.pool),
+      event.address,
       event.block.number,
     );
+
+    // Creation updates balance
+    if (!resultTo.created) {
+      accountToVToken.accountVTokenSupplyBalanceMantissa =
+        accountToVToken.accountVTokenSupplyBalanceMantissa.plus(event.params.amount);
+      accountToVToken.save();
+    }
   }
 
   createTransferTransaction(event);
