@@ -13,9 +13,12 @@ import {
 import { Pool } from '../../generated/schema';
 import { oneBigInt, zeroBigInt32 } from '../../src/constants';
 import {
+  // handleNewLiquidationThreshold,
   handleActionPausedMarket,
   handleMarketEntered,
   handleMarketExited,
+  handleMarketSupported,
+  handleMarketUnlisted,
   handleNewBorrowCap,
   handleNewCloseFactor,
   handleNewCollateralFactor,
@@ -35,6 +38,8 @@ import {
   createMarketAddedEvent,
   createMarketEnteredEvent,
   createMarketExitedEvent,
+  createMarketSupported,
+  createMarketUnlisted,
   createNewBorrowCapEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
@@ -127,6 +132,32 @@ afterEach(() => {
 });
 
 describe('Pool Events', () => {
+  test('handle listing a market', () => {
+    const marketSupportedEvent = createMarketSupported(vTokenAddress);
+
+    handleMarketSupported(marketSupportedEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
+    };
+
+    assertMarketDocument('isListed', 'true');
+    assertMarketDocument('collateralFactorMantissa', '0');
+    assertMarketDocument('liquidationThresholdMantissa', '0');
+  });
+
+  test('handle delisting a market', () => {
+    const marketUnlistedEvent = createMarketUnlisted(vTokenAddress);
+
+    handleMarketUnlisted(marketUnlistedEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
+    };
+
+    assertMarketDocument('isListed', 'false');
+  });
+
   test('creates Market correctly', () => {
     const assertMarketDocument = (key: string, value: string): void => {
       assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
@@ -337,6 +368,35 @@ describe('Pool Events', () => {
       newSupplyCap.toString(),
     );
   });
+
+  test('indexes NewLiquidationThreshold event', () => {
+    // const newRewardsDistributorEvent = createNewRewardsDistributor(
+    //   comptrollerAddress,
+    //   rewardsDistributorAddress,
+    // );
+    // handleNewRewardsDistributor(newRewardsDistributorEvent);
+    // assert.fieldEquals(
+    //   'RewardsDistributor',
+    //   rewardsDistributorAddress.toHex(),
+    //   'id',
+    //   rewardsDistributorAddress.toHexString(),
+    // );
+    // assert.fieldEquals(
+    //   'RewardsDistributor',
+    //   rewardsDistributorAddress.toHex(),
+    //   'pool',
+    //   comptrollerAddress.toHexString(),
+    // );
+    // const pool = Pool.load(comptrollerAddress)!;
+    // const rewardsDistributors = pool.rewardsDistributors.load();
+    // assert.bytesEquals(rewardsDistributorAddress, rewardsDistributors[0].id);
+  });
+
+  // const poolAddress = event.address;
+  // const vTokenAddress = event.params.vToken;
+  // const market = getOrCreateMarket(vTokenAddress, poolAddress);
+  // market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
+  // market.save();
 
   test('indexes NewRewardsDistributor event', () => {
     const newRewardsDistributorEvent = createNewRewardsDistributor(

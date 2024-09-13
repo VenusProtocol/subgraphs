@@ -59,6 +59,10 @@ type Market @entity {
     "Pool the market belongs to"
     pool: Pool!
     #Fields that match Venus API
+    "Name of the vToken"
+    name: String!
+    "Flag for if the token is listed"
+    isListed: Boolean!
     "Borrow rate per block"
     borrowRateMantissa: BigInt!
     "The vToken contract balance of BEP20 or BNB"
@@ -69,8 +73,6 @@ type Market @entity {
     exchangeRateMantissa:  BigInt!
     "Address of the interest rate model"
     interestRateModelAddress: Bytes!
-    "Name of the vToken"
-    name: String!
     "Reserves stored in the contract"
     reservesMantissa: BigInt!
     "Supply rate per block"

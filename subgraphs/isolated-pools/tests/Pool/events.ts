@@ -5,6 +5,8 @@ import {
   ActionPausedMarket as ActionPausedMarketEvent,
   MarketEntered as MarketEnteredEvent,
   MarketExited as MarketExitedEvent,
+  MarketSupported as MarketSupportedEvent,
+  MarketUnlisted as MarketUnlistedEvent,
   NewBorrowCap as NewBorrowCapEvent,
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
@@ -15,6 +17,22 @@ import {
   NewSupplyCap as NewSupplyCapEvent,
 } from '../../generated/PoolRegistry/Comptroller';
 import { MarketAdded as MarketAddedEvent } from '../../generated/PoolRegistry/PoolRegistry';
+
+export const createMarketSupported = (vTokenAddress: Address): MarketSupportedEvent => {
+  const event = changetype<MarketSupportedEvent>(newMockEvent());
+  event.parameters = [];
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+  return event;
+};
+
+export const createMarketUnlisted = (vTokenAddress: Address): MarketUnlistedEvent => {
+  const event = changetype<MarketUnlistedEvent>(newMockEvent());
+  event.parameters = [];
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+  return event;
+};
 
 export const createMarketAddedEvent = (
   comptrollerAddress: Address,

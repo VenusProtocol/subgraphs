@@ -38,7 +38,7 @@
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.3.0"
+    "@venusprotocol/isolated-pools": "3.5.0"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",

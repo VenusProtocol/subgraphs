@@ -37,9 +37,45 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     .connect(rootSigner)
     .giveCallPermission(comptroller.address, '_setActionsPaused(address[],uint8[],bool)', root);
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, 'unlistMarket(address)', root);
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setMinLiquidatableCollateral(uint256)',
+    root,
+  );
+
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setActionsPaused(address[],uint256[],bool)',
+    root,
+  );
+
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setCollateralFactor(address,uint256,uint256)',
+    root,
+  );
+
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setLiquidationIncentive(uint256)',
+    root,
+  );
+
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setMarketBorrowCaps(address[],uint256[])',
+    root,
+  );
+
+  await acm.giveCallPermission(
+    ethers.constants.AddressZero,
+    'setMarketSupplyCaps(address[],uint256[])',
+    root,
+  );
+
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setCloseFactor(uint256)', root);
+
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'unlistMarket(address)', root);
 
   await vUsdcToken.connect(rootSigner).setAccessControlManager(acm.address);
   await vWBnbToken.connect(rootSigner).setAccessControlManager(acm.address);

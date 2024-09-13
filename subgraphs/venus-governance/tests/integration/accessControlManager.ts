@@ -31,7 +31,7 @@ describe('AccessControlManager', function () {
         data: { permissions: allPermissions },
       } = await subgraphClient.getPermissions();
 
-      expect(allPermissions.length).to.be.equal(35);
+      expect(allPermissions.length).to.be.equal(44);
       allPermissions.forEach(pe => {
         expect(pe.status).to.be.equal('GRANTED');
       });
@@ -85,7 +85,7 @@ describe('AccessControlManager', function () {
       const {
         data: { permissions },
       } = await subgraphClient.getPermissions();
-      expect(permissions.length).to.be.equal(37);
+      expect(permissions.length).to.be.equal(46);
     });
 
     it('indexes permission revoked events', async function () {
@@ -100,7 +100,7 @@ describe('AccessControlManager', function () {
 
       const { data } = await subgraphClient.getPermissions();
       const { permissions } = data!;
-      expect(permissions.length).to.be.equal(37);
+      expect(permissions.length).to.be.equal(46);
 
       const { data: permissionByIdData } = await subgraphClient.getPermission(
         getPermissionId(account, nullAddress, functionSig),

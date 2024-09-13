@@ -32,7 +32,6 @@ import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
-  getOrCreateMarket,
 } from '../operations/getOrCreate';
 import { recordLiquidatorAsSupplier } from '../operations/recordLiquidatorAsSupplier';
 import {
@@ -57,7 +56,7 @@ import {
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress, null);
+  const market = getMarket(vTokenAddress)!;
   createMintTransaction(event);
 
   // we read the current total amount of supplied tokens by this account in the market
@@ -88,7 +87,7 @@ export function handleMint(event: Mint): void {
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   createRedeemTransaction(event);
 
   // we read the account's balance and...
@@ -118,7 +117,7 @@ export function handleRedeem(event: Redeem): void {
  */
 export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
 
   updateAccountVTokenBorrow(
     event.params.borrower,
@@ -154,7 +153,7 @@ export function handleBorrow(event: Borrow): void {
  */
 export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
 
   updateAccountVTokenRepayBorrow(
     event.params.borrower,
@@ -243,7 +242,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
   market.save();
 }
@@ -334,14 +333,14 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.interestRateModelAddress = event.params.newInterestRateModel;
   market.save();
 }
 
 export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.badDebtMantissa = event.params.badDebtNew;
   market.save();
 
@@ -350,21 +349,21 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.accessControlManagerAddress = event.params.newAccessControlManager;
   market.save();
 }
 
 export function handleReservesAdded(event: ReservesAdded): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.reservesMantissa = event.params.newTotalReserves;
   market.save();
 }
 
 export function handleSpreadReservesReduced(event: SpreadReservesReduced): void {
   const vTokenAddress = event.address;
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.reservesMantissa = event.params.newTotalReserves;
   market.save();
 }

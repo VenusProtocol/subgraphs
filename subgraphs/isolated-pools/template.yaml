@@ -71,6 +71,10 @@ templates:
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
+        - event: MarketSupported(address)
+          handler: handleMarketSupported
+        - event: MarketUnlisted(indexed address)
+          handler: handleMarketUnlisted
         - event: MarketEntered(indexed address,indexed address)
           handler: handleMarketEntered
         - event: MarketExited(indexed address,indexed address)

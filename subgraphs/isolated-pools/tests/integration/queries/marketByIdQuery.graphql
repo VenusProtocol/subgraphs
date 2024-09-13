@@ -4,6 +4,7 @@ query MarketById($id: ID!) {
     pool {
       id
     }
+    isListed
     badDebtMantissa
     borrowRateMantissa
     cashMantissa

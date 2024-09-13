@@ -39,6 +39,12 @@ describe('VToken events', function () {
       vFdusdToken.address,
       vUsdtToken.address,
     ];
+
+    await comptroller._setMarketBorrowCaps(markets, [0, 0, 0, 0, 0, 0]);
+    await comptroller._setMarketSupplyCaps(markets, [0, 0, 0, 0, 0, 0]);
+    for (const market of markets) {
+      await comptroller._setCollateralFactor(market, 0);
+    }
   });
 
   it('should delist market correctly', async function () {
