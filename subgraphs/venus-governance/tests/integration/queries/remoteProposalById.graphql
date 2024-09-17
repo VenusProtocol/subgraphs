@@ -2,27 +2,31 @@ query RemoteProposalById($id: ID!) {
   remoteProposal(id: $id) {
     id
     proposalId
-    layerZeroChainId
+    trustedRemote {
+      layerZeroChainId
+    }
     targets
     values
     signatures
     calldatas
     type
-    stored {
-      txHash
-      blockNumber
-      timestamp
+    stateTransactions {
+      stored {
+        txHash
+        blockNumber
+        timestamp
+      }
+      executed {
+        txHash
+        blockNumber
+        timestamp
+      }
+      withdrawn {
+        txHash
+        blockNumber
+        timestamp
+      }
+      failedReason
     }
-    executed {
-      txHash
-      blockNumber
-      timestamp
-    }
-    withdrawn {
-      txHash
-      blockNumber
-      timestamp
-    }
-    failedReason
   }
 }

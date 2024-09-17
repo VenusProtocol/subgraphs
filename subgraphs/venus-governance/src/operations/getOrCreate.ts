@@ -3,14 +3,19 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import {
   Delegate,
   MaxDailyLimit,
-  RemoteProposal,
+  RemoteProposalStateTransaction,
   Transaction,
   TrustedRemote,
 } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
-import { getProposalId } from '../utilities/ids';
-import { getDelegateId, getMaxDailyLimitId, getTrustedRemoteId } from '../utilities/ids';
+import { getRemoteProposalId } from '../utilities/ids';
+import {
+  getDelegateId,
+  getMaxDailyLimitId,
+  getRemoteProposalStateTransactionId,
+  getTrustedRemoteId,
+} from '../utilities/ids';
 import { getGovernanceEntity } from './get';
 
 export class GetOrCreateDelegateReturn {
@@ -95,19 +100,18 @@ export const getOrCreateTransaction = (event: ethereum.Event): Transaction => {
   return transaction;
 };
 
-export const getOrCreateDefaultRemoteProposal = (proposalId: BigInt): RemoteProposal => {
-  const id = getProposalId(proposalId);
-  let remoteProposal = RemoteProposal.load(id);
-  if (!remoteProposal) {
-    remoteProposal = new RemoteProposal(id);
-    remoteProposal.layerZeroChainId = 0; // default value replaced in event handler
-    remoteProposal.type = 0; // default value replaced in event handler
-    remoteProposal.proposalId = proposalId;
-
-    remoteProposal.values = [];
-    remoteProposal.signatures = [];
-    remoteProposal.calldatas = [];
-    remoteProposal.save();
+export const getOrCreateRemoteProposalStateTransaction = (
+  layerZeroChainId: i32,
+  proposalId: BigInt,
+  remoteProposalId: BigInt,
+): RemoteProposalStateTransaction => {
+  const key = getRemoteProposalId(layerZeroChainId, proposalId);
+  const id = getRemoteProposalStateTransactionId(remoteProposalId);
+  let remoteProposalStateTransaction = RemoteProposalStateTransaction.load(id);
+  if (!remoteProposalStateTransaction) {
+    remoteProposalStateTransaction = new RemoteProposalStateTransaction(id);
+    remoteProposalStateTransaction.key = key;
+    remoteProposalStateTransaction.save();
   }
-  return remoteProposal;
+  return remoteProposalStateTransaction;
 };

@@ -10,7 +10,7 @@ import { getOrCreateDelegate } from './getOrCreate';
 
 export function updateProposalCanceled<E>(event: E): void {
   const params = event.params;
-  const proposal = getProposal(params.id.toString());
+  const proposal = getProposal(params.id);
 
   const canceledAction = new Transaction(event.transaction.hash);
   canceledAction.blockNumber = event.block.number;
@@ -24,7 +24,7 @@ export function updateProposalCanceled<E>(event: E): void {
 
 export function updateProposalQueued<E>(event: E): void {
   const params = event.params;
-  const proposal = getProposal(params.id.toString());
+  const proposal = getProposal(params.id);
 
   const queuedAction = new Transaction(event.transaction.hash);
   queuedAction.blockNumber = event.block.number;
@@ -39,7 +39,7 @@ export function updateProposalQueued<E>(event: E): void {
 
 export function updateProposalExecuted<E>(event: E): void {
   const params = event.params;
-  const proposal = getProposal(params.id.toString());
+  const proposal = getProposal(params.id);
 
   const executedAction = new Transaction(event.transaction.hash);
   executedAction.blockNumber = event.block.number;
@@ -116,7 +116,7 @@ export function updateGovernanceEntity(): void {
 }
 
 export function updateAlphaProposalVotes(id: BigInt, votes: BigInt, support: boolean): void {
-  const proposal = getProposal(id.toString());
+  const proposal = getProposal(id);
   if (support) {
     proposal.forVotes = proposal.forVotes.plus(votes);
   } else {
@@ -127,7 +127,7 @@ export function updateAlphaProposalVotes(id: BigInt, votes: BigInt, support: boo
 }
 
 export function updateBravoProposalVotes(id: BigInt, votes: BigInt, support: i32): void {
-  const proposal = getProposal(id.toString());
+  const proposal = getProposal(id);
   if (support == 0) {
     proposal.againstVotes = proposal.againstVotes.plus(votes);
   } else if (support == 1) {

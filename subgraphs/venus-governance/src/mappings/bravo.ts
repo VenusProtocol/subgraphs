@@ -13,8 +13,8 @@ import {
 } from '../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { CRITICAL, FAST_TRACK, NORMAL } from '../constants';
 import { BIGINT_ZERO } from '../constants';
-import associateSourceAndRemoteProposals from '../operations/associateSourceAndRemoteProposals';
 import { createProposal, createVoteBravo } from '../operations/create';
+import createRemoteProposals from '../operations/createRemoteProposals';
 import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
@@ -36,6 +36,7 @@ export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
   const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
   proposal.type = indexProposalTypeConstant[event.params.proposalType];
   proposal.save();
+  createRemoteProposals(event);
 }
 
 export function handleProposalCanceled(event: ProposalCanceled): void {
@@ -48,7 +49,6 @@ export function handleProposalQueued(event: ProposalQueued): void {
 
 export function handleProposalExecuted(event: ProposalExecuted): void {
   updateProposalExecuted<ProposalExecuted>(event);
-  associateSourceAndRemoteProposals(event);
 }
 
 export function handleBravoVoteCast(event: VoteCast): void {

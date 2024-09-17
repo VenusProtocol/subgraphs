@@ -39,6 +39,32 @@ query ProposalById($id: ID!) {
       }
       remoteProposals {
         proposalId
+        trustedRemote {
+          layerZeroChainId
+        }
+        targets
+        values
+        signatures
+        calldatas
+        type
+        stateTransactions {
+          stored {
+            txHash
+            blockNumber
+            timestamp
+          }
+          executed {
+            txHash
+            blockNumber
+            timestamp
+          }
+          withdrawn {
+            txHash
+            blockNumber
+            timestamp
+          }
+          failedReason
+        }
       }
     }
 }

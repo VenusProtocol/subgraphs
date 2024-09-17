@@ -1,7 +1,8 @@
 import { BigInt, ByteArray, Bytes, crypto, ethereum } from '@graphprotocol/graph-ts';
 
 import { DYNAMIC_TUPLE_BYTES_PREFIX } from '../constants';
-import { getOrCreateDefaultRemoteProposal } from './getOrCreate';
+import { getRemoteProposal } from './get';
+import { getOrCreateRemoteProposalStateTransaction } from './getOrCreate';
 
 type RemoteProposalArray = BigInt[];
 
@@ -13,6 +14,7 @@ class RemoteToSourceProposalMap {
     this.proposals = [];
   }
 }
+
 const associateSourceAndRemoteProposals = (event: ethereum.Event): void => {
   if (event.receipt) {
     const reversedLogs = event.receipt!.logs.reverse();
@@ -29,30 +31,49 @@ const associateSourceAndRemoteProposals = (event: ethereum.Event): void => {
         ),
       );
 
-      if (curr.topics.includes(proposalExecutedTopic)) {
+      if (curr.topics[0].equals(proposalExecutedTopic)) {
         const proposalId = ethereum.decode('(uint256)', curr.data)!.toTuple()[0].toBigInt();
         acc.current = proposalId;
       }
 
-      if (curr.topics.includes(executeRemoteProposalTopic)) {
-        const proposalId = ethereum
+      if (curr.topics[0].equals(executeRemoteProposalTopic)) {
+        const layerZeroChainId = ethereum
+          .decode('(uint16)', curr.topics[1])!
+          .toTuple()[0]
+          .toBigInt();
+        const remoteProposalId = ethereum
           .decode('(uint256,bytes)', DYNAMIC_TUPLE_BYTES_PREFIX.concat(curr.data))!
           .toTuple()[0]
           .toBigInt();
-        acc.proposals.push([acc.current, proposalId]);
+        acc.proposals.push([layerZeroChainId, acc.current, remoteProposalId]);
       }
 
-      if (curr.topics.includes(storePayloadTopic)) {
-        const proposalId = ethereum.decode('(uint256)', curr.topics[1])!.toTuple()[0].toBigInt();
-        acc.proposals.push([acc.current, proposalId]);
+      if (curr.topics[0].equals(storePayloadTopic)) {
+        const remoteProposalId = ethereum
+          .decode('(uint256)', curr.topics[1])!
+          .toTuple()[0]
+          .toBigInt();
+        const layerZeroChainId = ethereum
+          .decode('(uint16)', curr.topics[2])!
+          .toTuple()[0]
+          .toBigInt();
+        acc.proposals.push([layerZeroChainId, acc.current, remoteProposalId]);
       }
 
       return acc;
     }, new RemoteToSourceProposalMap());
 
     organizedProposals.proposals.forEach(p => {
-      const remoteProposal = getOrCreateDefaultRemoteProposal(p[1]);
-      remoteProposal.sourceProposal = p[0].toString();
+      const layerZeroChainId = p[0];
+      const sourceProposalId = p[1];
+      const remoteProposalId = p[2];
+      const remoteProposal = getRemoteProposal(layerZeroChainId.toI32(), sourceProposalId);
+      getOrCreateRemoteProposalStateTransaction(
+        layerZeroChainId.toI32(),
+        sourceProposalId,
+        remoteProposalId,
+      );
+      remoteProposal.proposalId = remoteProposalId;
       remoteProposal.save();
     });
   }

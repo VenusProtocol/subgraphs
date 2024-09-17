@@ -119,7 +119,7 @@ describe('Bravo', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('id', '1');
+
     assertProposalDocument('proposer', user1.toHexString());
     assertProposalDocument('targets', '[]');
     assertProposalDocument('values', '[]');
@@ -164,7 +164,7 @@ describe('Bravo', () => {
     const assertProposalDocument = (key: string, value: string): void => {
       assert.fieldEquals('Proposal', '1', key, value);
     };
-    assertProposalDocument('id', '1');
+
     assertProposalDocument('proposer', user1.toHexString());
     assertProposalDocument('targets', '[]');
     assertProposalDocument('values', '[]');

@@ -496,6 +496,28 @@ describe('GovernorBravo', function () {
 
       await governorBravo.connect(user3).propose(...proposal26);
       await mine(1);
+      await waitForSubgraphToBeSynced(SYNC_DELAY);
+
+      const {
+        data: { proposal: proposal26Created },
+      } = await subgraphClient.getProposalById('26');
+
+      expect(proposal26Created.remoteProposals.length).to.equal(1);
+      expect(proposal26Created.remoteProposals[0].proposalId).to.equal(null);
+      expect(proposal26Created.remoteProposals[0].trustedRemote.layerZeroChainId).to.equal(10102);
+      expect(proposal26Created.remoteProposals[0].targets).to.have.same.members([
+        normalTimelock.address.toLowerCase(),
+      ]);
+      expect(proposal26Created.remoteProposals[0].values).to.have.same.members(['0']);
+      expect(proposal26Created.remoteProposals[0].signatures).to.have.same.members([
+        'setDelay(uint256)',
+      ]);
+      expect(proposal26Created.remoteProposals[0].calldatas).to.have.same.members([
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase(),
+      ]);
+      expect(proposal26Created.remoteProposals[0].type).to.equal(0);
+      expect(proposal26Created.remoteProposals[0].stateTransactions).to.equal(null);
+
       await governorBravo.connect(user3).castVote('26', 1);
       await governorBravo.connect(user4).castVote('26', 1);
 
@@ -514,7 +536,7 @@ describe('GovernorBravo', function () {
       ) {
         await mine(1);
       }
-      await governorBravo.connect(user3).execute('26');
+      const tx = await governorBravo.connect(user3).execute('26');
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -522,8 +544,25 @@ describe('GovernorBravo', function () {
         data: { proposal: proposal26Indexed },
       } = await subgraphClient.getProposalById('26');
 
-      expect(proposal26Indexed.remoteProposals.length).to.equal(1);
-      expect(proposal26Indexed.remoteProposals[0].proposalId).to.equal('1');
+      expect(proposal26Indexed.remoteProposals[0].stateTransactions.stored.txHash).to.equal(
+        tx.hash,
+      );
+
+      // Check execution
+      const {
+        data: { remoteProposal },
+      } = await subgraphClient.getRemoteProposal({ id: '0x762700001a' });
+
+      expect(+remoteProposal.proposalId).to.be.equal(proposalId);
+      expect(remoteProposal.trustedRemote.layerZeroChainId).to.be.equal(layerZeroChainId);
+      expect(remoteProposal.targets[0]).to.be.equal(normalTimelock.address.toLowerCase());
+      expect(remoteProposal.values[0]).to.be.equal('0');
+      expect(remoteProposal.signatures[0]).to.be.equal('setDelay(uint256)');
+      expect(remoteProposal.calldatas[0]).to.be.equal(
+        ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase(),
+      );
+      expect(remoteProposal.type).to.be.equal(0);
+      expect(remoteProposal.stateTransactions.stored.txHash).to.equal(tx.hash);
     });
   });
 });
