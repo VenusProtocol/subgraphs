@@ -66,6 +66,7 @@ const user1Address = Address.fromString('0x0000000000000000000000000000000000000
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
 const aTokenAddress = Address.fromString('0x0000000000000000000000000000000000000aaa');
 const bTokenAddress = Address.fromString('0x0000000000000000000000000000000000000bbb');
+const rootAddress = Address.fromString('0x0000000000000000000000000000000000000072');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
 
@@ -104,13 +105,7 @@ beforeAll(() => {
 
   createPriceOracleMock([[ethereum.Value.fromAddress(aTokenAddress), ethereum.Value.fromI32(99)]]);
 
-  createPoolRegistryMock([
-    new PoolInfo(
-      'Gamer Pool',
-      Address.fromString('0x0000000000000000000000000000000000000072'),
-      Address.fromString('0x0000000000000000000000000000000000000c0c'),
-    ),
-  ]);
+  createPoolRegistryMock([new PoolInfo('Gamer Pool', rootAddress, comptrollerAddress)]);
 
   createAccountVTokenBalanceOfMock(aTokenAddress, user1Address, zeroBigInt32);
   createAccountVTokenBalanceOfMock(bTokenAddress, user1Address, zeroBigInt32);

@@ -1,7 +1,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import { MarketListed as MarketListedEvent } from '../../generated/Comptroller/Comptroller';
+import { MarketListed as MarketListedEvent } from '../../generated/DiamondComptroller/Comptroller';
 import {
   AccrueInterest as AccrueInterestEvent,
   Approval as ApprovalEvent,

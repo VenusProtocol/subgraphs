@@ -9,8 +9,7 @@ import { defaultMarkets } from './constants';
 
 describe('Pools', function () {
   let acc1: Signer;
-  let root: SignerWithAddress;
-  let accessControlManager: Contract;
+  let _root: SignerWithAddress;
   let poolRegistry: Contract;
   let poolLens: Contract;
 
@@ -18,61 +17,11 @@ describe('Pools', function () {
 
   before(async function () {
     const signers = await ethers.getSigners();
-    [root, acc1] = signers;
-
-    accessControlManager = await ethers.getContract('AccessControlManager');
+    [_root, acc1] = signers;
 
     poolRegistry = await ethers.getContract('PoolRegistry');
     poolLens = await ethers.getContract('PoolLens');
 
-    let tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setMinLiquidatableCollateral(uint256)',
-      root.address,
-    );
-    await tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setActionsPaused(address[],uint256[],bool)',
-      root.address,
-    );
-    tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setCollateralFactor(address,uint256,uint256)',
-      root.address,
-    );
-    tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setLiquidationIncentive(uint256)',
-      root.address,
-    );
-    tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setMarketBorrowCaps(address[],uint256[])',
-      root.address,
-    );
-    tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setMarketSupplyCaps(address[],uint256[])',
-      root.address,
-    );
-    tx.wait();
-
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setCloseFactor(uint256)',
-      root.address,
-    );
-    tx.wait();
     await waitForSubgraphToBeSynced(syncDelay);
   });
 
@@ -88,6 +37,7 @@ describe('Pools', function () {
       const vToken = await ethers.getContractAt('VTokenImpl', m.id);
 
       expect(m.pool.id).to.equal(defaultMarket?.pool.id.toLowerCase());
+      expect(m.isListed).to.equal(true);
       expect(m.borrowRateMantissa).to.equal(defaultMarket?.borrowRateMantissa);
       expect(m.cashMantissa).to.equal(defaultMarket?.cashMantissa);
       expect(m.collateralFactorMantissa).to.equal(defaultMarket?.collateralFactorMantissa);
@@ -116,7 +66,6 @@ describe('Pools', function () {
   });
 
   it('handles MarketEntered and MarketExited events', async function () {
-
     const pools = await poolLens.getAllPools(poolRegistry.address);
     const pool1Comptroller = await ethers.getContractAt('Comptroller', pools[0].comptroller);
 

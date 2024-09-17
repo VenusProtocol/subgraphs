@@ -51,7 +51,7 @@ import {
   createTransferEvent,
 } from './events';
 import { createAccountVTokenBalanceOfMock, createBorrowBalanceCurrentMock } from './mocks';
-import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
+import { createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
@@ -80,8 +80,6 @@ beforeAll(() => {
     interestRateModelAddress,
     underlyingPrice,
   );
-
-  createMarketMock(aaaTokenAddress);
 
   createPriceOracleMock([
     [ethereum.Value.fromAddress(aaaTokenAddress), ethereum.Value.fromI32(99)],

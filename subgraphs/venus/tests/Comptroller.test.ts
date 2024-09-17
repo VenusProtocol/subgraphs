@@ -8,7 +8,7 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
-import { handleMarketListed } from '../src/mappings/comptroller';
+import { handleMarketListed, handleMarketUnlisted } from '../src/mappings/comptroller';
 import {
   comptrollerAddress,
   interestRateModelAddress,
@@ -50,6 +50,7 @@ describe('handleMarketListing', () => {
       assert.fieldEquals('Market', vBnbAddress.toHex(), key, value);
     };
     assertMarketDocument('id', vBnbAddress.toHex());
+    assertMarketDocument('isListed', 'true');
     assertMarketDocument('underlyingAddress', nullAddress.toHex());
     assertMarketDocument('underlyingDecimals', '18');
     assertMarketDocument('underlyingName', 'BNB');
@@ -71,5 +72,31 @@ describe('handleMarketListing', () => {
     assertMarketDocument('blockTimestamp', '1');
     assertMarketDocument('borrowIndex', '0');
     assertMarketDocument('reserveFactor', '100');
+    assertMarketDocument('xvsBorrowStateIndex', '1000000000000000000000000000000000000');
+    assertMarketDocument('xvsSupplyStateIndex', '1000000000000000000000000000000000000');
+    assertMarketDocument('xvsBorrowStateBlock', '1');
+    assertMarketDocument('xvsSupplyStateBlock', '1');
+  });
+
+  test('unlist vBNB market correctly', () => {
+    const marketListedEvent = createMarketListedEvent(vBnbAddress);
+    handleMarketListed(marketListedEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vBnbAddress.toHex(), key, value);
+    };
+    assertMarketDocument('id', vBnbAddress.toHex());
+    assertMarketDocument('isListed', 'true');
+
+    const marketUnlistedEvent = createMarketListedEvent(vBnbAddress);
+    handleMarketUnlisted(marketUnlistedEvent);
+
+    assertMarketDocument('id', vBnbAddress.toHex());
+    assertMarketDocument('isListed', 'false');
+    assertMarketDocument('collateralFactorMantissa', '0');
+    assertMarketDocument('xvsBorrowStateIndex', '1000000000000000000000000000000000000');
+    assertMarketDocument('xvsSupplyStateIndex', '1000000000000000000000000000000000000');
+    assertMarketDocument('xvsBorrowStateBlock', '1');
+    assertMarketDocument('xvsSupplyStateBlock', '1');
   });
 });

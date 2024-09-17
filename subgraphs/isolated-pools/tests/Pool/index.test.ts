@@ -16,10 +16,13 @@ import {
   handleActionPausedMarket,
   handleMarketEntered,
   handleMarketExited,
+  handleMarketSupported,
+  handleMarketUnlisted,
   handleNewBorrowCap,
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
+  handleNewLiquidationThreshold,
   handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
   handleNewRewardsDistributor,
@@ -35,10 +38,13 @@ import {
   createMarketAddedEvent,
   createMarketEnteredEvent,
   createMarketExitedEvent,
+  createMarketSupported,
+  createMarketUnlisted,
   createNewBorrowCapEvent,
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
+  createNewLiquidationThresholdEvent,
   createNewMinLiquidatableCollateralEvent,
   createNewPriceOracleEvent,
   createNewRewardsDistributor,
@@ -127,6 +133,32 @@ afterEach(() => {
 });
 
 describe('Pool Events', () => {
+  test('handle listing a market', () => {
+    const marketSupportedEvent = createMarketSupported(vTokenAddress);
+
+    handleMarketSupported(marketSupportedEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
+    };
+
+    assertMarketDocument('isListed', 'true');
+    assertMarketDocument('collateralFactorMantissa', '0');
+    assertMarketDocument('liquidationThresholdMantissa', '0');
+  });
+
+  test('handle delisting a market', () => {
+    const marketUnlistedEvent = createMarketUnlisted(vTokenAddress);
+
+    handleMarketUnlisted(marketUnlistedEvent);
+
+    const assertMarketDocument = (key: string, value: string): void => {
+      assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
+    };
+
+    assertMarketDocument('isListed', 'false');
+  });
+
   test('creates Market correctly', () => {
     const assertMarketDocument = (key: string, value: string): void => {
       assert.fieldEquals('Market', vTokenAddress.toHex(), key, value);
@@ -335,6 +367,24 @@ describe('Pool Events', () => {
       vTokenAddress.toHex(),
       'supplyCapMantissa',
       newSupplyCap.toString(),
+    );
+  });
+
+  test('indexes NewLiquidationThreshold event', () => {
+    const oldLiquidationThresholdMantissa = BigInt.fromI64(200000000000000000);
+    const newLiquidationThresholdMantissa = BigInt.fromI64(200000000000000000);
+    const newLiquidationThresholdEvent = createNewLiquidationThresholdEvent(
+      vTokenAddress,
+      oldLiquidationThresholdMantissa,
+      newLiquidationThresholdMantissa,
+    );
+    handleNewLiquidationThreshold(newLiquidationThresholdEvent);
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'liquidationThresholdMantissa',
+      newLiquidationThresholdMantissa.toString(),
     );
   });
 

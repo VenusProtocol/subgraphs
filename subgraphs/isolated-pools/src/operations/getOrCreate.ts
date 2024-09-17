@@ -1,6 +1,5 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { VToken } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
@@ -11,6 +10,7 @@ import {
   RewardSpeed,
   RewardsDistributor,
 } from '../../generated/schema';
+import { VToken as VTokenDataSource } from '../../generated/templates';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
@@ -26,15 +26,12 @@ import { createAccount, createAccountPool, createMarket, createPool } from './cr
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
-  comptrollerAddress: Address | null = null,
-  blockTimestamp: BigInt = BigInt.fromI32(0),
+  comptrollerAddress: Address,
+  blockTimestamp: BigInt,
 ): Market => {
   let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
-    const vTokenContract = VTokenContract.bind(vTokenAddress);
-    if (!comptrollerAddress) {
-      comptrollerAddress = vTokenContract.comptroller();
-    }
+    VTokenDataSource.create(vTokenAddress);
     market = createMarket(comptrollerAddress, vTokenAddress, blockTimestamp);
   }
   return market;
@@ -90,7 +87,8 @@ export const getOrCreateAccountVToken = (
     accountVToken.market = marketAddress;
     accountVToken.enteredMarket = enteredMarket;
     accountVToken.accrualBlockNumber = zeroBigInt32;
-    const vTokenContract = VToken.bind(marketAddress);
+
+    const vTokenContract = VTokenContract.bind(marketAddress);
     const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
 
     const suppliedAmountMantissa = accountSnapshot.value1;

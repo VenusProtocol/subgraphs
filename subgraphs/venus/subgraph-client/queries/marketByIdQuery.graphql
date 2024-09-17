@@ -1,6 +1,7 @@
 query MarketById($id: ID!) {
   market(id: $id) {
     id
+    isListed
     borrowRateMantissa
     cashMantissa
     collateralFactorMantissa
@@ -24,5 +25,9 @@ query MarketById($id: ID!) {
     supplierCount
     borrowerCount
     borrowerCountAdjusted
+    xvsSupplyStateBlock
+    xvsSupplyStateIndex
+    xvsBorrowStateBlock
+    xvsBorrowStateIndex
   }
 }

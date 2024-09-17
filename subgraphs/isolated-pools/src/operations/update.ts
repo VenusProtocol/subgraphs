@@ -5,9 +5,8 @@ import { AccountVToken, Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { exponentToBigInt, valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getTokenPriceInCents } from '../utilities';
-import { getOrCreateMarket } from './getOrCreate';
-import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
-import { getOrCreatePool } from './getOrCreate';
+import { getMarket } from './get';
+import { getOrCreateAccount, getOrCreateAccountVToken, getOrCreatePool } from './getOrCreate';
 
 export const updateAccountVTokenAccrualBlockNumber = (
   accountAddress: Address,
@@ -125,7 +124,7 @@ export const updateMarket = (
   blockNumber: i32,
   blockTimestamp: i32,
 ): Market => {
-  const market = getOrCreateMarket(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
 
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber === blockNumber) {

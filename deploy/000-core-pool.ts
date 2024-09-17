@@ -2,7 +2,6 @@ import deployLenses from '@venusprotocol/venus-protocol/dist/deploy/000-lenses';
 import deployComptroller from '@venusprotocol/venus-protocol/dist/deploy/001-comptroller';
 import deployInterestRateModel from '@venusprotocol/venus-protocol/dist/deploy/002-interest-rate-model';
 import deployVBep20 from '@venusprotocol/venus-protocol/dist/deploy/003-deploy-VBep20';
-import configureMarkets from '@venusprotocol/venus-protocol/dist/deploy/004-support-markets';
 import deployVTreasuryV8 from '@venusprotocol/venus-protocol/dist/deploy/005-deploy-VTreasuryV8';
 import deployPsm from '@venusprotocol/venus-protocol/dist/deploy/006-deploy-psm';
 import deployVBNBAdmin from '@venusprotocol/venus-protocol/dist/deploy/007-deploy-VBNBAdmin';
@@ -24,7 +23,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await deployComptroller(hre);
   await deployInterestRateModel(hre);
   await deployVBep20(hre);
-  await configureMarkets(hre);
   await deployVTreasuryV8(hre);
   await deployPsm(hre);
   await deployMockTokens(hre);

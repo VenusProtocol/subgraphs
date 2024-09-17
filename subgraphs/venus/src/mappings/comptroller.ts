@@ -11,7 +11,9 @@ import {
   NewCollateralFactor,
   NewLiquidationIncentive,
   NewPriceOracle,
-} from '../../generated/Comptroller/Comptroller';
+} from '../../generated/DiamondComptroller/Comptroller';
+import { zeroBigInt32 } from '../constants';
+import { getMarket } from '../operations/get';
 import {
   getOrCreateAccount,
   getOrCreateAccountVToken,
@@ -20,7 +22,19 @@ import {
 } from '../operations/getOrCreate';
 
 export function handleMarketListed(event: MarketListed): void {
-  getOrCreateMarket(event.params.vToken, event);
+  // Create the market for initial listing
+  const market = getOrCreateMarket(event.params.vToken, event);
+  // If the market is listed/relisted the following values are reset
+  market.collateralFactorMantissa = zeroBigInt32;
+  market.xvsBorrowStateBlock = event.block.number;
+  market.xvsSupplyStateBlock = event.block.number;
+  market.save();
+}
+
+export function handleMarketUnlisted(event: MarketListed): void {
+  const market = getMarket(event.params.vToken)!;
+  market.isListed = false;
+  market.save();
 }
 
 export function handleMarketEntered(event: MarketEntered): void {

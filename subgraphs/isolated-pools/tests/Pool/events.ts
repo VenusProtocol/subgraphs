@@ -5,16 +5,35 @@ import {
   ActionPausedMarket as ActionPausedMarketEvent,
   MarketEntered as MarketEnteredEvent,
   MarketExited as MarketExitedEvent,
+  MarketSupported as MarketSupportedEvent,
+  MarketUnlisted as MarketUnlistedEvent,
   NewBorrowCap as NewBorrowCapEvent,
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
+  NewLiquidationThreshold as NewLiquidationThresholdEvent,
   NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
   NewRewardsDistributor as NewRewardsDistributorEvent,
   NewSupplyCap as NewSupplyCapEvent,
 } from '../../generated/PoolRegistry/Comptroller';
 import { MarketAdded as MarketAddedEvent } from '../../generated/PoolRegistry/PoolRegistry';
+
+export const createMarketSupported = (vTokenAddress: Address): MarketSupportedEvent => {
+  const event = changetype<MarketSupportedEvent>(newMockEvent());
+  event.parameters = [];
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+  return event;
+};
+
+export const createMarketUnlisted = (vTokenAddress: Address): MarketUnlistedEvent => {
+  const event = changetype<MarketUnlistedEvent>(newMockEvent());
+  event.parameters = [];
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+  return event;
+};
 
 export const createMarketAddedEvent = (
   comptrollerAddress: Address,
@@ -228,6 +247,32 @@ export const createNewMinLiquidatableCollateralEvent = (
     ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral),
   );
   event.parameters.push(newMinLiquidatableCollateralParam);
+
+  return event;
+};
+
+export const createNewLiquidationThresholdEvent = (
+  vTokenAddress: Address,
+  oldLiquidationThresholdMantissa: BigInt,
+  newLiquidationThresholdMantissa: BigInt,
+): NewLiquidationThresholdEvent => {
+  const event = changetype<NewLiquidationThresholdEvent>(newMockEvent());
+  event.parameters = [];
+
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+
+  const oldLiquidationThresholdParam = new ethereum.EventParam(
+    'oldLiquidationThresholdMantissa',
+    ethereum.Value.fromUnsignedBigInt(oldLiquidationThresholdMantissa),
+  );
+  event.parameters.push(oldLiquidationThresholdParam);
+
+  const newLiquidationThresholdParam = new ethereum.EventParam(
+    'newLiquidationThresholdMantissa',
+    ethereum.Value.fromUnsignedBigInt(newLiquidationThresholdMantissa),
+  );
+  event.parameters.push(newLiquidationThresholdParam);
 
   return event;
 };

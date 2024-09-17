@@ -31,6 +31,8 @@ dataSources:
       eventHandlers:
         - event: MarketListed(indexed address)
           handler: handleMarketListed
+        - event: MarketUnlisted(indexed address)
+          handler: handleMarketUnlisted
         - event: MarketEntered(indexed address,indexed address)
           handler: handleMarketEntered
         - event: MarketExited(indexed address,indexed address)
@@ -146,6 +148,8 @@ templates:
       abis:
         - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
+        - name: Comptroller
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Diamond/DiamondConsolidated.sol/DiamondConsolidated.json
       eventHandlers:
         - event: Mint(address,uint256,uint256,uint256)
           handler: handleMint

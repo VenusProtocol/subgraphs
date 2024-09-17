@@ -94,6 +94,7 @@ export function createMarket(
   market.pool = comptroller;
 
   market.name = vTokenContract.name();
+  market.isListed = true;
   market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
 
