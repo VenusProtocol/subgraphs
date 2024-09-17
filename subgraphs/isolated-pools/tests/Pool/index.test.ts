@@ -13,7 +13,6 @@ import {
 import { Pool } from '../../generated/schema';
 import { oneBigInt, zeroBigInt32 } from '../../src/constants';
 import {
-  // handleNewLiquidationThreshold,
   handleActionPausedMarket,
   handleMarketEntered,
   handleMarketExited,
@@ -23,6 +22,7 @@ import {
   handleNewCloseFactor,
   handleNewCollateralFactor,
   handleNewLiquidationIncentive,
+  handleNewLiquidationThreshold,
   handleNewMinLiquidatableCollateral,
   handleNewPriceOracle,
   handleNewRewardsDistributor,
@@ -44,6 +44,7 @@ import {
   createNewCloseFactorEvent,
   createNewCollateralFactorEvent,
   createNewLiquidationIncentiveEvent,
+  createNewLiquidationThresholdEvent,
   createNewMinLiquidatableCollateralEvent,
   createNewPriceOracleEvent,
   createNewRewardsDistributor,
@@ -370,33 +371,22 @@ describe('Pool Events', () => {
   });
 
   test('indexes NewLiquidationThreshold event', () => {
-    // const newRewardsDistributorEvent = createNewRewardsDistributor(
-    //   comptrollerAddress,
-    //   rewardsDistributorAddress,
-    // );
-    // handleNewRewardsDistributor(newRewardsDistributorEvent);
-    // assert.fieldEquals(
-    //   'RewardsDistributor',
-    //   rewardsDistributorAddress.toHex(),
-    //   'id',
-    //   rewardsDistributorAddress.toHexString(),
-    // );
-    // assert.fieldEquals(
-    //   'RewardsDistributor',
-    //   rewardsDistributorAddress.toHex(),
-    //   'pool',
-    //   comptrollerAddress.toHexString(),
-    // );
-    // const pool = Pool.load(comptrollerAddress)!;
-    // const rewardsDistributors = pool.rewardsDistributors.load();
-    // assert.bytesEquals(rewardsDistributorAddress, rewardsDistributors[0].id);
+    const oldLiquidationThresholdMantissa = BigInt.fromI64(200000000000000000);
+    const newLiquidationThresholdMantissa = BigInt.fromI64(200000000000000000);
+    const newLiquidationThresholdEvent = createNewLiquidationThresholdEvent(
+      vTokenAddress,
+      oldLiquidationThresholdMantissa,
+      newLiquidationThresholdMantissa,
+    );
+    handleNewLiquidationThreshold(newLiquidationThresholdEvent);
+    assert.fieldEquals('Market', vTokenAddress.toHex(), 'id', vTokenAddress.toHexString());
+    assert.fieldEquals(
+      'Market',
+      vTokenAddress.toHex(),
+      'liquidationThresholdMantissa',
+      newLiquidationThresholdMantissa.toString(),
+    );
   });
-
-  // const poolAddress = event.address;
-  // const vTokenAddress = event.params.vToken;
-  // const market = getOrCreateMarket(vTokenAddress, poolAddress);
-  // market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
-  // market.save();
 
   test('indexes NewRewardsDistributor event', () => {
     const newRewardsDistributorEvent = createNewRewardsDistributor(

@@ -11,6 +11,7 @@ import {
   NewCloseFactor as NewCloseFactorEvent,
   NewCollateralFactor as NewCollateralFactorEvent,
   NewLiquidationIncentive as NewLiquidationIncentiveEvent,
+  NewLiquidationThreshold as NewLiquidationThresholdEvent,
   NewMinLiquidatableCollateral as NewMinLiquidatableCollateralEvent,
   NewPriceOracle as NewPriceOracleEvent,
   NewRewardsDistributor as NewRewardsDistributorEvent,
@@ -246,6 +247,32 @@ export const createNewMinLiquidatableCollateralEvent = (
     ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral),
   );
   event.parameters.push(newMinLiquidatableCollateralParam);
+
+  return event;
+};
+
+export const createNewLiquidationThresholdEvent = (
+  vTokenAddress: Address,
+  oldLiquidationThresholdMantissa: BigInt,
+  newLiquidationThresholdMantissa: BigInt,
+): NewLiquidationThresholdEvent => {
+  const event = changetype<NewLiquidationThresholdEvent>(newMockEvent());
+  event.parameters = [];
+
+  const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
+  event.parameters.push(vTokenParam);
+
+  const oldLiquidationThresholdParam = new ethereum.EventParam(
+    'oldLiquidationThresholdMantissa',
+    ethereum.Value.fromUnsignedBigInt(oldLiquidationThresholdMantissa),
+  );
+  event.parameters.push(oldLiquidationThresholdParam);
+
+  const newLiquidationThresholdParam = new ethereum.EventParam(
+    'newLiquidationThresholdMantissa',
+    ethereum.Value.fromUnsignedBigInt(newLiquidationThresholdMantissa),
+  );
+  event.parameters.push(newLiquidationThresholdParam);
 
   return event;
 };
