@@ -80,9 +80,9 @@ const main = () => {
       startBlock: '3535723',
     },
     zksync: {
-      network: 'zksync',
+      network: 'zksync-era',
       poolRegistryAddress: zksyncDeployments.addresses.PoolRegistry,
-      startBlock: '3535723',
+      startBlock: '43555102',
     },
   };
 
