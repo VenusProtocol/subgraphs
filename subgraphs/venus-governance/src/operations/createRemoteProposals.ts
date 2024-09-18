@@ -27,7 +27,7 @@ const createRemoteProposals = (event: ProposalCreatedV2): void => {
         '(uint16,bytes,bytes,address)',
         DYNAMIC_TUPLE_BYTES_PREFIX.concat(acc.calldatas[idx]),
       )!;
-      const layerZeroChainId = decoded.toTuple()[0].toBigInt();
+      const layerZeroChainId = decoded.toTuple()[0].toI32();
       const payload = decoded.toTuple()[1].toBytes();
       const payloadDecoded = ethereum
         .decode(
@@ -36,12 +36,12 @@ const createRemoteProposals = (event: ProposalCreatedV2): void => {
         )!
         .toTuple();
 
-      const remoteProposalId = Bytes.fromI32(layerZeroChainId.toI32()).concat(
+      const remoteProposalId = Bytes.fromI32(layerZeroChainId).concat(
         Bytes.fromByteArray(Bytes.fromBigInt(acc.sourceProposalId)),
       );
       const remoteProposal = new RemoteProposal(remoteProposalId);
 
-      remoteProposal.trustedRemote = Bytes.fromI32(layerZeroChainId.toI32()); // default value replaced in event handler
+      remoteProposal.trustedRemote = Bytes.fromI32(layerZeroChainId); // default value replaced in event handler
       remoteProposal.sourceProposal = acc.sourceProposalId.toString();
       const targets = payloadDecoded[0]
         .toAddressArray()
