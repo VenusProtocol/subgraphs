@@ -1,6 +1,6 @@
 {
   "name": "isolated-pools-subgraph",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -23,7 +23,7 @@
     "deploy:arbitrumSepolia": "yarn prepare:arbitrumSepolia && yarn codegen && yarn graph deploy --studio venus-il-arbitrumsepolia",
     "deploy:arbitrum": "yarn prepare:arbitrum  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-arbitrum",
     "deploy:zksyncSepolia": "yarn prepare:zksyncSepolia  && yarn codegen && yarn graph deploy --studio venus-il-zksync-sepolia",
-    "deploy:zksync": "yarn prepare:zksyncSepolia  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-zksync",
+    "deploy:zksync": "yarn prepare:zksync  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-zksync",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
