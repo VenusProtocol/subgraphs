@@ -29,6 +29,7 @@ export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): v
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
+  associateSourceAndRemoteProposals(event);
   const transaction = getOrCreateTransaction(event);
   const remoteProposalStateTransaction = getRemoteProposalStateTransaction(event.params.proposalId);
   remoteProposalStateTransaction.executed = transaction.id;
