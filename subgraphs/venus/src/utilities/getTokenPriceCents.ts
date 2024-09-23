@@ -2,12 +2,12 @@ import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { valueOrNotAvailableIntIfReverted } from '.';
 import { PriceOracle } from '../../generated/templates/VToken/PriceOracle';
-import { getOrCreateComptroller } from '../operations/getOrCreate';
+import { getComptroller } from '../operations/get';
 import { exponentToBigInt } from './exponentToBigInt';
 
 // Used for all vBEP20 contracts
 export function getTokenPriceCents(eventAddress: Address, underlyingDecimals: i32): BigInt {
-  const comptroller = getOrCreateComptroller();
+  const comptroller = getComptroller();
   if (!comptroller.priceOracle) {
     log.debug('[getTokenPrice] empty price oracle: {}', ['0']);
     return BigInt.zero();

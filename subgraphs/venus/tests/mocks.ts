@@ -1,6 +1,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
+import { comptrollerAddress } from '../src/constants/addresses';
 import { vBnbAddress } from './constants';
 
 export const mockPriceOracleAddress = Address.fromString(
@@ -98,11 +99,7 @@ export const createVBep20AndUnderlyingMock = (
   ]);
 };
 
-export const createComptrollerMock = (comptrollerAddress: Address): void => {
-  createMockedFunction(comptrollerAddress, 'oracle', 'oracle():(address)').returns([
-    ethereum.Value.fromAddress(mockPriceOracleAddress),
-  ]);
-
+export const createComptrollerMock = (): void => {
   createMockedFunction(
     comptrollerAddress,
     'closeFactorMantissa',

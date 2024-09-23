@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 1.2.0
 description: Venus is an open-source protocol for algorithmic, efficient Money Markets on the BSC blockchain.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/comptroller.ts
       entities:
@@ -58,7 +58,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/comptroller.ts
       entities:
@@ -82,6 +82,10 @@ dataSources:
           handler: handleMarketEntered
         - event: MarketExited(address,address)
           handler: handleMarketExited
+      blockHandlers:
+        - handler: handleInitialization
+          filter:
+            kind: once
 templates:
   - name: VToken
     kind: ethereum/contract
@@ -90,7 +94,7 @@ templates:
       abi: VToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/vToken.ts
       entities:
@@ -138,7 +142,7 @@ templates:
       abi: VToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/vToken.ts
       entities:
