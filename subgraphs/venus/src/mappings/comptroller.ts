@@ -67,7 +67,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   market.save();
 }
 
-// This should be the first event acccording to bscscan but it isn't.... price oracle is. weird
+// This should be the first event according to bscscan but it isn't.... price oracle is. weird
 export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
   const comptroller = getOrCreateComptroller();
   comptroller.liquidationIncentive = event.params.newLiquidationIncentiveMantissa;
