@@ -66,7 +66,7 @@ jobs:
           docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run codegen
           docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run create:docker
           docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run deploy:docker
-          sleep 5s
+          sleep 10s
           docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run generate-subgraph-types
       
       - name: Run Core Pool integration tests
