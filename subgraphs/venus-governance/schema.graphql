@@ -256,7 +256,7 @@ type RemoteProposal @entity {
   proposalId: BigInt
 
   "Remote ChainId where the proposal was sent"
-  trustedRemote: TrustedRemote!
+  trustedRemote: TrustedRemote
 
   "Targets data for the change"
   targets: [Bytes!]

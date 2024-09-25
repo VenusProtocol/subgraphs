@@ -52,7 +52,8 @@ const main = () => {
       xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13937802',
       xvsVaultPid: '1',
-      omnichainProposalSenderAddress: '0xCfD34AEB46b1CB4779c945854d405E91D27A1899',
+      omnichainProposalSenderAddress:
+        bscTestnetGovernanceDeployments.addresses.OmnichainProposalSender,
       omnichainProposalSenderStartBlock: '40979674',
     },
     bsc: {
