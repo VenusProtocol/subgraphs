@@ -1,8 +1,9 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { ProposalCreated as ProposalCreatedV2 } from '../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
-import { RemoteProposal } from '../../generated/schema';
+import { RemoteProposal, TrustedRemote } from '../../generated/schema';
 import { DYNAMIC_TUPLE_BYTES_PREFIX } from '../constants';
+import { nullAddress } from '../constants/addresses';
 
 class RemoteCommandMap {
   sourceProposalId: BigInt;
@@ -40,8 +41,16 @@ const createRemoteProposals = (event: ProposalCreatedV2): void => {
         Bytes.fromByteArray(Bytes.fromBigInt(acc.sourceProposalId)),
       );
       const remoteProposal = new RemoteProposal(remoteProposalId);
-
-      remoteProposal.trustedRemote = Bytes.fromI32(layerZeroChainId); // default value replaced in event handler
+      const trustRemoteId = Bytes.fromI32(layerZeroChainId);
+      let trustedRemote = TrustedRemote.load(trustRemoteId);
+      if (!trustedRemote) {
+        trustedRemote = new TrustedRemote(trustRemoteId);
+        trustedRemote.layerZeroChainId = layerZeroChainId;
+        trustedRemote.address = nullAddress;
+        trustedRemote.active = false;
+        trustedRemote.save();
+      }
+      remoteProposal.trustedRemote = trustRemoteId;
       remoteProposal.sourceProposal = acc.sourceProposalId.toString();
       const targets = payloadDecoded[0]
         .toAddressArray()
