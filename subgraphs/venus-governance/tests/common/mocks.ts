@@ -1,4 +1,4 @@
-import { BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
 
 import { governorBravoDelegatorAddress } from '../../src/constants/addresses';
@@ -10,6 +10,26 @@ import {
   timelockAddress1,
   timelockAddress2,
 } from './constants';
+
+export const createMockBlock = (): ethereum.Block => {
+  return new ethereum.Block(
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    mockAdminAddress,
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    null,
+    null,
+  );
+};
 
 export const createGovernorBravoMocks = (): void => {
   createMockedFunction(

@@ -8,8 +8,7 @@ import {
   Proposal,
   RemoteProposal,
 } from '../../generated/schema';
-import { BIGINT_ZERO } from '../constants';
-import { nullAddress, omnichainProposalSenderAddress } from '../constants/addresses';
+import { omnichainProposalSenderAddress } from '../constants/addresses';
 import {
   getDelegateId,
   getGovernanceId,
@@ -23,22 +22,8 @@ import {
  * @returns Governance
  */
 export const getGovernanceEntity = (): Governance => {
-  let governance = Governance.load(getGovernanceId());
-  if (!governance) {
-    governance = new Governance(getGovernanceId());
-    governance.totalProposals = BIGINT_ZERO;
-    governance.totalDelegates = BIGINT_ZERO;
-    governance.totalVoters = BIGINT_ZERO;
-    governance.totalVotesMantissa = BIGINT_ZERO;
-    // Mocking values until we can correctly index current governance contract
-    governance.admin = nullAddress;
-    governance.implementation = nullAddress;
-    governance.guardian = nullAddress;
-    governance.quorumVotesMantissa = BIGINT_ZERO;
-    governance.proposalMaxOperations = BIGINT_ZERO;
-  }
-
-  return governance as Governance;
+  const governance = Governance.load(getGovernanceId())!;
+  return governance;
 };
 
 export const getOmnichainProposalSenderEntity = (): OmnichainProposalSender => {

@@ -17,6 +17,7 @@ import {
 } from '../../../generated/GovernorAlpha/GovernorAlpha';
 import { Delegate } from '../../../generated/schema';
 import {
+  handleInitialization,
   handleProposalCanceled,
   handleProposalCreated,
   handleProposalExecuted,
@@ -33,7 +34,7 @@ import {
   createProposalQueuedEvent,
   createVoteCastAlphaEvent,
 } from '../../common/events';
-import { createGovernorBravoMocks } from '../../common/mocks';
+import { createGovernorBravoMocks, createMockBlock } from '../../common/mocks';
 
 const cleanup = (): void => {
   clearStore();
@@ -48,6 +49,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  handleInitialization(createMockBlock());
   getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,
