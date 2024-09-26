@@ -1,4 +1,4 @@
-specVersion: 0.0.4
+specVersion: 1.2.0
 description: Venus Protocol Reserve manages income generated from Venus money markets.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/converterNetwork.ts
       entities:
@@ -38,7 +38,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/tokenConverter.ts
       entities:
@@ -72,7 +72,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/tokenConverter.ts
       entities:
@@ -106,7 +106,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/tokenConverter.ts
       entities:
@@ -140,7 +140,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/tokenConverter.ts
       entities:
@@ -174,7 +174,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/tokenConverter.ts
       entities:

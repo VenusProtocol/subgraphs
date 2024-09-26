@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 1.2.0
 description: Venus is an open-source protocol for algorithmic, efficient Money Markets.
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
@@ -13,7 +13,7 @@ dataSources:
       startBlock: {{ startBlock }}
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/poolRegistry.ts
       entities:
@@ -50,7 +50,7 @@ templates:
       abi: Comptroller
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/pool.ts
       entities:
@@ -106,7 +106,7 @@ templates:
       abi: VToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/vToken.ts
       entities:
@@ -158,7 +158,7 @@ templates:
       abi: RewardsDistributor
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.7
+      apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/rewardsDistributor.ts
       entities:
