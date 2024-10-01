@@ -29,5 +29,7 @@ query MarketById($id: ID!) {
     underlyingDecimals
     supplierCount
     borrowerCount
+    totalBorrowsMantissa
+    totalSupplyVTokenMantissa
   }
 }
