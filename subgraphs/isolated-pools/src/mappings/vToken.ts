@@ -29,10 +29,7 @@ import {
   createTransferTransaction,
 } from '../operations/create';
 import { getMarket } from '../operations/get';
-import {
-  getOrCreateAccount,
-  getOrCreateAccountVToken,
-} from '../operations/getOrCreate';
+import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
 import { recordLiquidatorAsSupplier } from '../operations/recordLiquidatorAsSupplier';
 import {
   updateAccountVTokenAccrualBlockNumber,
@@ -68,7 +65,7 @@ export function handleMint(event: Mint): void {
     event.block.number,
     suppliedTotal,
   );
-  if (suppliedTotal == event.params.mintTokens) {
+  if (suppliedTotal.equals(event.params.mintTokens)) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
     market.save();
@@ -99,7 +96,7 @@ export function handleRedeem(event: Redeem): void {
     event.block.number,
     currentBalance,
   );
-  if (currentBalance == zeroBigInt32) {
+  if (currentBalance.equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
     market.save();
@@ -130,7 +127,7 @@ export function handleBorrow(event: Borrow): void {
 
   createBorrowTransaction(event);
 
-  if (event.params.accountBorrows == event.params.borrowAmount) {
+  if (event.params.accountBorrows.equals(event.params.borrowAmount)) {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
     market.save();
@@ -166,7 +163,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   createRepayBorrowTransaction(event);
 
-  if (event.params.accountBorrows == zeroBigInt32) {
+  if (event.params.accountBorrows.equals(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
     market.save();
   }
