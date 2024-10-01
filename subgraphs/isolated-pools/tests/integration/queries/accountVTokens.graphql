@@ -14,10 +14,10 @@ query AccountVTokens  {
       block
     }
     enteredMarket
-    accountVTokenSupplyBalanceMantissa
-    accountBorrowBalanceMantissa
+    vTokenBalanceMantissa
+    storedBorrowBalanceMantissa
     totalUnderlyingRedeemedMantissa
-    accountBorrowIndexMantissa
+    borrowIndex
     totalUnderlyingRepaidMantissa
   }
 }

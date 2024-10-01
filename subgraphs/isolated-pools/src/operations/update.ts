@@ -34,7 +34,7 @@ export const updateAccountVTokenSupply = (
     marketAddress,
     blockNumber,
   );
-  accountVToken.accountVTokenSupplyBalanceMantissa = accountSupplyBalanceMantissa;
+  accountVToken.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -53,8 +53,8 @@ export const updateAccountVTokenBorrow = (
     marketAddress,
     blockNumber,
   );
-  accountVToken.accountBorrowBalanceMantissa = accountBorrows;
-  accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
+  accountVToken.storedBorrowBalanceMantissa = accountBorrows;
+  accountVToken.borrowIndex = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -73,8 +73,8 @@ export const updateAccountVTokenRepayBorrow = (
     marketAddress,
     blockNumber,
   );
-  accountVToken.accountBorrowBalanceMantissa = accountBorrows;
-  accountVToken.accountBorrowIndexMantissa = borrowIndexMantissa;
+  accountVToken.storedBorrowBalanceMantissa = accountBorrows;
+  accountVToken.borrowIndex = borrowIndexMantissa;
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -133,7 +133,7 @@ export const updateMarket = (
   const marketContract = VToken.bind(vTokenAddress);
 
   const tokenPriceCents = getTokenPriceInCents(
-    marketContract.comptroller(),
+    Address.fromBytes(market.pool),
     vTokenAddress,
     market.underlyingDecimals,
   );

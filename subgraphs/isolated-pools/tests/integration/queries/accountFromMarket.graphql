@@ -8,10 +8,10 @@ query AccountFromMarket($marketId: ID!, $accountId: Bytes!){
         block
       }
       enteredMarket
-      accountVTokenSupplyBalanceMantissa
-      accountBorrowBalanceMantissa
+      vTokenBalanceMantissa
+      borrowIndex
       totalUnderlyingRedeemedMantissa
-      accountBorrowIndexMantissa
+      storedBorrowBalanceMantissa
       totalUnderlyingRepaidMantissa
     }
   }

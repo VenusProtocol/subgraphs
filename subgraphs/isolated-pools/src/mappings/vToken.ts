@@ -209,8 +209,8 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const borrowerBorrowAccountVToken = borrowerBorrowAccountVTokenResult.entity;
 
   // Creation updates balance
-  borrowerBorrowAccountVToken.accountBorrowIndexMantissa = borrowedVTokenContract.borrowIndex();
-  borrowerBorrowAccountVToken.accountBorrowBalanceMantissa =
+  borrowerBorrowAccountVToken.borrowIndex = borrowedVTokenContract.borrowIndex();
+  borrowerBorrowAccountVToken.storedBorrowBalanceMantissa =
     borrowedVTokenContract.borrowBalanceStored(event.params.borrower);
   borrowerBorrowAccountVToken.save();
 
@@ -221,8 +221,8 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   );
   const borrowerSupplyAccountVToken = borrowerSupplyAccountVTokenResult.entity;
 
-  borrowerSupplyAccountVToken.accountVTokenSupplyBalanceMantissa =
-    borrowerSupplyAccountVToken.accountVTokenSupplyBalanceMantissa.minus(event.params.seizeTokens);
+  borrowerSupplyAccountVToken.vTokenBalanceMantissa =
+    borrowerSupplyAccountVToken.vTokenBalanceMantissa.minus(event.params.seizeTokens);
   borrowerSupplyAccountVToken.save();
 
   const collateralBalance = collateralContract.balanceOf(event.params.borrower);
@@ -298,8 +298,9 @@ export function handleTransfer(event: Transfer): void {
 
     // Creation updates balance
     if (!resultFrom.created) {
-      accountFromVToken.accountVTokenSupplyBalanceMantissa =
-        accountFromVToken.accountVTokenSupplyBalanceMantissa.minus(event.params.amount);
+      accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
+        event.params.amount,
+      );
       accountFromVToken.save();
     }
     getOrCreateAccount(accountToAddress);
@@ -319,8 +320,9 @@ export function handleTransfer(event: Transfer): void {
 
     // Creation updates balance
     if (!resultTo.created) {
-      accountToVToken.accountVTokenSupplyBalanceMantissa =
-        accountToVToken.accountVTokenSupplyBalanceMantissa.plus(event.params.amount);
+      accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
+        event.params.amount,
+      );
       accountToVToken.save();
     }
   }

@@ -94,15 +94,15 @@ export const getOrCreateAccountVToken = (
     const suppliedAmountMantissa = accountSnapshot.value1;
     const borrowedAmountMantissa = accountSnapshot.value2;
 
-    accountVToken.accountVTokenSupplyBalanceMantissa = suppliedAmountMantissa;
-    accountVToken.accountBorrowBalanceMantissa = borrowedAmountMantissa;
+    accountVToken.vTokenBalanceMantissa = suppliedAmountMantissa;
+    accountVToken.storedBorrowBalanceMantissa = borrowedAmountMantissa;
     // @TODO
     // accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
     // accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
     // accountVToken.borrowIndex = vTokenContract.borrowIndex();
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.accountBorrowIndexMantissa = zeroBigInt32;
+    accountVToken.borrowIndex = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.enteredMarket = false;
     accountVToken.save();
