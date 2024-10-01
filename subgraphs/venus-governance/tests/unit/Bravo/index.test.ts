@@ -18,6 +18,7 @@ import {
 } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { Delegate } from '../../../generated/schema';
 import { GOVERNANCE } from '../../../src/constants';
+import { handleInitialization } from '../../../src/mappings/alpha';
 import {
   handleBravoVoteCast,
   handleNewAdmin,
@@ -42,7 +43,7 @@ import {
   createProposalQueuedEvent,
   createVoteCastBravoEvent,
 } from '../../common/events';
-import { createGovernorBravoMocks } from '../../common/mocks';
+import { createGovernorBravoMocks, createMockBlock } from '../../common/mocks';
 import {
   createNewAdminEvent,
   createNewGuardianEvent,
@@ -66,6 +67,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   /** setup test */
+  handleInitialization(createMockBlock());
   getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,

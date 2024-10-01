@@ -9,12 +9,7 @@ import {
 } from 'matchstick-as/assembly/index';
 
 import { handleMarketListed, handleMarketUnlisted } from '../src/mappings/comptroller';
-import {
-  comptrollerAddress,
-  interestRateModelAddress,
-  nullAddress,
-  vBnbAddress,
-} from './constants';
+import { interestRateModelAddress, nullAddress, vBnbAddress } from './constants';
 import { createMarketListedEvent } from './events';
 import { createComptrollerMock, createVBep20AndUnderlyingMock } from './mocks';
 
@@ -38,7 +33,7 @@ beforeAll(() => {
     interestRateModelAddress,
   );
 
-  createComptrollerMock(comptrollerAddress);
+  createComptrollerMock();
 });
 
 describe('handleMarketListing', () => {

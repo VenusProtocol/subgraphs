@@ -3,6 +3,7 @@ import { assert, beforeAll, beforeEach, describe, test } from 'matchstick-as/ass
 
 import { ProposalCreated } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { DelegateChangedV2 } from '../../../generated/XVSVault/XVSVault';
+import { handleInitialization } from '../../../src/mappings/alpha';
 import { handleProposalCreated } from '../../../src/mappings/bravo';
 import {
   handleDelegateChanged,
@@ -12,7 +13,7 @@ import {
 import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
 import { user1, user2, user3 } from '../../common/constants';
 import { createDelegateChangedEvent, createProposalCreatedEvent } from '../../common/events';
-import { createGovernorBravoMocks } from '../../common/mocks';
+import { createGovernorBravoMocks, createMockBlock } from '../../common/mocks';
 import { createXvsDepositEvent, createXvsWithdrawlRequestedEvent } from './events';
 
 const startBlock = 4563820;
@@ -25,6 +26,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   /** setup test */
+  handleInitialization(createMockBlock());
   getOrCreateDelegate(user1);
   const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
     1,

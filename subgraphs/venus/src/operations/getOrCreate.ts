@@ -1,7 +1,6 @@
-import { Address, BigInt, Bytes, ethereum, log } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
-import { Comptroller as ComptrollerContract } from '../../generated/Comptroller/Comptroller';
-import { Account, AccountVToken, Comptroller, Market } from '../../generated/schema';
+import { Account, AccountVToken, Market } from '../../generated/schema';
 import {
   VToken as VTokenTemplate,
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
@@ -9,7 +8,7 @@ import {
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { comptrollerAddress, nullAddress } from '../constants/addresses';
+import { nullAddress } from '../constants/addresses';
 import {
   getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
@@ -20,22 +19,7 @@ import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
 import { updateMarketRates } from './updateMarketRates';
 
-export function getOrCreateComptroller(): Comptroller {
-  let comptroller = Comptroller.load(comptrollerAddress);
-  if (!comptroller) {
-    comptroller = new Comptroller(comptrollerAddress);
-    const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
-    comptroller.priceOracle = comptrollerContract.oracle();
-    comptroller.closeFactor = comptrollerContract.closeFactorMantissa();
-    comptroller.liquidationIncentive = comptrollerContract.liquidationIncentiveMantissa();
-    comptroller.maxAssets = comptrollerContract.maxAssets();
-    comptroller.save();
-  }
-  return comptroller;
-}
-
 export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event): Market {
-  // @todo add and use market id utility
   let market = getMarket(marketAddress);
   if (!market) {
     const vTokenContract = VToken.bind(marketAddress);
@@ -58,9 +42,6 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       market.underlyingSymbol = 'BNB';
     } else {
       market.underlyingAddress = vTokenContract.underlying();
-      log.debug('[createMarket] market underlying address: {}', [
-        market.underlyingAddress.toHexString(),
-      ]);
       const underlyingContract = BEP20.bind(Address.fromBytes(market.underlyingAddress));
       market.underlyingDecimals = underlyingContract.decimals();
       market.underlyingName = underlyingContract.name();

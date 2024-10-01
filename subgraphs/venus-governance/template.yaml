@@ -6,7 +6,7 @@ schema:
 features:
   - fullTextSearch
 dataSources:
-  - kind: ethereum/contract
+  - kind: ethereum
     name: GovernorAlpha
     network: {{ network }}
     source:
@@ -14,7 +14,7 @@ dataSources:
       abi: GovernorAlpha
       startBlock: {{ governorAlphaStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
@@ -39,7 +39,11 @@ dataSources:
           handler: handleProposalExecuted
         - event: VoteCast(address,uint256,bool,uint256)
           handler: handleVoteCast
-  - kind: ethereum/contract
+      blockHandlers:
+        - handler: handleInitialization
+          filter:
+            kind: once
+  - kind: ethereum
     name: GovernorAlpha2
     network: {{ network }}
     source:
@@ -47,7 +51,7 @@ dataSources:
       abi: GovernorAlpha2
       startBlock: {{ governorAlpha2StartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/alpha.ts
@@ -80,7 +84,7 @@ dataSources:
       abi: GovernorBravoDelegate
       startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
@@ -124,7 +128,7 @@ dataSources:
       abi: GovernorBravoDelegate2
       startBlock: {{ governorBravoDelegatorStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/bravo.ts
@@ -149,7 +153,7 @@ dataSources:
       abi: XVSVault
       startBlock: {{ xvsVaultStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/xvsVault.ts
@@ -177,7 +181,7 @@ dataSources:
       abi: AccessControlMangerV5
       startBlock: {{ accessControlManagerStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/accessControlManager.ts
@@ -200,7 +204,7 @@ dataSources:
       abi: OmnichainProposalSender
       startBlock: {{ omnichainProposalSenderStartBlock }}
     mapping:
-      kind: ethereum/events
+      kind: ethereum
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       file: ./src/mappings/omnichainProposalSender.ts

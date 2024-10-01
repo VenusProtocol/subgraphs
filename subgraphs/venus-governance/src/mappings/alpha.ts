@@ -1,4 +1,4 @@
-import { log } from '@graphprotocol/graph-ts';
+import { ethereum, log } from '@graphprotocol/graph-ts';
 
 import {
   ProposalCanceled,
@@ -7,6 +7,9 @@ import {
   ProposalQueued,
   VoteCast,
 } from '../../generated/GovernorAlpha/GovernorAlpha';
+import { Governance } from '../../generated/schema';
+import { BIGINT_ZERO } from '../constants';
+import { nullAddress } from '../constants/addresses';
 import { createProposal, createVoteAlpha } from '../operations/create';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import {
@@ -15,6 +18,23 @@ import {
   updateProposalExecuted,
   updateProposalQueued,
 } from '../operations/update';
+import { getGovernanceId } from '../utilities/ids';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitialization(block: ethereum.Block): void {
+  const governance = new Governance(getGovernanceId());
+  governance.totalProposals = BIGINT_ZERO;
+  governance.totalDelegates = BIGINT_ZERO;
+  governance.totalVoters = BIGINT_ZERO;
+  governance.totalVotesMantissa = BIGINT_ZERO;
+  // Mocking values until we can correctly index current governance contract
+  governance.admin = nullAddress;
+  governance.implementation = nullAddress;
+  governance.guardian = nullAddress;
+  governance.quorumVotesMantissa = BIGINT_ZERO;
+  governance.proposalMaxOperations = BIGINT_ZERO;
+  governance.save();
+}
 
 // - event: ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)
 //   handler: handleProposalCreated

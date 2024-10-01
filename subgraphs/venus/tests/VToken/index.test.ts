@@ -10,9 +10,11 @@ import {
   test,
 } from 'matchstick-as/assembly/index';
 
+import { Comptroller } from '../../generated/schema';
 import { oneBigInt, zeroBigInt32 } from '../../src/constants';
 import { comptrollerAddress } from '../../src/constants/addresses';
 import { handleMarketListed } from '../../src/mappings/comptroller';
+import { handleInitialization } from '../../src/mappings/comptroller';
 import {
   handleAccrueInterest,
   handleBorrow,
@@ -32,6 +34,7 @@ import {
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
 import { getAccountVTokenId } from '../../src/utilities/ids';
+import { createComptrollerMock } from '../mocks';
 import {
   createAccrueInterestEvent,
   createBorrowEvent,
@@ -50,8 +53,14 @@ import {
   createReservesReducedEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createBorrowBalanceCurrentMock } from './mocks';
-import { createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
+import {
+  createAccountVTokenBalanceOfMock,
+  createBorrowBalanceCurrentMock,
+  createMockBlock,
+  createPriceOracleMock,
+  createVBep20AndUnderlyingMock,
+  mockPriceOracleAddress,
+} from './mocks';
 
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
@@ -69,10 +78,10 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
+  createComptrollerMock();
   createVBep20AndUnderlyingMock(
     aaaTokenAddress,
     tokenAddress,
-    comptrollerAddress,
     'AAA Coin',
     'AAA',
     BigInt.fromI32(18),
@@ -90,6 +99,10 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  handleInitialization(createMockBlock());
+  const comptroller = Comptroller.load(comptrollerAddress)!;
+  comptroller.priceOracle = mockPriceOracleAddress;
+  comptroller.save();
   // Add Market
   const marketAddedEvent = createMarketListedEvent(aaaTokenAddress);
 

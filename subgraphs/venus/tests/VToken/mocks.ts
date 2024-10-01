@@ -1,14 +1,35 @@
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
+
+import { comptrollerAddress } from '../../src/constants/addresses';
 
 export const mockPriceOracleAddress = Address.fromString(
   '0xb0b0000000000000000000000000000000000000',
 );
 
+export const createMockBlock = (): ethereum.Block => {
+  return new ethereum.Block(
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    comptrollerAddress,
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    Bytes.fromHexString('0x'),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    BigInt.fromI32(0),
+    null,
+    null,
+  );
+};
+
 export const createVBep20AndUnderlyingMock = (
   contractAddress: Address,
   underlyingAddress: Address,
-  comptrollerAddress: Address,
   name: string,
   symbol: string,
   decimals: BigInt,
