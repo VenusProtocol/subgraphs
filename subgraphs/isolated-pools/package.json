@@ -25,6 +25,7 @@
     "deploy:zksyncSepolia": "yarn prepare:zksyncSepolia  && yarn codegen && yarn graph deploy --studio venus-il-zksync-sepolia",
     "deploy:zksync": "yarn prepare:zksync  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-zksync",
     "deploy:optimismSepolia": "yarn prepare:optimismSepolia  && yarn codegen && yarn graph deploy --studio venus-il-optimism-sepolia",
+    "deploy:optimism": "yarn prepare:optimism  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-optimism",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
@@ -35,14 +36,15 @@
     "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
     "prepare:zksyncSepolia": "NETWORK=zksyncSepolia yarn ts-node config/index.ts",
     "prepare:zksync": "NETWORK=zksync yarn ts-node config/index.ts",
-    "prepare:optimismSepolia": "NETWORK=zksyncSepolia yarn ts-node config/index.ts",
+    "prepare:optimismSepolia": "NETWORK=optimismSepolia yarn ts-node config/index.ts",
+    "prepare:optimism": "NETWORK=optimism yarn ts-node config/index.ts",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.6.0-dev.1"
+    "@venusprotocol/isolated-pools": "3.6.0"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",

@@ -4,6 +4,7 @@ import bscMainnetDeployments from '@venusprotocol/isolated-pools/deployments/bsc
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
+import optimismDeployments from '@venusprotocol/isolated-pools/deployments/opmainnet_addresses.json';
 import optimismSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/opsepolia_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import zksyncDeployments from '@venusprotocol/isolated-pools/deployments/zksyncmainnet_addresses.json';
@@ -24,6 +25,7 @@ export const getNetwork = () => {
     'zksyncSepolia',
     'zksync',
     'optimismSepolia',
+    'optimism',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -90,6 +92,11 @@ const main = () => {
       network: 'optimism-sepolia',
       poolRegistryAddress: optimismSepoliaDeployments.addresses.PoolRegistry,
       startBlock: '17040271',
+    },
+    optimism: {
+      network: 'optimism',
+      poolRegistryAddress: optimismDeployments.addresses.PoolRegistry,
+      startBlock: '126048098',
     },
   };
 
