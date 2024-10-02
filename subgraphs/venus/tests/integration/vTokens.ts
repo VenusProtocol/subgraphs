@@ -564,13 +564,13 @@ describe('VToken events', function () {
     });
 
     it('should handle accrue interest event with added reserves', async function () {
-      const fdusd50Usd = await oracle.getAssetTokenAmount(
+      const fdusd10Usd = await oracle.getAssetTokenAmount(
         vFdusdToken.address,
         parseUnits('10', 36),
       );
       const doge50Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('50', 36));
       for (const [vToken, amount] of [
-        [vFdusdToken, fdusd50Usd],
+        [vFdusdToken, fdusd10Usd],
         [vDogeToken, doge50Usd],
       ]) {
         const borrowRateMantissaPrev = await vToken.borrowRatePerBlock();
@@ -809,7 +809,7 @@ describe('VToken events', function () {
 
     it('should not update the supplier count on the market when current accounts mint again', async function () {
       // Supply all accounts
-      const usdc100Usd = await oracle.getAssetTokenAmount(
+      const usdc1000Usd = await oracle.getAssetTokenAmount(
         vUsdcToken.address,
         parseUnits('1000', 36),
       );
@@ -823,7 +823,7 @@ describe('VToken events', function () {
       );
 
       for (const account of suppliers) {
-        await vUsdcToken.connect(account).mint(usdc100Usd.toString());
+        await vUsdcToken.connect(account).mint(usdc1000Usd.toString());
         await vWBnbToken.connect(account).mint({ value: bnb1000Usd.toString() });
         await vEthToken.connect(account).mint(eth2000Usd.toString());
       }
@@ -846,7 +846,7 @@ describe('VToken events', function () {
       }
 
       for (const account of borrowers) {
-        await vUsdcToken.connect(rootSigner).mintBehalf(account._address, usdc100Usd.toString());
+        await vUsdcToken.connect(rootSigner).mintBehalf(account._address, usdc1000Usd.toString());
         await vEthToken.connect(rootSigner).mintBehalf(account._address, eth2000Usd.toString());
       }
 

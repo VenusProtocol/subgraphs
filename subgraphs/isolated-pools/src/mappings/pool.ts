@@ -14,7 +14,6 @@ import {
   NewRewardsDistributor,
   NewSupplyCap,
 } from '../../generated/PoolRegistry/Comptroller';
-import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
 import { zeroBigInt32 } from '../constants';
 import { getMarket } from '../operations/get';
@@ -31,8 +30,7 @@ import {
 import Box from '../utilities/box';
 
 export function handleMarketSupported(event: MarketSupported): void {
-  const vTokenContract = VTokenContract.bind(event.params.vToken);
-  const comptroller = vTokenContract.comptroller();
+  const comptroller = event.address;
   const market = getOrCreateMarket(event.params.vToken, comptroller, event.block.timestamp);
   market.isListed = true;
   market.collateralFactorMantissa = zeroBigInt32;

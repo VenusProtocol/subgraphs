@@ -21,6 +21,7 @@ query Markets {
     accrualBlockNumber
     blockTimestamp
     borrowIndexMantissa
+    liquidationThresholdMantissa
     reserveFactorMantissa
     underlyingPriceCentsMantissa
     underlyingDecimals

@@ -215,13 +215,13 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountVTokenSupplyBalanceMantissa',
+      'vTokenBalanceMantissa',
       accountBalance.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowBalanceMantissa',
+      'storedBorrowBalanceMantissa',
       zeroBigInt32.toString(),
     );
     assert.fieldEquals(
@@ -230,12 +230,7 @@ describe('VToken', () => {
       'totalUnderlyingRedeemedMantissa',
       zeroBigInt32.toString(),
     );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accountBorrowIndexMantissa',
-      zeroBigInt32.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
   });
 
   test('registers redeem event', () => {
@@ -294,13 +289,13 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountVTokenSupplyBalanceMantissa',
+      'vTokenBalanceMantissa',
       zeroBigInt32.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowBalanceMantissa',
+      'storedBorrowBalanceMantissa',
       zeroBigInt32.toString(),
     );
     assert.fieldEquals(
@@ -309,12 +304,7 @@ describe('VToken', () => {
       'totalUnderlyingRedeemedMantissa',
       zeroBigInt32.toString(),
     );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accountBorrowIndexMantissa',
-      zeroBigInt32.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
   });
 
   test('registers borrow event', () => {
@@ -386,13 +376,13 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowBalanceMantissa',
+      'storedBorrowBalanceMantissa',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowIndexMantissa',
+      'borrowIndex',
       market.borrowIndexMantissa.toString(),
     );
   });
@@ -474,13 +464,13 @@ describe('VToken', () => {
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowBalanceMantissa',
+      'storedBorrowBalanceMantissa',
       accountBorrows.toString(),
     );
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accountBorrowIndexMantissa',
+      'borrowIndex',
       market.borrowIndexMantissa.toString(),
     );
   });
@@ -649,7 +639,7 @@ describe('VToken', () => {
       transferEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingRedeemedMantissa', '0');
   });
@@ -722,7 +712,7 @@ describe('VToken', () => {
       transferEvent.block.number.toString(),
     );
 
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'accountBorrowIndexMantissa', '0');
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
   });
 
   test('registers new interest rate model', () => {

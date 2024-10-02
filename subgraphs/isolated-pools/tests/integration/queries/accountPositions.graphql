@@ -10,9 +10,9 @@ query AccountPositions($id: ID!) {
         closeFactorMantissa
         minLiquidatableCollateralMantissa
       }
-      collateral: tokens(where: { accountVTokenSupplyBalanceMantissa_gt: 0 }) {
+      supplies: tokens(where: { vTokenBalanceMantissa_gt: 0 }) {
         id
-        accountVTokenSupplyBalanceMantissa
+        vTokenBalanceMantissa
         market {
           id
           liquidationThresholdMantissa
@@ -22,10 +22,10 @@ query AccountPositions($id: ID!) {
           underlyingDecimals
         }
       }
-      borrows: tokens(where: { accountBorrowBalanceMantissa_gt: 0 }) {
+      borrows: tokens(where: { storedBorrowBalanceMantissa_gt: 0 }) {
         id
-        accountBorrowBalanceMantissa
-        accountBorrowIndexMantissa
+        storedBorrowBalanceMantissa
+        borrowIndex
         market {
           id
           underlyingAddress

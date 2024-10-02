@@ -1,6 +1,17 @@
-query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: String!) {
-  accountVTokens(where: { account: $accountId, market: $marketId }) {
+query AccountVTokenByAccountAndMarket($id: ID!) {
+  accountVToken(id: $id) {
     id
+    accountPool {
+      pool {
+        id
+      }
+      account {
+        id
+      }
+      tokens {
+        id
+      }
+    }
     market {
       id
     }
@@ -14,10 +25,10 @@ query AccountVTokenByAccountAndMarketQuery($accountId: String!, $marketId: Strin
       block
     }
     enteredMarket
-    accountVTokenSupplyBalanceMantissa
-    accountBorrowBalanceMantissa
+    vTokenBalanceMantissa
+    storedBorrowBalanceMantissa
     totalUnderlyingRedeemedMantissa
-    accountBorrowIndexMantissa
+    borrowIndex
     totalUnderlyingRepaidMantissa
   }
 }
