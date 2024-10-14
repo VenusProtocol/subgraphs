@@ -40,7 +40,7 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
+      poolRegistryAddress: '0x3155755b79aA083bd953911C92705B7aA82a18F9',
       startBlock: 0,
     },
     ethereum: {
