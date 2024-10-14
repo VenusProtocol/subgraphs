@@ -45,8 +45,8 @@ export const recordLiquidatorAsSupplier = (event: ProtocolSeize): void => {
 
         // Creation updates balance
         if (!liquidatorAccountVTokenResult.created) {
-          liquidatorAccountVToken.accountVTokenSupplyBalanceMantissa =
-            liquidatorAccountVToken.accountVTokenSupplyBalanceMantissa.plus(amount);
+          liquidatorAccountVToken.vTokenBalanceMantissa =
+            liquidatorAccountVToken.vTokenBalanceMantissa.plus(amount);
         }
         liquidatorAccountVToken.save();
         // If the transfer amount equals balance it was a funding transfer

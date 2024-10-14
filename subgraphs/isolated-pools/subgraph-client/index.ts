@@ -1,16 +1,21 @@
 import { DocumentNode } from 'graphql';
-import { OperationResult, Client as UrqlClient, createClient } from 'urql/core';
+import { Client as UrqlClient, createClient } from 'urql/core';
 
 import {
   AccountByIdDocument,
   AccountFromMarketDocument,
   AccountPositionsDocument,
-  AccountVTokenByAccountAndMarketQueryDocument,
-  AccountVTokenByAccountAndMarketQueryQuery,
+  AccountVTokenByAccountAndMarketDocument,
+  AccountVTokenByAccountAndMarketQuery,
   AccountVTokenByAccountIdDocument,
   AccountVTokensDocument,
+  AccountVTokensQuery,
+  AccountVTokensWithBorrowByMarketIdDocument,
+  AccountVTokensWithSupplyByMarketIdDocument,
+  AccountVTokensWithSupplyByMarketIdQuery,
   MarketActionsDocument,
   MarketByIdDocument,
+  MarketByIdQuery,
   MarketsDocument,
   PoolByIdDocument,
   PoolsDocument,
@@ -49,9 +54,9 @@ class SubgraphClient {
     return result;
   }
 
-  async getMarketById(id: string) {
+  async getMarketById(id: string): Promise<MarketByIdQuery> {
     const result = await this.query(MarketByIdDocument, { id });
-    return result;
+    return result.data;
   }
 
   async getAccountById(id: string) {
@@ -59,9 +64,9 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokens() {
+  async getAccountVTokens(): Promise<AccountVTokensQuery> {
     const result = await this.query(AccountVTokensDocument, {});
-    return result;
+    return result.data;
   }
 
   async getMarketActions() {
@@ -79,15 +84,31 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokenByAccountAndMarket(
-    accountId: string,
+  async getAccountVTokensWithSupplyByMarketId(
     marketId: string,
-  ): Promise<OperationResult<AccountVTokenByAccountAndMarketQueryQuery>> {
-    const result = await this.query(AccountVTokenByAccountAndMarketQueryDocument, {
-      accountId,
-      marketId,
+  ): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
+    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, { marketId });
+    return result.data;
+  }
+
+  async getAccountVTokensWithBorrowByMarketId(
+    marketId: string,
+  ): Promise<AccountVTokensWithBorrowByMarketId> {
+    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, { marketId });
+    return result.data;
+  }
+
+  async getAccountVTokenByAccountAndMarket({
+    accountId,
+    marketId,
+  }: {
+    accountId: string;
+    marketId: string;
+  }): Promise<AccountVTokenByAccountAndMarketQuery> {
+    const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
+      id: `${marketId}${accountId.replace('0x', '')}`,
     });
-    return result;
+    return result.data || { accountVToken: null };
   }
 
   async getAccountPositions(id: string) {

@@ -132,7 +132,7 @@ Account is an BNB address, with a list of all vToken markets the account has
 participated in, along with liquidation information.
 """
 type Account @entity {
-    "User BNB address"
+    "User address"
     id: Bytes!
     "Pools the user is participating on"
     pools: [AccountPool!]! @derivedFrom(field: "account")
@@ -172,17 +172,16 @@ type AccountVToken @entity {
     badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
+    "Borrow Index this position last accrued interest"
+    borrowIndex: BigInt!
     "vToken balance representing underlying supplied to the market, underlying balance can be calculated with the exchange rate"
-    accountVTokenSupplyBalanceMantissa: BigInt!
-    "Current borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    accountBorrowBalanceMantissa: BigInt!
+    vTokenBalanceMantissa: BigInt!
+    "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+    storedBorrowBalanceMantissa: BigInt!
     "True if user is entered, false if they are exited"
     enteredMarket: Boolean!
-
     "Total amount of underlying redeemed"
     totalUnderlyingRedeemedMantissa: BigInt!
-    "The value of the borrow index upon users last interaction"
-    accountBorrowIndexMantissa: BigInt!
     "Total amount underlying repaid"
     totalUnderlyingRepaidMantissa: BigInt!
 }

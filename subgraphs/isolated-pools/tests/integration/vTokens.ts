@@ -2,9 +2,10 @@ import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
+import { checkAccountVToken, checkMarket } from './checkEntities';
 
 const { parseUnits } = ethers.utils;
 const { MaxUint256 } = ethers.constants;
@@ -12,12 +13,12 @@ const { MaxUint256 } = ethers.constants;
 describe('VToken events', function () {
   const syncDelay = 2000;
   let root: SignerWithAddress;
-  let liquidator: SignerWithAddress;
-  let liquidator2: SignerWithAddress;
   let supplier1: SignerWithAddress;
   let supplier2: SignerWithAddress;
-  let borrower: SignerWithAddress;
+  let borrower1: SignerWithAddress;
   let borrower2: SignerWithAddress;
+  let liquidator1: SignerWithAddress;
+  let liquidator2: SignerWithAddress;
   let comptroller: Contract;
   let bnxToken: Contract;
   let vBnxToken: Contract;
@@ -31,18 +32,20 @@ describe('VToken events', function () {
 
   before(async function () {
     const signers = await ethers.getSigners();
-    [root, supplier1, supplier2, borrower, borrower2, liquidator, liquidator2] = signers;
+    [root, supplier1, supplier2, borrower1, borrower2, liquidator1, liquidator2] = signers;
 
     const fundAccounts = async (token: Contract, amount: string) => {
       const underlying = await token.underlying();
       const underlyingContract = await ethers.getContractAt('BEP20Harness', underlying);
       await Promise.all(
-        [supplier1, supplier2, borrower, borrower2, liquidator, liquidator2].map(async account => {
-          await underlyingContract.connect(account).faucet(amount);
-          await underlyingContract.connect(account).approve(token.address, MaxUint256);
-          await underlyingContract.connect(root).faucet(amount);
-          await underlyingContract.connect(root).approve(token.address, MaxUint256);
-        }),
+        [supplier1, supplier2, borrower1, borrower2, liquidator1, liquidator2].map(
+          async account => {
+            await underlyingContract.connect(account).faucet(amount);
+            await underlyingContract.connect(account).approve(token.address, MaxUint256);
+            await underlyingContract.connect(root).faucet(amount);
+            await underlyingContract.connect(root).approve(token.address, MaxUint256);
+          },
+        ),
       );
     };
 
@@ -94,263 +97,365 @@ describe('VToken events', function () {
     await waitForSubgraphToBeSynced(syncDelay);
   });
 
-  it('updates the supplierCount for the market', async function () {
-    const { data: initialData } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
-    const { market: initialMarketQuery } = initialData!;
+  it('should update correctly when minting', async function () {
+    const btcb1000Usd = await oracle.getAssetTokenAmount(
+      vBtcbToken.address,
+      parseUnits('1000', 36),
+    );
 
+    // adding two new suppliers
+    const tx1 = await vBtcbToken.connect(supplier1).mint(btcb1000Usd.toString());
+    await tx1.wait(1);
+
+    const tx2 = await vBtcbToken.connect(supplier2).mint(btcb1000Usd.toString());
+    await tx2.wait(1);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
+
+    checkAccountVToken(supplier2.address, vBtcbToken.address, tx2);
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
+    // Deployer is initial supplier
+    expect(vBtcbMarket?.supplierCount).to.equal('3');
+  });
+
+  it('should not increment supplier count and update correctly when mint again', async function () {
     const btcb5000Usd = await oracle.getAssetTokenAmount(
       vBtcbToken.address,
       parseUnits('5000', 36),
     );
 
-    // 1 current supply
-    expect(initialMarketQuery?.supplierCount).to.equal('1');
+    const bnx5000Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('5000', 36));
     // adding two new suppliers
-    let tx = await vBtcbToken.connect(supplier1).mint(btcb5000Usd.toString());
-    await tx.wait(1);
+    const tx1 = await vBtcbToken.connect(supplier1).mint(btcb5000Usd.toString());
+    await tx1.wait(1);
 
-    tx = await vBtcbToken.connect(supplier2).mint(btcb5000Usd.toString());
-    await tx.wait(1);
+    const tx2 = await vBtcbToken.connect(supplier2).mint(btcb5000Usd.toString());
+    await tx2.wait(1);
+
     await waitForSubgraphToBeSynced(syncDelay);
 
-    // Check querying pools by account
-    const { data: positionData } = await subgraphClient.getAccountPositions(
-      supplier1.address.toLowerCase(),
-    );
-    const { account } = positionData!;
-    expect(account.pools.length).to.equal(1);
-    // @todo rename account.pools[0].supply
-    expect(account.pools[0].collateral.length).to.equal(1);
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
 
-    const { data: dataWithNewSupplier } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketsQueryAfterNewSupplier } = dataWithNewSupplier!;
-    expect(marketsQueryAfterNewSupplier?.supplierCount).to.equal('3');
+    checkAccountVToken(supplier2.address, vBtcbToken.address, tx2);
 
-    // removing supplier
-    tx = await vBtcbToken.connect(supplier1).redeemUnderlying(btcb5000Usd.toString());
-    await tx.wait(1);
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
+    // Deployer is initial supplier
+    expect(vBtcbMarket?.supplierCount).to.equal('3');
+
+    await vBnxToken.connect(root).mintBehalf(supplier1.address, bnx5000Usd.toString());
+    await vBnxToken.connect(root).mintBehalf(supplier2.address, bnx5000Usd.toString());
+
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataWithoutNewSupplier } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketQueryAfterRemovingSupplier } = dataWithoutNewSupplier!;
+    checkAccountVToken(supplier1.address, vBnxToken.address, tx1);
 
-    expect(marketQueryAfterRemovingSupplier?.supplierCount).to.equal('2');
+    checkAccountVToken(supplier2.address, vBnxToken.address, tx2);
 
-    // partially redeeming should not decrease count
-    const btcb10Usd = await oracle.getAssetTokenAmount(vBtcbToken.address, parseUnits('10', 36));
-    tx = await vBtcbToken.connect(supplier2).redeemUnderlying(btcb10Usd.toString());
-    await tx.wait(1);
-    await waitForSubgraphToBeSynced(syncDelay);
-
-    const { data: dataAfterHalfRedeem } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketAfterHalfRedeem } = dataAfterHalfRedeem!;
-
-    expect(marketAfterHalfRedeem?.supplierCount).to.equal('2');
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    expect(vBnxMarket?.supplierCount).to.equal('3');
   });
 
-  it('updates the borrowerCount for the market', async function () {
-    const { data: initialData } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
-    const { market: marketBeforeData } = initialData!;
-    expect(marketBeforeData?.borrowerCount).to.equal('0');
-
-    const btcb10000Usd = await oracle.getAssetTokenAmount(
+  it('should not update the supplier count on the market when partially redeeming', async function () {
+    const btcb1000Usd = await oracle.getAssetTokenAmount(
       vBtcbToken.address,
-      parseUnits('1000000', 36),
+      parseUnits('1000', 36),
     );
+    const tx1 = await vBtcbToken.connect(supplier1).redeemUnderlying(btcb1000Usd.toString());
+    await tx1.wait(1);
+    const tx2 = await vBtcbToken.connect(supplier2).redeemUnderlying(btcb1000Usd.toString());
+    await tx2.wait(1);
 
-    const bnx20000Usd = await oracle.getAssetTokenAmount(
-      vBnxToken.address,
-      parseUnits('500000', 36),
-    );
-
-    const bnx1000Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('10000', 36));
-
-    // Root supplies BNX
-    await vBnxToken.connect(root).mint(bnx20000Usd.toString());
-    // // Borrower supplies BTCB and borrows BNX
-    await vBtcbToken.connect(borrower).mint(btcb10000Usd.toString());
-    await vBtcbToken.connect(borrower2).mint(btcb10000Usd.toString());
-    // @todo check entering market
-    await comptroller.connect(borrower).enterMarkets([vBtcbToken.address]);
-    let tx = await comptroller.connect(borrower2).enterMarkets([vBtcbToken.address]);
-    await tx.wait(1);
-
-    // borrowing adds to count
-    await vBnxToken.connect(borrower).borrow(bnx1000Usd.toString());
-    tx = await vBnxToken.connect(borrower2).borrow(bnx1000Usd.toString());
-    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataAfterBorrow } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
-    const { market: marketAfterBorrow } = dataAfterBorrow!;
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx2);
 
-    expect(marketAfterBorrow?.borrowerCount).to.equal('2');
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
 
-    tx = await vBnxToken.connect(borrower2).borrow(bnx1000Usd.toString());
-    await tx.wait(1);
+    expect(vBtcbMarket?.supplierCount).to.equal('3');
+  });
+
+  it('should update the supplier count on the market when fully redeeming', async function () {
+    const tx1 = await vBtcbToken
+      .connect(supplier1)
+      .redeem((await vBtcbToken.balanceOf(supplier1.address)).toString());
+    await tx1.wait(1);
+    const tx2 = await vBtcbToken
+      .connect(supplier2)
+      .redeem((await vBtcbToken.balanceOf(supplier2.address)).toString());
+    await tx2.wait(1);
+
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: dataAfterBorrow2 } = await subgraphClient.getMarketById(
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
+    checkAccountVToken(supplier1.address, vBtcbToken.address, tx2);
+
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
+
+    expect(vBtcbMarket?.supplierCount).to.equal('1');
+  });
+
+  it('should handle enter market', async function () {
+    await comptroller.connect(borrower1).enterMarkets([vBnxToken.address, vBtcbToken.address]);
+    await comptroller.connect(borrower2).enterMarkets([vBnxToken.address, vBtcbToken.address]);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    for (const vTokenAddress of [vBnxToken.address, vBtcbToken.address]) {
+      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        marketId: vTokenAddress.toLowerCase(),
+        accountId: borrower1.address,
+      });
+      expect(accountVToken?.enteredMarket).to.equal(true);
+    }
+
+    for (const vTokenAddress of [vBnxToken.address, vBtcbToken.address]) {
+      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        marketId: vTokenAddress.toLowerCase(),
+        accountId: borrower2.address,
+      });
+      expect(accountVToken?.enteredMarket).to.equal(true);
+    }
+  });
+
+  it('should handle exit market', async function () {
+    await comptroller.connect(borrower1).exitMarket(vBtcbToken.address);
+    await comptroller.connect(borrower2).exitMarket(vBnxToken.address);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    const { accountVToken: accountVTokenVUsdt } =
+      await subgraphClient.getAccountVTokenByAccountAndMarket({
+        marketId: vBtcbToken.address.toLowerCase(),
+        accountId: borrower1.address,
+      });
+    expect(accountVTokenVUsdt?.enteredMarket).to.equal(false);
+
+    const { accountVToken: accountVTokenVDoge } =
+      await subgraphClient.getAccountVTokenByAccountAndMarket({
+        marketId: vBnxToken.address.toLowerCase(),
+        accountId: borrower2.address,
+      });
+    expect(accountVTokenVDoge?.enteredMarket).to.equal(false);
+  });
+
+  it('should update the borrower count on the market for new borrows', async function () {
+    const bnx1000Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('1000', 36));
+    const btcb1000Usd = await oracle.getAssetTokenAmount(
+      vBtcbToken.address,
+      parseUnits('1000', 36),
+    );
+    await vBnxToken.connect(borrower1).mint(bnx1000Usd);
+    await vBtcbToken.connect(borrower2).mint(btcb1000Usd);
+    const { market: marketBeforeData } = await subgraphClient.getMarketById(
       vBnxAddress.toLowerCase(),
     );
-    const { market: marketAfterBorrow2 } = dataAfterBorrow2!;
+    expect(marketBeforeData?.borrowerCount).to.equal('0');
 
-    expect(marketAfterBorrow2?.borrowerCount).to.equal('2');
+    const bnx500Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('500', 36));
+    const btcb500Usd = await oracle.getAssetTokenAmount(vBtcbToken.address, parseUnits('500', 36));
 
-    const { data: positionData } = await subgraphClient.getAccountPositions(
-      borrower2.address.toLowerCase(),
-    );
-    const { account } = positionData!;
+    const tx1 = await vBtcbToken.connect(borrower1).borrow(btcb500Usd);
+    const tx2 = await vBnxToken.connect(borrower2).borrow(bnx500Usd);
 
-    expect(account.pools.length).to.equal(1);
-    expect(account.pools[0].borrows.length).to.equal(1);
-    expect(account.pools[0].collateral.length).to.equal(1);
-
-    // completely repaying the borrow should decrease the count
-    tx = await vBnxToken
-      .connect(borrower)
-      .repayBorrow((await vBnxToken.callStatic.borrowBalanceCurrent(borrower.address)) + 10000n);
-    await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
-    const { market } = data!;
+    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
+    checkAccountVToken(borrower2.address, vBnxToken.address, tx2);
 
-    expect(market?.borrowerCount).to.equal('1');
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
+    expect(vBtcbMarket?.borrowerCount).to.equal('1');
 
-    const { data: positionDataAfter } = await subgraphClient.getAccountPositions(
-      borrower2.address.toLowerCase(),
-    );
-    const { account: accountAfter } = positionDataAfter!;
-    expect(accountAfter.pools.length).to.equal(1);
-    expect(accountAfter.pools[0].borrows.length).to.equal(1);
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    expect(vBnxMarket?.borrowerCount).to.equal('1');
+  });
+
+  it('should not update the borrower count on the market for repeated borrows', async function () {
+    const btcb50Usd = await oracle.getAssetTokenAmount(vBtcbToken.address, parseUnits('50', 36));
+
+    const bnx50Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('50', 36));
+
+    const tx1 = await vBtcbToken.connect(borrower1).borrow(btcb50Usd.toString());
+    const tx2 = await vBnxToken.connect(borrower2).borrow(bnx50Usd.toString());
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
+    checkAccountVToken(borrower2.address, vBnxToken.address, tx2);
+
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
+    expect(vBtcbMarket?.borrowerCount).to.equal('1');
+
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    expect(vBnxMarket?.borrowerCount).to.equal('1');
+  });
+
+  it('should not update the borrower count on the market for partial repayment of borrow', async function () {
+    const bnx10Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('10', 36));
+
+    const tx1 = await vBnxToken.connect(borrower2).repayBorrow(bnx10Usd);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
+
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    expect(vBnxMarket?.borrowerCount).to.equal('1');
+  });
+
+  it('should handle accrue interest event', async function () {
+    for (const vToken of [vBtcbToken, vBnxToken]) {
+      await vToken.accrueInterest();
+
+      await waitForSubgraphToBeSynced(syncDelay);
+      await checkMarket(vToken.address);
+    }
+  });
+
+  it('should handle accrue interest event with added reserves', async function () {
+    const btcb50Usd = await oracle.getAssetTokenAmount(vBtcbToken.address, parseUnits('50', 36));
+    const bnx50Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('50', 36));
+    for (const [vToken, amount] of [
+      [vBtcbToken, btcb50Usd],
+      [vBnxToken, bnx50Usd],
+    ]) {
+      await vToken.addReserves(amount.toString());
+
+      await waitForSubgraphToBeSynced(syncDelay);
+
+      await checkMarket(vToken.address);
+    }
   });
 
   it('should handle liquidateBorrow event', async function () {
-    await oracle.setPrice(vBtcbToken.address, parseUnits('2500', 18).toString());
-    await oracle.setPrice(vBnxToken.address, parseUnits('1500', 18).toString());
+    await oracle.setPrice(vBtcbToken.address, parseUnits('30000', 18).toString());
+    await oracle.setPrice(vBnxToken.address, parseUnits('.5', 18).toString());
 
     const liquidateAmount = await oracle.getAssetTokenAmount(
       vBtcbToken.address,
-      parseUnits('200', 36),
+      parseUnits('10', 36),
     );
-    await vBnxToken
-      .connect(liquidator)
-      .liquidateBorrow(borrower2.address, liquidateAmount.toString(), vBtcbToken.address);
+    const tx = await vBtcbToken
+      .connect(liquidator1)
+      .liquidateBorrow(borrower1.address, liquidateAmount.toString(), vBnxToken.address);
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: updatedAccountVTokenData } =
-      await subgraphClient.getAccountVTokenByAccountAndMarket(
-        borrower2.address.toLowerCase(),
-        vBnxToken.address.toLowerCase(),
-      );
-    const { accountVTokens } = updatedAccountVTokenData!;
+    checkAccountVToken(borrower1.address, vBnxToken.address, tx);
 
-    expect(accountVTokens[0]?.accountBorrowBalanceMantissa).to.be.approximately(
-      await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address),
-      1e11,
-    );
+    await checkMarket(vBnxToken.address);
 
     const {
       data: { account: accountBorrower },
-    } = await subgraphClient.getAccountById(borrower2.address.toLowerCase());
+    } = await subgraphClient.getAccountById(borrower1.address.toLowerCase());
     expect(accountBorrower.countLiquidated).to.equal(1);
 
     const {
       data: { account: accountLiquidator },
-    } = await subgraphClient.getAccountById(liquidator.address.toLowerCase());
+    } = await subgraphClient.getAccountById(liquidator1.address.toLowerCase());
     expect(accountLiquidator.countLiquidator).to.equal(1);
 
-    const { data: dataWithAddedLiquidatorSupplier } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketWithAddedLiquidatorSupplier } = dataWithAddedLiquidatorSupplier!;
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    // root, one borrower, 2suppliers, and liquidator added as suppliers
+    expect(vBnxMarket?.supplierCount).to.equal('5');
 
-    // Two borrowers and liquidator added as suppliers
-    expect(marketWithAddedLiquidatorSupplier?.supplierCount).to.equal('5');
-
-    const { data: liquidatorAccountVTokenData } =
-      await subgraphClient.getAccountVTokenByAccountAndMarket(
-        liquidator.address.toLowerCase(),
-        vBtcbToken.address.toLowerCase(),
-      );
-    const { accountVTokens: liquidatorAccountVTokens } = liquidatorAccountVTokenData!;
-
-    expect(liquidatorAccountVTokens[0]?.accountVTokenSupplyBalanceMantissa).to.be.approximately(
-      ethers.BigNumber.from(await vBtcbToken.balanceOf(liquidator.address)),
-      1e11,
-    );
-    // @todo Fix collateral error causing this part of the test to fail
+    checkAccountVToken(liquidator1.address, vBnxToken.address, tx);
+    // @todo check why repaying exact amount causes an overflow error
     // let borrowBalanceCurrent = await vBnxToken.borrowBalanceStored(borrower2.address);
-    // await vBnxToken.connect(borrower2).repayBorrow(borrowBalanceCurrent.sub(1000000));
+    // await vBtcbToken.connect(borrower1).repayBorrow(borrowBalanceCurrent.sub(750000000000000));
 
-    // await oracle.setPrice(vBtcbToken.address, parseUnits('1', 18).toString());
-    // await oracle.setPrice(vBnxToken.address, parseUnits('1000000', 18).toString());
+    // await oracle.setPrice(vBtcbToken.address, parseUnits('100000', 18).toString());
+    // await oracle.setPrice(vBnxToken.address, parseUnits('.2', 18).toString());
 
-    // borrowBalanceCurrent = await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address);
+    // borrowBalanceCurrent = await vBtcbToken.callStatic.borrowBalanceCurrent(borrower1.address);
 
     // // liquidate rest of borrow
-    // await comptroller.connect(liquidator).liquidateAccount(borrower2.address, [
+    // await comptroller.connect(liquidator1).liquidateAccount(borrower1.address, [
     //   {
-    //     vTokenCollateral: vBtcbToken.address,
-    //     vTokenBorrowed: vBnxToken.address,
-    //     repayAmount: borrowBalanceCurrent.add(18098),
+    //     vTokenCollateral: vBnxToken.address,
+    //     vTokenBorrowed: vBtcbToken.address,
+    //     repayAmount: borrowBalanceCurrent.add(601),
     //   },
     // ]);
 
     // await waitForSubgraphToBeSynced(syncDelay);
 
-    // const { data: bnxMarketData } = await subgraphClient.getMarketById(
-    //   vBnxToken.address.toLowerCase(),
+    // const { market: vBtcbMarket } = await subgraphClient.getMarketById(
+    //   vBtcbToken.address.toLowerCase(),
     // );
-    // const { market: bnxMarket } = bnxMarketData!;
-    // expect(bnxMarket.borrowerCount).to.equal('0');
+    // expect(vBtcbMarket!.borrowerCount).to.equal('0');
 
     // Reset prices
     await oracle.setPrice(vBnxToken.address, parseUnits('2', 18).toString());
     await oracle.setPrice(vBtcbToken.address, parseUnits('50000', 18).toString());
   });
 
+  it('should update the borrower count on the market for full repayment of borrow', async function () {
+    const tx = await vBnxToken
+      .connect(borrower2)
+      .repayBorrow((await vBnxToken.callStatic.borrowBalanceCurrent(borrower2.address)) + 20000n);
+
+    await waitForSubgraphToBeSynced(syncDelay);
+
+    checkAccountVToken(borrower2.address, vBnxToken.address, tx);
+
+    const vBnxMarket = await checkMarket(vBnxToken.address);
+    expect(vBnxMarket?.borrowerCount).to.equal('0');
+  });
+
+  it('should handle transfer event', async function () {
+    for (const [supplier, vToken] of [
+      [supplier1, vBtcbToken],
+      [supplier2, vBnxToken],
+    ] as [SignerWithAddress, Contract][]) {
+      const supplierBalance = (await vToken.balanceOf(supplier.address)).div(2);
+
+      const tx = await vToken
+        .connect(supplier)
+        .transfer(liquidator1.address, supplierBalance.toString());
+
+      await waitForSubgraphToBeSynced(syncDelay);
+
+      checkAccountVToken(supplier.address, vToken.address, tx);
+      checkAccountVToken(liquidator1.address, vToken.address, tx);
+    }
+  });
+
   it('handles BadDebtIncreased event', async function () {
-    // Borrower supplies BNX and borrows BTCB
     const btcb1000Usd = await oracle.getAssetTokenAmount(
       vBtcbToken.address,
       parseUnits('10000', 36),
     );
-    await vBtcbToken.connect(borrower).mint(btcb1000Usd.toString());
-    await vBnxToken.connect(borrower).borrow(scaleValue(0.0004446, 18).toString());
+    const bnx800Usd = await oracle.getAssetTokenAmount(vBnxToken.address, parseUnits('800', 36));
+    // Borrower supplies BNX and borrows BTCB
+    await vBtcbToken.connect(borrower2).mint(btcb1000Usd.toString());
+    await vBnxToken.connect(borrower2).borrow(bnx800Usd.toString());
 
     // set lower price for collateral asset
-    await oracle.setPrice(vBtcbToken.address, scaleValue(0.00005, 10).toString());
-    await oracle.setPrice(vBnxToken.address, scaleValue(160, 18).toString());
+    await oracle.setPrice(vBtcbToken.address, parseUnits('50', 10).toString());
+    await oracle.setPrice(vBnxToken.address, parseUnits('160', 18).toString());
 
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
-    const { market: marketBeforeUpdate } = dataBeforeEvent!;
+    const { market: marketBeforeUpdate } = await subgraphClient.getMarketById(
+      vBnxAddress.toLowerCase(),
+    );
 
     expect(marketBeforeUpdate?.badDebtMantissa).to.equal('0');
 
-    const tx = await comptroller.connect(liquidator).healAccount(borrower.address);
+    const tx = await comptroller.connect(liquidator1).healAccount(borrower2.address);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(4000);
 
-    const { data } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
-    const { market } = data!;
+    const { market } = await subgraphClient.getMarketById(vBnxAddress.toLowerCase());
 
     expect(market?.badDebtMantissa).to.equal((await vBnxToken.badDebt()).toString());
 
-    const { data: accountVTokensData } = await subgraphClient.getAccountVTokens();
-    const { accountVTokens } = accountVTokensData!;
+    const { accountVTokens } = await subgraphClient.getAccountVTokens();
 
     const vBnxAccountTokens = accountVTokens.find(
       avt =>
-        avt.id.includes(borrower.address.slice(2, 42).toLowerCase()) &&
+        avt.id.includes(borrower2.address.slice(2, 42).toLowerCase()) &&
         avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase(),
     );
     expect(vBnxAccountTokens?.badDebt.length).to.be.equal(1);
@@ -360,44 +465,39 @@ describe('VToken events', function () {
   });
 
   it('handles ReservesAdded event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketBeforeEvent } = dataBeforeEvent!;
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('0');
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
 
     const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
     const tx = await vTokenContract
       .connect(liquidator2)
-      .addReserves(scaleValue(0.5, 18).toString());
+      .addReserves(parseUnits('0.5', 18).toString());
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
-    const { market } = data!;
-
-    expect(market?.reservesMantissa).to.be.equal('500000000000000000');
+    const market = await checkMarket(vBtcbToken.address);
+    // Interest is also accrued
+    expect(market?.reservesMantissa).to.be.approximately(
+      BigInt(vBtcbMarket?.reservesMantissa) + BigInt(parseUnits('0.5', 18).toString()),
+      1e6,
+    );
   });
 
   it('handles SpreadReservesReduced event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketById(
-      vBtcbAddress.toLowerCase(),
-    );
-    const { market: marketBeforeEvent } = dataBeforeEvent!;
-
-    expect(marketBeforeEvent?.reservesMantissa).to.be.equals('500000000000000000');
+    const vBtcbMarket = await checkMarket(vBtcbToken.address);
 
     const vTokenContract = await ethers.getContractAt('VToken', vBtcbAddress);
 
     const tx = await vTokenContract
       .connect(liquidator2)
-      .reduceReserves(scaleValue(0.5, 18).toString());
+      .reduceReserves(parseUnits('0.5', 18).toString());
     tx.wait(1);
     await waitForSubgraphToBeSynced(4000);
 
-    const { data } = await subgraphClient.getMarketById(vBtcbAddress.toLowerCase());
-    const { market } = data!;
+    const market = await checkMarket(vBtcbToken.address);
 
-    expect(market?.reservesMantissa).to.be.equal('0');
+    expect(market?.reservesMantissa).to.be.approximately(
+      BigInt(vBtcbMarket?.reservesMantissa) - BigInt(parseUnits('0.5', 18).toString()),
+      1e6,
+    );
   });
 });
