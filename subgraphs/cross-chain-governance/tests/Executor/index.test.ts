@@ -66,7 +66,7 @@ describe('OmniGovernanceExecutor', () => {
     assert.fieldEquals('Proposal', '1', 'values', '[0]');
     assert.fieldEquals('Proposal', '1', 'signatures', '[acceptAdmin()]');
     assert.fieldEquals('Proposal', '1', 'calldatas', '[0x63616c6c64617461]');
-    assert.fieldEquals('Proposal', '1', 'route', 'NORMAL');
+    assert.fieldEquals('Proposal', '1', 'route', '0');
   });
 
   test('should record queued proposal', () => {
