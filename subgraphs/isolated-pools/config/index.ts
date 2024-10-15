@@ -4,6 +4,8 @@ import bscMainnetDeployments from '@venusprotocol/isolated-pools/deployments/bsc
 import chapelDeployments from '@venusprotocol/isolated-pools/deployments/bsctestnet_addresses.json';
 import ethereumDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import opBnbMainnetDeployments from '@venusprotocol/isolated-pools/deployments/opbnbmainnet_addresses.json';
+import optimismDeployments from '@venusprotocol/isolated-pools/deployments/opmainnet_addresses.json';
+import optimismSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/opsepolia_addresses.json';
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import zksyncDeployments from '@venusprotocol/isolated-pools/deployments/zksyncmainnet_addresses.json';
 import zksyncSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/zksyncsepolia_addresses.json';
@@ -22,6 +24,8 @@ export const getNetwork = () => {
     'arbitrum',
     'zksyncSepolia',
     'zksync',
+    'optimismSepolia',
+    'optimism',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -36,7 +40,7 @@ const main = () => {
   const config = {
     docker: {
       network: 'hardhat',
-      poolRegistryAddress: '0xB06c856C8eaBd1d8321b687E188204C1018BC4E5',
+      poolRegistryAddress: '0x3155755b79aA083bd953911C92705B7aA82a18F9',
       startBlock: 0,
     },
     ethereum: {
@@ -83,6 +87,16 @@ const main = () => {
       network: 'zksync-era',
       poolRegistryAddress: zksyncDeployments.addresses.PoolRegistry,
       startBlock: '43555102',
+    },
+    optimismSepolia: {
+      network: 'optimism-sepolia',
+      poolRegistryAddress: optimismSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '17040271',
+    },
+    optimism: {
+      network: 'optimism',
+      poolRegistryAddress: optimismDeployments.addresses.PoolRegistry,
+      startBlock: '126048098',
     },
   };
 
