@@ -127,11 +127,11 @@ export function createMarket(
 
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
-  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.totalBorrowsMantissa = zeroBigInt32;
 
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+  market.totalSupplyVTokenMantissa = zeroBigInt32;
 
-  market.badDebtMantissa = vTokenContract.badDebt();
+  market.badDebtMantissa = zeroBigInt32;
 
   market.supplyCapMantissa = poolComptroller.supplyCaps(vTokenAddress);
   market.borrowCapMantissa = poolComptroller.borrowCaps(vTokenAddress);

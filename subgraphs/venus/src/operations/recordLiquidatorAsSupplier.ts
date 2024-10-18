@@ -44,11 +44,8 @@ export const recordLiquidatorAsSupplier = (event: LiquidateBorrow): void => {
         );
         const liquidatorAccountVToken = liquidatorAccountVTokenResult.entity;
 
-        // Creation updates balance
-        if (!liquidatorAccountVTokenResult.created) {
-          liquidatorAccountVToken.vTokenBalanceMantissa =
-            liquidatorAccountVToken.vTokenBalanceMantissa.plus(amount);
-        }
+        liquidatorAccountVToken.vTokenBalanceMantissa =
+          liquidatorAccountVToken.vTokenBalanceMantissa.plus(amount);
         liquidatorAccountVToken.save();
         // If the transfer amount equals balance it was a funding transfer
         if (collateralBalanceLiquidator.equals(amount)) {

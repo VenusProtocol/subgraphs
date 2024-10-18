@@ -89,17 +89,10 @@ export const getOrCreateAccountVToken = (
     accountVToken.accrualBlockNumber = zeroBigInt32;
 
     const vTokenContract = VTokenContract.bind(marketAddress);
-    const accountSnapshot = vTokenContract.getAccountSnapshot(accountAddress);
 
-    const suppliedAmountMantissa = accountSnapshot.value1;
-    const borrowedAmountMantissa = accountSnapshot.value2;
-
-    accountVToken.vTokenBalanceMantissa = suppliedAmountMantissa;
-    accountVToken.storedBorrowBalanceMantissa = borrowedAmountMantissa;
-    // @TODO
-    // accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
-    // accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    // accountVToken.borrowIndex = vTokenContract.borrowIndex();
+    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
+    accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
+    accountVToken.borrowIndex = vTokenContract.borrowIndex();
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.borrowIndex = zeroBigInt32;

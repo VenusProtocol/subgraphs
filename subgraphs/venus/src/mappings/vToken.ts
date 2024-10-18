@@ -77,10 +77,8 @@ export function handleMint(event: Mint): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.minter);
   const accountVToken = result.entity;
-  // Creation updates balance
-  if (!result.created) {
-    accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
-  }
+
+  accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
   accountVToken.save();
 }
 
@@ -108,10 +106,8 @@ export function handleMintBehalf(event: MintBehalf): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.receiver);
   const accountVToken = result.entity;
-  // Creation updates balance
-  if (!result.created) {
-    accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
-  }
+
+  accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
   accountVToken.save();
 }
 
@@ -152,10 +148,8 @@ export function handleRedeem(event: Redeem): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.redeemer);
   const accountVToken = result.entity;
-  // Creation updates balance
-  if (!result.created) {
-    accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
-  }
+
+  accountVToken.vTokenBalanceMantissa = event.params.totalSupply;
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
   accountVToken.save();
@@ -303,11 +297,11 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
     event.params.vTokenCollateral,
     event.params.borrower,
   );
-  const borrowerSupplyAccountVToken = borrowerSupplyAccountVTokenResult.entity;
+  const borrowerCollateralAccountVToken = borrowerSupplyAccountVTokenResult.entity;
 
-  borrowerSupplyAccountVToken.vTokenBalanceMantissa =
-    borrowerSupplyAccountVToken.vTokenBalanceMantissa.minus(event.params.seizeTokens);
-  borrowerSupplyAccountVToken.save();
+  borrowerCollateralAccountVToken.vTokenBalanceMantissa =
+    borrowerCollateralAccountVToken.vTokenBalanceMantissa.minus(event.params.seizeTokens);
+  borrowerCollateralAccountVToken.save();
 
   const collateralBalance = collateralContract.balanceOf(event.params.borrower);
   // Check if borrower is still supplying liquidated asset
@@ -322,10 +316,8 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
     event.params.liquidator,
   );
   const liquidatorAccountVToken = resultLiquidatorAccountVToken.entity;
-  if (!resultLiquidatorAccountVToken.created) {
-    liquidatorAccountVToken.vTokenBalanceMantissa.plus(event.params.seizeTokens);
-    liquidatorAccountVToken.save();
-  }
+  liquidatorAccountVToken.vTokenBalanceMantissa.plus(event.params.seizeTokens);
+  liquidatorAccountVToken.save();
 
   if (liquidatorAccountVToken.vTokenBalanceMantissa.equals(event.params.seizeTokens)) {
     collateralMarket.supplierCount = collateralMarket.supplierCount.plus(oneBigInt);
@@ -361,22 +353,18 @@ export function handleTransfer(event: Transfer): void {
     const accountFromVToken = resultFrom.entity;
 
     // Creation updates balance
-    if (!resultFrom.created) {
-      accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
-        event.params.amount,
-      );
-    }
+    accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
+      event.params.amount,
+    );
     accountFromVToken.save();
     getOrCreateAccount(accountToAddress);
     const resultTo = getOrCreateAccountVToken(event.address, accountToAddress);
     const accountToVToken = resultTo.entity;
-    // Creation updates balance
-    if (!resultTo.created) {
-      accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
-        event.params.amount,
-      );
-      accountToVToken.save();
-    }
+
+    accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
+      event.params.amount,
+    );
+    accountToVToken.save();
   }
   createTransferEvent<Transfer>(event);
   const market = getMarket(event.address)!;
@@ -455,10 +443,9 @@ export function handleMintV1(event: MintV1): void {
   getOrCreateAccount(event.params.minter);
 
   // Creation updates balance
-  if (!result.created) {
-    const accountVTokenBalance = accountVToken.vTokenBalanceMantissa.plus(event.params.mintTokens);
-    accountVToken.vTokenBalanceMantissa = accountVTokenBalance;
-  }
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.plus(
+    event.params.mintTokens,
+  );
   accountVToken.save();
 }
 
@@ -488,10 +475,9 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
   getOrCreateAccount(event.params.receiver);
 
   // Creation updates balance
-  if (!result.created) {
-    const accountVTokenBalance = accountVToken.vTokenBalanceMantissa.plus(event.params.mintTokens);
-    accountVToken.vTokenBalanceMantissa = accountVTokenBalance;
-  }
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.plus(
+    event.params.mintTokens,
+  );
   accountVToken.save();
 }
 
@@ -516,12 +502,10 @@ export function handleRedeemV1(event: RedeemV1): void {
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.redeemer);
   const accountVToken = result.entity;
-  // Creation updates balance
-  if (!result.created) {
-    accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
-      event.params.redeemTokens,
-    );
-  }
+
+  accountVToken.vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa.minus(
+    event.params.redeemTokens,
+  );
   accountVToken.totalUnderlyingRedeemedMantissa =
     accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
   accountVToken.save();
