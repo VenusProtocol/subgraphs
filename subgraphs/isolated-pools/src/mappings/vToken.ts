@@ -318,13 +318,10 @@ export function handleTransfer(event: Transfer): void {
       event.block.number,
     );
 
-    // Creation updates balance
-    if (!resultTo.created) {
-      accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
-        event.params.amount,
-      );
-      accountToVToken.save();
-    }
+    accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
+      event.params.amount,
+    );
+    accountToVToken.save();
   }
 
   createTransferTransaction(event);

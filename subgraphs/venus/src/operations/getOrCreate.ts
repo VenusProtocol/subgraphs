@@ -71,10 +71,10 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
 
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
-    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+    market.totalSupplyVTokenMantissa = zeroBigInt32;
     market.borrowIndex = vTokenContract.borrowIndex();
-    market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-    market.reservesMantissa = vTokenContract.totalReserves();
+    market.totalBorrowsMantissa = zeroBigInt32;
+    market.reservesMantissa = zeroBigInt32;
 
     // Dynamically index all new listed tokens
     VTokenTemplate.create(marketAddress);
@@ -115,9 +115,9 @@ export function getOrCreateAccountVToken(
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.market = marketId;
     accountVToken.account = accountId;
-    // we need to set an initial real onchain value to this otherwise it will never be accurate
+
     const vTokenContract = VToken.bind(marketId);
-    accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
+    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
