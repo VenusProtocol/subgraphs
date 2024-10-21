@@ -11,6 +11,7 @@ import {
   AccountVTokensDocument,
   AccountVTokensQuery,
   AccountVTokensWithBorrowByMarketIdDocument,
+  AccountVTokensWithBorrowByMarketIdQuery,
   AccountVTokensWithSupplyByMarketIdDocument,
   AccountVTokensWithSupplyByMarketIdQuery,
   MarketActionsDocument,
@@ -64,8 +65,17 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokens(): Promise<AccountVTokensQuery> {
-    const result = await this.query(AccountVTokensDocument, {});
+  async getAccountVTokens({
+    first = 100,
+    skip = 0,
+  }: {
+    first: number;
+    skip: number;
+  }): Promise<AccountVTokensQuery> {
+    const result = await this.query(AccountVTokensDocument, { first, skip } as unknown as {
+      first: string;
+      skip: string;
+    });
     return result.data;
   }
 
@@ -93,7 +103,7 @@ class SubgraphClient {
 
   async getAccountVTokensWithBorrowByMarketId(
     marketId: string,
-  ): Promise<AccountVTokensWithBorrowByMarketId> {
+  ): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
     const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, { marketId });
     return result.data;
   }
@@ -117,6 +127,6 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
-);
+const createSubgraphClient = (url: string) => new SubgraphClient(url);
+
+export default createSubgraphClient;

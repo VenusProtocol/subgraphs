@@ -95,7 +95,6 @@ export const getOrCreateAccountVToken = (
     accountVToken.borrowIndex = vTokenContract.borrowIndex();
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.borrowIndex = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.enteredMarket = false;
     accountVToken.save();

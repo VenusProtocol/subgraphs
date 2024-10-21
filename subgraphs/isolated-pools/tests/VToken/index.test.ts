@@ -230,7 +230,7 @@ describe('VToken', () => {
       'totalUnderlyingRedeemedMantissa',
       zeroBigInt32.toString(),
     );
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '300000000000000000000');
   });
 
   test('registers redeem event', () => {
@@ -304,7 +304,7 @@ describe('VToken', () => {
       'totalUnderlyingRedeemedMantissa',
       zeroBigInt32.toString(),
     );
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '300000000000000000000');
   });
 
   test('registers borrow event', () => {
@@ -592,18 +592,14 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+
+    createMockedFunction(aTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
+      .withArgs([ethereum.Value.fromAddress(to)])
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf.plus(amount))]);
+
+    createMockedFunction(aTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf.minus(amount))]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -631,17 +627,13 @@ describe('VToken', () => {
       'blockTime',
       transferEvent.block.timestamp.toString(),
     );
-    /** AccountVToken */
+
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
+      'vTokenBalanceMantissa',
+      balanceOf.minus(amount).toString(),
     );
-
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
-
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingRedeemedMantissa', '0');
   });
 
   test('registers transfer to event', () => {
@@ -653,30 +645,14 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+
+    createMockedFunction(aTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(to)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf.plus(amount))]);
+
+    createMockedFunction(aTokenAddress, 'balanceOf', 'balanceOf(address):(uint256)')
       .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+      .returns([ethereum.Value.fromSignedBigInt(balanceOf.minus(amount))]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -704,15 +680,13 @@ describe('VToken', () => {
       'blockTime',
       transferEvent.block.timestamp.toString(),
     );
-    /** AccountVToken */
+
     assert.fieldEquals(
       'AccountVToken',
       accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
+      'vTokenBalanceMantissa',
+      balanceOf.plus(amount).toString(),
     );
-
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
   });
 
   test('registers new interest rate model', () => {

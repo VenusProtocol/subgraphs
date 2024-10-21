@@ -45,7 +45,6 @@ export const updateAccountVTokenBorrow = (
   marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
-  borrowIndexMantissa: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
@@ -54,7 +53,8 @@ export const updateAccountVTokenBorrow = (
     blockNumber,
   );
   accountVToken.storedBorrowBalanceMantissa = accountBorrows;
-  accountVToken.borrowIndex = borrowIndexMantissa;
+  const vTokenContract = VToken.bind(marketAddress);
+  accountVToken.borrowIndex = vTokenContract.borrowIndex();
   accountVToken.save();
   return accountVToken as AccountVToken;
 };
@@ -65,7 +65,6 @@ export const updateAccountVTokenRepayBorrow = (
   marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
-  borrowIndexMantissa: BigInt,
 ): AccountVToken => {
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
@@ -74,7 +73,8 @@ export const updateAccountVTokenRepayBorrow = (
     blockNumber,
   );
   accountVToken.storedBorrowBalanceMantissa = accountBorrows;
-  accountVToken.borrowIndex = borrowIndexMantissa;
+  const vTokenContract = VToken.bind(marketAddress);
+  accountVToken.borrowIndex = vTokenContract.borrowIndex();
   accountVToken.save();
   return accountVToken as AccountVToken;
 };

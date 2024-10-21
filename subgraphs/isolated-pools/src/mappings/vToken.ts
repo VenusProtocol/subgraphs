@@ -9,7 +9,6 @@ import {
   NewAccessControlManager,
   NewMarketInterestRateModel,
   NewReserveFactor,
-  ProtocolSeize,
   Redeem,
   RepayBorrow,
   ReservesAdded,
@@ -30,9 +29,7 @@ import {
 } from '../operations/create';
 import { getMarket } from '../operations/get';
 import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
-import { recordLiquidatorAsSupplier } from '../operations/recordLiquidatorAsSupplier';
 import {
-  updateAccountVTokenAccrualBlockNumber,
   updateAccountVTokenBorrow,
   updateAccountVTokenRepayBorrow,
   updateAccountVTokenSupply,
@@ -65,6 +62,7 @@ export function handleMint(event: Mint): void {
     event.block.number,
     suppliedTotal,
   );
+
   if (suppliedTotal.equals(event.params.mintTokens)) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
@@ -101,6 +99,11 @@ export function handleRedeem(event: Redeem): void {
     market.supplierCount = market.supplierCount.minus(oneBigInt);
     market.save();
   }
+
+  // and finally we update the market total supply
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+  market.save();
 }
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
@@ -122,7 +125,6 @@ export function handleBorrow(event: Borrow): void {
     vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
-    market.borrowIndexMantissa,
   );
 
   createBorrowTransaction(event);
@@ -158,7 +160,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
     vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
-    market.borrowIndexMantissa,
   );
 
   createRepayBorrowTransaction(event);
@@ -195,42 +196,6 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   borrower.save();
 
   createLiquidateBorrowTransaction(event);
-
-  const borrowMarket = getMarket(event.address)!;
-  const collateralMarket = getMarket(event.params.vTokenCollateral)!;
-
-  const borrowedVTokenContract = VTokenContract.bind(event.address);
-  const collateralContract = VTokenContract.bind(event.params.vTokenCollateral);
-  const borrowerBorrowAccountVTokenResult = getOrCreateAccountVToken(
-    event.params.borrower,
-    Address.fromBytes(borrowMarket.pool),
-    event.address,
-  );
-  const borrowerBorrowAccountVToken = borrowerBorrowAccountVTokenResult.entity;
-
-  // Creation updates balance
-  borrowerBorrowAccountVToken.borrowIndex = borrowedVTokenContract.borrowIndex();
-  borrowerBorrowAccountVToken.storedBorrowBalanceMantissa =
-    borrowedVTokenContract.borrowBalanceStored(event.params.borrower);
-  borrowerBorrowAccountVToken.save();
-
-  const borrowerSupplyAccountVTokenResult = getOrCreateAccountVToken(
-    event.params.borrower,
-    Address.fromBytes(borrowMarket.pool),
-    event.params.vTokenCollateral,
-  );
-  const borrowerSupplyAccountVToken = borrowerSupplyAccountVTokenResult.entity;
-
-  borrowerSupplyAccountVToken.vTokenBalanceMantissa =
-    borrowerSupplyAccountVToken.vTokenBalanceMantissa.minus(event.params.seizeTokens);
-  borrowerSupplyAccountVToken.save();
-
-  const collateralBalance = collateralContract.balanceOf(event.params.borrower);
-  // Check if borrower is still supplying liquidated asset
-  if (collateralBalance.equals(zeroBigInt32)) {
-    collateralMarket.supplierCount = collateralMarket.supplierCount.minus(oneBigInt);
-    collateralMarket.save();
-  }
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
@@ -242,10 +207,6 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
   const market = getMarket(vTokenAddress)!;
   market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
   market.save();
-}
-
-export function handleProtocolSeize(event: ProtocolSeize): void {
-  recordLiquidatorAsSupplier(event);
 }
 
 /* Transferring of vTokens
@@ -288,22 +249,20 @@ export function handleTransfer(event: Transfer): void {
       event.address,
     );
     const accountFromVToken = resultFrom.entity;
-
-    updateAccountVTokenAccrualBlockNumber(
-      accountFromAddress,
-      Address.fromBytes(market.pool),
-      event.address,
-      event.block.number,
+    accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.plus(
+      event.params.amount,
     );
+    accountFromVToken.save();
 
-    // Creation updates balance
-    if (!resultFrom.created) {
-      accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.minus(
-        event.params.amount,
-      );
-      accountFromVToken.save();
+    if (accountFromVToken.vTokenBalanceMantissa.equals(zeroBigInt32)) {
+      // Decrease if no longer minter
+      const market = getMarket(event.address)!;
+      market.supplierCount = market.supplierCount.minus(oneBigInt);
+      market.save();
     }
+
     getOrCreateAccount(accountToAddress);
+
     const resultTo = getOrCreateAccountVToken(
       accountToAddress,
       Address.fromBytes(market.pool),
@@ -311,17 +270,16 @@ export function handleTransfer(event: Transfer): void {
     );
     const accountToVToken = resultTo.entity;
 
-    updateAccountVTokenAccrualBlockNumber(
-      accountToAddress,
-      Address.fromBytes(market.pool),
-      event.address,
-      event.block.number,
-    );
-
     accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
       event.params.amount,
     );
     accountToVToken.save();
+    // Increase balance if now minter
+    if (accountToVToken.vTokenBalanceMantissa.equals(event.params.amount)) {
+      const market = getMarket(event.address)!;
+      market.supplierCount = market.supplierCount.plus(oneBigInt);
+      market.save();
+    }
   }
 
   createTransferTransaction(event);

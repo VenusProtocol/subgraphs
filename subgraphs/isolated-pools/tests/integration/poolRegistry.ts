@@ -4,7 +4,11 @@ import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 describe('Pool Registry', function () {
   let root: SignerWithAddress;

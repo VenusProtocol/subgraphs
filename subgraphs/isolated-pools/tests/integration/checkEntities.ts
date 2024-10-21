@@ -2,10 +2,17 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
+
+const { getAddress } = ethers.utils;
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 export const checkMarket = async (marketAddress: string) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
+  const comptroller = await ethers.getContractAt('Comptroller', await vToken.comptroller());
   const { accountVTokens: accountVTokensSupply } =
     await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase());
   const { accountVTokens: accountVTokensBorrow } =
@@ -23,7 +30,23 @@ export const checkMarket = async (marketAddress: string) => {
 
   expect(market?.cashMantissa).to.equal(await vToken.getCash());
   expect(market?.reservesMantissa).to.equal(await vToken.totalReserves());
-
+  expect(getAddress(market?.pool.id)).to.equal(await vToken.comptroller());
+  expect(market?.isListed).to.equal((await comptroller.markets(marketAddress)).isListed);
+  expect(market?.collateralFactorMantissa).to.equal(
+    (await comptroller.markets(marketAddress)).collateralFactorMantissa,
+  );
+  expect(market?.exchangeRateMantissa).to.equal(await vToken.exchangeRateStored());
+  expect(getAddress(market?.interestRateModelAddress)).to.equal(await vToken.interestRateModel());
+  expect(market?.name).to.equal(await vToken.name());
+  expect(market?.reservesMantissa).to.equal(await vToken.totalReserves());
+  expect(market?.supplyRateMantissa).to.equal(await vToken.supplyRatePerBlock());
+  expect(market?.symbol).to.equal(await vToken.symbol());
+  expect(getAddress(market?.underlyingAddress)).to.equal(await vToken.underlying());
+  expect(market?.borrowCapMantissa).to.equal(await comptroller.borrowCaps(marketAddress));
+  expect(market?.supplyCapMantissa).to.equal(await comptroller.supplyCaps(marketAddress));
+  expect(market?.accrualBlockNumber).to.equal(await vToken.accrualBlockNumber());
+  expect(market?.borrowIndexMantissa).to.equal((await vToken.borrowIndex()).toString());
+  expect(market?.reserveFactorMantissa).to.equal(await vToken?.reserveFactorMantissa());
   return market;
 };
 

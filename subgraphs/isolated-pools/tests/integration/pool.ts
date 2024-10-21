@@ -2,8 +2,12 @@ import { scaleValue, waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-u
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 
-import subgraphClient from '../../subgraph-client';
-import { defaultMarkets } from './constants';
+import createSubgraphClient from '../../subgraph-client';
+import { checkMarket } from './checkEntities';
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 describe('Pools', function () {
   const syncDelay = 6000;
@@ -20,35 +24,7 @@ describe('Pools', function () {
     expect(markets.length).to.equal(9);
 
     markets.forEach(async m => {
-      const defaultMarket = defaultMarkets.find(dm => m.id === dm.id.toLowerCase());
-      const vToken = await ethers.getContractAt('VTokenImpl', m.id);
-
-      expect(m.pool.id).to.equal(defaultMarket?.pool.id.toLowerCase());
-      expect(m.isListed).to.equal(true);
-      expect(m.borrowRateMantissa).to.equal(defaultMarket?.borrowRateMantissa);
-      expect(m.cashMantissa).to.equal(defaultMarket?.cashMantissa);
-      expect(m.collateralFactorMantissa).to.equal(defaultMarket?.collateralFactorMantissa);
-      expect(m.exchangeRateMantissa).to.equal(defaultMarket?.exchangeRateMantissa);
-      expect(m.interestRateModelAddress).to.equal(
-        defaultMarket?.interestRateModelAddress.toLowerCase(),
-      );
-      expect(m.name).to.equal(defaultMarket?.name);
-      expect(m.reservesMantissa).to.equal(defaultMarket?.reservesMantissa);
-      expect(m.supplyRateMantissa).to.equal(defaultMarket?.supplyRateMantissa);
-      expect(m.symbol).to.equal(defaultMarket?.symbol);
-      expect(m.underlyingAddress).to.equal(defaultMarket?.underlyingAddress.toLowerCase());
-      expect(m.underlyingName).to.equal(defaultMarket?.underlyingName);
-      expect(m.underlyingSymbol).to.equal(defaultMarket?.underlyingSymbol);
-      expect(m.borrowCapMantissa).to.equal(defaultMarket?.borrowCapMantissa);
-      expect(m.supplyCapMantissa).to.equal(defaultMarket?.supplyCapMantissa);
-      expect(m.accrualBlockNumber).to.equal(defaultMarket?.accrualBlockNumber);
-      expect(m.blockTimestamp).to.not.be.equal(defaultMarket?.blockTimestamp);
-      expect(m.borrowIndexMantissa).to.equal((await vToken.borrowIndex()).toString());
-      expect(m.reserveFactorMantissa).to.equal(defaultMarket?.reserveFactorMantissa);
-      expect(m.underlyingPriceCentsMantissa).to.equal(defaultMarket?.underlyingPriceCentsMantissa);
-      expect(m.underlyingDecimals).to.equal(defaultMarket?.underlyingDecimals);
-      expect(m.supplierCount).to.equal(defaultMarket?.supplierCount);
-      expect(m.borrowerCount).to.equal(defaultMarket?.borrowerCount);
+      await checkMarket(m.id);
     });
   });
 
