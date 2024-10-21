@@ -3,6 +3,8 @@ query AccountVTokens  {
     id
     market {
       id
+      symbol
+      borrowIndexMantissa
     }
     account {
       id

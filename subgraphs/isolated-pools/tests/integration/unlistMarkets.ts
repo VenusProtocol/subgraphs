@@ -3,7 +3,11 @@ import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 const syncDelay = 2000;
 
