@@ -382,18 +382,9 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createMockedFunction(
-      aaaTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
-      .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, from, balanceOf.minus(amount));
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, balanceOf.plus(amount));
 
     const accountVTokenId = getAccountVTokenId(aaaTokenAddress, from).toHexString();
     /** AccountVToken */
@@ -412,7 +403,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'vTokenBalanceMantissa',
-      mintTokens.minus(amount).toString(),
+      balanceOf.minus(amount).toString(),
     );
   });
 
@@ -425,19 +416,9 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aaaTokenAddress, from, to, amount);
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, amount.plus(balanceOf));
-    createMockedFunction(
-      aaaTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
-      .withArgs([ethereum.Value.fromAddress(to)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, from, balanceOf.minus(amount));
+    createAccountVTokenBalanceOfMock(aaaTokenAddress, to, amount);
 
     /** Fire Event */
     handleTransfer(transferEvent);
@@ -449,8 +430,9 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'vTokenBalanceMantissa',
-      amount.plus(balanceOf).toString(),
+      amount.toString(),
     );
+    assert.fieldEquals('Market', aaaTokenAddress.toHexString(), 'supplierCount', '1');
   });
 
   test('registers new interest rate model', () => {
@@ -484,7 +466,6 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromI64(12);
     const halfActualMintAmount = actualMintAmount.div(BigInt.fromI64(2));
     const mintTokens = BigInt.fromI64(10);
-    const accountBalance = mintTokens;
     const halfMintTokens = mintTokens.div(BigInt.fromI64(2));
 
     const supplier01 = user1Address;
@@ -493,7 +474,7 @@ describe('VToken', () => {
       supplier01,
       actualMintAmount,
       mintTokens,
-      accountBalance,
+      mintTokens,
     );
 
     handleMint(mintEvent);
@@ -507,6 +488,7 @@ describe('VToken', () => {
       actualMintAmount,
       mintTokens,
     );
+
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier02, mintTokens);
 
     handleMintV1(mintEventV1);
@@ -519,7 +501,7 @@ describe('VToken', () => {
       supplier03,
       actualMintAmount,
       mintTokens,
-      accountBalance,
+      mintTokens,
     );
     createAccountVTokenBalanceOfMock(aaaTokenAddress, supplier03, mintTokens);
 
