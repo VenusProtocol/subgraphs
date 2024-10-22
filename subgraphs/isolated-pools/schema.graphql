@@ -94,7 +94,7 @@ type Market @entity {
 
     # Fields that are not in Venus api
     "Block the market is updated to"
-    accrualBlockNumber: Int!
+    accrualBlockNumber: BigInt!
     "Timestamp the market was most recently updated"
     blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
