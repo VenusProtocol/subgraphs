@@ -1,6 +1,7 @@
 import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { OmnichainGovernanceExecutor } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
+import { SetMinDstGas } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import {
   DestinationChain,
   FunctionRegistry,
@@ -57,11 +58,15 @@ export const getOrCreateGovernanceRoute = (
   return governanceRoute;
 };
 
-export const getOrCreateDestinationChain = (destinationChainId: i32): DestinationChain => {
+export const getOrCreateDestinationChain = (event: SetMinDstGas): DestinationChain => {
+  const destinationChainId = event.params._dstChainId;
   let destinationChain = DestinationChain.load(getDestinationChainId(destinationChainId));
   if (!destinationChain) {
     destinationChain = new DestinationChain(getDestinationChainId(destinationChainId));
     destinationChain.chainId = destinationChainId;
+    destinationChain.packetType = event.params._type;
+    destinationChain.minGas = event.params._minDstGas;
+    destinationChain.save();
   }
   return destinationChain;
 };

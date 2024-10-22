@@ -82,7 +82,7 @@ export function handleUnpaused(): void {
 }
 
 export function handleSetMinDstGas(event: SetMinDstGas): void {
-  const destinationChain = getOrCreateDestinationChain(event.params._dstChainId);
+  const destinationChain = getOrCreateDestinationChain(event);
   destinationChain.minGas = event.params._minDstGas;
   destinationChain.packetType = event.params._type;
   destinationChain.save();
