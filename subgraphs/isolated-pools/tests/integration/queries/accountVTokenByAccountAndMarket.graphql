@@ -30,5 +30,6 @@ query AccountVTokenByAccountAndMarket($id: ID!) {
     totalUnderlyingRedeemedMantissa
     borrowIndex
     totalUnderlyingRepaidMantissa
+    accrualBlockNumber
   }
 }

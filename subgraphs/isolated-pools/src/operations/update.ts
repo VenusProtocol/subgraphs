@@ -127,7 +127,7 @@ export const updateMarket = (
   const market = getMarket(vTokenAddress)!;
 
   // Only updateMarket if it has not been updated this block
-  if (market.accrualBlockNumber === blockNumber) {
+  if (market.accrualBlockNumber.equals(BigInt.fromI32(blockNumber))) {
     return market as Market;
   }
   const marketContract = VToken.bind(vTokenAddress);
@@ -141,7 +141,7 @@ export const updateMarket = (
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),
-  ).toI32();
+  );
   market.blockTimestamp = blockTimestamp;
 
   const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(

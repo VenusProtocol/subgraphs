@@ -119,7 +119,7 @@ export function createMarket(
   market.reservesMantissa = vTokenContract.totalReserves();
   market.supplyRateMantissa = vTokenContract.supplyRatePerBlock();
 
-  market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
+  market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
 
   market.blockTimestamp = blockTimestamp.toI32();
 

@@ -62,7 +62,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
         : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
-    market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
+    market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
     market.totalXvsDistributedMantissa = zeroBigInt32;
     market.collateralFactorMantissa = zeroBigInt32;
     market.supplierCount = zeroBigInt32;
