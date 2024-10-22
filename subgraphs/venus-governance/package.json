@@ -27,11 +27,11 @@
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
-    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
     "@venusprotocol/governance-contracts": "2.4.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"
   }
