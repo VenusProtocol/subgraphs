@@ -29,5 +29,7 @@ query Markets {
     accessControlManagerAddress
     supplierCount
     borrowerCount
+    totalSupplyVTokenMantissa
+    totalBorrowsMantissa
   }
 }
