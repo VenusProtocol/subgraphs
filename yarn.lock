@@ -1671,44 +1671,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphprotocol/graph-cli@npm:^0.77.0":
-  version: 0.77.0
-  resolution: "@graphprotocol/graph-cli@npm:0.77.0"
-  dependencies:
-    "@float-capital/float-subgraph-uncrashable": ^0.0.0-alpha.4
-    "@oclif/core": 2.8.6
-    "@oclif/plugin-autocomplete": ^2.3.6
-    "@oclif/plugin-not-found": ^2.4.0
-    "@whatwg-node/fetch": ^0.8.4
-    assemblyscript: 0.19.23
-    binary-install-raw: 0.0.13
-    chalk: 3.0.0
-    chokidar: 3.5.3
-    debug: 4.3.4
-    docker-compose: 0.23.19
-    dockerode: 2.5.8
-    fs-extra: 9.1.0
-    glob: 9.3.5
-    gluegun: 5.1.6
-    graphql: 15.5.0
-    immutable: 4.2.1
-    ipfs-http-client: 55.0.0
-    jayson: 4.0.0
-    js-yaml: 3.14.1
-    open: 8.4.2
-    prettier: 3.0.3
-    semver: 7.4.0
-    sync-request: 6.1.0
-    tmp-promise: 3.0.3
-    web3-eth-abi: 1.7.0
-    which: 2.0.2
-    yaml: 1.10.2
-  bin:
-    graph: bin/run
-  checksum: a7b695963312e236d263cb2dce91acc2034fa36945ff44ec54b8e0c57a9e515985d9957d1b01355ae12e8035ac983876605976222829f06082a5e98846c497cd
-  languageName: node
-  linkType: hard
-
 "@graphprotocol/graph-cli@npm:^0.80.0":
   version: 0.80.1
   resolution: "@graphprotocol/graph-cli@npm:0.80.1"
@@ -10390,7 +10352,7 @@ __metadata:
   resolution: "isolated-pools-subgraph@workspace:subgraphs/isolated-pools"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     "@venusprotocol/isolated-pools": 3.6.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
@@ -12696,7 +12658,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "protocol-reserve-subgraph@workspace:subgraphs/protocol-reserve"
   dependencies:
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     apollo-fetch: ^0.7.0
     ts-node: ^10.9.2
     urql: ^3.0.3
@@ -14007,7 +13969,7 @@ __metadata:
     patch-package: 6.5.1
     prettier: ^2.5.1
     prettier-airbnb-config: ^1.0.0
-    ts-node: ^10.9.1
+    ts-node: ^10.9.2
     typechain: ^8.1.0
     typescript: ^4.8.4
   languageName: unknown
@@ -14878,7 +14840,7 @@ __metadata:
   resolution: "venus-cross-chain-governance-subgraph@workspace:subgraphs/cross-chain-governance"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     "@layerzerolabs/solidity-examples": ^1.0.0
     "@venusprotocol/governance-contracts": 2.4.0
     apollo-fetch: ^0.7.0
@@ -14900,11 +14862,11 @@ __metadata:
   resolution: "venus-governance-subgraph@workspace:subgraphs/venus-governance"
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
-    "@graphprotocol/graph-cli": ^0.77.0
+    "@graphprotocol/graph-cli": ^0.80.0
     "@venusprotocol/governance-contracts": 2.4.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
-    ts-node: ^10.9.1
+    ts-node: ^10.9.2
     urql: ^3.0.3
     venus-subgraph-utils: 0.0.0
   languageName: unknown

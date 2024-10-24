@@ -31,7 +31,7 @@
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
     "apollo-fetch": "^0.7.0",
     "ts-node": "^10.9.2",
     "urql": "^3.0.3",

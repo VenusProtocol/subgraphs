@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@graphprotocol/client-cli": "3.0.0",
-    "@graphprotocol/graph-cli": "^0.77.0",
+    "@graphprotocol/graph-cli": "^0.80.0",
     "@layerzerolabs/solidity-examples": "^1.0.0",
     "@venusprotocol/governance-contracts": "2.4.0",
     "apollo-fetch": "^0.7.0",
