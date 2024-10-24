@@ -480,6 +480,9 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
 }
 
 export function handleRedeemV1(event: RedeemV1): void {
+  if (event.params.redeemAmount.equals(zeroBigInt32)) {
+    return;
+  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(event.address, event);
   const vTokenContract = VToken.bind(marketAddress);

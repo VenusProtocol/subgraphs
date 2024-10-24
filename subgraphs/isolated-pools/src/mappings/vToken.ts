@@ -94,7 +94,8 @@ export function handleRedeem(event: Redeem): void {
     event.block.number,
     currentBalance,
   );
-  if (currentBalance.equals(zeroBigInt32)) {
+
+  if (event.params.redeemAmount.gt(zeroBigInt32) && currentBalance.equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
     market.save();
