@@ -1,11 +1,12 @@
 #!/usr/bin/env ts-node
+import arbitrumILDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumone_addresses.json';
 import ethereumILDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import sepoliaILDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['sepolia', 'ethereum', 'docker', 'bsc'] as const;
+  const supportedNetworks = ['sepolia', 'ethereum', 'docker', 'bsc', 'arbitrum'] as const;
   const network = process.env.NETWORK as (typeof supportedNetworks)[number];
   if (!supportedNetworks.includes(network)) {
     throw new Error(`NETWORK env var must be set to one of ${supportedNetworks}`);
@@ -44,6 +45,12 @@ const main = () => {
       network: 'bsc',
       vWeEthAddress: '0xc5b24f347254bD8cF8988913d1fd0F795274900F',
       vWeEthStartBlock: '41956130',
+      template: 'template-bsc.yaml',
+    },
+    arbitrum: {
+      network: 'arbitrum-one',
+      vWeEthAddress: arbitrumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
+      vWeEthStartBlock: '245908467',
       template: 'template-bsc.yaml',
     },
   };
