@@ -66,8 +66,10 @@ export function handleMint(event: Mint): void {
   if (suppliedTotal.equals(event.params.mintTokens)) {
     // and if they are the same, it means it's a new supplier
     market.supplierCount = market.supplierCount.plus(oneBigInt);
-    market.save();
   }
+  // and finally we update the market total supply
+  market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
+  market.save();
 }
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
@@ -98,7 +100,6 @@ export function handleRedeem(event: Redeem): void {
   if (event.params.redeemAmount.gt(zeroBigInt32) && currentBalance.equals(zeroBigInt32)) {
     // if the current balance is 0 then the user has withdrawn all their assets from this market
     market.supplierCount = market.supplierCount.minus(oneBigInt);
-    market.save();
   }
 
   // and finally we update the market total supply
@@ -133,7 +134,6 @@ export function handleBorrow(event: Borrow): void {
   if (event.params.accountBorrows.equals(event.params.borrowAmount)) {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
-    market.save();
   }
 }
 
@@ -167,7 +167,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   if (event.params.accountBorrows.equals(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
-    market.save();
   }
 }
 
@@ -200,7 +199,14 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
-  updateMarket(event.address, event.block.number.toI32(), event.block.timestamp.toI32());
+  const market = updateMarket(
+    event.address,
+    event.block.number.toI32(),
+    event.block.timestamp.toI32(),
+  );
+  market.totalBorrowsMantissa = event.params.totalBorrows;
+  market.borrowIndexMantissa = event.params.borrowIndex;
+  market.save();
 }
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {

@@ -149,8 +149,6 @@ export const updateMarket = (
   );
   market.exchangeRateMantissa = exchangeRateMantissa;
 
-  market.borrowIndexMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_borrowIndex());
-
   market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
   const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
@@ -162,11 +160,6 @@ export const updateMarket = (
   );
   market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
     marketContract.try_supplyRatePerBlock(),
-  );
-
-  market.totalBorrowsMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalBorrows());
-  market.totalSupplyVTokenMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_totalSupply(),
   );
 
   market.save();
