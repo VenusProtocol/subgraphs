@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "yarn"
@@ -27,9 +27,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: "yarn"
@@ -51,7 +51,7 @@ jobs:
     needs: unit-test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Start containers
         run: docker compose up -d
@@ -84,7 +84,7 @@ jobs:
     needs: unit-test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Start containers
         run: docker compose up -d
@@ -117,7 +117,7 @@ jobs:
     needs: unit-test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Start containers
         run: docker compose up -d
