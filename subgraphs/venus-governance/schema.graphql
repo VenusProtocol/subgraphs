@@ -287,10 +287,10 @@ type RemoteProposalStateTransaction @entity {
   "Concatenated sourceProposalId and layerZeroChainId"
   key: RemoteProposal!
 
-  "Transaction Remote Proposal was sent"
+  "Transaction Remote Proposal failed"
   stored: Transaction
 
-  "Transaction Remote Proposal was executed (usually the same as stored)"
+  "Transaction Remote Proposal was executed"
   executed: Transaction
 
   "Transaction Remote Proposal was withdrawn"
