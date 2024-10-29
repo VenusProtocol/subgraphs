@@ -19,10 +19,12 @@
     "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio etherfi-promo-sepolia",
     "deploy:ethereum": "yarn prepare:ethereum && graph deploy --studio etherfi-promo",
     "deploy:bsc": "yarn prepare:bsc && graph deploy --studio etherfi-promo-bnb",
+    "deploy:arbitrum": "yarn prepare:arbitrum && graph deploy --studio etherfi-promo-arbitrum",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
+    "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
     "test": "graph test",
     "test:integration": "true"
