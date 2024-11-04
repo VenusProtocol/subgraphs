@@ -54,9 +54,6 @@ import { getUnderlyingPrice } from '../utilities';
  *    Mints originate from the vToken address, not 0x000000, which is typical of ERC-20s
  */
 export function handleMint(event: Mint): void {
-  if (event.params.mintAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
@@ -82,9 +79,6 @@ export function handleMint(event: Mint): void {
 }
 
 export function handleMintBehalf(event: MintBehalf): void {
-  if (event.params.mintAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
@@ -120,9 +114,6 @@ export function handleMintBehalf(event: MintBehalf): void {
  *    Transfer event will always get emitted with this
  */
 export function handleRedeem(event: Redeem): void {
-  if (event.params.redeemAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
@@ -162,9 +153,6 @@ export function handleRedeem(event: Redeem): void {
  * Notes
  */
 export function handleBorrow(event: Borrow): void {
-  if (event.params.borrowAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
@@ -208,10 +196,6 @@ export function handleBorrow(event: Borrow): void {
  *    repay.
  */
 export function handleRepayBorrow(event: RepayBorrow): void {
-  if (event.params.repayAmount.equals(zeroBigInt32)) {
-    return;
-  }
-
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
@@ -472,9 +456,6 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
 }
 
 export function handleRedeemV1(event: RedeemV1): void {
-  if (event.params.redeemAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
   const market = getOrCreateMarket(event.address, event);
   const vTokenContract = VToken.bind(marketAddress);
