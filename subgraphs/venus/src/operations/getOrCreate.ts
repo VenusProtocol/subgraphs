@@ -114,6 +114,8 @@ export function getOrCreateAccountVToken(
     created = true;
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.market = marketId;
+
+    getOrCreateAccount(accountId);
     accountVToken.account = accountId;
 
     const vTokenContract = VToken.bind(marketId);

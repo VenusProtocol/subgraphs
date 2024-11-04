@@ -62,7 +62,6 @@ export function handleMint(event: Mint): void {
   const vTokenContract = VToken.bind(marketAddress);
   if (event.params.mintTokens.equals(event.params.totalSupply)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
-    getOrCreateAccount(event.params.minter);
   }
   // we'll first update the cash value of the market
   updateMarketCashMantissa(market, vTokenContract);
@@ -91,7 +90,6 @@ export function handleMintBehalf(event: MintBehalf): void {
   const vTokenContract = VToken.bind(marketAddress);
   if (event.params.mintTokens.equals(event.params.totalSupply)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
-    getOrCreateAccount(event.params.receiver);
   }
   // we'll first update the cash value of the market
   updateMarketCashMantissa(market, vTokenContract);
@@ -336,7 +334,6 @@ export function handleTransfer(event: Transfer): void {
     accountFromAddress.notEqual(nullAddress) &&
     accountToAddress.notEqual(event.address)
   ) {
-    getOrCreateAccount(accountFromAddress);
     const resultFrom = getOrCreateAccountVToken(event.address, accountFromAddress);
     const accountFromVToken = resultFrom.entity;
     const fromBalance = vTokenContract.balanceOf(accountFromAddress);
@@ -350,7 +347,6 @@ export function handleTransfer(event: Transfer): void {
       market.save();
     }
 
-    getOrCreateAccount(accountToAddress);
     const resultTo = getOrCreateAccountVToken(event.address, accountToAddress);
     const accountToVToken = resultTo.entity;
     const toBalance = vTokenContract.balanceOf(accountToAddress);
@@ -435,8 +431,6 @@ export function handleMintV1(event: MintV1): void {
 
   createMintEvent<MintV1>(event);
 
-  getOrCreateAccount(event.params.minter);
-
   // Creation updates balance
   accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(event.params.minter);
   accountVToken.save();
@@ -466,8 +460,6 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
   market.save();
 
   createMintBehalfEvent<MintBehalfV1>(event);
-
-  getOrCreateAccount(event.params.receiver);
 
   // Creation updates balance
   accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(event.params.receiver);

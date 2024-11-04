@@ -16,11 +16,7 @@ import { Comptroller } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import { getComptroller, getMarket } from '../operations/get';
-import {
-  getOrCreateAccount,
-  getOrCreateAccountVToken,
-  getOrCreateMarket,
-} from '../operations/getOrCreate';
+import { getOrCreateAccountVToken, getOrCreateMarket } from '../operations/getOrCreate';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitialization(block: ethereum.Block): void {
@@ -50,7 +46,6 @@ export function handleMarketUnlisted(event: MarketListed): void {
 
 export function handleMarketEntered(event: MarketEntered): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  getOrCreateAccount(event.params.account);
   const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
   const accountVToken = result.entity;
   accountVToken.enteredMarket = true;
@@ -59,7 +54,6 @@ export function handleMarketEntered(event: MarketEntered): void {
 
 export function handleMarketExited(event: MarketExited): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  getOrCreateAccount(event.params.account);
   const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
   const accountVToken = result.entity;
   accountVToken.enteredMarket = false;
