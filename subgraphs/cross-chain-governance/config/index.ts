@@ -3,7 +3,11 @@ import arbitrumDeployments from '@venusprotocol/governance-contracts/deployments
 import arbitrumSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/arbitrumsepolia_addresses.json';
 import ethereumDeployments from '@venusprotocol/governance-contracts/deployments/ethereum_addresses.json';
 import opBnBMainnetDeployments from '@venusprotocol/governance-contracts/deployments/opbnbmainnet_addresses.json';
+import optimismDeployments from '@venusprotocol/governance-contracts/deployments/opmainnet_addresses.json';
+import optimismSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/opsepolia_addresses.json';
 import sepoliaDeployments from '@venusprotocol/governance-contracts/deployments/sepolia_addresses.json';
+import zkSyncDeployments from '@venusprotocol/governance-contracts/deployments/zksyncmainnet_addresses.json';
+import zkSyncSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/zksyncsepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -15,6 +19,10 @@ export const getNetwork = () => {
     'opbnbMainnet',
     'arbitrumSepolia',
     'arbitrum',
+    'zkSyncSepolia',
+    'zkSync',
+    'optimismSepolia',
+    'optimism',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -87,6 +95,47 @@ const main = () => {
       startBlockOmnichainGovernanceExecutor: '221743592',
       accessControlManagerAddress: arbitrumDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '201597544',
+    },
+    zkSyncSepolia: {
+      network: 'zksync-era-sepolia',
+      layerZeroChainId: 10248,
+      omnichainGovernanceOwnerAddress: zkSyncSepoliaDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '3771652',
+      omnichainExecutorOwnerAddress: zkSyncSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '3771603',
+      accessControlManagerAddress: zkSyncSepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '3445364',
+    },
+    zkSync: {
+      network: 'zksync-era',
+      layerZeroChainId: 165,
+      omnichainGovernanceOwnerAddress: zkSyncDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '48278537',
+      omnichainExecutorOwnerAddress: zkSyncDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '48277850',
+      accessControlManagerAddress: zkSyncDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '42301361',
+    },
+    optimismSepolia: {
+      network: 'optimism-sepolia',
+      layerZeroChainId: 10232,
+      omnichainGovernanceOwnerAddress: optimismSepoliaDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '18679072',
+      omnichainExecutorOwnerAddress:
+        optimismSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '18676643',
+      accessControlManagerAddress: optimismSepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '14150248',
+    },
+    optimism: {
+      network: 'optimism',
+      layerZeroChainId: 111,
+      omnichainGovernanceOwnerAddress: optimismDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '127723947',
+      omnichainExecutorOwnerAddress: optimismDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '127723676',
+      accessControlManagerAddress: optimismDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '125490536',
     },
   };
 
