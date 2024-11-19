@@ -351,7 +351,7 @@ describe('VToken', () => {
     assert.fieldEquals(
       'Market',
       aaaTokenAddress.toHex(),
-      'reserveFactor',
+      'reserveFactorMantissa',
       newReserveFactor.toString(),
     );
   });

@@ -339,10 +339,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.borrowIndex = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);
-  market.lastUnderlyingPriceCents =
-    market.symbol == 'vBNB'
-      ? zeroBigInt32
-      : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+  market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
   market.lastUnderlyingPriceBlockNumber = event.block.number;
 
   // the AccrueInterest event updates the reserves but does not report the new value in the params
@@ -358,7 +355,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {
   const market = getOrCreateMarket(event.address, event);
-  market.reserveFactor = event.params.newReserveFactorMantissa;
+  market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
   market.save();
 }
 
@@ -383,14 +380,11 @@ export function handleMintV1(event: MintV1): void {
   const vTokenContract = VToken.bind(marketAddress);
   const result = getOrCreateAccountVToken(marketAddress, event.params.minter);
   const accountVToken = result.entity;
-
   // we'll first update the cash value of the market and then the rates, since they depend on it
   updateMarketCashMantissa(market, vTokenContract);
 
   // finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
-
-  market.save();
 
   createMintEvent<MintV1>(event);
 
@@ -400,8 +394,8 @@ export function handleMintV1(event: MintV1): void {
 
   if (event.params.mintTokens.equals(accountVToken.vTokenBalanceMantissa)) {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
-    market.save();
   }
+  market.save();
 }
 
 export function handleMintBehalfV1(event: MintBehalfV1): void {

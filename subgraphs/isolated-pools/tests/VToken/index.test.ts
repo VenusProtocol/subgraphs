@@ -383,7 +383,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'borrowIndex',
-      market.borrowIndexMantissa.toString(),
+      market.borrowIndex.toString(),
     );
   });
 
@@ -471,7 +471,7 @@ describe('VToken', () => {
       'AccountVToken',
       accountVTokenId,
       'borrowIndex',
-      market.borrowIndexMantissa.toString(),
+      market.borrowIndex.toString(),
     );
   });
 
@@ -555,7 +555,7 @@ describe('VToken', () => {
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('totalSupplyVTokenMantissa', '36504567163409'); // value from mock
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
-    assertMarketDocument('borrowIndexMantissa', '300000000000000000000');
+    assertMarketDocument('borrowIndex', '300000000000000000000');
     assertMarketDocument('reservesMantissa', '5128924555022289393');
     assertMarketDocument('totalBorrowsMantissa', '2641234234636158123');
     assertMarketDocument('cashMantissa', '1418171344423412457');

@@ -27,7 +27,7 @@ import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 export function handleInitialization(block: ethereum.Block): void {
   const comptroller = new Comptroller(comptrollerAddress);
   comptroller.priceOracle = nullAddress;
-  comptroller.closeFactor = zeroBigInt32;
+  comptroller.closeFactorMantissa = zeroBigInt32;
   comptroller.liquidationIncentive = zeroBigInt32;
   comptroller.maxAssets = BigInt.fromI32(100);
   comptroller.save();
@@ -65,7 +65,7 @@ export function handleMarketExited(event: MarketExited): void {
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {
   const comptroller = getComptroller();
-  comptroller.closeFactor = event.params.newCloseFactorMantissa;
+  comptroller.closeFactorMantissa = event.params.newCloseFactorMantissa;
   comptroller.save();
 }
 

@@ -6,6 +6,7 @@ import {
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
 } from '../../generated/templates';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
+import { Comptroller } from '../../generated/templates/VToken/Comptroller';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
@@ -23,6 +24,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
   let market = getMarket(marketAddress);
   if (!market) {
     const vTokenContract = VToken.bind(marketAddress);
+    const comptrollerContract = Comptroller.bind(vTokenContract.comptroller());
     market = new Market(marketAddress);
     market.isListed = true;
     market.xvsBorrowStateBlock = event.block.number;
@@ -32,7 +34,17 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
-    market.blockTimestamp = event.block.timestamp.toI32();
+    market.accrualBlockNumber = event.block.number;
+    market.xvsSupplySpeed = zeroBigInt32;
+    const supplySpeedResult = comptrollerContract.try_venusSupplySpeeds(marketAddress);
+    if (!supplySpeedResult.reverted) {
+      market.xvsSupplySpeed = supplySpeedResult.value;
+    }
+    const borrowSpeedResult = comptrollerContract.try_venusBorrowSpeeds(marketAddress);
+    market.xvsBorrowSpeed = zeroBigInt32;
+    if (!supplySpeedResult.reverted) {
+      market.xvsBorrowSpeed = borrowSpeedResult.value;
+    }
 
     // It is vBNB, which has a slightly different interface
     if (market.symbol == 'vBNB') {
@@ -52,14 +64,11 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       vTokenContract.try_interestRateModel(),
       'vBEP20 try_interestRateModel()',
     );
-    market.reserveFactor = valueOrNotAvailableIntIfReverted(
+    market.reserveFactorMantissa = valueOrNotAvailableIntIfReverted(
       vTokenContract.try_reserveFactorMantissa(),
       'vBEP20 try_reserveFactorMantissa()',
     );
-    market.lastUnderlyingPriceCents =
-      market.symbol == 'vBNB'
-        ? zeroBigInt32
-        : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+    market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
@@ -67,7 +76,6 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.collateralFactorMantissa = zeroBigInt32;
     market.supplierCount = zeroBigInt32;
     market.borrowerCount = zeroBigInt32;
-    market.borrowerCountAdjusted = zeroBigInt32;
 
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
