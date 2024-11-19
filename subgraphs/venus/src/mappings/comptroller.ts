@@ -3,6 +3,7 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
 import {
+  DistributedBorrowerVenus,
   DistributedSupplierVenus,
   MarketEntered,
   MarketExited,
@@ -11,12 +12,16 @@ import {
   NewCollateralFactor,
   NewLiquidationIncentive,
   NewPriceOracle,
+  VenusBorrowSpeedUpdated,
+  VenusSupplySpeedUpdated,
 } from '../../generated/DiamondComptroller/Comptroller';
 import { Comptroller } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import { getComptroller, getMarket } from '../operations/get';
 import { getOrCreateAccountVToken, getOrCreateMarket } from '../operations/getOrCreate';
+import { updateXvsBorrowState } from '../operations/updateXvsBorrowState';
+import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitialization(block: ethereum.Block): void {
@@ -33,8 +38,6 @@ export function handleMarketListed(event: MarketListed): void {
   const market = getOrCreateMarket(event.params.vToken, event);
   // If the market is listed/relisted the following values are reset
   market.collateralFactorMantissa = zeroBigInt32;
-  market.xvsBorrowStateBlock = event.block.number;
-  market.xvsSupplyStateBlock = event.block.number;
   market.save();
 }
 
@@ -85,11 +88,34 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
   comptroller.save();
 }
 
-// Also handles DistributedBorrowerVenus with same signature
-export function handleXvsDistributed(event: DistributedSupplierVenus): void {
+export function handleXvsDistributedSupplier(event: DistributedSupplierVenus): void {
   const market = getOrCreateMarket(event.params.vToken, event);
+  // Update speeds and state
+  updateXvsSupplyState(market, event);
   market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
     event.params.venusDelta,
   );
+  market.save();
+}
+
+export function handleXvsDistributedBorrower(event: DistributedBorrowerVenus): void {
+  const market = getOrCreateMarket(event.params.vToken, event);
+  // Update speeds and state
+  updateXvsBorrowState(market, event);
+  market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
+    event.params.venusDelta,
+  );
+  market.save();
+}
+
+export function handleVenusBorrowSpeedUpdated(event: VenusBorrowSpeedUpdated): void {
+  const market = getMarket(event.params.vToken)!;
+  market.xvsBorrowSpeed = event.params.newSpeed;
+  market.save();
+}
+
+export function handleVenusSupplySpeedUpdated(event: VenusSupplySpeedUpdated): void {
+  const market = getMarket(event.params.vToken)!;
+  market.xvsSupplySpeed = event.params.newSpeed;
   market.save();
 }

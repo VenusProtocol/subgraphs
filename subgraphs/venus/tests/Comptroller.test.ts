@@ -64,7 +64,6 @@ describe('handleMarketListing', () => {
     assertMarketDocument('totalBorrowsMantissa', '0');
     assertMarketDocument('totalSupplyVTokenMantissa', '0');
     assertMarketDocument('accrualBlockNumber', '100');
-    assertMarketDocument('blockTimestamp', '1');
     assertMarketDocument('borrowIndex', '0');
     assertMarketDocument('reserveFactor', '100');
     assertMarketDocument('xvsBorrowStateIndex', '1000000000000000000000000000000000000');

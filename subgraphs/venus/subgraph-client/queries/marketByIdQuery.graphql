@@ -17,7 +17,6 @@ query MarketById($id: ID!) {
     lastUnderlyingPriceBlockNumber
     underlyingSymbol
     accrualBlockNumber
-    blockTimestamp
     borrowIndex
     totalSupplyVTokenMantissa
     totalBorrowsMantissa

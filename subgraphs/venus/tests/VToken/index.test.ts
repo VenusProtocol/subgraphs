@@ -328,7 +328,6 @@ describe('VToken', () => {
     };
 
     assertMarketDocument('accrualBlockNumber', '999');
-    assertMarketDocument('blockTimestamp', accrueInterestEvent.block.timestamp.toString());
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
     assertMarketDocument('borrowIndex', newBorrowIndex.toString());
     assertMarketDocument('reservesMantissa', '5128924555022289393');

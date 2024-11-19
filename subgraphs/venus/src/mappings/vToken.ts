@@ -38,8 +38,6 @@ import {
 } from '../operations/getOrCreate';
 import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
 import { updateMarketRates } from '../operations/updateMarketRates';
-import { updateXvsBorrowState } from '../operations/updateXvsBorrowState';
-import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 import { getUnderlyingPrice } from '../utilities';
 
 /* Account supplies assets into market and receives vTokens in exchange
@@ -67,8 +65,6 @@ export function handleMint(event: Mint): void {
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
   market.save();
 
-  updateXvsSupplyState(market);
-
   createMintEvent<Mint>(event);
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.minter);
@@ -91,8 +87,6 @@ export function handleMintBehalf(event: MintBehalf): void {
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
   market.save();
-
-  updateXvsSupplyState(market);
 
   createMintBehalfEvent<MintBehalf>(event);
 
@@ -131,8 +125,6 @@ export function handleRedeem(event: Redeem): void {
   );
   market.save();
 
-  updateXvsSupplyState(market);
-
   createRedeemEvent<Redeem>(event);
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.redeemer);
@@ -165,8 +157,6 @@ export function handleBorrow(event: Borrow): void {
   // we'll update the cash value of the market
   updateMarketCashMantissa(market, vTokenContract);
   market.save();
-
-  updateXvsBorrowState(market);
 
   const account = getOrCreateAccount(event.params.borrower);
   account.hasBorrowed = true;
@@ -208,8 +198,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   updateMarketCashMantissa(market, vTokenContract);
 
   market.save();
-
-  updateXvsBorrowState(market);
 
   const result = getOrCreateAccountVToken(marketAddress, event.params.borrower);
   const accountVToken = result.entity;
@@ -304,6 +292,8 @@ export function handleTransfer(event: Transfer): void {
   let accountFromAddress = event.params.from;
   let accountToAddress = event.params.to;
   const vTokenContract = VToken.bind(event.address);
+  const market = getMarket(event.address)!;
+
   // Checking if the event is FROM the vToken contract or null (i.e. this will not run when minting)
   // Checking if the event is TO the vToken contract (i.e. this will not run when redeeming)
   // @TODO Edge case where someone who accidentally sends vTokens to a vToken contract, where it will not get recorded.
@@ -320,7 +310,6 @@ export function handleTransfer(event: Transfer): void {
 
     // Decrease if no longer minter
     if (fromBalance.equals(zeroBigInt32)) {
-      const market = getMarket(event.address)!;
       market.supplierCount = market.supplierCount.minus(oneBigInt);
       market.save();
     }
@@ -333,14 +322,11 @@ export function handleTransfer(event: Transfer): void {
 
     // Increase balance if now minter
     if (toBalance.equals(event.params.amount)) {
-      const market = getMarket(event.address)!;
       market.supplierCount = market.supplierCount.plus(oneBigInt);
       market.save();
     }
   }
   createTransferEvent<Transfer>(event);
-  const market = getMarket(event.address)!;
-  updateXvsSupplyState(market);
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
@@ -350,7 +336,6 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   const vTokenContract = VToken.bind(marketAddress);
 
   market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
-  market.blockTimestamp = event.block.timestamp.toI32();
   market.borrowIndex = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);

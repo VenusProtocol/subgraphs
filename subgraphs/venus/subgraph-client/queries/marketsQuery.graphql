@@ -14,7 +14,6 @@ query Markets {
     underlyingName
     underlyingSymbol
     accrualBlockNumber
-    blockTimestamp
     borrowIndex
     lastUnderlyingPriceCents
     lastUnderlyingPriceBlockNumber
@@ -24,5 +23,11 @@ query Markets {
     borrowerCountAdjusted
     totalSupplyVTokenMantissa
     totalBorrowsMantissa
+    xvsSupplyStateBlock
+    xvsBorrowStateBlock
+    xvsSupplyStateIndex
+    xvsBorrowStateIndex
+    xvsSupplySpeed
+    xvsBorrowSpeed
   }
 }
