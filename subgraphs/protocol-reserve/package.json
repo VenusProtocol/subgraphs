@@ -33,6 +33,8 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.80.0",
     "apollo-fetch": "^0.7.0",
+    "semantic-release": "^23.1.1",
+    "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
     "urql": "^3.0.3",
     "venus-subgraph-utils": "0.0.0"

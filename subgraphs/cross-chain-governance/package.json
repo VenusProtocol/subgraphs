@@ -44,7 +44,10 @@
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2",
-    "urql": "^3.0.3",
-    "venus-subgraph-utils": "0.0.0"
+    "urql": "^3.0.3"
+  },
+  "devDependencies": {
+    "semantic-release": "^23.1.1",
+    "semantic-release-monorepo": "^8.0.2"
   }
 }
