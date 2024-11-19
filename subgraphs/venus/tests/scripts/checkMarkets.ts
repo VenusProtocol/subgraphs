@@ -74,7 +74,6 @@ const checkMarkets = async (
       vTokenContract.comptroller(),
       tryCall(async () => await vTokenContract.underlying(), ''),
     ]);
-    console.log({ comptrollerAddress });
     const comptrollerContract = new ethers.Contract(comptrollerAddress, ComptrollerAbi, provider);
 
     const underlyingContract = new ethers.Contract(underlyingAddress, Bep20Abi, provider);
@@ -117,8 +116,7 @@ const checkMarkets = async (
       vTokenContract.totalSupply(),
       vTokenContract.totalBorrows(),
     ]);
-    // distributeSupplierVenus
-    // updateVenusSupplyIndex
+
     const supplyState = await tryCall(
       async () => await comptrollerContract.venusSupplyState(market.id),
       { block: BigNumber.from(0), index: BigNumber.from(0) },
