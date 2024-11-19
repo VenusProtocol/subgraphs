@@ -29,7 +29,7 @@ export function handleInitialization(block: ethereum.Block): void {
   comptroller.priceOracle = nullAddress;
   comptroller.closeFactorMantissa = zeroBigInt32;
   comptroller.liquidationIncentive = zeroBigInt32;
-  comptroller.maxAssets = BigInt.fromI32(100);
+  comptroller.maxAssets = BigInt.fromI32(20);
   comptroller.save();
 }
 
