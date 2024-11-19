@@ -1,5 +1,5 @@
 {
-  "name": "subgraphs",
+  "name": "@venusprotocol/subgraphs",
   "private": true,
   "version": "0.0.0",
   "repository": "https://github.com/VenusProtocol/subgraphs",
@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "codegen": "yarn workspaces foreach run codegen",
+    "semantic-release": "yarn workspaces foreach run semantic-release",
     "build:docker": "yarn workspaces foreach run build:docker",
     "build:chapel": "yarn workspaces foreach run build:chapel",
     "build:bsc": "yarn workspaces foreach run build:bsc",

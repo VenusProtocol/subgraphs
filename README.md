@@ -90,6 +90,11 @@ createdb graph-node
 
 Also, you might want to make sure test assertions are not being made against a state that was previously mutated by other test runs. To avoid this scenario, you will want to also recreate your Postgres DB and restart your ipfs and eth node services.
 
+
+## Versioning / Deployments
+Versioning is handled by semantic release based on formatted commits and the config defined in the `.releaserc` of each subgraph. 
+Branches with the `pre` prefix are versioned as pre-releases.
+
 ## Debugging
 To query the indexing error use a graphql explorer like [GraphiQl](https://graphiql-online.com/graphiql) to query the graph node for the status of the graph. The endpoint for the hosted service is `https://api.thegraph.com/index-node/graphql`.
 

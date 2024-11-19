@@ -79,8 +79,8 @@
       "name": "main"
     },
     {
-      "name": "[!main]",
-      "prerelease": "pr"
+      "name": "pre-*",
+      "prerelease": "pre"
     }
   ]
 }
