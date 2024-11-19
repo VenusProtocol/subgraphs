@@ -1,5 +1,5 @@
 {
-  "name": "protocol-reserve-subgraph",
+  "name": "@venusprotocol/protocol-reserve-subgraph",
   "version": "0.0.5",
   "license": "MIT",
   "repository": {
@@ -32,11 +32,11 @@
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.80.0",
+    "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
-    "urql": "^3.0.3",
-    "venus-subgraph-utils": "0.0.0"
+    "urql": "^3.0.3"
   }
 }

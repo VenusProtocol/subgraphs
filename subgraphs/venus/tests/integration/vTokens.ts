@@ -1,8 +1,8 @@
 import { JsonRpcSigner } from '@nomiclabs/hardhat-ethers/signers';
+import { waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import hre, { ethers } from 'hardhat';
-import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import createSubgraphClient from '../../subgraph-client';
 

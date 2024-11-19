@@ -1,9 +1,9 @@
 import '@nomiclabs/hardhat-ethers';
 import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
+import { scaleValue, waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
 import { SYNC_DELAY } from './utils/constants';

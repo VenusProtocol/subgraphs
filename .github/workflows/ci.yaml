@@ -62,16 +62,16 @@ jobs:
 
       - name: Generate Core Pool graphql types
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run prepare:docker
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run codegen
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run create:docker
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run deploy:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run deploy:docker
           sleep 5s
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run generate-subgraph-types
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run generate-subgraph-types
       
       - name: Run Core Pool integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-subgraph run test:integration --bail
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/core-pool-subgraph run test:integration --bail
       
       - name: Stop containers
         if: always()
@@ -95,16 +95,16 @@ jobs:
 
       - name: Generate Isolated Pools graphql types
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run prepare:docker
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run codegen
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run create:docker
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run deploy:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run deploy:docker
           sleep 5s
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run generate-subgraph-types
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run generate-subgraph-types
       
       - name: Run Isolated Pools integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace isolated-pools-subgraph run test:integration --bail
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/isolated-pools-subgraph run test:integration --bail
       
       - name: Stop containers
         if: always()
@@ -128,16 +128,16 @@ jobs:
       
       - name: Generate Governance graphql types
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run prepare:docker
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run codegen
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run create:docker
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run deploy:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run prepare:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run codegen
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run create:docker
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run deploy:docker
           sleep 5s
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run generate-subgraph-types
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run generate-subgraph-types
 
       - name: Run Governance integration integration tests
         run: |
-          docker exec -i subgraph-hardhat-node yarn workspace venus-governance-subgraph run test:integration --bail
+          docker exec -i subgraph-hardhat-node yarn workspace @venusprotocol/governance-subgraph run test:integration --bail
 
       - name: Stop containers
         if: always()
@@ -169,7 +169,7 @@ jobs:
           GIT_COMMITTER_EMAIL: tools@venus.io
         run: |
           yarn workspace @venusprotocol/cross-chain-governance-subgraph run semantic-release
-          yarn workspace @venusprotocol/etherfi-promo run semantic-release
+          yarn workspace @venusprotocol/etherfi-promo-subgraph run semantic-release
           yarn workspace @venusprotocol/isolated-pools-subgraph run semantic-release
           yarn workspace @venusprotocol/protocol-reserve-subgraph run semantic-release
           yarn workspace @venusprotocol/core-pool-subgraph run semantic-release

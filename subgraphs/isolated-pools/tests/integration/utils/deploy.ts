@@ -1,4 +1,4 @@
-import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
 
