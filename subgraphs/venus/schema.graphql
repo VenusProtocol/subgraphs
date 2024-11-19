@@ -87,6 +87,9 @@ type Market @entity {
 
     "Number of accounts currently borrowing from this market"
     borrowerCount: BigInt!
+
+    "Accounts who participate in this market"
+    accounts: [AccountVToken!]! @derivedFrom(field:"market")
 }
 
 """

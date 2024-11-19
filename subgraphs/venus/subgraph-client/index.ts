@@ -6,6 +6,12 @@ import {
   AccountVTokenByAccountAndMarketQueryDocument,
   AccountVTokenByAccountIdDocument,
   AccountVTokensDocument,
+  AccountVTokensWithBorrowByMarketIdDocument,
+  AccountVTokensWithBorrowByMarketIdQuery,
+  AccountVTokensWithSupplyByMarketIdDocument,
+  AccountVTokensWithSupplyByMarketIdQuery,
+  ComptrollersDocument,
+  ComptrollersQuery,
   MarketByIdDocument,
   MarketsDocument,
 } from './.graphclient';
@@ -28,6 +34,13 @@ class SubgraphClient {
     return result;
   }
 
+  async getComptroller(): Promise<{ comptroller: ComptrollersQuery['comptrollers'][number] }> {
+    const result = await this.query(ComptrollersDocument, {});
+    // For convenience sake of not having to know the id/ address ahead of time
+    // and because this subgraph only has one comptroller
+    return { comptroller: result.data.comptrollers[0] };
+  }
+
   async getMarkets() {
     const result = await this.query(MarketsDocument, {});
     return result;
@@ -44,11 +57,45 @@ class SubgraphClient {
   }
 
   async getAccountVTokens({ first = 25, skip = 0 }: { first: number; skip: number }) {
-    const result = await this.query(AccountVTokensDocument, { first, skip } as unknown as {
-      first: string;
-      skip: string;
+    const result = await this.query(AccountVTokensDocument, {
+      first: first as unknown as string,
+      skip: skip as unknown as string,
     });
     return result;
+  }
+
+  async getAccountVTokensWithSupplyByMarketId({
+    first,
+    skip,
+    marketId,
+  }: {
+    marketId: string;
+    first: number;
+    skip: number;
+  }): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
+    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, {
+      first: first as unknown as string,
+      skip: skip as unknown as string,
+      marketId,
+    });
+    return result.data;
+  }
+
+  async getAccountVTokensWithBorrowByMarketId({
+    first,
+    skip,
+    marketId,
+  }: {
+    marketId: string;
+    first: number;
+    skip: number;
+  }): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
+    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, {
+      first: first as unknown as string,
+      skip: skip as unknown as string,
+      marketId,
+    });
+    return result.data;
   }
 
   async getAccountVTokensByAccountId(accountId: string) {
