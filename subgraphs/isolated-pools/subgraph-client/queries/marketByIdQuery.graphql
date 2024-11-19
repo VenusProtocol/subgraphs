@@ -18,13 +18,13 @@ query MarketById($id: ID!) {
     symbol
     underlyingAddress
     underlyingName
-    underlyingPriceCentsMantissa
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
     underlyingSymbol
     borrowCapMantissa
     supplyCapMantissa
     accrualBlockNumber
-    blockTimestamp
-    borrowIndexMantissa
+    borrowIndex
     reserveFactorMantissa
     underlyingDecimals
     supplierCount

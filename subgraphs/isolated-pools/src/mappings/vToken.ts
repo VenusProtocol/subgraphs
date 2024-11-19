@@ -121,6 +121,8 @@ export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress)!;
 
+  market.totalBorrowsMantissa = event.params.totalBorrows;
+
   updateAccountVTokenBorrow(
     event.params.borrower,
     Address.fromBytes(market.pool),
@@ -135,6 +137,7 @@ export function handleBorrow(event: Borrow): void {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
   }
+  market.save();
 }
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
@@ -155,6 +158,8 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress)!;
 
+  market.totalBorrowsMantissa = event.params.totalBorrows;
+
   updateAccountVTokenRepayBorrow(
     event.params.borrower,
     Address.fromBytes(market.pool),
@@ -168,6 +173,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   if (event.params.accountBorrows.equals(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
   }
+  market.save();
 }
 
 /*
@@ -199,13 +205,9 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
-  const market = updateMarket(
-    event.address,
-    event.block.number.toI32(),
-    event.block.timestamp.toI32(),
-  );
+  const market = updateMarket(event.address, event.block.number);
   market.totalBorrowsMantissa = event.params.totalBorrows;
-  market.borrowIndexMantissa = event.params.borrowIndex;
+  market.borrowIndex = event.params.borrowIndex;
   market.save();
 }
 
@@ -234,11 +236,7 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
 export function handleTransfer(event: Transfer): void {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
-  const market = updateMarket(
-    event.address,
-    event.block.number.toI32(),
-    event.block.timestamp.toI32(),
-  );
+  const market = updateMarket(event.address, event.block.number);
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
   // Checking if the event is FROM the vToken contract or null (i.e. this will not run when minting)

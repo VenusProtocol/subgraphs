@@ -4,6 +4,7 @@ query Markets {
     pool {
       id
     }
+    isListed
     badDebtMantissa
     borrowRateMantissa
     cashMantissa
@@ -17,13 +18,14 @@ query Markets {
     underlyingAddress
     underlyingName
     underlyingSymbol
+    vTokenDecimals
     borrowCapMantissa
     accrualBlockNumber
-    blockTimestamp
-    borrowIndexMantissa
+    borrowIndex
     liquidationThresholdMantissa
     reserveFactorMantissa
-    underlyingPriceCentsMantissa
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
     underlyingDecimals
     supplyCapMantissa
     accessControlManagerAddress

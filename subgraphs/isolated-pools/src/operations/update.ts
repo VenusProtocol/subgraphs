@@ -119,15 +119,11 @@ export const updateAccountVTokenTransferTo = (
   return accountVToken as AccountVToken;
 };
 
-export const updateMarket = (
-  vTokenAddress: Address,
-  blockNumber: i32,
-  blockTimestamp: i32,
-): Market => {
+export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Market => {
   const market = getMarket(vTokenAddress)!;
 
   // Only updateMarket if it has not been updated this block
-  if (market.accrualBlockNumber.equals(BigInt.fromI32(blockNumber))) {
+  if (market.accrualBlockNumber.equals(blockNumber)) {
     return market as Market;
   }
   const marketContract = VToken.bind(vTokenAddress);
@@ -137,12 +133,12 @@ export const updateMarket = (
     vTokenAddress,
     market.underlyingDecimals,
   );
-  market.underlyingPriceCentsMantissa = tokenPriceCents;
+  market.lastUnderlyingPriceCents = tokenPriceCents;
+  market.lastUnderlyingPriceBlockNumber = blockNumber;
 
   market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
     marketContract.try_accrualBlockNumber(),
   );
-  market.blockTimestamp = blockTimestamp;
 
   const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
     marketContract.try_exchangeRateStored(),

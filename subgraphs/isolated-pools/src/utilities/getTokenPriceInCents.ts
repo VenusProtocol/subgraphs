@@ -17,16 +17,19 @@ const getTokenPriceInCents = (
   let underlyingPrice = NOT_AVAILABLE_BIG_INT;
   if (pool && pool.priceOracleAddress) {
     const oracleAddress = Address.fromBytes(pool.priceOracleAddress);
-
-    const mantissaDecimalFactor = exponentToBigInt(16 - underlyingDecimals);
+    const mantissaDecimalFactor = 36 - underlyingDecimals - 2;
+    const bdFactor = exponentToBigInt(mantissaDecimalFactor);
     const priceOracle = PriceOracle.bind(oracleAddress);
 
-    const underlyingPriceBigInt = valueOrNotAvailableIntIfReverted(
+    const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(
       priceOracle.try_getUnderlyingPrice(tokenAddress),
     );
-    underlyingPrice = underlyingPriceBigInt.div(mantissaDecimalFactor);
+    if (oracleUnderlyingPrice.equals(BigInt.zero())) {
+      return oracleUnderlyingPrice;
+    }
+    underlyingPrice = oracleUnderlyingPrice.div(bdFactor);
+    underlyingPrice;
   }
-
   return underlyingPrice;
 };
 

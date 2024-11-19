@@ -27,12 +27,12 @@ import { createAccount, createAccountPool, createMarket, createPool } from './cr
 export const getOrCreateMarket = (
   vTokenAddress: Address,
   comptrollerAddress: Address,
-  blockTimestamp: BigInt,
+  blockNumber: BigInt,
 ): Market => {
   let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
     VTokenDataSource.create(vTokenAddress);
-    market = createMarket(comptrollerAddress, vTokenAddress, blockTimestamp);
+    market = createMarket(comptrollerAddress, vTokenAddress, blockNumber);
   }
   return market;
 };

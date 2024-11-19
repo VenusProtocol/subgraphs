@@ -36,7 +36,7 @@ export function handleMarketAdded(event: MarketAdded): void {
   // Dynamically index all new listed tokens
   const vTokenAddress = event.params.vTokenAddress;
   const comptroller = event.params.comptroller;
-  getOrCreateMarket(vTokenAddress, comptroller, event.block.timestamp);
+  getOrCreateMarket(vTokenAddress, comptroller, event.block.number);
 }
 
 export function handlePoolMetadataUpdated(event: PoolMetadataUpdated): void {

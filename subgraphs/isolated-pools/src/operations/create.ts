@@ -83,7 +83,7 @@ export function createAccountPool(accountAddress: Address, poolAddress: Address)
 export function createMarket(
   comptroller: Address,
   vTokenAddress: Address,
-  blockTimestamp: BigInt,
+  blockNumber: BigInt,
 ): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
@@ -97,16 +97,18 @@ export function createMarket(
   market.isListed = true;
   market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
+  market.vTokenDecimals = vTokenContract.decimals();
 
-  const underlyingDecimals = underlyingContract.decimals();
-  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceCentsMantissa = underlyingValue;
+  const underlyingDecimals = underlyingContract.decimals();
   market.underlyingDecimals = underlyingDecimals;
-  market.vTokenDecimals = vTokenContract.decimals();
 
+  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
+  market.lastUnderlyingPriceCents = underlyingValue;
+  market.lastUnderlyingPriceBlockNumber = blockNumber;
+  market.accessControlManagerAddress = vTokenContract.accessControlManager();
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
   market.cashMantissa = vTokenContract.getCash();
@@ -121,9 +123,7 @@ export function createMarket(
 
   market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
 
-  market.blockTimestamp = blockTimestamp.toI32();
-
-  market.borrowIndexMantissa = vTokenContract.borrowIndex();
+  market.borrowIndex = vTokenContract.borrowIndex();
 
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 

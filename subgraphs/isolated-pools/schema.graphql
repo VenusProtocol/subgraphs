@@ -95,14 +95,14 @@ type Market @entity {
     # Fields that are not in Venus api
     "Block the market is updated to"
     accrualBlockNumber: BigInt!
-    "Timestamp the market was most recently updated"
-    blockTimestamp: Int!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndexMantissa: BigInt!
+    borrowIndex: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactorMantissa: BigInt!
     "Underlying token price in USD cents (updated based on the last received event)"
-    underlyingPriceCentsMantissa: BigInt!
+    lastUnderlyingPriceCents: BigInt!
+    "Block price was last updated"
+    lastUnderlyingPriceBlockNumber: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "vToken decimal length"
@@ -113,7 +113,7 @@ type Market @entity {
     "The amount of bad debt in the market"
     badDebtMantissa: BigInt!
     "Contract address for the Access Control Manager"
-    accessControlManagerAddress: Bytes
+    accessControlManagerAddress: Bytes!
 
     "Number of accounts currently supplying to this market"
     supplierCount: BigInt!
