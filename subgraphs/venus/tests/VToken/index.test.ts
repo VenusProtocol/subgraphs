@@ -580,7 +580,6 @@ describe('VToken', () => {
 
     handleBorrow(borrowEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
     const borrower02 = user2Address;
     borrowEvent = createBorrowEvent(
@@ -593,7 +592,6 @@ describe('VToken', () => {
 
     handleBorrow(borrowEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '2');
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '2');
 
     let repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
@@ -606,7 +604,6 @@ describe('VToken', () => {
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
     repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
@@ -619,7 +616,6 @@ describe('VToken', () => {
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '1');
 
     repayEvent = createRepayBorrowEvent(
       aaaTokenAddress,
@@ -632,7 +628,6 @@ describe('VToken', () => {
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCount', '1');
-    assert.fieldEquals('Market', aaaTokenAddress.toHex(), 'borrowerCountAdjusted', '0');
   });
 
   test('registers reserves added event', () => {

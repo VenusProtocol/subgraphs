@@ -19,7 +19,7 @@ import {
 } from '../../generated/templates/VToken/VToken';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { Mint, MintBehalf, Redeem } from '../../generated/templates/VTokenUpdatedEvents/VToken';
-import { DUST_THRESHOLD, oneBigInt, zeroBigInt32 } from '../constants';
+import { oneBigInt, zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import {
   createBorrowEvent,
@@ -159,7 +159,6 @@ export function handleBorrow(event: Borrow): void {
   if (event.params.accountBorrows.equals(event.params.borrowAmount)) {
     // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
-    market.borrowerCountAdjusted = market.borrowerCountAdjusted.plus(oneBigInt);
   }
   market.totalBorrowsMantissa = event.params.totalBorrows;
 
@@ -202,11 +201,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   if (event.params.accountBorrows.equals(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
-    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
-  } else if (event.params.accountBorrows.le(DUST_THRESHOLD)) {
-    // Sometimes a liquidator will leave dust behind. If this happens we'll adjust count
-    // because the position only exists due to a technicality
-    market.borrowerCountAdjusted = market.borrowerCountAdjusted.minus(oneBigInt);
   }
   market.totalBorrowsMantissa = event.params.totalBorrows;
 

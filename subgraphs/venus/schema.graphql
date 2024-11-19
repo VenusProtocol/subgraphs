@@ -83,9 +83,6 @@ type Market @entity {
     "Number of accounts currently supplying to this market"
     supplierCount: BigInt!
 
-    "Number of accounts with reasonable borrow positions in this market (excludes accounts with dust (potentially left over from liquidations))"
-    borrowerCountAdjusted: BigInt!
-
     "Number of accounts currently borrowing from this market"
     borrowerCount: BigInt!
 }

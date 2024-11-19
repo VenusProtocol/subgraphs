@@ -24,7 +24,6 @@ query MarketById($id: ID!) {
     underlyingDecimals
     supplierCount
     borrowerCount
-    borrowerCountAdjusted
     xvsSupplyStateBlock
     xvsSupplyStateIndex
     xvsBorrowStateBlock

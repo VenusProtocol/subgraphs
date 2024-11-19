@@ -684,7 +684,6 @@ describe('VToken events', function () {
       expect(await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address)).to.equal(
         0,
       );
-      expect(market?.borrowerCountAdjusted).to.equal('0');
       expect(market?.borrowerCount).to.equal('0');
       expect(market?.totalBorrowsMantissa).to.equal((await vDogeToken.totalBorrows()).toString());
       const borrowState = await comptroller.venusBorrowState(vDogeToken.address);
@@ -1181,7 +1180,6 @@ describe('VToken events', function () {
       expect(
         await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address),
       ).to.be.lessThanOrEqual(10);
-      expect(market?.borrowerCountAdjusted).to.equal('0');
       expect(+market?.borrowerCount).to.be.lessThanOrEqual(1);
       expect(market?.totalBorrowsMantissa).to.equal((await vEthToken.totalBorrows()).toString());
       const borrowState = await comptroller.venusBorrowState(vEthToken.address);
