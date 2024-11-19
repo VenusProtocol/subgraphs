@@ -1,8 +1,8 @@
 import '@nomiclabs/hardhat-ethers';
+import { waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
-import { waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client/index';
 import { SYNC_DELAY, nullAddress } from './utils/constants';

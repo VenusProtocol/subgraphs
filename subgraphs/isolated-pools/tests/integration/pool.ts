@@ -1,6 +1,6 @@
+import { scaleValue, waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { scaleValue, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
 
 import subgraphClient from '../../subgraph-client';
 import { defaultMarkets } from './constants';

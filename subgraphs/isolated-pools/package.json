@@ -1,5 +1,5 @@
 {
-  "name": "isolated-pools-subgraph",
+  "name": "@venusprotocol/isolated-pools-subgraph",
   "version": "0.3.0",
   "license": "MIT",
   "repository": {
@@ -49,12 +49,12 @@
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
+    "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
-    "urql": "^3.0.3",
-    "venus-subgraph-utils": "0.0.0"
+    "urql": "^3.0.3"
   }
 }

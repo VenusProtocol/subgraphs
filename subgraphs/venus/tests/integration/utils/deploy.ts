@@ -1,4 +1,4 @@
-import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from 'venus-subgraph-utils';
+import { exec, fetchSubgraph, waitForSubgraphToBeSynced } from '@venusprotocol/subgraph-utils';
 
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from '../constants';
 
@@ -10,10 +10,10 @@ const deploy = async () => {
 
   // Build and Deploy Subgraph
   console.log('Build and deploy subgraph...');
-  exec(`yarn workspace venus-subgraph run prepare:docker`, root);
-  exec(`yarn workspace venus-subgraph run codegen`, root);
-  exec(`yarn workspace venus-subgraph run build:docker`, root);
-  exec(`yarn workspace venus-subgraph run create:docker`, root);
+  exec(`yarn workspace @venusprotocol/core-pool-subgraph run prepare:docker`, root);
+  exec(`yarn workspace @venusprotocol/core-pool-subgraph run codegen`, root);
+  exec(`yarn workspace @venusprotocol/core-pool-subgraph run build:docker`, root);
+  exec(`yarn workspace @venusprotocol/core-pool-subgraph run create:docker`, root);
 
   const deployCmd = `yarn graph deploy ${SUBGRAPH_ACCOUNT}/${SUBGRAPH_NAME} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label v${Date.now().toString()}`;
   exec(deployCmd, root);

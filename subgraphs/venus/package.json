@@ -1,5 +1,5 @@
 {
-  "name": "venus-subgraph",
+  "name": "@venusprotocol/core-pool-subgraph",
   "version": "0.0.3",
   "license": "MIT",
   "repository": {
