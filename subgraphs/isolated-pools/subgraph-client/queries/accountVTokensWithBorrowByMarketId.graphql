@@ -1,5 +1,5 @@
-query AccountVTokensWithBorrowByMarketId($marketId: String!) {
-  accountVTokens(where: { market: $marketId, storedBorrowBalanceMantissa_gt: 0 }) {
+query AccountVTokensWithBorrowByMarketId($first: Int, $skip: Int, $marketId: String!) {
+  accountVTokens(first: $first, skip: $skip, where: { market: $marketId, storedBorrowBalanceMantissa_gt: 0 }) {
     id
     account {
       id

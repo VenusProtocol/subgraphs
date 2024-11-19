@@ -5,30 +5,64 @@ import { abi as Bep20Abi } from '@venusprotocol/venus-protocol/artifacts/contrac
 import { abi as VBep20Abi } from '@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json';
 import assert from 'assert';
 import { BigNumber, ethers } from 'ethers';
-import { assertEqual, tryCall } from 'venus-subgraph-utils';
+import { assertEqual, tryCall } from '@venusprotocol/subgraph-utils';
 
 import createSubgraphClient from '../../subgraph-client';
 
 const { getAddress } = ethers.utils;
 
-// const countAllBorrowers = async (subgraphClient: ReturnType<typeof createSubgraphClient>, marketId: string) => {
-//   let total = 0
-//   let skip = 0;
-//   while (skip >= 0) {
+const sleep = (ms: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+};
 
-//     const {
-//       accountVTokens,
-//     } = await subgraphClient.getAccountVTokensWithBorrowByMarketId({ first: 25, skip, marketId });
-//     total += accountVTokens.length
-//     skip += 1;
-//     if (accountVTokens) {
-//     } else {
-//       skip = -1
-//     }
-//   }
-//   return total
-// }
+const countSuppliers = async (
+  subgraphClient: ReturnType<typeof createSubgraphClient>,
+  marketAddress: string,
+) => {
+  let supplierCount = 0;
+  let page = 0;
+  while (page >= 0) {
+    const { accountVTokens } = await subgraphClient.getAccountVTokensWithSupplyByMarketId({
+      marketId: marketAddress,
+      page,
+    });
+    supplierCount += accountVTokens.length;
 
+    if (accountVTokens.length == 0) {
+      page = -1;
+    } else {
+      page += 1;
+      await sleep(1000);
+    }
+  }
+  return supplierCount;
+};
+
+const countBorrower = async (
+  subgraphClient: ReturnType<typeof createSubgraphClient>,
+  marketAddress: string,
+) => {
+  let borrowerCount = 0;
+  let page = 0;
+  while (page >= 0) {
+    const { accountVTokens } = await subgraphClient.getAccountVTokensWithBorrowByMarketId({
+      marketId: marketAddress,
+      page,
+    });
+
+    borrowerCount += accountVTokens.length;
+
+    if (accountVTokens.length == 0) {
+      page = -1;
+    } else {
+      page += 1;
+      await sleep(1000);
+    }
+  }
+  return borrowerCount;
+};
 const checkMarkets = async (
   provider: providers.MulticallProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
@@ -42,6 +76,7 @@ const checkMarkets = async (
       vTokenContract.comptroller(),
       tryCall(async () => await vTokenContract.underlying(), ''),
     ]);
+    console.log({ comptrollerAddress });
     const comptrollerContract = new ethers.Contract(comptrollerAddress, ComptrollerAbi, provider);
 
     const underlyingContract = new ethers.Contract(underlyingAddress, Bep20Abi, provider);
@@ -84,17 +119,17 @@ const checkMarkets = async (
       vTokenContract.totalSupply(),
       vTokenContract.totalBorrows(),
     ]);
-    console.log(`Checking market ${market.id} ${market.symbol} ...`);
+    // distributeSupplierVenus
+    // updateVenusSupplyIndex
     const supplyState = await tryCall(
       async () => await comptrollerContract.venusSupplyState(market.id),
       { block: BigNumber.from(0), index: BigNumber.from(0) },
     );
-    // const t1 = await comptrollerContract.venusSupplyState(market.id)
+
     const borrowState = await tryCall(
       async () => await comptrollerContract.venusBorrowState(market.id),
       { block: BigNumber.from(0), index: BigNumber.from(0) },
     );
-    // const t2 = await comptrollerContract.venusBorrowState(market.id)
 
     const xvsSupplySpeeds = await tryCall(
       async () => await comptrollerContract.venusSupplySpeeds(market.id),
@@ -151,22 +186,11 @@ const checkMarkets = async (
     const bdFactor = 34 - underlyingDecimals;
     const underlyingPriceInCents = underlyingPrice.div(10n ** BigInt(bdFactor));
     assertEqual(market, underlyingPriceInCents, 'lastUnderlyingPriceCents');
-    // 5640695722222.222
-    // const bdFactor = exponentToBigInt(mantissaDecimalFactor);
-    // const oracle2 = PriceOracle.bind(oracleAddress);
-    // const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(
-    //   oracle2.try_getUnderlyingPrice(eventAddress),
-    //   'PriceOracle try_getUnderlyingPrice',
-    // );
-    // if (oracleUnderlyingPrice.equals(BigInt.zero())) {
-    //   return oracleUnderlyingPrice;
-    // }
 
-    // return underlyingPrice.times(BigInt.fromI32(100));
-    // assertEqual(market, totalXvsDistributedMantissa, 'totalXvsDistributedMantissa')
-    // const totalBorrowers = await countAllBorrowers(subgraphClient, market.id)
-    // assertEqual(market, exchangeRateMantissa, 'supplierCount')
-    // assertEqual(market, totalBorrowers, 'borrowerCount')
+    const totalSuppliers = await countSuppliers(subgraphClient, market.id);
+    const totalBorrowers = await countBorrower(subgraphClient, market.id);
+    assertEqual(market, totalSuppliers, 'supplierCount');
+    assertEqual(market, totalBorrowers, 'borrowerCount');
 
     // Check total market supply
     try {
@@ -204,149 +228,3 @@ const checkMarkets = async (
 };
 
 export default checkMarkets;
-
-// """
-// Market stores all high level variables for a vToken market
-// """
-// type Market @entity {
-//     "VToken address"
-//     id: Bytes!
-//     #Fields that match Venus API
-//     "Flag indicating if the market is listed"
-//     isListed: Boolean!
-//     "Borrow rate per block"
-//     borrowRateMantissa: BigInt!
-//     "The vToken contract balance of BEP20 or BNB"
-//     cashMantissa: BigInt!
-//     "Collateral factor determining how much one can borrow"
-//     collateralFactorMantissa: BigInt!
-//     "Exchange rate of tokens / vTokens"
-//     exchangeRateMantissa:  BigInt!
-//     "Address of the interest rate model"
-//     interestRateModelAddress: Bytes!
-//     "Name of the vToken"
-//     name: String!
-//     "Reserves stored in the contract"
-//     reservesMantissa: BigInt!
-//     "Supply rate per block"
-//     supplyRateMantissa: BigInt!
-//     "VToken symbol"
-//     symbol: String!
-//     "Borrows in the market"
-//     totalBorrowsMantissa: BigInt!
-//     "Total vToken supplied"
-//     totalSupplyVTokenMantissa: BigInt!
-//     "Underlying token address"
-//     underlyingAddress: Bytes!
-//     "Underlying token name"
-//     underlyingName: String!
-//     "Underlying token symbol"
-//     underlyingSymbol: String!
-//     "XVS Supply Distribution Block"
-//     xvsSupplyStateBlock:  BigInt!
-//     "XVS Supply Distribution Index"
-//     xvsSupplyStateIndex:  BigInt!
-//     "XVS Reward Distribution Block"
-//     xvsBorrowStateBlock:  BigInt!
-//     "XVS Reward Distribution Index"
-//     xvsBorrowStateIndex:  BigInt!
-
-//     # Fields that are not in Venus api
-//     "Block the market is updated to"
-//     accrualBlockNumber: BigInt!
-//     "Timestamp the market was most recently updated"
-//     blockTimestamp: Int!
-//     "The history of the markets borrow index return (Think S&P 500)"
-//     borrowIndex: BigInt!
-//     "The factor determining interest that goes to reserves"
-//     reserveFactor: BigInt!
-//     "Last recorded Underlying token price in USD cents"
-//     lastUnderlyingPriceCents: BigInt!
-//     "Block price was last updated"
-//     lastUnderlyingPriceBlockNumber: BigInt!
-//     "Underlying token decimal length"
-//     underlyingDecimals: Int!
-//     "Total XVS Distributed for this market"
-//     totalXvsDistributedMantissa: BigInt!
-//     "vToken decimal length"
-//     vTokenDecimals: Int!
-
-//     "Number of accounts currently supplying to this market"
-//     supplierCount: BigInt
-
-//     "Number of accounts currently borrowing from this market"
-//     borrowerCount: BigInt!
-// }
-
-// """
-// Account is an BNB address, with a list of all vToken markets the account has
-// participated in, along with liquidation information.
-// """
-// type Account @entity {
-//     "User BNB address"
-//     id: Bytes!
-//     "Array of VTokens user is in"
-//     tokens: [AccountVToken!]! @derivedFrom(field: "account")
-//     "Count user has been liquidated"
-//     countLiquidated: Int!
-//     "Count user has liquidated others"
-//     countLiquidator: Int!
-//     "True if user has ever borrowed"
-//     hasBorrowed: Boolean!
-// }
-
-// """
-// AccountVToken is a single account within a single vToken market, with data such
-// as interest earned or paid
-// """
-// type AccountVToken @entity {
-//     "Concatenation of VToken address and user address"
-//     id: Bytes!
-//     "Relation to market"
-//     market: Market!
-//     "Relation to user"
-//     account: Account!
-//     "Borrow Index this position last accrued interest"
-//     borrowIndex: BigInt!
-//     "True if user is entered, false if they are exited"
-//     enteredMarket: Boolean!
-//     "VToken balance of the user"
-//     vTokenBalanceMantissa: BigInt!
-//     "Total amount of underlying redeemed"
-//     totalUnderlyingRedeemedMantissa: BigInt!
-//     "Total amount underlying repaid"
-//     totalUnderlyingRepaidMantissa: BigInt!
-//     "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-//     storedBorrowBalanceMantissa: BigInt!
-// }
-
-// enum EventType {
-//     MINT
-//     MINT_BEHALF
-//     REDEEM
-//     BORROW
-//     TRANSFER
-//     LIQUIDATE
-//     REPAY
-// }
-
-// """
-// An interface for a transfer of any vToken. TransferEvent, MintEvent,
-// RedeemEvent, and LiquidationEvent all use this interface
-// """
-// type Transaction @entity {
-//     "Transaction hash concatenated with log index"
-//     id: Bytes!
-//     "enum of event type"
-//     type: EventType!
-//     "The account that sent the tokens, usually vToken"
-//     from: Bytes!
-//     "count of vTokens transferred"
-//     amountMantissa: BigInt!
-//     "Account that received tokens"
-//     to: Bytes!
-//     "Block number"
-//     blockNumber: Int!
-//     "Block time"
-//     blockTime: Int!
-// }

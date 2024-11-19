@@ -4,54 +4,12 @@ import { BigNumber, ethers } from 'ethers';
 
 import createSubgraphClient from '../../subgraph-client';
 
-const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL);
-
-const subgraphClient = createSubgraphClient(process.env.SUBGRAPH_URL!);
-
-const checkMarketSupplyAndBorrowTotals = async () => {
-  const {
-    data: { markets },
-  } = await subgraphClient.getMarkets();
-  for (const market of markets) {
-    const vTokenContract = new ethers.Contract(market.id, VBep20Abi.abi, provider);
-    const totalSupply = await vTokenContract.totalSupply();
-    const totalBorrows = await vTokenContract.totalBorrows();
-    // Check total market supply
-    try {
-      assert.equal(
-        totalSupply.toString(),
-        market.totalSupplyVTokenMantissa,
-        `
-      incorrect total supply market ${market.symbol} ${
-          market.id
-        } contract ${totalSupply.toString()} subgraph ${market.totalSupplyVTokenMantissa.toString()}`,
-      );
-      console.log(`correct supply for ${market.symbol}`);
-    } catch (e) {
-      console.log(e.message);
-    }
-
-    // Check total market borrows
-    try {
-      assert.equal(
-        totalBorrows.toString(),
-        market.totalBorrowsMantissa.toString(),
-        `
-    incorrect total borrow on market ${market.symbol} ${
-          market.id
-        } contract ${totalBorrows.toString()} subgraph ${market.totalBorrowsMantissa.toString()}`,
-      );
-      console.log(`correct borrow for ${market.symbol}`);
-    } catch (e) {
-      console.log(e.message);
-    }
-  }
-};
-
-const run = async () => {
-  await checkMarketSupplyAndBorrowTotals();
+const checkAccountVTokens = async (
+  provider: ethers.providers.JsonRpcProvider,
+  subgraphClient: ReturnType<typeof createSubgraphClient>,
+) => {
   let skip = 0;
-  while (skip <= 20) {
+  while (skip >= 0) {
     console.log(`processed ${skip * 25}...`);
     const { accountVTokens } = await subgraphClient.getAccountVTokens({
       first: 25,
@@ -79,7 +37,7 @@ const run = async () => {
 
       try {
         const updatedSubgraphValue = BigNumber.from(accountVToken.storedBorrowBalanceMantissa)
-          .mul(accountVToken.market.borrowIndexMantissa)
+          .mul(accountVToken.market.borrowIndex)
           .div(accountVToken.borrowIndex)
           .toString();
         // borrower.borrowBalance * market.borrowIndex / borrower.borrowIndex
@@ -87,14 +45,18 @@ const run = async () => {
           updatedSubgraphValue,
           borrowBalanceStored.toString(),
           `
-        incorrect borrow balance on account ${accountVToken.account.id} on market ${accountVToken.market.symbol} ${accountVToken.market.id}, accountBorrowIndex: ${accountVToken.borrowIndex}, marketBorrowIndex ${accountVToken.market.borrowIndexMantissa} subgraphValue: ${accountVToken.storedBorrowBalanceMantissa} contractValue: ${borrowBalanceStored}`,
+        incorrect borrow balance on account ${accountVToken.account.id} on market ${accountVToken.market.symbol} ${accountVToken.market.id}, accountBorrowIndex: ${accountVToken.borrowIndex}, marketBorrowIndex ${accountVToken.market.borrowIndex} subgraphValue: ${updatedSubgraphValue} contractValue: ${borrowBalanceStored}`,
         );
       } catch (e) {
         console.log(e.message);
       }
     }
-    skip += 1;
+    if (accountVTokens) {
+      skip += 1;
+    } else {
+      skip = -1;
+    }
   }
 };
 
-export default run();
+export default checkAccountVTokens;

@@ -33,5 +33,13 @@ query Markets {
     borrowerCount
     totalSupplyVTokenMantissa
     totalBorrowsMantissa
+    suppliers: accounts(where: { vTokenBalanceMantissa_gt: 0 }) {
+      id
+      vTokenBalanceMantissa
+    }
+    borrowers: accounts(where: { storedBorrowBalanceMantissa_gt: 0 }) {
+      id
+      storedBorrowBalanceMantissa
+    }
   }
 }

@@ -1,5 +1,5 @@
-query AccountVTokensWithSupplyByMarketId($marketId: String!) {
-  accountVTokens(where: { market: $marketId, vTokenBalanceMantissa_gt: 0 }) {
+query AccountVTokensWithSupplyByMarketId($first: Int, $skip: Int, $marketId: String!) {
+  accountVTokens(first: $first, skip: $skip, where: { market: $marketId, vTokenBalanceMantissa_gt: 0 }) {
     id
     account {
       id

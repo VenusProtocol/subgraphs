@@ -1,7 +1,7 @@
 import { providers } from '@0xsequence/multicall';
 import { abi as ComptrollerAbi } from '@venusprotocol/venus-protocol/artifacts/contracts/Comptroller/Diamond/DiamondConsolidated.sol/DiamondConsolidated.json';
 import { ethers } from 'ethers';
-import { assertEqual } from 'venus-subgraph-utils';
+import { assertEqual } from '@venusprotocol/subgraph-utils';
 
 import createSubgraphClient from '../../subgraph-client';
 

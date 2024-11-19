@@ -24,7 +24,7 @@ export const checkMarket = async (marketAddress: string) => {
   expect(market?.totalBorrowsMantissa).to.equal(await vToken.totalBorrows());
   expect(market?.totalSupplyVTokenMantissa).to.equal(await vToken.totalSupply());
 
-  expect(market?.borrowIndexMantissa).to.equal(await vToken.borrowIndex());
+  expect(market?.borrowIndex).to.equal(await vToken.borrowIndex());
   expect(market?.borrowRateMantissa).to.equal(await vToken.borrowRatePerBlock());
   expect(market?.supplyRateMantissa).to.equal(await vToken.supplyRatePerBlock());
 
@@ -45,7 +45,7 @@ export const checkMarket = async (marketAddress: string) => {
   expect(market?.borrowCapMantissa).to.equal(await comptroller.borrowCaps(marketAddress));
   expect(market?.supplyCapMantissa).to.equal(await comptroller.supplyCaps(marketAddress));
   expect(market?.accrualBlockNumber).to.equal(await vToken.accrualBlockNumber());
-  expect(market?.borrowIndexMantissa).to.equal((await vToken.borrowIndex()).toString());
+  expect(market?.borrowIndex).to.equal((await vToken.borrowIndex()).toString());
   expect(market?.reserveFactorMantissa).to.equal(await vToken?.reserveFactorMantissa());
   return market;
 };

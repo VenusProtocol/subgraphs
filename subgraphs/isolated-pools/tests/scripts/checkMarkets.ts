@@ -85,7 +85,6 @@ const checkMarkets = async (
     assertEqual(market, reserveFactorMantissa, 'reserveFactorMantissa');
     const bdFactor = 36 - underlyingDecimals - 2;
     const underlyingPriceInCents = underlyingPrice.div(10n ** BigInt(bdFactor));
-
     assertEqual(market, underlyingPriceInCents, 'lastUnderlyingPriceCents');
     // assertEqual(market, totalXvsDistributedMantissa, 'totalXvsDistributedMantissa')
     assertEqual(market, borrowCapMantissa, 'borrowCapMantissa');

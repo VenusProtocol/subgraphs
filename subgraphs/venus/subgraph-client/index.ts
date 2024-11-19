@@ -38,7 +38,7 @@ class SubgraphClient {
     const result = await this.query(ComptrollersDocument, {});
     // For convenience sake of not having to know the id/ address ahead of time
     // and because this subgraph only has one comptroller
-    return { comptroller: result.data.comptrollers[0] };
+    return { comptroller: result.comptrollers[0] };
   }
 
   async getMarkets() {
@@ -65,35 +65,41 @@ class SubgraphClient {
   }
 
   async getAccountVTokensWithSupplyByMarketId({
-    first,
-    skip,
+    page,
     marketId,
   }: {
     marketId: string;
-    first: number;
-    skip: number;
+    page: number;
   }): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
+    const first = 100;
     const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, {
-      first: first as unknown as string,
-      skip: skip as unknown as string,
+      first,
+      skip: first * page,
       marketId,
+    } as unknown as {
+      marketId: string;
+      first: string;
+      skip: string;
     });
     return result.data;
   }
 
   async getAccountVTokensWithBorrowByMarketId({
-    first,
-    skip,
+    page,
     marketId,
   }: {
     marketId: string;
-    first: number;
-    skip: number;
+    page: number;
   }): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
+    const first = 100;
     const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, {
-      first: first as unknown as string,
-      skip: skip as unknown as string,
+      first,
+      skip: first * page,
       marketId,
+    } as unknown as {
+      marketId: string;
+      first: string;
+      skip: string;
     });
     return result.data;
   }
