@@ -43,7 +43,7 @@ class SubgraphClient {
 
   async getPools(): Promise<PoolsQuery> {
     const result = await this.query(PoolsDocument, {});
-    return result;
+    return result.data;
   }
 
   async getPool(id: string) {
