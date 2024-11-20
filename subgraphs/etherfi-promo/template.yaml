@@ -62,3 +62,32 @@ dataSources:
           handler: handleTransfer
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
+  - kind: ethereum/contract
+    name: veBTC
+    network: {{ network }}
+    source:
+      address: "{{ veBTCAddress }}"
+      abi: VToken
+      startBlock: {{ veBTCStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/vToken.ts
+      entities:
+        - SupplierAccount
+        - BorrowerAccount
+      abis:
+        - name: VToken
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/test/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: Mint(indexed address,uint256,uint256,uint256)
+          handler: handleMint
+        - event: Borrow(indexed address,uint256,uint256,uint256)
+          handler: handleBorrow
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransfer
+        - event: AccrueInterest(uint256,uint256,uint256,uint256)
+          handler: handleAccrueInterest
