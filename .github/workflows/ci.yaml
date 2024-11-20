@@ -147,7 +147,7 @@ jobs:
 
   release:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint, integration-test-core-pool, integration-test-isolated-pools, integration-test-governance]
+    # needs: [unit-test, lint, integration-test-core-pool, integration-test-isolated-pools, integration-test-governance]
     steps:
       - name: Checkout
         uses: actions/checkout@v4

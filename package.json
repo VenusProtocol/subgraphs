@@ -47,7 +47,6 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/npm": "^11.0.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typechain/ethers-v5": "^10.1.0",
     "@typechain/hardhat": "^6.1.2",
@@ -99,5 +98,8 @@
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {
     "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers"
+  },
+  "dependencies": {
+    "semantic-release-yarn": "^3.0.2"
   }
 }
