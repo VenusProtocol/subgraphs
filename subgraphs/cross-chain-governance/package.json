@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/cross-chain-governance-subgraph",
-  "version": "0.1.7",
+  "version": "1.0.0-pre.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
