@@ -79,9 +79,7 @@ describe('XVS Vault and Delegation', function () {
       } = await subgraphClient.getDelegateById(user2.address.toLowerCase());
 
       expect(delegate2.delegateCount).to.equal(1);
-      expect(delegate2.delegators).to.deep.equal([
-        { id: user1.address.toLowerCase(), __typename: 'Delegate' },
-      ]);
+      expect(delegate2.delegators).to.deep.equal([{ id: user1.address.toLowerCase(), __typename: 'Delegate' }]);
       expect(delegate2.stakedXvsMantissa).to.equal('0');
       expect(delegate2.totalVotesMantissa).to.equal(amount.toFixed());
     });
@@ -136,9 +134,7 @@ describe('XVS Vault and Delegation', function () {
       } = await subgraphClient.getDelegateById(user3.address.toLowerCase());
 
       expect(delegate3.delegateCount).to.equal(1);
-      expect(delegate3.delegators).to.deep.equal([
-        { id: user1.address.toLowerCase(), __typename: 'Delegate' },
-      ]);
+      expect(delegate3.delegators).to.deep.equal([{ id: user1.address.toLowerCase(), __typename: 'Delegate' }]);
       expect(delegate3.stakedXvsMantissa).to.equal(amount.toFixed());
       expect(delegate3.totalVotesMantissa).to.equal(amount.times(2).toFixed());
     });

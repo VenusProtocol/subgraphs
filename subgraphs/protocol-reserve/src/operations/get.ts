@@ -9,11 +9,7 @@ export function getTokenConverter(tokenConverterAddress: Address): TokenConverte
   return tokenConverter;
 }
 
-export function getTokenConverterConfig(
-  tokenConverterAddress: Address,
-  tokenAddressIn: Address,
-  tokenAddressOut: Address,
-): TokenConverterConfig | null {
+export function getTokenConverterConfig(tokenConverterAddress: Address, tokenAddressIn: Address, tokenAddressOut: Address): TokenConverterConfig | null {
   const id = getTokenConverterConfigId(tokenConverterAddress, tokenAddressIn, tokenAddressOut);
   const tokenConverterConfig = TokenConverterConfig.load(id);
   return tokenConverterConfig;

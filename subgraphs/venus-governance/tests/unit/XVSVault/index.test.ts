@@ -5,11 +5,7 @@ import { ProposalCreated } from '../../../generated/GovernorBravoDelegate/Govern
 import { DelegateChangedV2 } from '../../../generated/XVSVault/XVSVault';
 import { handleInitialization } from '../../../src/mappings/alpha';
 import { handleProposalCreated } from '../../../src/mappings/bravo';
-import {
-  handleDelegateChanged,
-  handleDeposit,
-  handleRequestedWithdrawal,
-} from '../../../src/mappings/xvsVault';
+import { handleDelegateChanged, handleDeposit, handleRequestedWithdrawal } from '../../../src/mappings/xvsVault';
 import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
 import { user1, user2, user3 } from '../../common/constants';
 import { createDelegateChangedEvent, createProposalCreatedEvent } from '../../common/events';
@@ -28,17 +24,7 @@ beforeEach(() => {
   /** setup test */
   handleInitialization(createMockBlock());
   getOrCreateDelegate(user1);
-  const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
-    1,
-    user1,
-    [],
-    [],
-    [],
-    [],
-    BigInt.fromI64(startBlock),
-    BigInt.fromI64(endBlock),
-    description,
-  );
+  const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(1, user1, [], [], [], [], BigInt.fromI64(startBlock), BigInt.fromI64(endBlock), description);
   handleProposalCreated(proposalCreatedEvent);
 });
 
@@ -62,10 +48,7 @@ describe('XVS Vault', () => {
     const user = Address.fromString('0x0000000000000000000000000000000000000404');
     const amount = '200000000000000000';
     /** run handler */
-    const withdrawRequestedEvent = createXvsWithdrawlRequestedEvent(
-      user,
-      BigInt.fromString(amount),
-    );
+    const withdrawRequestedEvent = createXvsWithdrawlRequestedEvent(user, BigInt.fromString(amount));
     // Expect delete not to exist
     assert.entityCount('Delegate', 2);
 
@@ -80,10 +63,7 @@ describe('XVS Vault', () => {
     const user = Address.fromString('0x0000000000000000000000000000000000000404');
     const amount = '800000000000000000';
     /** run handler */
-    const withdrawRequestedEvent = createXvsWithdrawlRequestedEvent(
-      user,
-      BigInt.fromString(amount),
-    );
+    const withdrawRequestedEvent = createXvsWithdrawlRequestedEvent(user, BigInt.fromString(amount));
     // Expect delete not to exist
     assert.entityCount('Delegate', 2);
 
@@ -98,11 +78,7 @@ describe('XVS Vault', () => {
     const fromDelegate = user2;
     const toDelegate = user3;
     /** run handler */
-    const delegateChangedEvent = createDelegateChangedEvent<DelegateChangedV2>(
-      delegator,
-      fromDelegate,
-      toDelegate,
-    );
+    const delegateChangedEvent = createDelegateChangedEvent<DelegateChangedV2>(delegator, fromDelegate, toDelegate);
     handleDelegateChanged(delegateChangedEvent);
     // OldDelegate
     const assertOldDelegateDocument = (key: string, value: string): void => {

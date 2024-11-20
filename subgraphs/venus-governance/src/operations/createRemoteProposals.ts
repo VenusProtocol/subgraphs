@@ -22,50 +22,41 @@ const createRemoteProposals = (event: ProposalCreatedV2): void => {
   const calldatas = event.params.calldatas;
   const sourceProposalId = event.params.id;
 
-  signatures.reduce<RemoteCommandMap>((acc, curr, idx) => {
-    if (curr == 'execute(uint16,bytes,bytes,address)') {
-      const decoded = ethereum.decode(
-        '(uint16,bytes,bytes,address)',
-        DYNAMIC_TUPLE_BYTES_PREFIX.concat(acc.calldatas[idx]),
-      )!;
-      const layerZeroChainId = decoded.toTuple()[0].toI32();
-      const payload = decoded.toTuple()[1].toBytes();
-      const payloadDecoded = ethereum
-        .decode(
-          '(address[],uint256[],string[],bytes[],uint8)',
-          DYNAMIC_TUPLE_BYTES_PREFIX.concat(payload),
-        )!
-        .toTuple();
+  signatures.reduce<RemoteCommandMap>(
+    (acc, curr, idx) => {
+      if (curr == 'execute(uint16,bytes,bytes,address)') {
+        const decoded = ethereum.decode('(uint16,bytes,bytes,address)', DYNAMIC_TUPLE_BYTES_PREFIX.concat(acc.calldatas[idx]))!;
+        const layerZeroChainId = decoded.toTuple()[0].toI32();
+        const payload = decoded.toTuple()[1].toBytes();
+        const payloadDecoded = ethereum.decode('(address[],uint256[],string[],bytes[],uint8)', DYNAMIC_TUPLE_BYTES_PREFIX.concat(payload))!.toTuple();
 
-      const remoteProposalId = Bytes.fromI32(layerZeroChainId).concat(
-        Bytes.fromByteArray(Bytes.fromBigInt(acc.sourceProposalId)),
-      );
-      const remoteProposal = new RemoteProposal(remoteProposalId);
-      const trustRemoteId = Bytes.fromI32(layerZeroChainId);
-      let trustedRemote = TrustedRemote.load(trustRemoteId);
-      if (!trustedRemote) {
-        trustedRemote = new TrustedRemote(trustRemoteId);
-        trustedRemote.layerZeroChainId = layerZeroChainId;
-        trustedRemote.address = nullAddress;
-        trustedRemote.active = false;
-        trustedRemote.save();
+        const remoteProposalId = Bytes.fromI32(layerZeroChainId).concat(Bytes.fromByteArray(Bytes.fromBigInt(acc.sourceProposalId)));
+        const remoteProposal = new RemoteProposal(remoteProposalId);
+        const trustRemoteId = Bytes.fromI32(layerZeroChainId);
+        let trustedRemote = TrustedRemote.load(trustRemoteId);
+        if (!trustedRemote) {
+          trustedRemote = new TrustedRemote(trustRemoteId);
+          trustedRemote.layerZeroChainId = layerZeroChainId;
+          trustedRemote.address = nullAddress;
+          trustedRemote.active = false;
+          trustedRemote.save();
+        }
+        remoteProposal.trustedRemote = trustRemoteId;
+        remoteProposal.sourceProposal = acc.sourceProposalId.toString();
+        const targets = payloadDecoded[0].toAddressArray().map<Bytes>((address: Address) => Bytes.fromHexString(address.toHexString()));
+
+        remoteProposal.targets = targets;
+        remoteProposal.values = payloadDecoded[1].toBigIntArray();
+        remoteProposal.signatures = payloadDecoded[2].toStringArray();
+        remoteProposal.calldatas = payloadDecoded[3].toBytesArray();
+        remoteProposal.type = payloadDecoded[4].toI32();
+        remoteProposal.save();
       }
-      remoteProposal.trustedRemote = trustRemoteId;
-      remoteProposal.sourceProposal = acc.sourceProposalId.toString();
-      const targets = payloadDecoded[0]
-        .toAddressArray()
-        .map<Bytes>((address: Address) => Bytes.fromHexString(address.toHexString()));
 
-      remoteProposal.targets = targets;
-      remoteProposal.values = payloadDecoded[1].toBigIntArray();
-      remoteProposal.signatures = payloadDecoded[2].toStringArray();
-      remoteProposal.calldatas = payloadDecoded[3].toBytesArray();
-      remoteProposal.type = payloadDecoded[4].toI32();
-      remoteProposal.save();
-    }
-
-    return acc;
-  }, new RemoteCommandMap(sourceProposalId, targets, calldatas));
+      return acc;
+    },
+    new RemoteCommandMap(sourceProposalId, targets, calldatas),
+  );
 };
 
 export default createRemoteProposals;

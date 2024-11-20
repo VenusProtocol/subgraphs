@@ -12,18 +12,7 @@ import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = [
-    'sepolia',
-    'ethereum',
-    'docker',
-    'opbnbMainnet',
-    'arbitrumSepolia',
-    'arbitrum',
-    'zkSyncSepolia',
-    'zkSync',
-    'optimismSepolia',
-    'optimism',
-  ] as const;
+  const supportedNetworks = ['sepolia', 'ethereum', 'docker', 'opbnbMainnet', 'arbitrumSepolia', 'arbitrum', 'zkSyncSepolia', 'zkSync', 'optimismSepolia', 'optimism'] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {
@@ -80,8 +69,7 @@ const main = () => {
       layerZeroChainId: 10231,
       omnichainGovernanceOwnerAddress: arbitrumSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '54236728',
-      omnichainExecutorOwnerAddress:
-        arbitrumSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainExecutorOwnerAddress: arbitrumSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '54235048',
       accessControlManagerAddress: arbitrumSepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '25350320',
@@ -121,8 +109,7 @@ const main = () => {
       layerZeroChainId: 10232,
       omnichainGovernanceOwnerAddress: optimismSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '18679072',
-      omnichainExecutorOwnerAddress:
-        optimismSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainExecutorOwnerAddress: optimismSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '18676643',
       accessControlManagerAddress: optimismSepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '14150248',

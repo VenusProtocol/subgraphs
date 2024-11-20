@@ -28,14 +28,4 @@ export const MEDIUM_RISK = 'MEDIUM_RISK';
 export const LOW_RISK = 'LOW_RISK';
 export const MINIMAL_RISK = 'MINIMAL_RISK';
 
-export const Actions = [
-  MINT,
-  REDEEM,
-  BORROW,
-  REPAY,
-  SEIZE,
-  LIQUIDATE,
-  TRANSFER,
-  ENTER_MARKET,
-  EXIT_MARKET,
-];
+export const Actions = [MINT, REDEEM, BORROW, REPAY, SEIZE, LIQUIDATE, TRANSFER, ENTER_MARKET, EXIT_MARKET];

@@ -2,24 +2,8 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
-import {
-  BadDebtIncreased,
-  Borrow,
-  LiquidateBorrow,
-  Mint,
-  Redeem,
-  RepayBorrow,
-  Transfer,
-} from '../../generated/PoolRegistry/VToken';
-import {
-  Account,
-  AccountPool,
-  AccountVTokenBadDebt,
-  Market,
-  Pool,
-  RewardsDistributor,
-  Transaction,
-} from '../../generated/schema';
+import { BadDebtIncreased, Borrow, LiquidateBorrow, Mint, Redeem, RepayBorrow, Transfer } from '../../generated/PoolRegistry/VToken';
+import { Account, AccountPool, AccountVTokenBadDebt, Market, Pool, RewardsDistributor, Transaction } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
@@ -27,15 +11,7 @@ import { VToken as VTokenContract } from '../../generated/templates/VToken/VToke
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
 import { poolRegistryAddress } from '../constants/addresses';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
-import {
-  getAccountId,
-  getAccountPoolId,
-  getAccountVTokenId,
-  getBadDebtEventId,
-  getPoolId,
-  getRewardsDistributorId,
-  getTransactionEventId,
-} from '../utilities/ids';
+import { getAccountId, getAccountPoolId, getAccountVTokenId, getBadDebtEventId, getPoolId, getRewardsDistributorId, getTransactionEventId } from '../utilities/ids';
 
 export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
@@ -80,11 +56,7 @@ export function createAccountPool(accountAddress: Address, poolAddress: Address)
   return accountPool;
 }
 
-export function createMarket(
-  comptroller: Address,
-  vTokenAddress: Address,
-  blockTimestamp: BigInt,
-): Market {
+export function createMarket(comptroller: Address, vTokenAddress: Address, blockTimestamp: BigInt): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
@@ -110,9 +82,7 @@ export function createMarket(
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
   market.cashMantissa = vTokenContract.getCash();
-  const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
-    vTokenContract.try_exchangeRateStored(),
-  );
+  const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(vTokenContract.try_exchangeRateStored());
 
   market.exchangeRateMantissa = exchangeRateMantissa;
 
@@ -140,12 +110,8 @@ export function createMarket(
   market.supplierCount = zeroBigInt32;
   market.borrowerCount = zeroBigInt32;
 
-  market.collateralFactorMantissa = poolComptroller
-    .markets(vTokenAddress)
-    .getCollateralFactorMantissa();
-  market.liquidationThresholdMantissa = poolComptroller
-    .markets(vTokenAddress)
-    .getLiquidationThresholdMantissa();
+  market.collateralFactorMantissa = poolComptroller.markets(vTokenAddress).getCollateralFactorMantissa();
+  market.liquidationThresholdMantissa = poolComptroller.markets(vTokenAddress).getLiquidationThresholdMantissa();
 
   market.save();
   return market;
@@ -235,10 +201,7 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.save();
 };
 
-export const createAccountVTokenBadDebt = (
-  marketAddress: Address,
-  event: BadDebtIncreased,
-): void => {
+export const createAccountVTokenBadDebt = (marketAddress: Address, event: BadDebtIncreased): void => {
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
   const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
@@ -250,10 +213,7 @@ export const createAccountVTokenBadDebt = (
   accountVTokenBadDebt.save();
 };
 
-export const createRewardDistributor = (
-  rewardsDistributorAddress: Address,
-  comptrollerAddress: Address,
-): void => {
+export const createRewardDistributor = (rewardsDistributorAddress: Address, comptrollerAddress: Address): void => {
   const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);

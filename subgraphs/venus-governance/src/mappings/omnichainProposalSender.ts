@@ -10,22 +10,12 @@ import {
   TrustedRemoteRemoved,
 } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
 import associateSourceAndRemoteProposals from '../operations/associateSourceAndRemoteProposals';
-import {
-  getOmnichainProposalSenderEntity,
-  getRemoteProposalStateTransaction,
-} from '../operations/get';
-import {
-  getOrCreateMaxDailyLimit,
-  getOrCreateTransaction,
-  getOrCreateTrustedRemote,
-} from '../operations/getOrCreate';
+import { getOmnichainProposalSenderEntity, getRemoteProposalStateTransaction } from '../operations/get';
+import { getOrCreateMaxDailyLimit, getOrCreateTransaction, getOrCreateTrustedRemote } from '../operations/getOrCreate';
 import { removeTrustedRemote } from '../operations/remove';
 
 export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
-  getOrCreateTrustedRemote(
-    event.params.remoteChainId,
-    Address.fromString(event.params.newRemoteAddress.toHexString().slice(0, 42)),
-  );
+  getOrCreateTrustedRemote(event.params.remoteChainId, Address.fromString(event.params.newRemoteAddress.toHexString().slice(0, 42)));
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
@@ -41,23 +31,17 @@ export function handleClearPayload(event: ClearPayload): void {
   // otherwise it execution was retried and successful
   const transaction = getOrCreateTransaction(event);
   if (event.receipt) {
-    const withdrawn = event.receipt!.logs.filter(v => {
-      const topic = Bytes.fromByteArray(
-        crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')),
-      );
+    const withdrawn = event.receipt!.logs.filter((v) => {
+      const topic = Bytes.fromByteArray(crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')));
       return v.topics.includes(topic);
     });
     if (withdrawn.length > 0) {
-      const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
-        event.params.proposalId,
-      );
+      const remoteProposalStateTransaction = getRemoteProposalStateTransaction(event.params.proposalId);
       remoteProposalStateTransaction.withdrawn = transaction.id;
       remoteProposalStateTransaction.save();
     }
   } else {
-    const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
-      event.params.proposalId,
-    );
+    const remoteProposalStateTransaction = getRemoteProposalStateTransaction(event.params.proposalId);
     remoteProposalStateTransaction.executed = transaction.id;
     remoteProposalStateTransaction.save();
   }

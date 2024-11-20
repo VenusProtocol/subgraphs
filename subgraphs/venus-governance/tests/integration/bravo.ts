@@ -23,10 +23,7 @@ describe('GovernorBravo', function () {
     omnichainProposalSender = await ethers.getContract('OmnichainProposalSender');
     normalTimelock = await ethers.getContract('NormalTimelock');
     const governorBravoDelegateV1 = await ethers.getContract('GovernorBravoDelegateV1');
-    governorBravo = await ethers.getContractAt(
-      'GovernorBravoDelegateV1',
-      governorBravoDelegator.address,
-    );
+    governorBravo = await ethers.getContractAt('GovernorBravoDelegateV1', governorBravoDelegator.address);
 
     // Setup first governor Bravo
     await governorBravoDelegator._setImplementation(governorBravoDelegateV1.address);
@@ -81,9 +78,7 @@ describe('GovernorBravo', function () {
       expect(proposal.id).to.be.equal('22');
       expect(proposal.description).to.be.equal('Bravo Test proposal');
       expect(proposal.executionEta).to.be.null;
-      expect(proposal.targets).to.deep.equal([
-        '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
-      ]);
+      expect(proposal.targets).to.deep.equal(['0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase()]);
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
@@ -180,9 +175,7 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(23);
 
-      const eta =
-        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await normalTimelock.delay());
+      const eta = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp + +(await normalTimelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -268,12 +261,7 @@ describe('GovernorBravo', function () {
 
       const timelocks = [normalTimelock.address, normalTimelock.address, normalTimelock.address];
 
-      await governorBravo.initialize(
-        xvsVault.address,
-        proposalConfigs,
-        timelocks,
-        signers[0].address,
-      );
+      await governorBravo.initialize(xvsVault.address, proposalConfigs, timelocks, signers[0].address);
       await waitForSubgraphToBeSynced(SYNC_DELAY);
       // Assert updated values
       ({
@@ -307,9 +295,7 @@ describe('GovernorBravo', function () {
       expect(proposal.id).to.be.equal('24');
       expect(proposal.description).to.be.equal('Test proposal 24');
       expect(proposal.executionEta).to.be.null;
-      expect(proposal.targets).to.deep.equal([
-        '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
-      ]);
+      expect(proposal.targets).to.deep.equal(['0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase()]);
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
@@ -417,9 +403,7 @@ describe('GovernorBravo', function () {
 
       await governorBravo.queue(25);
 
-      const eta =
-        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await normalTimelock.delay());
+      const eta = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp + +(await normalTimelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -461,35 +445,16 @@ describe('GovernorBravo', function () {
       const user4 = signers[4];
       const layerZeroChainId = 10102;
       const proposalType = 0;
-      const payload26 = await makePayload(
-        [normalTimelock.address],
-        [0],
-        ['setDelay(uint256)'],
-        [ethers.utils.defaultAbiCoder.encode(['uint256'], [2500])],
-        proposalType,
-      );
+      const payload26 = await makePayload([normalTimelock.address], [0], ['setDelay(uint256)'], [ethers.utils.defaultAbiCoder.encode(['uint256'], [2500])], proposalType);
       const proposalId = +(await omnichainProposalSender.proposalCount()) + 1;
       const adapterParams = ethers.utils.solidityPack(['uint16', 'uint256'], [1, 500000]);
-      const payloadWithIdEncoded = ethers.utils.defaultAbiCoder.encode(
-        ['bytes', 'uint256'],
-        [payload26, proposalId],
-      );
-      const nativeFee = await omnichainProposalSender.estimateFees(
-        layerZeroChainId,
-        payloadWithIdEncoded,
-        false,
-        adapterParams,
-      );
+      const payloadWithIdEncoded = ethers.utils.defaultAbiCoder.encode(['bytes', 'uint256'], [payload26, proposalId]);
+      const nativeFee = await omnichainProposalSender.estimateFees(layerZeroChainId, payloadWithIdEncoded, false, adapterParams);
       const proposal26 = [
         [omnichainProposalSender.address], // targets
         [ethers.utils.parseEther((nativeFee[0] / 1e18 + 0.00001).toString())], // values
         ['execute(uint16,bytes,bytes,address)'], // signatures
-        [
-          ethers.utils.defaultAbiCoder.encode(
-            ['uint16', 'bytes', 'bytes', 'address'],
-            [layerZeroChainId, payload26, '0x', ethers.constants.AddressZero],
-          ),
-        ], // params
+        [ethers.utils.defaultAbiCoder.encode(['uint16', 'bytes', 'bytes', 'address'], [layerZeroChainId, payload26, '0x', ethers.constants.AddressZero])], // params
         'Test proposal 26', // description
         0, // route
       ];
@@ -505,16 +470,10 @@ describe('GovernorBravo', function () {
       expect(proposal26Created.remoteProposals.length).to.equal(1);
       expect(proposal26Created.remoteProposals[0].proposalId).to.equal(null);
       expect(proposal26Created.remoteProposals[0].trustedRemote.layerZeroChainId).to.equal(10102);
-      expect(proposal26Created.remoteProposals[0].targets).to.have.same.members([
-        normalTimelock.address.toLowerCase(),
-      ]);
+      expect(proposal26Created.remoteProposals[0].targets).to.have.same.members([normalTimelock.address.toLowerCase()]);
       expect(proposal26Created.remoteProposals[0].values).to.have.same.members(['0']);
-      expect(proposal26Created.remoteProposals[0].signatures).to.have.same.members([
-        'setDelay(uint256)',
-      ]);
-      expect(proposal26Created.remoteProposals[0].calldatas).to.have.same.members([
-        ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase(),
-      ]);
+      expect(proposal26Created.remoteProposals[0].signatures).to.have.same.members(['setDelay(uint256)']);
+      expect(proposal26Created.remoteProposals[0].calldatas).to.have.same.members([ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase()]);
       expect(proposal26Created.remoteProposals[0].type).to.equal(0);
       expect(proposal26Created.remoteProposals[0].stateTransactions).to.equal(null);
 
@@ -531,9 +490,7 @@ describe('GovernorBravo', function () {
       await governorBravo.connect(user3).queue('26');
 
       const eta26 = +(await governorBravo.proposals('26')).eta;
-      while (
-        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp <= eta26
-      ) {
+      while ((await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp <= eta26) {
         await mine(1);
       }
       const tx = await governorBravo.connect(user3).execute('26');
@@ -544,9 +501,7 @@ describe('GovernorBravo', function () {
         data: { proposal: proposal26Indexed },
       } = await subgraphClient.getProposalById('26');
 
-      expect(proposal26Indexed.remoteProposals[0].stateTransactions.stored.txHash).to.equal(
-        tx.hash,
-      );
+      expect(proposal26Indexed.remoteProposals[0].stateTransactions.stored.txHash).to.equal(tx.hash);
 
       // Check execution
       const {
@@ -558,9 +513,7 @@ describe('GovernorBravo', function () {
       expect(remoteProposal.targets[0]).to.be.equal(normalTimelock.address.toLowerCase());
       expect(remoteProposal.values[0]).to.be.equal('0');
       expect(remoteProposal.signatures[0]).to.be.equal('setDelay(uint256)');
-      expect(remoteProposal.calldatas[0]).to.be.equal(
-        ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase(),
-      );
+      expect(remoteProposal.calldatas[0]).to.be.equal(ethers.utils.defaultAbiCoder.encode(['uint256'], [2500]).toLowerCase());
       expect(remoteProposal.type).to.be.equal(0);
       expect(remoteProposal.stateTransactions.stored.txHash).to.equal(tx.hash);
     });

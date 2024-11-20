@@ -1,12 +1,7 @@
 import { Address } from '@graphprotocol/graph-ts';
 
 import { ERC20 } from '../../generated/RiskFundConverter/ERC20';
-import {
-  ConverterNetwork,
-  Token,
-  TokenConverter,
-  TokenConverterConfig,
-} from '../../generated/schema';
+import { ConverterNetwork, Token, TokenConverter, TokenConverterConfig } from '../../generated/schema';
 import { getAssetId, getConverterNetworkId } from '../utilities/ids';
 import { createTokenConverter, createTokenConverterConfig } from './create';
 import { getTokenConverter, getTokenConverterConfig } from './get';
@@ -43,23 +38,11 @@ export function getOrCreateConverterNetwork(converterNetworkAddress: Address): C
   return converterNetwork;
 }
 
-export function getOrCreateTokenConverterConfig(
-  tokenConverterAddress: Address,
-  tokenAddressIn: Address,
-  tokenAddressOut: Address,
-): TokenConverterConfig {
-  let tokenConverterConfig = getTokenConverterConfig(
-    tokenConverterAddress,
-    tokenAddressIn,
-    tokenAddressOut,
-  );
+export function getOrCreateTokenConverterConfig(tokenConverterAddress: Address, tokenAddressIn: Address, tokenAddressOut: Address): TokenConverterConfig {
+  let tokenConverterConfig = getTokenConverterConfig(tokenConverterAddress, tokenAddressIn, tokenAddressOut);
 
   if (!tokenConverterConfig) {
-    tokenConverterConfig = createTokenConverterConfig(
-      tokenConverterAddress,
-      tokenAddressIn,
-      tokenAddressOut,
-    );
+    tokenConverterConfig = createTokenConverterConfig(tokenConverterAddress, tokenAddressIn, tokenAddressOut);
   }
   return tokenConverterConfig;
 }

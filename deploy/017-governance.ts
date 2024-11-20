@@ -77,9 +77,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   });
   const governorAlpha2Signer = await ethers.getSigner(governorAlpha2Timelock.address);
 
-  await governorAlpha2Timelock
-    .connect(governorAlpha2Signer)
-    .setPendingAdmin(governorAlpha2.address);
+  await governorAlpha2Timelock.connect(governorAlpha2Signer).setPendingAdmin(governorAlpha2.address);
 
   await network.provider.request({
     method: 'hardhat_stopImpersonatingAccount',
@@ -111,16 +109,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await deploy('GovernorBravoDelegator', {
     from: deployer,
-    args: [
-      timelock.address,
-      xvsVault.address,
-      deployer,
-      governorBravoDelegateV1Deployment.address,
-      minVotingPeriod.toString(),
-      minVotingDelay.toString(),
-      minProposalThreshold.toString(),
-      deployer,
-    ],
+    args: [timelock.address, xvsVault.address, deployer, governorBravoDelegateV1Deployment.address, minVotingPeriod.toString(), minVotingDelay.toString(), minProposalThreshold.toString(), deployer],
     log: true,
     autoMine: true,
   });

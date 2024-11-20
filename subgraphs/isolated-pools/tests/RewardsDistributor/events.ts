@@ -6,11 +6,7 @@ import {
   RewardTokenSupplySpeedUpdated as RewardTokenSupplySpeedUpdatedEvent,
 } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 
-export const createRewardTokenBorrowSpeedUpdatedEvent = (
-  rewardsDistributorAddress: Address,
-  vTokenAddress: Address,
-  newSpeed: BigInt,
-): RewardTokenBorrowSpeedUpdatedEvent => {
+export const createRewardTokenBorrowSpeedUpdatedEvent = (rewardsDistributorAddress: Address, vTokenAddress: Address, newSpeed: BigInt): RewardTokenBorrowSpeedUpdatedEvent => {
   const event = changetype<RewardTokenBorrowSpeedUpdatedEvent>(newMockEvent());
   event.address = rewardsDistributorAddress;
   event.parameters = [];
@@ -24,11 +20,7 @@ export const createRewardTokenBorrowSpeedUpdatedEvent = (
   return event;
 };
 
-export const createRewardTokenSupplySpeedUpdatedEvent = (
-  rewardsDistributorAddress: Address,
-  vTokenAddress: Address,
-  newSpeed: BigInt,
-): RewardTokenSupplySpeedUpdatedEvent => {
+export const createRewardTokenSupplySpeedUpdatedEvent = (rewardsDistributorAddress: Address, vTokenAddress: Address, newSpeed: BigInt): RewardTokenSupplySpeedUpdatedEvent => {
   const event = changetype<RewardTokenSupplySpeedUpdatedEvent>(newMockEvent());
   event.address = rewardsDistributorAddress;
   event.parameters = [];

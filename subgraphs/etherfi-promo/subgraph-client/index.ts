@@ -21,11 +21,7 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccounts(
-    blockNumber: number,
-    token: string,
-    tokenId: string,
-  ): Promise<OperationResult<AccountsQuery>> {
+  async getAccounts(blockNumber: number, token: string, tokenId: string): Promise<OperationResult<AccountsQuery>> {
     const result = await this.query(AccountsDocument, {
       blockNumber,
       token: token.toLowerCase(),
@@ -35,6 +31,4 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://127.0.0.1:8000/subgraphs/name/venusprotocol/etherfi-promo',
-);
+export default new SubgraphClient('http://127.0.0.1:8000/subgraphs/name/venusprotocol/etherfi-promo');

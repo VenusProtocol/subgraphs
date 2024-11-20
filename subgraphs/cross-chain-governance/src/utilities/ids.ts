@@ -10,14 +10,7 @@ export const getGovernanceRouteId = (routeIndex: i32): string => routeIndex.toSt
 
 export const getFailedPayloadId = (nonce: BigInt): string => nonce.toString();
 
-export const getDestinationChainId = (destinationChainId: i32): Bytes =>
-  Bytes.fromI32(destinationChainId);
+export const getDestinationChainId = (destinationChainId: i32): Bytes => Bytes.fromI32(destinationChainId);
 
-export const getPermissionId = (
-  accountAddress: Address,
-  contractAddress: Address,
-  functionSig: string,
-): Bytes =>
-  accountAddress
-    .concat(contractAddress)
-    .concat(Bytes.fromByteArray(ByteArray.fromUTF8(functionSig)));
+export const getPermissionId = (accountAddress: Address, contractAddress: Address, functionSig: string): Bytes =>
+  accountAddress.concat(contractAddress).concat(Bytes.fromByteArray(ByteArray.fromUTF8(functionSig)));

@@ -84,27 +84,17 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokensWithSupplyByMarketId(
-    marketId: string,
-  ): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
+  async getAccountVTokensWithSupplyByMarketId(marketId: string): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
     const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, { marketId });
     return result.data;
   }
 
-  async getAccountVTokensWithBorrowByMarketId(
-    marketId: string,
-  ): Promise<AccountVTokensWithBorrowByMarketId> {
+  async getAccountVTokensWithBorrowByMarketId(marketId: string): Promise<AccountVTokensWithBorrowByMarketId> {
     const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, { marketId });
     return result.data;
   }
 
-  async getAccountVTokenByAccountAndMarket({
-    accountId,
-    marketId,
-  }: {
-    accountId: string;
-    marketId: string;
-  }): Promise<AccountVTokenByAccountAndMarketQuery> {
+  async getAccountVTokenByAccountAndMarket({ accountId, marketId }: { accountId: string; marketId: string }): Promise<AccountVTokenByAccountAndMarketQuery> {
     const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
       id: `${marketId}${accountId.replace('0x', '')}`,
     });
@@ -117,6 +107,4 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
-);
+export default new SubgraphClient('http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools');

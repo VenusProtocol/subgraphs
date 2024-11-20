@@ -1,19 +1,12 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { Account, AccountVToken, Market } from '../../generated/schema';
-import {
-  VToken as VTokenTemplate,
-  VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
-} from '../../generated/templates';
+import { VToken as VTokenTemplate, VTokenUpdatedEvents as VTokenUpdatedEventsTemplate } from '../../generated/templates';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
-import {
-  getUnderlyingPrice,
-  valueOrNotAvailableAddressIfReverted,
-  valueOrNotAvailableIntIfReverted,
-} from '../utilities';
+import { getUnderlyingPrice, valueOrNotAvailableAddressIfReverted, valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getAccountVTokenId } from '../utilities/ids';
 import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
@@ -48,18 +41,9 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       market.underlyingSymbol = underlyingContract.symbol();
     }
 
-    market.interestRateModelAddress = valueOrNotAvailableAddressIfReverted(
-      vTokenContract.try_interestRateModel(),
-      'vBEP20 try_interestRateModel()',
-    );
-    market.reserveFactor = valueOrNotAvailableIntIfReverted(
-      vTokenContract.try_reserveFactorMantissa(),
-      'vBEP20 try_reserveFactorMantissa()',
-    );
-    market.lastUnderlyingPriceCents =
-      market.symbol == 'vBNB'
-        ? zeroBigInt32
-        : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+    market.interestRateModelAddress = valueOrNotAvailableAddressIfReverted(vTokenContract.try_interestRateModel(), 'vBEP20 try_interestRateModel()');
+    market.reserveFactor = valueOrNotAvailableIntIfReverted(vTokenContract.try_reserveFactorMantissa(), 'vBEP20 try_reserveFactorMantissa()');
+    market.lastUnderlyingPriceCents = market.symbol == 'vBNB' ? zeroBigInt32 : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
@@ -103,10 +87,7 @@ export class GetOrCreateAccountVTokenReturn {
   created: boolean;
 }
 
-export function getOrCreateAccountVToken(
-  marketId: Address,
-  accountId: Address,
-): GetOrCreateAccountVTokenReturn {
+export function getOrCreateAccountVToken(marketId: Address, accountId: Address): GetOrCreateAccountVTokenReturn {
   const accountVTokenId = getAccountVTokenId(marketId, accountId);
   let accountVToken = AccountVToken.load(accountVTokenId);
   let created = false;

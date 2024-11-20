@@ -25,14 +25,4 @@ export const oneBigInt = BigInt.fromString('1');
 
 export const DUST_THRESHOLD = BigInt.fromString('10');
 
-export const Actions = [
-  'MINT',
-  'REDEEM',
-  'BORROW',
-  'REPAY',
-  'SEIZE',
-  'LIQUIDATE',
-  'TRANSFER',
-  'ENTER_MARKET',
-  'EXIT_MARKET',
-];
+export const Actions = ['MINT', 'REDEEM', 'BORROW', 'REPAY', 'SEIZE', 'LIQUIDATE', 'TRANSFER', 'ENTER_MARKET', 'EXIT_MARKET'];

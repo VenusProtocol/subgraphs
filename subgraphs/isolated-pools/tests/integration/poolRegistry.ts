@@ -25,18 +25,10 @@ describe('Pool Registry', function () {
     // Permissions for easy testing
     accessControlManager = await ethers.getContract('AccessControlManager');
 
-    let tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'setPoolName(address,string)',
-      root.address,
-    );
+    let tx = await accessControlManager.giveCallPermission(ethers.constants.AddressZero, 'setPoolName(address,string)', root.address);
     await tx.wait();
 
-    tx = await accessControlManager.giveCallPermission(
-      ethers.constants.AddressZero,
-      'updatePoolMetadata(address,VenusPoolMetaData)',
-      root.address,
-    );
+    tx = await accessControlManager.giveCallPermission(ethers.constants.AddressZero, 'updatePoolMetadata(address,VenusPoolMetaData)', root.address);
     await tx.wait();
   });
 
@@ -46,7 +38,7 @@ describe('Pool Registry', function () {
 
     expect(pools.length).to.equal(2);
 
-    pools.forEach(async pool => {
+    pools.forEach(async (pool) => {
       const onChainPool = await poolLens.getPoolByComptroller(pool.id);
       expect(pool.id).to.be.equal(onChainPool?.comptroller);
       expect(pool.name).to.be.equal(onChainPool?.name);
@@ -63,23 +55,14 @@ describe('Pool Registry', function () {
 
   it('updates and returns metadata from the pool', async function () {
     const pools = await poolLens.getAllPools(poolRegistry.address);
-    const { data: dataBeforeUpdate } = await subgraphClient.getPool(
-      pools[1].comptroller.toLowerCase(),
-    );
+    const { data: dataBeforeUpdate } = await subgraphClient.getPool(pools[1].comptroller.toLowerCase());
     const { pool: poolBeforeUpdate } = dataBeforeUpdate!;
-    const onChainPool = await poolLens.getPoolByComptroller(
-      poolRegistry.address,
-      poolBeforeUpdate.id,
-    );
+    const onChainPool = await poolLens.getPoolByComptroller(poolRegistry.address, poolBeforeUpdate.id);
     expect(poolBeforeUpdate.category).to.equal(onChainPool.category);
     expect(poolBeforeUpdate.logoUrl).to.equal('');
     expect(poolBeforeUpdate.description).to.equal(onChainPool.description);
 
-    const tx = await poolRegistry.updatePoolMetadata(pools[1].comptroller, [
-      'Games',
-      logoUrl,
-      description,
-    ]);
+    const tx = await poolRegistry.updatePoolMetadata(pools[1].comptroller, ['Games', logoUrl, description]);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 

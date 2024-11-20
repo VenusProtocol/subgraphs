@@ -35,17 +35,11 @@ export const createMarketUnlisted = (vTokenAddress: Address): MarketUnlistedEven
   return event;
 };
 
-export const createMarketAddedEvent = (
-  comptrollerAddress: Address,
-  vTokenAddress: Address,
-): MarketAddedEvent => {
+export const createMarketAddedEvent = (comptrollerAddress: Address, vTokenAddress: Address): MarketAddedEvent => {
   const event = changetype<MarketAddedEvent>(newMockEvent());
 
   event.parameters = [];
-  const comptrollerParam = new ethereum.EventParam(
-    'comptroller',
-    ethereum.Value.fromAddress(comptrollerAddress),
-  );
+  const comptrollerParam = new ethereum.EventParam('comptroller', ethereum.Value.fromAddress(comptrollerAddress));
   event.parameters.push(comptrollerParam);
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
@@ -53,71 +47,45 @@ export const createMarketAddedEvent = (
   return event;
 };
 
-export const createMarketEnteredEvent = (
-  vTokenAddress: Address,
-  accountAddress: Address,
-): MarketEnteredEvent => {
+export const createMarketEnteredEvent = (vTokenAddress: Address, accountAddress: Address): MarketEnteredEvent => {
   const event = changetype<MarketEnteredEvent>(newMockEvent());
 
   event.parameters = [];
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
-  const accountAddressParam = new ethereum.EventParam(
-    'account',
-    ethereum.Value.fromAddress(accountAddress),
-  );
+  const accountAddressParam = new ethereum.EventParam('account', ethereum.Value.fromAddress(accountAddress));
   event.parameters.push(accountAddressParam);
 
   return event;
 };
 
-export const createMarketExitedEvent = (
-  vTokenAddress: Address,
-  accountAddress: Address,
-): MarketExitedEvent => {
+export const createMarketExitedEvent = (vTokenAddress: Address, accountAddress: Address): MarketExitedEvent => {
   const event = changetype<MarketExitedEvent>(newMockEvent());
 
   event.parameters = [];
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
-  const accountAddressParam = new ethereum.EventParam(
-    'account',
-    ethereum.Value.fromAddress(accountAddress),
-  );
+  const accountAddressParam = new ethereum.EventParam('account', ethereum.Value.fromAddress(accountAddress));
   event.parameters.push(accountAddressParam);
 
   return event;
 };
 
-export const createNewCloseFactorEvent = (
-  poolAddress: Address,
-  oldCloseFactor: BigInt,
-  newCloseFactor: BigInt,
-): NewCloseFactorEvent => {
+export const createNewCloseFactorEvent = (poolAddress: Address, oldCloseFactor: BigInt, newCloseFactor: BigInt): NewCloseFactorEvent => {
   const event = changetype<NewCloseFactorEvent>(newMockEvent());
   event.address = poolAddress;
   event.parameters = [];
 
-  const oldCloseFactorMantissa = new ethereum.EventParam(
-    'oldCloseFactorMantissa',
-    ethereum.Value.fromSignedBigInt(oldCloseFactor),
-  );
+  const oldCloseFactorMantissa = new ethereum.EventParam('oldCloseFactorMantissa', ethereum.Value.fromSignedBigInt(oldCloseFactor));
   event.parameters.push(oldCloseFactorMantissa);
 
-  const newCloseFactorMantissa = new ethereum.EventParam(
-    'newCloseFactorMantissa',
-    ethereum.Value.fromSignedBigInt(newCloseFactor),
-  );
+  const newCloseFactorMantissa = new ethereum.EventParam('newCloseFactorMantissa', ethereum.Value.fromSignedBigInt(newCloseFactor));
   event.parameters.push(newCloseFactorMantissa);
 
   return event;
 };
 
-export const createNewCollateralFactorEvent = (
-  vTokenAddress: Address,
-  oldCollateralFactorMantissa: BigInt,
-  newCollateralFactorMantissa: BigInt,
-): NewCollateralFactorEvent => {
+export const createNewCollateralFactorEvent = (vTokenAddress: Address, oldCollateralFactorMantissa: BigInt, newCollateralFactorMantissa: BigInt): NewCollateralFactorEvent => {
   const event = changetype<NewCollateralFactorEvent>(newMockEvent());
 
   event.parameters = [];
@@ -125,74 +93,44 @@ export const createNewCollateralFactorEvent = (
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const oldCollateralFactorMantissaParam = new ethereum.EventParam(
-    'oldCollateralFactorMantissa',
-    ethereum.Value.fromSignedBigInt(oldCollateralFactorMantissa),
-  );
+  const oldCollateralFactorMantissaParam = new ethereum.EventParam('oldCollateralFactorMantissa', ethereum.Value.fromSignedBigInt(oldCollateralFactorMantissa));
   event.parameters.push(oldCollateralFactorMantissaParam);
 
-  const newCollateralFactorMantissaParam = new ethereum.EventParam(
-    'newCollateralFactorMantissa',
-    ethereum.Value.fromSignedBigInt(newCollateralFactorMantissa),
-  );
+  const newCollateralFactorMantissaParam = new ethereum.EventParam('newCollateralFactorMantissa', ethereum.Value.fromSignedBigInt(newCollateralFactorMantissa));
   event.parameters.push(newCollateralFactorMantissaParam);
 
   return event;
 };
 
-export const createNewLiquidationIncentiveEvent = (
-  poolAddress: Address,
-  oldLiquidationIncentiveMantissa: BigInt,
-  newLiquidationIncentiveMantissa: BigInt,
-): NewLiquidationIncentiveEvent => {
+export const createNewLiquidationIncentiveEvent = (poolAddress: Address, oldLiquidationIncentiveMantissa: BigInt, newLiquidationIncentiveMantissa: BigInt): NewLiquidationIncentiveEvent => {
   const event = changetype<NewLiquidationIncentiveEvent>(newMockEvent());
   event.address = poolAddress;
   event.parameters = [];
 
-  const oldLiquidationIncentiveMantissaParam = new ethereum.EventParam(
-    'oldLiquidationIncentiveMantissa',
-    ethereum.Value.fromSignedBigInt(oldLiquidationIncentiveMantissa),
-  );
+  const oldLiquidationIncentiveMantissaParam = new ethereum.EventParam('oldLiquidationIncentiveMantissa', ethereum.Value.fromSignedBigInt(oldLiquidationIncentiveMantissa));
   event.parameters.push(oldLiquidationIncentiveMantissaParam);
 
-  const newLiquidationIncentiveMantissaParam = new ethereum.EventParam(
-    'newLiquidationIncentiveMantissa',
-    ethereum.Value.fromSignedBigInt(newLiquidationIncentiveMantissa),
-  );
+  const newLiquidationIncentiveMantissaParam = new ethereum.EventParam('newLiquidationIncentiveMantissa', ethereum.Value.fromSignedBigInt(newLiquidationIncentiveMantissa));
   event.parameters.push(newLiquidationIncentiveMantissaParam);
 
   return event;
 };
 
-export const createNewPriceOracleEvent = (
-  comptrollerAddress: Address,
-  oldPriceOracle: Address,
-  newPriceOracle: Address,
-): NewPriceOracleEvent => {
+export const createNewPriceOracleEvent = (comptrollerAddress: Address, oldPriceOracle: Address, newPriceOracle: Address): NewPriceOracleEvent => {
   const event = changetype<NewPriceOracleEvent>(newMockEvent());
   event.address = comptrollerAddress;
   event.parameters = [];
 
-  const oldPriceOracleParam = new ethereum.EventParam(
-    'oldPriceOracle',
-    ethereum.Value.fromAddress(oldPriceOracle),
-  );
+  const oldPriceOracleParam = new ethereum.EventParam('oldPriceOracle', ethereum.Value.fromAddress(oldPriceOracle));
   event.parameters.push(oldPriceOracleParam);
 
-  const newPriceOracleParam = new ethereum.EventParam(
-    'newPriceOracle',
-    ethereum.Value.fromAddress(newPriceOracle),
-  );
+  const newPriceOracleParam = new ethereum.EventParam('newPriceOracle', ethereum.Value.fromAddress(newPriceOracle));
   event.parameters.push(newPriceOracleParam);
 
   return event;
 };
 
-export const createActionPausedMarketEvent = (
-  vTokenAddress: Address,
-  action: i32,
-  pauseState: boolean,
-): ActionPausedMarketEvent => {
+export const createActionPausedMarketEvent = (vTokenAddress: Address, action: i32, pauseState: boolean): ActionPausedMarketEvent => {
   const event = changetype<ActionPausedMarketEvent>(newMockEvent());
   event.parameters = [];
 
@@ -202,39 +140,26 @@ export const createActionPausedMarketEvent = (
   const actionParam = new ethereum.EventParam('action', ethereum.Value.fromI32(action));
   event.parameters.push(actionParam);
 
-  const pauseStateParam = new ethereum.EventParam(
-    'pauseState',
-    ethereum.Value.fromBoolean(pauseState),
-  );
+  const pauseStateParam = new ethereum.EventParam('pauseState', ethereum.Value.fromBoolean(pauseState));
   event.parameters.push(pauseStateParam);
 
   return event;
 };
 
-export const createNewBorrowCapEvent = (
-  vTokenAddress: Address,
-  newBorrowCap: BigInt,
-): NewBorrowCapEvent => {
+export const createNewBorrowCapEvent = (vTokenAddress: Address, newBorrowCap: BigInt): NewBorrowCapEvent => {
   const event = changetype<NewBorrowCapEvent>(newMockEvent());
   event.parameters = [];
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const newBorrowCapParam = new ethereum.EventParam(
-    'newBorrowCap',
-    ethereum.Value.fromUnsignedBigInt(newBorrowCap),
-  );
+  const newBorrowCapParam = new ethereum.EventParam('newBorrowCap', ethereum.Value.fromUnsignedBigInt(newBorrowCap));
   event.parameters.push(newBorrowCapParam);
 
   return event;
 };
 
-export const createNewMinLiquidatableCollateralEvent = (
-  comptrollerAddress: Address,
-  vTokenAddress: Address,
-  newMinLiquidatableCollateral: BigInt,
-): NewMinLiquidatableCollateralEvent => {
+export const createNewMinLiquidatableCollateralEvent = (comptrollerAddress: Address, vTokenAddress: Address, newMinLiquidatableCollateral: BigInt): NewMinLiquidatableCollateralEvent => {
   const event = changetype<NewMinLiquidatableCollateralEvent>(newMockEvent());
   event.parameters = [];
   event.address = comptrollerAddress;
@@ -242,73 +167,48 @@ export const createNewMinLiquidatableCollateralEvent = (
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const newMinLiquidatableCollateralParam = new ethereum.EventParam(
-    'newMinLiquidatableCollateral',
-    ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral),
-  );
+  const newMinLiquidatableCollateralParam = new ethereum.EventParam('newMinLiquidatableCollateral', ethereum.Value.fromUnsignedBigInt(newMinLiquidatableCollateral));
   event.parameters.push(newMinLiquidatableCollateralParam);
 
   return event;
 };
 
-export const createNewLiquidationThresholdEvent = (
-  vTokenAddress: Address,
-  oldLiquidationThresholdMantissa: BigInt,
-  newLiquidationThresholdMantissa: BigInt,
-): NewLiquidationThresholdEvent => {
+export const createNewLiquidationThresholdEvent = (vTokenAddress: Address, oldLiquidationThresholdMantissa: BigInt, newLiquidationThresholdMantissa: BigInt): NewLiquidationThresholdEvent => {
   const event = changetype<NewLiquidationThresholdEvent>(newMockEvent());
   event.parameters = [];
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const oldLiquidationThresholdParam = new ethereum.EventParam(
-    'oldLiquidationThresholdMantissa',
-    ethereum.Value.fromUnsignedBigInt(oldLiquidationThresholdMantissa),
-  );
+  const oldLiquidationThresholdParam = new ethereum.EventParam('oldLiquidationThresholdMantissa', ethereum.Value.fromUnsignedBigInt(oldLiquidationThresholdMantissa));
   event.parameters.push(oldLiquidationThresholdParam);
 
-  const newLiquidationThresholdParam = new ethereum.EventParam(
-    'newLiquidationThresholdMantissa',
-    ethereum.Value.fromUnsignedBigInt(newLiquidationThresholdMantissa),
-  );
+  const newLiquidationThresholdParam = new ethereum.EventParam('newLiquidationThresholdMantissa', ethereum.Value.fromUnsignedBigInt(newLiquidationThresholdMantissa));
   event.parameters.push(newLiquidationThresholdParam);
 
   return event;
 };
 
-export const createNewSupplyCapEvent = (
-  vTokenAddress: Address,
-  newSupplyCap: BigInt,
-): NewSupplyCapEvent => {
+export const createNewSupplyCapEvent = (vTokenAddress: Address, newSupplyCap: BigInt): NewSupplyCapEvent => {
   const event = changetype<NewSupplyCapEvent>(newMockEvent());
   event.parameters = [];
 
   const vTokenParam = new ethereum.EventParam('vToken', ethereum.Value.fromAddress(vTokenAddress));
   event.parameters.push(vTokenParam);
 
-  const newSupplyCapParam = new ethereum.EventParam(
-    'newSupplyCap',
-    ethereum.Value.fromUnsignedBigInt(newSupplyCap),
-  );
+  const newSupplyCapParam = new ethereum.EventParam('newSupplyCap', ethereum.Value.fromUnsignedBigInt(newSupplyCap));
   event.parameters.push(newSupplyCapParam);
 
   return event;
 };
 
-export const createNewRewardsDistributor = (
-  comptrollerAddress: Address,
-  rewardsDistributor: Address,
-): NewRewardsDistributorEvent => {
+export const createNewRewardsDistributor = (comptrollerAddress: Address, rewardsDistributor: Address): NewRewardsDistributorEvent => {
   const event = changetype<NewRewardsDistributorEvent>(newMockEvent());
   event.address = comptrollerAddress;
 
   event.parameters = [];
 
-  const rewardsDistributorParam = new ethereum.EventParam(
-    'rewardsDistributor',
-    ethereum.Value.fromAddress(rewardsDistributor),
-  );
+  const rewardsDistributorParam = new ethereum.EventParam('rewardsDistributor', ethereum.Value.fromAddress(rewardsDistributor));
   event.parameters.push(rewardsDistributorParam);
 
   return event;

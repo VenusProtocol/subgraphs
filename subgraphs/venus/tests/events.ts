@@ -1,10 +1,7 @@
 import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import {
-  MarketListed as MarketListedEvent,
-  MarketUnlisted as MarketUnlistedEvent,
-} from '../generated/DiamondComptroller/Comptroller';
+import { MarketListed as MarketListedEvent, MarketUnlisted as MarketUnlistedEvent } from '../generated/DiamondComptroller/Comptroller';
 
 export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEvent => {
   const event = changetype<MarketListedEvent>(newMockEvent());

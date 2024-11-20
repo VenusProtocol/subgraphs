@@ -20,41 +20,27 @@ beforeAll(() => {
 
 describe('Converter Network', () => {
   test('should index adding token converter', () => {
-    const converterAddedEvent = createConverterAddedEvent(
-      converterNetworkAddress,
-      tokenConverter1Address,
-    );
+    const converterAddedEvent = createConverterAddedEvent(converterNetworkAddress, tokenConverter1Address);
 
     handleConverterAdded(converterAddedEvent);
 
     const converterNetworkId = getConverterNetworkId(converterNetworkAddress);
     const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    assert.fieldEquals(
-      'TokenConverter',
-      tokenConverterId,
-      'converterNetwork',
-      converterNetworkId.toHexString(),
-    );
+    assert.fieldEquals('TokenConverter', tokenConverterId, 'converterNetwork', converterNetworkId.toHexString());
   });
 
   test('should index removing token converter', () => {
     const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
     const converterNetworkId = getConverterNetworkId(converterNetworkAddress).toHexString();
-    const converterAddedEvent = createConverterAddedEvent(
-      converterNetworkAddress,
-      tokenConverter2Address,
-    );
+    const converterAddedEvent = createConverterAddedEvent(converterNetworkAddress, tokenConverter2Address);
 
     handleConverterAdded(converterAddedEvent);
 
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
     assert.fieldEquals('TokenConverter', tokenConverterId, 'converterNetwork', converterNetworkId);
 
-    const converterRemovedEvent = createConverterRemovedEvent(
-      converterNetworkAddress,
-      tokenConverter2Address,
-    );
+    const converterRemovedEvent = createConverterRemovedEvent(converterNetworkAddress, tokenConverter2Address);
 
     handleConverterRemoved(converterRemovedEvent);
 

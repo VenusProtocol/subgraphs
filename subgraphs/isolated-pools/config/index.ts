@@ -13,20 +13,7 @@ import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = [
-    'ethereum',
-    'sepolia',
-    'chapel',
-    'bsc',
-    'docker',
-    'opbnbMainnet',
-    'arbitrumSepolia',
-    'arbitrum',
-    'zksyncSepolia',
-    'zksync',
-    'optimismSepolia',
-    'optimism',
-  ] as const;
+  const supportedNetworks = ['ethereum', 'sepolia', 'chapel', 'bsc', 'docker', 'opbnbMainnet', 'arbitrumSepolia', 'arbitrum', 'zksyncSepolia', 'zksync', 'optimismSepolia', 'optimism'] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
   if (!supportedNetworks.includes(network)) {

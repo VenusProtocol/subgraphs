@@ -1,29 +1,12 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import { zeroBigInt32 } from '../../src/constants';
-import {
-  handleAccrueInterest,
-  handleBorrow,
-  handleMint,
-  handleTransfer,
-} from '../../src/mappings/vToken';
+import { handleAccrueInterest, handleBorrow, handleMint, handleTransfer } from '../../src/mappings/vToken';
 import exponentToBigDecimal from '../../src/utilities/exponentToBigDecimal';
 import exponentToBigInt from '../../src/utilities/exponentToBigInt';
 import { getPositionId } from '../../src/utilities/ids';
-import {
-  createAccrueInterestEvent,
-  createBorrowEvent,
-  createMintEvent,
-  createTransferEvent,
-} from './events';
+import { createAccrueInterestEvent, createBorrowEvent, createMintEvent, createTransferEvent } from './events';
 import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
 
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
@@ -50,28 +33,12 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromString('10000000000000000000');
     const mintTokens = BigInt.fromString('50000000000000000000');
     const accountBalance = mintTokens;
-    const mintEvent = createMintEvent(
-      vTokenAddress,
-      minter,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
+    const mintEvent = createMintEvent(vTokenAddress, minter, actualMintAmount, mintTokens, accountBalance);
 
     handleMint(mintEvent);
 
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(minter, vTokenAddress).toHexString(),
-      'address',
-      minter.toHexString(),
-    );
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(minter, vTokenAddress).toHexString(),
-      'effective_balance',
-      actualMintAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
-    );
+    assert.fieldEquals('SupplierAccount', getPositionId(minter, vTokenAddress).toHexString(), 'address', minter.toHexString());
+    assert.fieldEquals('SupplierAccount', getPositionId(minter, vTokenAddress).toHexString(), 'effective_balance', actualMintAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString());
   });
 
   test('registers borrow event', () => {
@@ -82,29 +49,13 @@ describe('VToken', () => {
     const totalBorrows = BigInt.fromString('2000000000000000000');
 
     /** Setup test */
-    const borrowEvent = createBorrowEvent(
-      vTokenAddress,
-      borrower,
-      borrowAmount,
-      accountBorrows,
-      totalBorrows,
-    );
+    const borrowEvent = createBorrowEvent(vTokenAddress, borrower, borrowAmount, accountBorrows, totalBorrows);
 
     /** Fire Event */
     handleBorrow(borrowEvent);
 
-    assert.fieldEquals(
-      'BorrowerAccount',
-      getPositionId(borrower, vTokenAddress).toHexString(),
-      'address',
-      borrower.toHexString(),
-    );
-    assert.fieldEquals(
-      'BorrowerAccount',
-      getPositionId(borrower, vTokenAddress).toHexString(),
-      'effective_balance',
-      accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
-    );
+    assert.fieldEquals('BorrowerAccount', getPositionId(borrower, vTokenAddress).toHexString(), 'address', borrower.toHexString());
+    assert.fieldEquals('BorrowerAccount', getPositionId(borrower, vTokenAddress).toHexString(), 'effective_balance', accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString());
   });
 
   test('registers accrue interest event', () => {
@@ -120,13 +71,7 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromString('10000000000000000000');
     const mintTokens = BigInt.fromString('50000000000000000000');
     const accountBalance = mintTokens;
-    const mintEvent = createMintEvent(
-      vTokenAddress,
-      minter,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
+    const mintEvent = createMintEvent(vTokenAddress, minter, actualMintAmount, mintTokens, accountBalance);
 
     handleMint(mintEvent);
 
@@ -135,72 +80,24 @@ describe('VToken', () => {
     const accountBorrows = BigInt.fromString('4000000000000000000');
 
     /** Setup test */
-    const borrowEvent = createBorrowEvent(
-      vTokenAddress,
-      borrower,
-      borrowAmount,
-      accountBorrows,
-      totalBorrows,
-    );
+    const borrowEvent = createBorrowEvent(vTokenAddress, borrower, borrowAmount, accountBorrows, totalBorrows);
     createBep20Mock(underlyingAddress, vTokenAddress, cashPrior);
-    createAccountVTokenBalanceOfMock(
-      vTokenAddress,
-      underlyingAddress,
-      user1Address,
-      zeroBigInt32,
-      accountBorrows,
-      totalBorrows,
-      reserves,
-    );
-    createAccountVTokenBalanceOfMock(
-      vTokenAddress,
-      underlyingAddress,
-      user2Address,
-      zeroBigInt32,
-      accountBorrows,
-      totalBorrows,
-      reserves,
-    );
+    createAccountVTokenBalanceOfMock(vTokenAddress, underlyingAddress, user1Address, zeroBigInt32, accountBorrows, totalBorrows, reserves);
+    createAccountVTokenBalanceOfMock(vTokenAddress, underlyingAddress, user2Address, zeroBigInt32, accountBorrows, totalBorrows, reserves);
 
     /** Fire Event */
     handleBorrow(borrowEvent);
 
-    const accrueInterestEvent = createAccrueInterestEvent(
-      vTokenAddress,
-      cashPrior,
-      interestAccumulated,
-      borrowIndex,
-      totalBorrows,
-    );
+    const accrueInterestEvent = createAccrueInterestEvent(vTokenAddress, cashPrior, interestAccumulated, borrowIndex, totalBorrows);
 
     /** Fire Event */
     handleAccrueInterest(accrueInterestEvent);
 
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(user1Address, vTokenAddress).toHexString(),
-      'address',
-      user1Address.toHexString(),
-    );
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(user1Address, vTokenAddress).toHexString(),
-      'effective_balance',
-      '0',
-    );
+    assert.fieldEquals('SupplierAccount', getPositionId(user1Address, vTokenAddress).toHexString(), 'address', user1Address.toHexString());
+    assert.fieldEquals('SupplierAccount', getPositionId(user1Address, vTokenAddress).toHexString(), 'effective_balance', '0');
 
-    assert.fieldEquals(
-      'BorrowerAccount',
-      getPositionId(user2Address, vTokenAddress).toHexString(),
-      'address',
-      user2Address.toHexString(),
-    );
-    assert.fieldEquals(
-      'BorrowerAccount',
-      getPositionId(user2Address, vTokenAddress).toHexString(),
-      'effective_balance',
-      accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
-    );
+    assert.fieldEquals('BorrowerAccount', getPositionId(user2Address, vTokenAddress).toHexString(), 'address', user2Address.toHexString());
+    assert.fieldEquals('BorrowerAccount', getPositionId(user2Address, vTokenAddress).toHexString(), 'effective_balance', accountBorrows.toBigDecimal().div(exponentToBigDecimal(18)).toString());
   });
 
   test('registers transfer event', () => {
@@ -211,13 +108,7 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromString('10000000000000000000');
     const mintTokens = BigInt.fromString('50000000000000000000');
     const accountBalance = mintTokens;
-    const mintEvent = createMintEvent(
-      vTokenAddress,
-      from,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
+    const mintEvent = createMintEvent(vTokenAddress, from, actualMintAmount, mintTokens, accountBalance);
 
     handleMint(mintEvent);
 
@@ -228,34 +119,15 @@ describe('VToken', () => {
     handleTransfer(transferEvent);
 
     const underlyingAmount = exchangeRateCurrent.times(amount).div(exponentToBigInt(18));
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(from, vTokenAddress).toHexString(),
-      'address',
-      from.toHexString(),
-    );
+    assert.fieldEquals('SupplierAccount', getPositionId(from, vTokenAddress).toHexString(), 'address', from.toHexString());
     assert.fieldEquals(
       'SupplierAccount',
       getPositionId(from, vTokenAddress).toHexString(),
       'effective_balance',
-      actualMintAmount
-        .minus(underlyingAmount)
-        .toBigDecimal()
-        .div(exponentToBigDecimal(18))
-        .toString(),
+      actualMintAmount.minus(underlyingAmount).toBigDecimal().div(exponentToBigDecimal(18)).toString(),
     );
 
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(to, vTokenAddress).toHexString(),
-      'address',
-      to.toHexString(),
-    );
-    assert.fieldEquals(
-      'SupplierAccount',
-      getPositionId(to, vTokenAddress).toHexString(),
-      'effective_balance',
-      underlyingAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString(),
-    );
+    assert.fieldEquals('SupplierAccount', getPositionId(to, vTokenAddress).toHexString(), 'address', to.toHexString());
+    assert.fieldEquals('SupplierAccount', getPositionId(to, vTokenAddress).toHexString(), 'effective_balance', underlyingAmount.toBigDecimal().div(exponentToBigDecimal(18)).toString());
   });
 });

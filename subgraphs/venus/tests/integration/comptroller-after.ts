@@ -5,9 +5,7 @@ import { ethers } from 'hardhat';
 
 import createSubgraphClient from '../../subgraph-client';
 
-const subgraphClient = createSubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph',
-);
+const subgraphClient = createSubgraphClient('http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph');
 
 const syncDelay = 2000;
 
@@ -31,14 +29,7 @@ describe('VToken events', function () {
     vFdusdToken = await ethers.getContract('vFDUSD');
     vUsdtToken = await ethers.getContract('vUSDT');
 
-    markets = [
-      vUsdcToken.address,
-      vWBnbToken.address,
-      vEthToken.address,
-      vDogeToken.address,
-      vFdusdToken.address,
-      vUsdtToken.address,
-    ];
+    markets = [vUsdcToken.address, vWBnbToken.address, vEthToken.address, vDogeToken.address, vFdusdToken.address, vUsdtToken.address];
 
     await comptroller._setMarketBorrowCaps(markets, [0, 0, 0, 0, 0, 0]);
     await comptroller._setMarketSupplyCaps(markets, [0, 0, 0, 0, 0, 0]);

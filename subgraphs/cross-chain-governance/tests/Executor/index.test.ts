@@ -51,14 +51,7 @@ describe('OmniGovernanceExecutor', () => {
   });
 
   test('should receive proposal', () => {
-    const proposalReceivedEvent = createProposalReceivedEvent(
-      1,
-      [MOCK_TIMELOCK_ADDRESS],
-      [0],
-      ['acceptAdmin()'],
-      [Bytes.fromUTF8('calldata')],
-      0,
-    );
+    const proposalReceivedEvent = createProposalReceivedEvent(1, [MOCK_TIMELOCK_ADDRESS], [0], ['acceptAdmin()'], [Bytes.fromUTF8('calldata')], 0);
     handleProposalReceived(proposalReceivedEvent);
 
     assert.entityCount('Proposal', 1);
@@ -74,12 +67,7 @@ describe('OmniGovernanceExecutor', () => {
     handleProposalQueued(proposalQueuedEvent);
 
     assert.entityCount('Proposal', 1);
-    assert.fieldEquals(
-      'Proposal',
-      '1',
-      'queued',
-      proposalQueuedEvent.transaction.hash.toHexString(),
-    );
+    assert.fieldEquals('Proposal', '1', 'queued', proposalQueuedEvent.transaction.hash.toHexString());
   });
 
   test('should record executed proposal', () => {
@@ -88,44 +76,22 @@ describe('OmniGovernanceExecutor', () => {
 
     assert.entityCount('Proposal', 1);
     assert.fieldEquals('Proposal', '1', 'executionEta', '123456789');
-    assert.fieldEquals(
-      'Proposal',
-      '1',
-      'executed',
-      proposalExecutedEvent.transaction.hash.toHexString(),
-    );
+    assert.fieldEquals('Proposal', '1', 'executed', proposalExecutedEvent.transaction.hash.toHexString());
   });
 
   test('should record canceled proposal', () => {
-    const proposalReceivedEvent = createProposalReceivedEvent(
-      2,
-      [MOCK_TIMELOCK_ADDRESS],
-      [0],
-      ['acceptAdmin()'],
-      [Bytes.fromUTF8('calldata')],
-      0,
-    );
+    const proposalReceivedEvent = createProposalReceivedEvent(2, [MOCK_TIMELOCK_ADDRESS], [0], ['acceptAdmin()'], [Bytes.fromUTF8('calldata')], 0);
     handleProposalReceived(proposalReceivedEvent);
 
     const proposalCanceledEventEvent = createProposalCancelledEvent(2);
     handleProposalCanceled(proposalCanceledEventEvent);
 
     assert.entityCount('Proposal', 2);
-    assert.fieldEquals(
-      'Proposal',
-      '2',
-      'canceled',
-      proposalCanceledEventEvent.transaction.hash.toHexString(),
-    );
+    assert.fieldEquals('Proposal', '2', 'canceled', proposalCanceledEventEvent.transaction.hash.toHexString());
   });
 
   test('should record receive payload failed', () => {
-    const receivePayloadFailedEvent = createReceivePayloadFailedEvent(
-      21,
-      MOCK_SRC_ADDRESS,
-      12,
-      Bytes.fromUTF8('Unsuccessful proposal'),
-    );
+    const receivePayloadFailedEvent = createReceivePayloadFailedEvent(21, MOCK_SRC_ADDRESS, 12, Bytes.fromUTF8('Unsuccessful proposal'));
     handleReceivePayloadFailed(receivePayloadFailedEvent);
 
     assert.entityCount('FailedPayload', 1);
@@ -151,20 +117,10 @@ describe('OmniGovernanceExecutor', () => {
   });
 
   test('should delete failed message on successful retry', () => {
-    const receivePayloadFailedEvent = createReceivePayloadFailedEvent(
-      21,
-      MOCK_SRC_ADDRESS,
-      13,
-      Bytes.fromUTF8('Unsuccessful proposal'),
-    );
+    const receivePayloadFailedEvent = createReceivePayloadFailedEvent(21, MOCK_SRC_ADDRESS, 13, Bytes.fromUTF8('Unsuccessful proposal'));
     handleReceivePayloadFailed(receivePayloadFailedEvent);
     assert.entityCount('FailedPayload', 2);
-    const retryMessageSuccessEvent = createRetryMessageSuccessEvent(
-      21,
-      MOCK_SRC_ADDRESS,
-      13,
-      Bytes.fromI32(100),
-    );
+    const retryMessageSuccessEvent = createRetryMessageSuccessEvent(21, MOCK_SRC_ADDRESS, 13, Bytes.fromI32(100));
     handleRetryMessageSuccess(retryMessageSuccessEvent);
     assert.entityCount('FailedPayload', 1);
   });
@@ -184,12 +140,7 @@ describe('OmniGovernanceExecutor', () => {
     handleSetMinDstGas(setMinDstGasEvent);
     assert.fieldEquals('DestinationChain', Bytes.fromI32(1).toHex(), 'chainId', '1');
     assert.fieldEquals('DestinationChain', Bytes.fromI32(1).toHex(), 'packetType', '1');
-    assert.fieldEquals(
-      'DestinationChain',
-      Bytes.fromI32(1).toHex(),
-      'minGas',
-      '5000000000000000000',
-    );
+    assert.fieldEquals('DestinationChain', Bytes.fromI32(1).toHex(), 'minGas', '5000000000000000000');
   });
 
   test('should handle SetPrecrime event', () => {

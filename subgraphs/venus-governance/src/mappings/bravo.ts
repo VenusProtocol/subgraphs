@@ -17,13 +17,7 @@ import { createProposal, createVoteBravo } from '../operations/create';
 import createRemoteProposals from '../operations/createRemoteProposals';
 import { getGovernanceEntity } from '../operations/get';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
-import {
-  updateBravoProposalVotes,
-  updateGovernanceEntity,
-  updateProposalCanceled,
-  updateProposalExecuted,
-  updateProposalQueued,
-} from '../operations/update';
+import { updateBravoProposalVotes, updateGovernanceEntity, updateProposalCanceled, updateProposalExecuted, updateProposalQueued } from '../operations/update';
 
 export function handleProposalCreated(event: ProposalCreated): void {
   getOrCreateDelegate(event.params.proposer);

@@ -44,16 +44,14 @@ const main = () => {
       governorAlphaStartBlock: '8205736',
       governorAlpha2Address: '0x7116894ed34FC4B27D5b84f46B70Af48397a6C24',
       governorAlpha2StartBlock: '13584539',
-      governorBravoDelegatorAddress:
-        bscTestnetGovernanceDeployments.addresses.GovernorBravoDelegator,
+      governorBravoDelegatorAddress: bscTestnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '16002994 ',
       xvsTokenAddress: bscTestnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '2802593',
       xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
       xvsVaultStartBlock: '13937802',
       xvsVaultPid: '1',
-      omnichainProposalSenderAddress:
-        bscTestnetGovernanceDeployments.addresses.OmnichainProposalSender,
+      omnichainProposalSenderAddress: bscTestnetGovernanceDeployments.addresses.OmnichainProposalSender,
       omnichainProposalSenderStartBlock: '40979674',
     },
     bsc: {
@@ -64,8 +62,7 @@ const main = () => {
       governorAlphaStartBlock: '2474351',
       governorAlpha2Address: bscMainnetGovernanceDeployments.addresses.GovernorAlpha2,
       governorAlpha2StartBlock: '11934064',
-      governorBravoDelegatorAddress:
-        bscMainnetGovernanceDeployments.addresses.GovernorBravoDelegator,
+      governorBravoDelegatorAddress: bscMainnetGovernanceDeployments.addresses.GovernorBravoDelegator,
       governorBravoDelegatorStartBlock: '13729317',
       xvsTokenAddress: bscMainnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '858561',

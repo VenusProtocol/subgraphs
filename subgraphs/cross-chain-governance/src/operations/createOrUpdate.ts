@@ -4,11 +4,7 @@ import { GRANTED, REVOKED } from '../constants';
 import { getPermissionId } from '../utilities/ids';
 
 export function createOrUpdatePermission<E>(event: E): Permission {
-  const id = getPermissionId(
-    event.params.account,
-    event.params.contractAddress,
-    event.params.functionSig,
-  );
+  const id = getPermissionId(event.params.account, event.params.contractAddress, event.params.functionSig);
   let permission = Permission.load(id);
   if (!permission) {
     permission = new Permission(id);

@@ -17,16 +17,8 @@ import {
 import { RewardsDistributor as RewardsDistributorDataSource } from '../../generated/templates';
 import { zeroBigInt32 } from '../constants';
 import { getMarket } from '../operations/get';
-import {
-  getOrCreateAccount,
-  getOrCreateMarket,
-  getOrCreatePool,
-  getOrCreateRewardDistributor,
-} from '../operations/getOrCreate';
-import {
-  updateOrCreateAccountVToken,
-  updateOrCreateMarketAction,
-} from '../operations/updateOrCreate';
+import { getOrCreateAccount, getOrCreateMarket, getOrCreatePool, getOrCreateRewardDistributor } from '../operations/getOrCreate';
+import { updateOrCreateAccountVToken, updateOrCreateMarketAction } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
 
 export function handleMarketSupported(event: MarketSupported): void {
@@ -51,13 +43,7 @@ export function handleMarketEntered(event: MarketEntered): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
-    accountAddress,
-    poolAddress,
-    vTokenAddress,
-    event.block.number,
-    new Box(true),
-  );
+  updateOrCreateAccountVToken(accountAddress, poolAddress, vTokenAddress, event.block.number, new Box(true));
 }
 
 export function handleMarketExited(event: MarketExited): void {
@@ -67,13 +53,7 @@ export function handleMarketExited(event: MarketExited): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
-    accountAddress,
-    poolAddress,
-    vTokenAddress,
-    event.block.number,
-    new Box(false),
-  );
+  updateOrCreateAccountVToken(accountAddress, poolAddress, vTokenAddress, event.block.number, new Box(false));
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {

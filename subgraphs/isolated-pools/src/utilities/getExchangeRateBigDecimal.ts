@@ -3,11 +3,7 @@ import { BigDecimal, BigInt } from '@graphprotocol/graph-ts';
 import { defaultMantissaFactorBigDecimal, mantissaFactor } from '../constants/index';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
-const getExchangeRateBigDecimal = (
-  exchangeRateMantissa: BigInt,
-  underlyingDecimals: i32,
-  vTokenDecimals: i32,
-): BigDecimal => {
+const getExchangeRateBigDecimal = (exchangeRateMantissa: BigInt, underlyingDecimals: i32, vTokenDecimals: i32): BigDecimal => {
   /* Exchange rate explanation
     In Practice
     - If you call the vDAI contract on bscscan it comes back (2.0 * 10^26)

@@ -27,40 +27,22 @@ export function createProposalCreatedEvent<E>(
   const targetsParam = new ethereum.EventParam('targets', ethereum.Value.fromAddressArray(targets));
   event.parameters.push(targetsParam);
 
-  const valuesParam = new ethereum.EventParam(
-    'values',
-    ethereum.Value.fromUnsignedBigIntArray(values),
-  );
+  const valuesParam = new ethereum.EventParam('values', ethereum.Value.fromUnsignedBigIntArray(values));
   event.parameters.push(valuesParam);
 
-  const signaturesParam = new ethereum.EventParam(
-    'signatures',
-    ethereum.Value.fromStringArray(signatures),
-  );
+  const signaturesParam = new ethereum.EventParam('signatures', ethereum.Value.fromStringArray(signatures));
   event.parameters.push(signaturesParam);
 
-  const calldatasParam = new ethereum.EventParam(
-    'calldatas',
-    ethereum.Value.fromBytesArray(calldatas),
-  );
+  const calldatasParam = new ethereum.EventParam('calldatas', ethereum.Value.fromBytesArray(calldatas));
   event.parameters.push(calldatasParam);
 
-  const startBlockParam = new ethereum.EventParam(
-    'startBlock',
-    ethereum.Value.fromUnsignedBigInt(startBlock),
-  );
+  const startBlockParam = new ethereum.EventParam('startBlock', ethereum.Value.fromUnsignedBigInt(startBlock));
   event.parameters.push(startBlockParam);
 
-  const endBlockParam = new ethereum.EventParam(
-    'endBlock',
-    ethereum.Value.fromUnsignedBigInt(endBlock),
-  );
+  const endBlockParam = new ethereum.EventParam('endBlock', ethereum.Value.fromUnsignedBigInt(endBlock));
   event.parameters.push(endBlockParam);
 
-  const descriptionParam = new ethereum.EventParam(
-    'description',
-    ethereum.Value.fromString(description),
-  );
+  const descriptionParam = new ethereum.EventParam('description', ethereum.Value.fromString(description));
   event.parameters.push(descriptionParam);
 
   return event;
@@ -78,21 +60,8 @@ export function createProposalCreatedV2Event<E>(
   description: string,
   proposalType: BigInt,
 ): E {
-  const event = createProposalCreatedEvent<E>(
-    id,
-    proposer,
-    targets,
-    values,
-    signatures,
-    calldatas,
-    startBlock,
-    endBlock,
-    description,
-  );
-  const proposalTypeParam = new ethereum.EventParam(
-    'proposalType',
-    ethereum.Value.fromUnsignedBigInt(proposalType),
-  );
+  const event = createProposalCreatedEvent<E>(id, proposer, targets, values, signatures, calldatas, startBlock, endBlock, description);
+  const proposalTypeParam = new ethereum.EventParam('proposalType', ethereum.Value.fromUnsignedBigInt(proposalType));
   event.parameters.push(proposalTypeParam);
   return event;
 }
@@ -129,12 +98,7 @@ export function createProposalExecutedEvent<E>(id: i32): E {
   return event;
 }
 
-export function createVoteCastAlphaEvent(
-  voter: Address,
-  proposalId: i32,
-  support: boolean,
-  votes: BigInt,
-): VoteCastAlpha {
+export function createVoteCastAlphaEvent(voter: Address, proposalId: i32, support: boolean, votes: BigInt): VoteCastAlpha {
   const event = changetype<VoteCastAlpha>(newMockEvent());
   event.parameters = [];
 
@@ -153,13 +117,7 @@ export function createVoteCastAlphaEvent(
   return event;
 }
 
-export function createVoteCastBravoEvent(
-  voter: Address,
-  proposalId: i32,
-  support: i32,
-  votes: BigInt,
-  reason: string,
-): VoteCastBravo {
+export function createVoteCastBravoEvent(voter: Address, proposalId: i32, support: i32, votes: BigInt, reason: string): VoteCastBravo {
   const event = changetype<VoteCastBravo>(newMockEvent());
   event.parameters = [];
 
@@ -181,56 +139,33 @@ export function createVoteCastBravoEvent(
   return event;
 }
 
-export function createDelegateChangedEvent<E>(
-  delegator: Address,
-  fromDelegate: Address,
-  toDelegate: Address,
-): E {
+export function createDelegateChangedEvent<E>(delegator: Address, fromDelegate: Address, toDelegate: Address): E {
   const event = changetype<E>(newMockEvent());
   event.parameters = [];
 
-  const delegatorParam = new ethereum.EventParam(
-    'delegator',
-    ethereum.Value.fromAddress(delegator),
-  );
+  const delegatorParam = new ethereum.EventParam('delegator', ethereum.Value.fromAddress(delegator));
   event.parameters.push(delegatorParam);
 
-  const fromDelegateParam = new ethereum.EventParam(
-    'fromDelegate',
-    ethereum.Value.fromAddress(fromDelegate),
-  );
+  const fromDelegateParam = new ethereum.EventParam('fromDelegate', ethereum.Value.fromAddress(fromDelegate));
   event.parameters.push(fromDelegateParam);
 
-  const toDelegateParam = new ethereum.EventParam(
-    'toDelegate',
-    ethereum.Value.fromAddress(toDelegate),
-  );
+  const toDelegateParam = new ethereum.EventParam('toDelegate', ethereum.Value.fromAddress(toDelegate));
   event.parameters.push(toDelegateParam);
 
   return event;
 }
 
-export function createDelegateVotesChangedEvent<E>(
-  delegate: Address,
-  previousBalance: BigInt,
-  newBalance: BigInt,
-): E {
+export function createDelegateVotesChangedEvent<E>(delegate: Address, previousBalance: BigInt, newBalance: BigInt): E {
   const event = changetype<E>(newMockEvent());
   event.parameters = [];
 
   const delegateParam = new ethereum.EventParam('delegate', ethereum.Value.fromAddress(delegate));
   event.parameters.push(delegateParam);
 
-  const previousBalanceParam = new ethereum.EventParam(
-    'previousBalance',
-    ethereum.Value.fromUnsignedBigInt(previousBalance),
-  );
+  const previousBalanceParam = new ethereum.EventParam('previousBalance', ethereum.Value.fromUnsignedBigInt(previousBalance));
   event.parameters.push(previousBalanceParam);
 
-  const newBalanceParam = new ethereum.EventParam(
-    'newBalance',
-    ethereum.Value.fromUnsignedBigInt(newBalance),
-  );
+  const newBalanceParam = new ethereum.EventParam('newBalance', ethereum.Value.fromUnsignedBigInt(newBalance));
   event.parameters.push(newBalanceParam);
 
   return event;

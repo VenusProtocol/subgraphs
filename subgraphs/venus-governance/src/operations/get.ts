@@ -1,23 +1,9 @@
 import { Address, BigInt, log } from '@graphprotocol/graph-ts';
 
 import { OmnichainProposalSender as OmnichainProposalSenderContract } from '../../generated/OmnichainProposalSender/OmnichainProposalSender';
-import {
-  Delegate,
-  Governance,
-  OmnichainProposalSender,
-  Proposal,
-  RemoteProposal,
-  RemoteProposalStateTransaction,
-} from '../../generated/schema';
+import { Delegate, Governance, OmnichainProposalSender, Proposal, RemoteProposal, RemoteProposalStateTransaction } from '../../generated/schema';
 import { omnichainProposalSenderAddress } from '../constants/addresses';
-import {
-  getDelegateId,
-  getGovernanceId,
-  getOmnichainProposalSenderId,
-  getProposalId,
-  getRemoteProposalId,
-  getRemoteProposalStateTransactionId,
-} from '../utilities/ids';
+import { getDelegateId, getGovernanceId, getOmnichainProposalSenderId, getProposalId, getRemoteProposalId, getRemoteProposalStateTransactionId } from '../utilities/ids';
 
 /**
  * While technically this function does also create, we don't care because it only happens once as the id is a constant.
@@ -32,13 +18,10 @@ export const getGovernanceEntity = (): Governance => {
 export const getOmnichainProposalSenderEntity = (): OmnichainProposalSender => {
   let omnichainProposalSender = OmnichainProposalSender.load(getOmnichainProposalSenderId());
   if (!omnichainProposalSender) {
-    const omnichainProposalSenderContract = OmnichainProposalSenderContract.bind(
-      omnichainProposalSenderAddress,
-    );
+    const omnichainProposalSenderContract = OmnichainProposalSenderContract.bind(omnichainProposalSenderAddress);
     omnichainProposalSender = new OmnichainProposalSender(getOmnichainProposalSenderId());
     omnichainProposalSender.address = getOmnichainProposalSenderId();
-    omnichainProposalSender.accessControlManagerAddress =
-      omnichainProposalSenderContract.accessControlManager();
+    omnichainProposalSender.accessControlManagerAddress = omnichainProposalSenderContract.accessControlManager();
     omnichainProposalSender.paused = false;
     omnichainProposalSender.save();
   }
@@ -72,9 +55,7 @@ export const getRemoteProposal = (layerZeroChainId: i32, proposalId: BigInt): Re
   return remoteProposal as RemoteProposal;
 };
 
-export const getRemoteProposalStateTransaction = (
-  proposalId: BigInt,
-): RemoteProposalStateTransaction => {
+export const getRemoteProposalStateTransaction = (proposalId: BigInt): RemoteProposalStateTransaction => {
   const id = getRemoteProposalStateTransactionId(proposalId);
   const remoteProposalStateTransaction = RemoteProposalStateTransaction.load(id);
   if (!remoteProposalStateTransaction) {

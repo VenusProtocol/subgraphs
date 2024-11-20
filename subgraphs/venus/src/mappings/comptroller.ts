@@ -16,11 +16,7 @@ import { Comptroller } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import { getComptroller, getMarket } from '../operations/get';
-import {
-  getOrCreateAccount,
-  getOrCreateAccountVToken,
-  getOrCreateMarket,
-} from '../operations/getOrCreate';
+import { getOrCreateAccount, getOrCreateAccountVToken, getOrCreateMarket } from '../operations/getOrCreate';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitialization(block: ethereum.Block): void {
@@ -94,8 +90,6 @@ export function handleNewPriceOracle(event: NewPriceOracle): void {
 // Also handles DistributedBorrowerVenus with same signature
 export function handleXvsDistributed(event: DistributedSupplierVenus): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
-    event.params.venusDelta,
-  );
+  market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(event.params.venusDelta);
   market.save();
 }

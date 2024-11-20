@@ -7,11 +7,7 @@ import exponentToBigInt from './exponentToBigInt';
 import valueOrNotAvailableIntIfReverted from './valueOrNotAvailableIntIfReverted';
 
 // Used for all vBEP20 contracts
-const getTokenPriceInCents = (
-  poolAddress: Address,
-  tokenAddress: Address,
-  underlyingDecimals: i32,
-): BigInt => {
+const getTokenPriceInCents = (poolAddress: Address, tokenAddress: Address, underlyingDecimals: i32): BigInt => {
   const pool = getPool(poolAddress);
   // will return NOT_AVAILABLE if the price cannot be fetched
   let underlyingPrice = NOT_AVAILABLE_BIG_INT;
@@ -21,9 +17,7 @@ const getTokenPriceInCents = (
     const mantissaDecimalFactor = exponentToBigInt(16 - underlyingDecimals);
     const priceOracle = PriceOracle.bind(oracleAddress);
 
-    const underlyingPriceBigInt = valueOrNotAvailableIntIfReverted(
-      priceOracle.try_getUnderlyingPrice(tokenAddress),
-    );
+    const underlyingPriceBigInt = valueOrNotAvailableIntIfReverted(priceOracle.try_getUnderlyingPrice(tokenAddress));
     underlyingPrice = underlyingPriceBigInt.div(mantissaDecimalFactor);
   }
 

@@ -3,8 +3,7 @@ import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 import { GOVERNANCE } from '../constants';
 import { omnichainProposalSenderAddress } from '../constants/addresses';
 
-export const getVoteId = (voter: Address, proposalId: BigInt): Bytes =>
-  voter.concatI32(proposalId.toI32());
+export const getVoteId = (voter: Address, proposalId: BigInt): Bytes => voter.concatI32(proposalId.toI32());
 
 export const getRoleId = (account: Address, role: Bytes): Bytes => account.concat(role);
 
@@ -16,8 +15,7 @@ export const getOmnichainProposalSenderId = (): Bytes => omnichainProposalSender
 
 export const getProposalId = (id: BigInt): string => id.toString();
 
-export const getRemoteProposalId = (layerZeroChainId: i32, proposalId: BigInt): Bytes =>
-  Bytes.fromI32(layerZeroChainId).concat(Bytes.fromByteArray(Bytes.fromBigInt(proposalId)));
+export const getRemoteProposalId = (layerZeroChainId: i32, proposalId: BigInt): Bytes => Bytes.fromI32(layerZeroChainId).concat(Bytes.fromByteArray(Bytes.fromBigInt(proposalId)));
 
 export const getRemoteProposalStateTransactionId = (id: BigInt): string => id.toString();
 

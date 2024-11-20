@@ -5,10 +5,7 @@ import { zeroBigDecimal } from '../constants';
 import { getBorrow, getSupply } from '../operations/get';
 import { getPositionId } from '../utilities/ids';
 
-export const getOrCreateSupplierAccount = (
-  accountAddress: Address,
-  tokenAddress: Address,
-): SupplierAccount => {
+export const getOrCreateSupplierAccount = (accountAddress: Address, tokenAddress: Address): SupplierAccount => {
   let supplierAccount = SupplierAccount.load(getPositionId(accountAddress, tokenAddress));
   if (!supplierAccount) {
     const supply = getSupply(tokenAddress);
@@ -21,10 +18,7 @@ export const getOrCreateSupplierAccount = (
   return supplierAccount;
 };
 
-export const getOrCreateBorrowerAccount = (
-  accountAddress: Address,
-  tokenAddress: Address,
-): BorrowerAccount => {
+export const getOrCreateBorrowerAccount = (accountAddress: Address, tokenAddress: Address): BorrowerAccount => {
   let borrowerAccount = BorrowerAccount.load(getPositionId(accountAddress, tokenAddress));
   if (!borrowerAccount) {
     const borrow = getBorrow(tokenAddress);

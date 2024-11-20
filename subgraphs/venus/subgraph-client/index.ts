@@ -1,14 +1,7 @@
 import { DocumentNode } from 'graphql';
 import { Client as UrqlClient, createClient } from 'urql/core';
 
-import {
-  AccountByIdDocument,
-  AccountVTokenByAccountAndMarketQueryDocument,
-  AccountVTokenByAccountIdDocument,
-  AccountVTokensDocument,
-  MarketByIdDocument,
-  MarketsDocument,
-} from './.graphclient';
+import { AccountByIdDocument, AccountVTokenByAccountAndMarketQueryDocument, AccountVTokenByAccountIdDocument, AccountVTokensDocument, MarketByIdDocument, MarketsDocument } from './.graphclient';
 
 class SubgraphClient {
   urqlClient: UrqlClient;
@@ -56,13 +49,7 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokenByAccountAndMarket({
-    marketId,
-    accountId,
-  }: {
-    marketId: string;
-    accountId: string;
-  }) {
+  async getAccountVTokenByAccountAndMarket({ marketId, accountId }: { marketId: string; accountId: string }) {
     const result = await this.query(AccountVTokenByAccountAndMarketQueryDocument, {
       id: `${marketId}${accountId.replace('0x', '')}`,
     });

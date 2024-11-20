@@ -14,12 +14,7 @@ import {
 } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import { createFailedPayload, createProposal } from '../operations/create';
 import { getProposal } from '../operations/get';
-import {
-  getOrCreateDestinationChain,
-  getOrCreateGovernance,
-  getOrCreateGovernanceRoute,
-  getOrCreateTransaction,
-} from '../operations/getOrCreate';
+import { getOrCreateDestinationChain, getOrCreateGovernance, getOrCreateGovernanceRoute, getOrCreateTransaction } from '../operations/getOrCreate';
 import { removeFailedPayload } from '../operations/remove';
 
 export function handleNewGuardian(event: NewGuardian): void {

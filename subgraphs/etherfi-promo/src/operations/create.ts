@@ -3,11 +3,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { BorrowerAccount, SupplierAccount } from '../../generated/schema';
 import { getPositionId } from '../utilities/ids';
 
-export function createSupplierAccount(
-  accountAddress: Address,
-  tokenAddress: Address,
-  amount: BigInt,
-): SupplierAccount {
+export function createSupplierAccount(accountAddress: Address, tokenAddress: Address, amount: BigInt): SupplierAccount {
   const account = new SupplierAccount(getPositionId(accountAddress, tokenAddress));
   account.address = accountAddress;
   account.effective_balance = amount;
@@ -16,11 +12,7 @@ export function createSupplierAccount(
   return account;
 }
 
-export function createBorrowerAccount(
-  accountAddress: Address,
-  tokenAddress: Address,
-  amount: BigInt,
-): BorrowerAccount {
+export function createBorrowerAccount(accountAddress: Address, tokenAddress: Address, amount: BigInt): BorrowerAccount {
   const account = new BorrowerAccount(getPositionId(accountAddress, tokenAddress));
   account.address = accountAddress;
   account.effective_balance = amount;

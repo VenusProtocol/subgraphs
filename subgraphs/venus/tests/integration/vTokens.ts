@@ -9,9 +9,7 @@ import createSubgraphClient from '../../subgraph-client';
 const { parseUnits, formatUnits } = ethers.utils;
 const { MaxUint256 } = ethers.constants;
 
-const subgraphClient = createSubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph',
-);
+const subgraphClient = createSubgraphClient('http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph');
 
 const checkSupply = async (account: string, vToken: Contract) => {
   const {
@@ -40,9 +38,7 @@ const checkBorrows = async (account: string, vToken: Contract) => {
   });
   const accountContractBalance = await vToken.borrowBalanceStored(account);
   const borrowIndex = await vToken.borrowIndex();
-  expect(accountVToken?.storedBorrowBalanceMantissa || '0').to.equal(
-    accountContractBalance.toString(),
-  );
+  expect(accountVToken?.storedBorrowBalanceMantissa || '0').to.equal(accountContractBalance.toString());
   expect(accountVToken?.borrowIndex || '0').to.equal(borrowIndex);
   expect(accountVToken.account.hasBorrowed).to.equal(true);
   // on market
@@ -80,18 +76,7 @@ describe('VToken events', function () {
   let oracle: Contract;
 
   before(async function () {
-    const {
-      deployer: root,
-      supplier1,
-      supplier2,
-      supplier3,
-      borrower1,
-      borrower2,
-      borrower3,
-      liquidator1,
-      liquidator2,
-      liquidator3,
-    } = await hre.getNamedAccounts();
+    const { deployer: root, supplier1, supplier2, supplier3, borrower1, borrower2, borrower3, liquidator1, liquidator2, liquidator3 } = await hre.getNamedAccounts();
 
     rootSigner = ethers.provider.getSigner(root);
     supplier1Signer = ethers.provider.getSigner(supplier1);
@@ -113,17 +98,7 @@ describe('VToken events', function () {
       const underlying = await token.underlying();
       const underlyingContract = await ethers.getContractAt('BEP20Harness', underlying);
       await Promise.all(
-        [
-          supplier1Signer,
-          supplier2Signer,
-          supplier3Signer,
-          borrower1Signer,
-          borrower2Signer,
-          borrower3Signer,
-          liquidator1Signer,
-          liquidator2Signer,
-          liquidator3Signer,
-        ].map(async account => {
+        [supplier1Signer, supplier2Signer, supplier3Signer, borrower1Signer, borrower2Signer, borrower3Signer, liquidator1Signer, liquidator2Signer, liquidator3Signer].map(async (account) => {
           await underlyingContract.connect(account).faucet(amount);
           await underlyingContract.connect(account).approve(token.address, MaxUint256);
           await underlyingContract.connect(rootSigner).faucet(amount);
@@ -161,41 +136,13 @@ describe('VToken events', function () {
     await comptroller._setCloseFactor(parseUnits('0.1'));
 
     await comptroller._setMarketSupplyCaps(
-      [
-        vUsdcToken.address,
-        vWBnbToken.address,
-        vEthToken.address,
-        vFdusdToken.address,
-        vUsdtToken.address,
-        vDogeToken.address,
-      ],
-      [
-        parseUnits('500000'),
-        parseUnits('500'),
-        parseUnits('500'),
-        parseUnits('500000'),
-        parseUnits('500000'),
-        parseUnits('5000000000000'),
-      ],
+      [vUsdcToken.address, vWBnbToken.address, vEthToken.address, vFdusdToken.address, vUsdtToken.address, vDogeToken.address],
+      [parseUnits('500000'), parseUnits('500'), parseUnits('500'), parseUnits('500000'), parseUnits('500000'), parseUnits('5000000000000')],
     );
 
     await comptroller._setMarketBorrowCaps(
-      [
-        vUsdcToken.address,
-        vWBnbToken.address,
-        vEthToken.address,
-        vFdusdToken.address,
-        vUsdtToken.address,
-        vDogeToken.address,
-      ],
-      [
-        parseUnits('500000'),
-        parseUnits('500'),
-        parseUnits('500'),
-        parseUnits('500000'),
-        parseUnits('500000'),
-        parseUnits('5000000000000'),
-      ],
+      [vUsdcToken.address, vWBnbToken.address, vEthToken.address, vFdusdToken.address, vUsdtToken.address, vDogeToken.address],
+      [parseUnits('500000'), parseUnits('500'), parseUnits('500'), parseUnits('500000'), parseUnits('500000'), parseUnits('5000000000000')],
     );
 
     await comptroller._setCollateralFactor(vFdusdToken.address, parseUnits('0.9'));
@@ -215,7 +162,7 @@ describe('VToken events', function () {
           [vDogeToken, parseUnits('1000000000', 18).toString()],
           [vUsdtToken, parseUnits('100000', 18).toString()],
         ] as [Contract, string][]
-      ).map(async data => {
+      ).map(async (data) => {
         await fundAccounts(data[0], data[1]);
       }),
     );
@@ -226,18 +173,9 @@ describe('VToken events', function () {
   describe('Original VToken events', () => {
     it('should update correctly when minting', async function () {
       // Supply all accounts
-      const fdusd1000Usd = await oracle.getAssetTokenAmount(
-        vFdusdToken.address,
-        parseUnits('1000', 36),
-      );
-      const usdt2000Usd = await oracle.getAssetTokenAmount(
-        vUsdtToken.address,
-        parseUnits('2000', 36),
-      );
-      const doge1000Usd = await oracle.getAssetTokenAmount(
-        vDogeToken.address,
-        parseUnits('1000', 36),
-      );
+      const fdusd1000Usd = await oracle.getAssetTokenAmount(vFdusdToken.address, parseUnits('1000', 36));
+      const usdt2000Usd = await oracle.getAssetTokenAmount(vUsdtToken.address, parseUnits('2000', 36));
+      const doge1000Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('1000', 36));
 
       for (const account of suppliers) {
         await vDogeToken.connect(account).mint(doge1000Usd.toString());
@@ -286,18 +224,9 @@ describe('VToken events', function () {
 
     it('should not update correctly when mint again', async function () {
       // Supply all accounts
-      const fdusd100Usd = await oracle.getAssetTokenAmount(
-        vFdusdToken.address,
-        parseUnits('100', 36),
-      );
-      const usdt100Usd = await oracle.getAssetTokenAmount(
-        vUsdtToken.address,
-        parseUnits('100', 36),
-      );
-      const doge500Usd = await oracle.getAssetTokenAmount(
-        vDogeToken.address,
-        parseUnits('500', 36),
-      );
+      const fdusd100Usd = await oracle.getAssetTokenAmount(vFdusdToken.address, parseUnits('100', 36));
+      const usdt100Usd = await oracle.getAssetTokenAmount(vUsdtToken.address, parseUnits('100', 36));
+      const doge500Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('500', 36));
 
       for (const account of suppliers) {
         await vFdusdToken.connect(account).mint(fdusd100Usd.toString());
@@ -366,9 +295,7 @@ describe('VToken events', function () {
           marketId: vToken.address.toLowerCase(),
           accountId: supplier2Signer._address,
         });
-        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(
-          formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0],
-        ); // remove decimals
+        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0]); // remove decimals
       }
     });
 
@@ -391,15 +318,9 @@ describe('VToken events', function () {
     });
 
     it('should handle enter market', async function () {
-      await comptroller
-        .connect(borrower1Signer)
-        .enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
-      await comptroller
-        .connect(borrower2Signer)
-        .enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
-      await comptroller
-        .connect(borrower3Signer)
-        .enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
+      await comptroller.connect(borrower1Signer).enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
+      await comptroller.connect(borrower2Signer).enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
+      await comptroller.connect(borrower3Signer).enterMarkets([vFdusdToken.address, vUsdtToken.address, vDogeToken.address]);
 
       await waitForSubgraphToBeSynced(syncDelay);
 
@@ -467,15 +388,9 @@ describe('VToken events', function () {
     });
 
     it('should update the borrower count on the market for new borrows', async function () {
-      const doge1250Usd = await oracle.getAssetTokenAmount(
-        vDogeToken.address,
-        parseUnits('1250', 36),
-      );
+      const doge1250Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('1250', 36));
       const usdt50Usd = await oracle.getAssetTokenAmount(vUsdtToken.address, parseUnits('50', 36));
-      const fdusd50Usd = await oracle.getAssetTokenAmount(
-        vFdusdToken.address,
-        parseUnits('50', 36),
-      );
+      const fdusd50Usd = await oracle.getAssetTokenAmount(vFdusdToken.address, parseUnits('50', 36));
       await vUsdtToken.connect(borrower1Signer).borrow(usdt50Usd);
       await vDogeToken.connect(borrower2Signer).borrow(doge1250Usd);
       await vFdusdToken.connect(borrower3Signer).borrow(fdusd50Usd);
@@ -500,10 +415,7 @@ describe('VToken events', function () {
     });
 
     it('should not update the borrower count on the market for repeated borrows', async function () {
-      const doge1070Usd = await oracle.getAssetTokenAmount(
-        vDogeToken.address,
-        parseUnits('1070', 36),
-      );
+      const doge1070Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('1070', 36));
 
       await vDogeToken.connect(borrower2Signer).borrow(doge1070Usd);
 
@@ -564,10 +476,7 @@ describe('VToken events', function () {
     });
 
     it('should handle accrue interest event with added reserves', async function () {
-      const fdusd10Usd = await oracle.getAssetTokenAmount(
-        vFdusdToken.address,
-        parseUnits('10', 36),
-      );
+      const fdusd10Usd = await oracle.getAssetTokenAmount(vFdusdToken.address, parseUnits('10', 36));
       const doge50Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('50', 36));
       for (const [vToken, amount] of [
         [vFdusdToken, fdusd10Usd],
@@ -598,9 +507,7 @@ describe('VToken events', function () {
 
       const doge10Usd = await oracle.getAssetTokenAmount(vDogeToken.address, parseUnits('10', 36));
 
-      await vDogeToken
-        .connect(liquidator1Signer)
-        .liquidateBorrow(borrower2Signer._address, doge10Usd.toString(), vFdusdToken.address);
+      await vDogeToken.connect(liquidator1Signer).liquidateBorrow(borrower2Signer._address, doge10Usd.toString(), vFdusdToken.address);
 
       await waitForSubgraphToBeSynced(syncDelay);
 
@@ -619,12 +526,7 @@ describe('VToken events', function () {
       expect(market?.xvsBorrowStateIndex).to.equal(borrowState.index.toString());
       expect(market?.xvsBorrowStateBlock).to.equal(borrowState.block.toString());
 
-      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(
-        ethers.BigNumber.from(
-          await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address),
-        ),
-        1e11,
-      );
+      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(ethers.BigNumber.from(await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address)), 1e11);
       expect(accountVToken?.borrowIndex || '0').to.equal(await vDogeToken.borrowIndex());
 
       const {
@@ -643,17 +545,13 @@ describe('VToken events', function () {
       } = await subgraphClient.getMarketById(vFdusdToken.address.toLowerCase());
       expect(marketUpdated?.supplierCount).to.equal('6');
 
-      const { data: liquidatorAccountVTokenData } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
-          accountId: liquidator1Signer._address.toLowerCase(),
-          marketId: vFdusdToken.address.toLowerCase(),
-        });
+      const { data: liquidatorAccountVTokenData } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        accountId: liquidator1Signer._address.toLowerCase(),
+        marketId: vFdusdToken.address.toLowerCase(),
+      });
       const { accountVToken: liquidatorAccountVToken } = liquidatorAccountVTokenData!;
 
-      expect(liquidatorAccountVToken.vTokenBalanceMantissa).to.be.approximately(
-        ethers.BigNumber.from(await vFdusdToken.balanceOf(liquidator1Signer._address)),
-        1e11,
-      );
+      expect(liquidatorAccountVToken.vTokenBalanceMantissa).to.be.approximately(ethers.BigNumber.from(await vFdusdToken.balanceOf(liquidator1Signer._address)), 1e11);
 
       // Reset prices
       await oracle.setPrice(vFdusdToken.address, parseUnits('1', 18).toString());
@@ -667,9 +565,7 @@ describe('VToken events', function () {
         marketId: vDogeToken.address.toLowerCase(),
         accountId: borrower2Signer._address,
       });
-      const borrowBalance = await vDogeToken.callStatic.borrowBalanceCurrent(
-        borrower2Signer._address,
-      );
+      const borrowBalance = await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address);
 
       const repayAmount = borrowBalance.add(9225884015468);
       await vDogeToken.connect(borrower2Signer).repayBorrow(repayAmount.toString());
@@ -681,9 +577,7 @@ describe('VToken events', function () {
       const {
         data: { market },
       } = await subgraphClient.getMarketById(vDogeToken.address.toLowerCase());
-      expect(await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address)).to.equal(
-        0,
-      );
+      expect(await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address)).to.equal(0);
       expect(market?.borrowerCountAdjusted).to.equal('0');
       expect(market?.borrowerCount).to.equal('0');
       expect(market?.totalBorrowsMantissa).to.equal((await vDogeToken.totalBorrows()).toString());
@@ -697,10 +591,7 @@ describe('VToken events', function () {
         marketId: vDogeToken.address.toLowerCase(),
         accountId: borrower2Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(
-        ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
-        1e10,
-      );
+      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount), 1e10);
     });
 
     it('should handle transfer event', async function () {
@@ -712,9 +603,7 @@ describe('VToken events', function () {
         const supplierBalance = (await vToken.balanceOf(supplier._address)).div(2);
         const liquidatorBalance = await vToken.balanceOf(liquidator1Signer._address);
 
-        await vToken
-          .connect(supplier)
-          .transfer(liquidator1Signer._address, supplierBalance.toString());
+        await vToken.connect(supplier).transfer(liquidator1Signer._address, supplierBalance.toString());
 
         await waitForSubgraphToBeSynced(syncDelay);
 
@@ -733,9 +622,7 @@ describe('VToken events', function () {
           marketId: vToken.address.toLowerCase(),
           accountId: liquidator1Signer._address,
         });
-        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(
-          liquidatorBalance.add(supplierBalance).toString(),
-        );
+        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(liquidatorBalance.add(supplierBalance).toString());
 
         const {
           data: { market },
@@ -751,18 +638,9 @@ describe('VToken events', function () {
   describe('Updated VToken events', () => {
     it('should update the supplier count on the market when new minting', async function () {
       // Supply all accounts
-      const usdc1000Usd = await oracle.getAssetTokenAmount(
-        vUsdcToken.address,
-        parseUnits('1000', 36),
-      );
-      const bnb1000Usd = await oracle.getAssetTokenAmount(
-        vWBnbToken.address,
-        parseUnits('1000', 36),
-      );
-      const eth2000Usd = await oracle.getAssetTokenAmount(
-        vEthToken.address,
-        parseUnits('2000', 36),
-      );
+      const usdc1000Usd = await oracle.getAssetTokenAmount(vUsdcToken.address, parseUnits('1000', 36));
+      const bnb1000Usd = await oracle.getAssetTokenAmount(vWBnbToken.address, parseUnits('1000', 36));
+      const eth2000Usd = await oracle.getAssetTokenAmount(vEthToken.address, parseUnits('2000', 36));
 
       for (const account of suppliers) {
         await vUsdcToken.connect(account).mint(usdc1000Usd.toString());
@@ -809,18 +687,9 @@ describe('VToken events', function () {
 
     it('should not update the supplier count on the market when current accounts mint again', async function () {
       // Supply all accounts
-      const usdc1000Usd = await oracle.getAssetTokenAmount(
-        vUsdcToken.address,
-        parseUnits('1000', 36),
-      );
-      const bnb1000Usd = await oracle.getAssetTokenAmount(
-        vWBnbToken.address,
-        parseUnits('1000', 36),
-      );
-      const eth2000Usd = await oracle.getAssetTokenAmount(
-        vEthToken.address,
-        parseUnits('2000', 36),
-      );
+      const usdc1000Usd = await oracle.getAssetTokenAmount(vUsdcToken.address, parseUnits('1000', 36));
+      const bnb1000Usd = await oracle.getAssetTokenAmount(vWBnbToken.address, parseUnits('1000', 36));
+      const eth2000Usd = await oracle.getAssetTokenAmount(vEthToken.address, parseUnits('2000', 36));
 
       for (const account of suppliers) {
         await vUsdcToken.connect(account).mint(usdc1000Usd.toString());
@@ -886,9 +755,7 @@ describe('VToken events', function () {
           marketId: vToken.address.toLowerCase(),
           accountId: supplier2Signer._address,
         });
-        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(
-          formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0],
-        ); // remove decimals
+        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0]); // remove decimals
       }
     });
 
@@ -908,15 +775,9 @@ describe('VToken events', function () {
     });
 
     it('should handle enter market', async function () {
-      await comptroller
-        .connect(borrower1Signer)
-        .enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
-      await comptroller
-        .connect(borrower2Signer)
-        .enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
-      await comptroller
-        .connect(borrower3Signer)
-        .enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
+      await comptroller.connect(borrower1Signer).enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
+      await comptroller.connect(borrower2Signer).enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
+      await comptroller.connect(borrower3Signer).enterMarkets([vUsdcToken.address, vWBnbToken.address, vEthToken.address]);
 
       await waitForSubgraphToBeSynced(syncDelay);
 
@@ -984,16 +845,10 @@ describe('VToken events', function () {
     });
 
     it('should update the borrower count on the market for new borrows', async function () {
-      const eth3000Usd = await oracle.getAssetTokenAmount(
-        vEthToken.address,
-        parseUnits('3000', 36),
-      );
+      const eth3000Usd = await oracle.getAssetTokenAmount(vEthToken.address, parseUnits('3000', 36));
 
       const bnb500Usd = await oracle.getAssetTokenAmount(vWBnbToken.address, parseUnits('500', 36));
-      const usdc500Usd = await oracle.getAssetTokenAmount(
-        vUsdcToken.address,
-        parseUnits('500', 36),
-      );
+      const usdc500Usd = await oracle.getAssetTokenAmount(vUsdcToken.address, parseUnits('500', 36));
 
       await vEthToken.connect(borrower1Signer).borrow(eth3000Usd);
       await vWBnbToken.connect(borrower2Signer).borrow(bnb500Usd);
@@ -1018,10 +873,7 @@ describe('VToken events', function () {
     });
 
     it('should not update the borrower count on the market for repeated borrows', async function () {
-      const eth2010Usd = await oracle.getAssetTokenAmount(
-        vEthToken.address,
-        parseUnits('2010', 36),
-      );
+      const eth2010Usd = await oracle.getAssetTokenAmount(vEthToken.address, parseUnits('2010', 36));
 
       await vEthToken.connect(borrower1Signer).borrow(eth2010Usd);
 
@@ -1114,9 +966,7 @@ describe('VToken events', function () {
       await oracle.setPrice(vEthToken.address, parseUnits('50000', 18).toString());
       await oracle.setPrice(vUsdcToken.address, parseUnits('0.9', 18).toString());
       const eth200Usd = await oracle.getAssetTokenAmount(vEthToken.address, parseUnits('200', 36));
-      await vEthToken
-        .connect(liquidator1Signer)
-        .liquidateBorrow(borrower1Signer._address, eth200Usd.toString(), vUsdcToken.address);
+      await vEthToken.connect(liquidator1Signer).liquidateBorrow(borrower1Signer._address, eth200Usd.toString(), vUsdcToken.address);
       await waitForSubgraphToBeSynced(syncDelay);
 
       const {
@@ -1126,12 +976,7 @@ describe('VToken events', function () {
         accountId: borrower1Signer._address,
       });
 
-      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(
-        ethers.BigNumber.from(
-          await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address),
-        ),
-        1e11,
-      );
+      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(ethers.BigNumber.from(await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address)), 1e11);
       expect(accountVToken?.borrowIndex || '0').to.equal(await vEthToken.borrowIndex());
 
       const {
@@ -1163,9 +1008,7 @@ describe('VToken events', function () {
         marketId: vEthToken.address.toLowerCase(),
         accountId: borrower1Signer._address,
       });
-      const borrowBalance = await vEthToken.callStatic.borrowBalanceCurrent(
-        borrower1Signer._address,
-      );
+      const borrowBalance = await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address);
 
       const repayAmount = borrowBalance.add(1174890622);
 
@@ -1178,9 +1021,7 @@ describe('VToken events', function () {
       const {
         data: { market },
       } = await subgraphClient.getMarketById(vEthToken.address.toLowerCase());
-      expect(
-        await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address),
-      ).to.be.lessThanOrEqual(10);
+      expect(await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address)).to.be.lessThanOrEqual(10);
       expect(market?.borrowerCountAdjusted).to.equal('0');
       expect(+market?.borrowerCount).to.be.lessThanOrEqual(1);
       expect(market?.totalBorrowsMantissa).to.equal((await vEthToken.totalBorrows()).toString());
@@ -1194,10 +1035,7 @@ describe('VToken events', function () {
         marketId: vEthToken.address.toLowerCase(),
         accountId: borrower1Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(
-        ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
-        1e10,
-      );
+      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount), 1e10);
     });
 
     it('should handle transfer event', async function () {
@@ -1209,9 +1047,7 @@ describe('VToken events', function () {
         const supplierBalance = (await vToken.balanceOf(supplier._address)).div(2);
         const liquidatorBalance = await vToken.balanceOf(liquidator1Signer._address);
 
-        await vToken
-          .connect(supplier)
-          .transfer(liquidator1Signer._address, supplierBalance.toString());
+        await vToken.connect(supplier).transfer(liquidator1Signer._address, supplierBalance.toString());
 
         await waitForSubgraphToBeSynced(syncDelay);
 
@@ -1238,9 +1074,7 @@ describe('VToken events', function () {
           marketId: vToken.address.toLowerCase(),
           accountId: liquidator1Signer._address,
         });
-        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(
-          liquidatorBalance.add(supplierBalance).toString(),
-        );
+        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(liquidatorBalance.add(supplierBalance).toString());
       }
     });
   });

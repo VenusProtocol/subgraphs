@@ -6,10 +6,8 @@ import subgraphClient from '../../subgraph-client';
 
 export const checkMarket = async (marketAddress: string) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
-  const { accountVTokens: accountVTokensSupply } =
-    await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase());
-  const { accountVTokens: accountVTokensBorrow } =
-    await subgraphClient.getAccountVTokensWithBorrowByMarketId(marketAddress.toLowerCase());
+  const { accountVTokens: accountVTokensSupply } = await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase());
+  const { accountVTokens: accountVTokensBorrow } = await subgraphClient.getAccountVTokensWithBorrowByMarketId(marketAddress.toLowerCase());
   const { market } = await subgraphClient.getMarketById(marketAddress.toLowerCase());
   expect(market?.supplierCount).to.equal(accountVTokensSupply.length.toString());
   expect(market?.borrowerCount).to.equal(accountVTokensBorrow.length.toString());
@@ -27,11 +25,7 @@ export const checkMarket = async (marketAddress: string) => {
   return market;
 };
 
-export const checkAccountVToken = async (
-  accountAddress: string,
-  marketAddress: string,
-  transaction: TransactionResponse,
-) => {
+export const checkAccountVToken = async (accountAddress: string, marketAddress: string, transaction: TransactionResponse) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
 
   const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
@@ -40,9 +34,7 @@ export const checkAccountVToken = async (
   });
   expect(accountVToken!.accrualBlockNumber).to.equal(transaction.blockNumber);
   expect(accountVToken!.vTokenBalanceMantissa).to.equal(await vToken.balanceOf(accountAddress));
-  expect(accountVToken!.storedBorrowBalanceMantissa).to.equal(
-    await vToken.borrowBalanceStored(accountAddress),
-  );
+  expect(accountVToken!.storedBorrowBalanceMantissa).to.equal(await vToken.borrowBalanceStored(accountAddress));
   expect(accountVToken!.borrowIndex).to.equal(await vToken.borrowIndex());
   expect(accountVToken!.enteredMarket).to.equal(await vToken.checkMembership(accountAddress));
 };

@@ -1,19 +1,13 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import {
-  PoolNameSet as PoolNameSetEvent,
-  PoolRegistered as PoolRegisteredEvent,
-} from '../../generated/PoolRegistry/PoolRegistry';
+import { PoolNameSet as PoolNameSetEvent, PoolRegistered as PoolRegisteredEvent } from '../../generated/PoolRegistry/PoolRegistry';
 
 export const createPoolRegisteredEvent = (comptrollerAddress: Address): PoolRegisteredEvent => {
   const event = changetype<PoolRegisteredEvent>(newMockEvent());
 
   event.parameters = [];
-  const comptrollerParam = new ethereum.EventParam(
-    'comptroller',
-    ethereum.Value.fromAddress(comptrollerAddress),
-  );
+  const comptrollerParam = new ethereum.EventParam('comptroller', ethereum.Value.fromAddress(comptrollerAddress));
   event.parameters.push(comptrollerParam);
 
   const tupleArray: Array<ethereum.Value> = [
@@ -32,19 +26,12 @@ export const createPoolRegisteredEvent = (comptrollerAddress: Address): PoolRegi
   return event;
 };
 
-export const createPoolNameSetEvent = (
-  comptrollerAddress: Address,
-  oldName: string,
-  newName: string,
-): PoolNameSetEvent => {
+export const createPoolNameSetEvent = (comptrollerAddress: Address, oldName: string, newName: string): PoolNameSetEvent => {
   const event = changetype<PoolNameSetEvent>(newMockEvent());
 
   event.parameters = [];
 
-  const indexParam = new ethereum.EventParam(
-    'comptroller',
-    ethereum.Value.fromAddress(comptrollerAddress),
-  );
+  const indexParam = new ethereum.EventParam('comptroller', ethereum.Value.fromAddress(comptrollerAddress));
   event.parameters.push(indexParam);
 
   const oldNameParam = new ethereum.EventParam('oldName', ethereum.Value.fromString(oldName));

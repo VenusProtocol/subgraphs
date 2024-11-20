@@ -2,18 +2,9 @@ import { Address, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
 import { OmnichainGovernanceExecutor } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import { SetMinDstGas } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
-import {
-  DestinationChain,
-  FunctionRegistry,
-  Governance,
-  GovernanceRoute,
-  Transaction,
-} from '../../generated/schema';
+import { DestinationChain, FunctionRegistry, Governance, GovernanceRoute, Transaction } from '../../generated/schema';
 import { BIGINT_ZERO, indexProposalTypeConstant } from '../constants';
-import {
-  omnichainExecutorOwnerAddress,
-  omnichainGovernanceOwnerAddress,
-} from '../constants/addresses';
+import { omnichainExecutorOwnerAddress, omnichainGovernanceOwnerAddress } from '../constants/addresses';
 import { layerZeroChainId } from '../constants/config';
 import { getDestinationChainId, getGovernanceId, getGovernanceRouteId } from '../utilities/ids';
 
@@ -44,10 +35,7 @@ export const getOrCreateGovernance = (): Governance => {
   return governance;
 };
 
-export const getOrCreateGovernanceRoute = (
-  routeType: i32,
-  timelockAddress: Address,
-): GovernanceRoute => {
+export const getOrCreateGovernanceRoute = (routeType: i32, timelockAddress: Address): GovernanceRoute => {
   let governanceRoute = GovernanceRoute.load(getGovernanceRouteId(routeType));
   if (!governanceRoute) {
     governanceRoute = new GovernanceRoute(getGovernanceRouteId(routeType));

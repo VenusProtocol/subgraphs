@@ -23,10 +23,7 @@ export function getTokenPriceCents(eventAddress: Address, underlyingDecimals: i3
   const mantissaDecimalFactor = 36 - underlyingDecimals;
   const bdFactor = exponentToBigInt(mantissaDecimalFactor);
   const oracle2 = PriceOracle.bind(oracleAddress);
-  const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(
-    oracle2.try_getUnderlyingPrice(eventAddress),
-    'PriceOracle try_getUnderlyingPrice',
-  );
+  const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(oracle2.try_getUnderlyingPrice(eventAddress), 'PriceOracle try_getUnderlyingPrice');
   if (oracleUnderlyingPrice.equals(BigInt.zero())) {
     return oracleUnderlyingPrice;
   }

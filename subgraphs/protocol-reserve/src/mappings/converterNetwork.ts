@@ -1,7 +1,4 @@
-import {
-  ConverterAdded,
-  ConverterRemoved,
-} from '../../generated/ConverterNetwork/ConverterNetwork';
+import { ConverterAdded, ConverterRemoved } from '../../generated/ConverterNetwork/ConverterNetwork';
 import { getOrCreateConverterNetwork, getOrCreateTokenConverter } from '../operations/getOrCreate';
 import { getConverterNetworkId } from '../utilities/ids';
 

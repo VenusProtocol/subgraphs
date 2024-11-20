@@ -1,23 +1,12 @@
 import { ethereum, log } from '@graphprotocol/graph-ts';
 
-import {
-  ProposalCanceled,
-  ProposalCreated,
-  ProposalExecuted,
-  ProposalQueued,
-  VoteCast,
-} from '../../generated/GovernorAlpha/GovernorAlpha';
+import { ProposalCanceled, ProposalCreated, ProposalExecuted, ProposalQueued, VoteCast } from '../../generated/GovernorAlpha/GovernorAlpha';
 import { Governance } from '../../generated/schema';
 import { BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import { createProposal, createVoteAlpha } from '../operations/create';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
-import {
-  updateAlphaProposalVotes,
-  updateProposalCanceled,
-  updateProposalExecuted,
-  updateProposalQueued,
-} from '../operations/update';
+import { updateAlphaProposalVotes, updateProposalCanceled, updateProposalExecuted, updateProposalQueued } from '../operations/update';
 import { getGovernanceId } from '../utilities/ids';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -47,10 +36,7 @@ export function handleProposalCreated(event: ProposalCreated): void {
   // checking if the proposer was a delegate already accounted for, if not we should log an error
   // since it shouldn't be possible for a delegate to propose anything without first being "created"
   if (created) {
-    log.error('Delegate {} not found on ProposalCreated. tx_hash: {}', [
-      event.params.proposer.toHexString(),
-      event.transaction.hash.toHexString(),
-    ]);
+    log.error('Delegate {} not found on ProposalCreated. tx_hash: {}', [event.params.proposer.toHexString(), event.transaction.hash.toHexString()]);
   }
 }
 

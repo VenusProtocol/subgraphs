@@ -4,12 +4,7 @@
 import { BigInt } from '@graphprotocol/graph-ts';
 import { store } from '@graphprotocol/graph-ts';
 
-import {
-  DelegateChangedV2,
-  DelegateVotesChangedV2,
-  Deposit,
-  RequestedWithdrawal,
-} from '../../generated/XVSVault/XVSVault';
+import { DelegateChangedV2, DelegateVotesChangedV2, Deposit, RequestedWithdrawal } from '../../generated/XVSVault/XVSVault';
 import { xvsVaultPid } from '../constants/config';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import { updateDelegateChanged, updateDelegateVoteChanged } from '../operations/update';

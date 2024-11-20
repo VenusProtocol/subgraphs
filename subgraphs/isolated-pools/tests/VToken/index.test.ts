@@ -1,25 +1,8 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { createMockedFunction } from 'matchstick-as';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  beforeEach,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import {
-  BORROW,
-  LIQUIDATE,
-  MINT,
-  REDEEM,
-  REPAY,
-  TRANSFER,
-  oneBigInt,
-  zeroBigInt32,
-} from '../../src/constants';
+import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, oneBigInt, zeroBigInt32 } from '../../src/constants';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import {
   handleAccrueInterest,
@@ -77,29 +60,9 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
-  createVBep20AndUnderlyingMock(
-    aTokenAddress,
-    underlying1Address,
-    comptrollerAddress,
-    'AAA Coin',
-    'AAA',
-    BigInt.fromI32(18),
-    BigInt.fromI32(100),
-    interestRateModelAddress,
-    underlyingPrice,
-  );
+  createVBep20AndUnderlyingMock(aTokenAddress, underlying1Address, comptrollerAddress, 'AAA Coin', 'AAA', BigInt.fromI32(18), BigInt.fromI32(100), interestRateModelAddress, underlyingPrice);
 
-  createVBep20AndUnderlyingMock(
-    bTokenAddress,
-    underlying2Address,
-    comptrollerAddress,
-    'AAA Coin',
-    'AAA',
-    BigInt.fromI32(18),
-    BigInt.fromI32(100),
-    interestRateModelAddress,
-    underlyingPrice,
-  );
+  createVBep20AndUnderlyingMock(bTokenAddress, underlying2Address, comptrollerAddress, 'AAA Coin', 'AAA', BigInt.fromI32(18), BigInt.fromI32(100), interestRateModelAddress, underlyingPrice);
 
   createMarketMock(aTokenAddress);
 
@@ -110,11 +73,7 @@ beforeAll(() => {
   createAccountVTokenBalanceOfMock(aTokenAddress, user1Address, zeroBigInt32);
   createAccountVTokenBalanceOfMock(bTokenAddress, user1Address, zeroBigInt32);
   const balanceOfAccount = BigInt.fromI32(100);
-  createMockedFunction(
-    bTokenAddress,
-    'getAccountSnapshot',
-    'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-  )
+  createMockedFunction(bTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
     .withArgs([ethereum.Value.fromAddress(user1Address)])
     .returns([
       ethereum.Value.fromSignedBigInt(zeroBigInt32),
@@ -123,19 +82,11 @@ beforeAll(() => {
       ethereum.Value.fromSignedBigInt(oneBigInt),
     ]);
 
-  createMockedFunction(
-    aTokenAddress,
-    'borrowBalanceStored',
-    'borrowBalanceStored(address):(uint256)',
-  )
+  createMockedFunction(aTokenAddress, 'borrowBalanceStored', 'borrowBalanceStored(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(user1Address)])
     .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
 
-  createMockedFunction(
-    aTokenAddress,
-    'borrowBalanceStored',
-    'borrowBalanceStored(address):(uint256)',
-  )
+  createMockedFunction(aTokenAddress, 'borrowBalanceStored', 'borrowBalanceStored(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(user2Address)])
     .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(5))]);
 });
@@ -163,25 +114,10 @@ describe('VToken', () => {
     const actualMintAmount = BigInt.fromString('124620530798726345');
     const mintTokens = BigInt.fromString('37035970026454');
     const accountBalance = mintTokens;
-    const mintEvent = createMintEvent(
-      aTokenAddress,
-      minter,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    const mintEvent = createMintEvent(aTokenAddress, minter, actualMintAmount, mintTokens, accountBalance);
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(minter)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(mintTokens),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+      .returns([ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(mintTokens), ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(oneBigInt)]);
 
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
@@ -190,10 +126,7 @@ describe('VToken', () => {
     }
 
     handleMint(mintEvent);
-    const id = getTransactionEventId(
-      mintEvent.transaction.hash,
-      mintEvent.transactionLogIndex,
-    ).toHexString();
+    const id = getTransactionEventId(mintEvent.transaction.hash, mintEvent.transactionLogIndex).toHexString();
     assert.fieldEquals('Transaction', id, 'id', id);
     assert.fieldEquals('Transaction', id, 'type', MINT);
     assert.fieldEquals('Transaction', id, 'from', mintEvent.address.toHexString());
@@ -206,30 +139,10 @@ describe('VToken', () => {
     const accountVTokenId = getAccountVTokenId(aTokenAddress, minter).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', minter.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      oneBigInt.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'vTokenBalanceMantissa',
-      accountBalance.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'storedBorrowBalanceMantissa',
-      zeroBigInt32.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingRedeemedMantissa',
-      zeroBigInt32.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', oneBigInt.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'vTokenBalanceMantissa', accountBalance.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'storedBorrowBalanceMantissa', zeroBigInt32.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingRedeemedMantissa', zeroBigInt32.toString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
   });
 
@@ -238,18 +151,8 @@ describe('VToken', () => {
     const actualRedeemAmount = BigInt.fromString('124620530798726345');
     const redeemTokens = BigInt.fromString('37035970026454');
     const accountBalance = zeroBigInt32;
-    const redeemEvent = createRedeemEvent(
-      aTokenAddress,
-      redeemer,
-      actualRedeemAmount,
-      redeemTokens,
-      accountBalance,
-    );
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    const redeemEvent = createRedeemEvent(aTokenAddress, redeemer, actualRedeemAmount, redeemTokens, accountBalance);
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(redeemer)])
       .returns([
         ethereum.Value.fromSignedBigInt(zeroBigInt32),
@@ -264,10 +167,7 @@ describe('VToken', () => {
     }
 
     handleRedeem(redeemEvent);
-    const id = getTransactionEventId(
-      redeemEvent.transaction.hash,
-      redeemEvent.transactionLogIndex,
-    ).toHexString();
+    const id = getTransactionEventId(redeemEvent.transaction.hash, redeemEvent.transactionLogIndex).toHexString();
     assert.fieldEquals('Transaction', id, 'id', id);
     assert.fieldEquals('Transaction', id, 'type', REDEEM);
     assert.fieldEquals('Transaction', id, 'from', redeemEvent.address.toHexString());
@@ -280,30 +180,10 @@ describe('VToken', () => {
     const accountVTokenId = getAccountVTokenId(aTokenAddress, redeemer).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', redeemer.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      oneBigInt.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'vTokenBalanceMantissa',
-      zeroBigInt32.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'storedBorrowBalanceMantissa',
-      zeroBigInt32.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'totalUnderlyingRedeemedMantissa',
-      zeroBigInt32.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', oneBigInt.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'vTokenBalanceMantissa', zeroBigInt32.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'storedBorrowBalanceMantissa', zeroBigInt32.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'totalUnderlyingRedeemedMantissa', zeroBigInt32.toString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', zeroBigInt32.toString());
   });
 
@@ -315,19 +195,9 @@ describe('VToken', () => {
     const totalBorrows = BigInt.fromString('37035970026454');
 
     /** Setup test */
-    const borrowEvent = createBorrowEvent(
-      aTokenAddress,
-      borrower,
-      borrowAmount,
-      accountBorrows,
-      totalBorrows,
-    );
+    const borrowEvent = createBorrowEvent(aTokenAddress, borrower, borrowAmount, accountBorrows, totalBorrows);
 
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(borrower)])
       .returns([
         ethereum.Value.fromSignedBigInt(zeroBigInt32),
@@ -339,10 +209,7 @@ describe('VToken', () => {
     /** Fire Event */
     handleBorrow(borrowEvent);
 
-    const transactionId = getTransactionEventId(
-      borrowEvent.transaction.hash,
-      borrowEvent.transactionLogIndex,
-    ).toHexString();
+    const transactionId = getTransactionEventId(borrowEvent.transaction.hash, borrowEvent.transactionLogIndex).toHexString();
     const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
@@ -354,37 +221,12 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', transactionId, 'type', BORROW);
     assert.fieldEquals('Transaction', transactionId, 'from', borrowEvent.address.toHexString());
     assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockNumber',
-      borrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockTime',
-      borrowEvent.block.timestamp.toString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'blockNumber', borrowEvent.block.number.toString());
+    assert.fieldEquals('Transaction', transactionId, 'blockTime', borrowEvent.block.timestamp.toString());
 
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      borrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'storedBorrowBalanceMantissa',
-      accountBorrows.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'borrowIndex',
-      market.borrowIndexMantissa.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', borrowEvent.block.number.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'storedBorrowBalanceMantissa', accountBorrows.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', market.borrowIndexMantissa.toString());
   });
 
   test('registers repay borrow event', () => {
@@ -397,20 +239,9 @@ describe('VToken', () => {
     const balanceOf = BigInt.fromString('9937035970026454');
 
     /** Setup test */
-    const repayBorrowEvent = createRepayBorrowEvent(
-      aTokenAddress,
-      payer,
-      borrower,
-      repayAmount,
-      accountBorrows,
-      totalBorrows,
-    );
+    const repayBorrowEvent = createRepayBorrowEvent(aTokenAddress, payer, borrower, repayAmount, accountBorrows, totalBorrows);
 
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(borrower)])
       .returns([
         ethereum.Value.fromSignedBigInt(zeroBigInt32),
@@ -422,10 +253,7 @@ describe('VToken', () => {
     /** Fire Event */
     handleRepayBorrow(repayBorrowEvent);
 
-    const transactionId = getTransactionEventId(
-      repayBorrowEvent.transaction.hash,
-      repayBorrowEvent.transactionLogIndex,
-    ).toHexString();
+    const transactionId = getTransactionEventId(repayBorrowEvent.transaction.hash, repayBorrowEvent.transactionLogIndex).toHexString();
     const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
@@ -435,44 +263,14 @@ describe('VToken', () => {
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', REPAY);
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'from',
-      repayBorrowEvent.address.toHexString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'from', repayBorrowEvent.address.toHexString());
     assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockNumber',
-      repayBorrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockTime',
-      repayBorrowEvent.block.timestamp.toString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'blockNumber', repayBorrowEvent.block.number.toString());
+    assert.fieldEquals('Transaction', transactionId, 'blockTime', repayBorrowEvent.block.timestamp.toString());
 
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      repayBorrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'storedBorrowBalanceMantissa',
-      accountBorrows.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'borrowIndex',
-      market.borrowIndexMantissa.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', repayBorrowEvent.block.number.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'storedBorrowBalanceMantissa', accountBorrows.toString());
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', market.borrowIndexMantissa.toString());
   });
 
   test('registers liquidate borrow event', () => {
@@ -484,22 +282,12 @@ describe('VToken', () => {
     const vTokenCollateral = bTokenAddress;
 
     /** Setup test */
-    const liquidateBorrowEvent = createLiquidateBorrowEvent(
-      aTokenAddress,
-      liquidator,
-      borrower,
-      repayAmount,
-      vTokenCollateral,
-      seizeTokens,
-    );
+    const liquidateBorrowEvent = createLiquidateBorrowEvent(aTokenAddress, liquidator, borrower, repayAmount, vTokenCollateral, seizeTokens);
 
     /** Fire Event */
     handleLiquidateBorrow(liquidateBorrowEvent);
 
-    const transactionId = getTransactionEventId(
-      liquidateBorrowEvent.transaction.hash,
-      liquidateBorrowEvent.transactionLogIndex,
-    ).toHexString();
+    const transactionId = getTransactionEventId(liquidateBorrowEvent.transaction.hash, liquidateBorrowEvent.transactionLogIndex).toHexString();
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -508,25 +296,10 @@ describe('VToken', () => {
 
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
     assert.fieldEquals('Transaction', transactionId, 'type', LIQUIDATE);
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'from',
-      liquidateBorrowEvent.address.toHexString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'from', liquidateBorrowEvent.address.toHexString());
     assert.fieldEquals('Transaction', transactionId, 'to', borrower.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockNumber',
-      liquidateBorrowEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockTime',
-      liquidateBorrowEvent.block.timestamp.toString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'blockNumber', liquidateBorrowEvent.block.number.toString());
+    assert.fieldEquals('Transaction', transactionId, 'blockTime', liquidateBorrowEvent.block.timestamp.toString());
   });
 
   test('registers accrue interest event', () => {
@@ -537,13 +310,7 @@ describe('VToken', () => {
     const totalBorrows = BigInt.fromString('62197468301');
 
     /** Setup test */
-    const accrueInterestEvent = createAccrueInterestEvent(
-      aTokenAddress,
-      cashPrior,
-      interestAccumulated,
-      borrowIndex,
-      totalBorrows,
-    );
+    const accrueInterestEvent = createAccrueInterestEvent(aTokenAddress, cashPrior, interestAccumulated, borrowIndex, totalBorrows);
 
     /** Fire Event */
     handleAccrueInterest(accrueInterestEvent);
@@ -567,20 +334,11 @@ describe('VToken', () => {
   test('registers new reserve factor', () => {
     const oldReserveFactor = BigInt.fromI64(12462053079875);
     const newReserveFactor = BigInt.fromI64(37035970026454);
-    const reserveFactorEvent = createNewReserveFactorEvent(
-      aTokenAddress,
-      oldReserveFactor,
-      newReserveFactor,
-    );
+    const reserveFactorEvent = createNewReserveFactorEvent(aTokenAddress, oldReserveFactor, newReserveFactor);
 
     handleNewReserveFactor(reserveFactorEvent);
     assert.fieldEquals('Market', aTokenAddress.toHex(), 'id', aTokenAddress.toHexString());
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHex(),
-      'reserveFactorMantissa',
-      newReserveFactor.toString(),
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHex(), 'reserveFactorMantissa', newReserveFactor.toString());
   });
 
   test('registers transfer from event', () => {
@@ -592,26 +350,14 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+      .returns([ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(balanceOf), ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(oneBigInt)]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
 
-    const transactionId = getTransactionEventId(
-      transferEvent.transaction.hash,
-      transferEvent.transactionLogIndex,
-    ).toHexString();
+    const transactionId = getTransactionEventId(transferEvent.transaction.hash, transferEvent.transactionLogIndex).toHexString();
     const accountVTokenId = getAccountVTokenId(aTokenAddress, from).toHexString();
 
     /** Transaction */
@@ -619,25 +365,10 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER);
     assert.fieldEquals('Transaction', transactionId, 'from', from.toHexString());
     assert.fieldEquals('Transaction', transactionId, 'to', to.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockNumber',
-      transferEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockTime',
-      transferEvent.block.timestamp.toString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'blockNumber', transferEvent.block.number.toString());
+    assert.fieldEquals('Transaction', transactionId, 'blockTime', transferEvent.block.timestamp.toString());
     /** AccountVToken */
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', transferEvent.block.number.toString());
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
 
@@ -653,38 +384,17 @@ describe('VToken', () => {
 
     /** Setup test */
     const transferEvent = createTransferEvent(aTokenAddress, from, to, amount);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(to)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
-    createMockedFunction(
-      aTokenAddress,
-      'getAccountSnapshot',
-      'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)',
-    )
+      .returns([ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(balanceOf), ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(oneBigInt)]);
+    createMockedFunction(aTokenAddress, 'getAccountSnapshot', 'getAccountSnapshot(address):(uint256,uint256,uint256,uint256)')
       .withArgs([ethereum.Value.fromAddress(from)])
-      .returns([
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(balanceOf),
-        ethereum.Value.fromSignedBigInt(zeroBigInt32),
-        ethereum.Value.fromSignedBigInt(oneBigInt),
-      ]);
+      .returns([ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(balanceOf), ethereum.Value.fromSignedBigInt(zeroBigInt32), ethereum.Value.fromSignedBigInt(oneBigInt)]);
 
     /** Fire Event */
     handleTransfer(transferEvent);
 
-    const transactionId = getTransactionEventId(
-      transferEvent.transaction.hash,
-      transferEvent.transactionLogIndex,
-    ).toHexString();
+    const transactionId = getTransactionEventId(transferEvent.transaction.hash, transferEvent.transactionLogIndex).toHexString();
     const accountVTokenId = getAccountVTokenId(aTokenAddress, to).toHexString();
 
     /** Transaction */
@@ -692,25 +402,10 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', transactionId, 'type', TRANSFER);
     assert.fieldEquals('Transaction', transactionId, 'to', to.toHexString());
     assert.fieldEquals('Transaction', transactionId, 'from', from.toHexString());
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockNumber',
-      transferEvent.block.number.toString(),
-    );
-    assert.fieldEquals(
-      'Transaction',
-      transactionId,
-      'blockTime',
-      transferEvent.block.timestamp.toString(),
-    );
+    assert.fieldEquals('Transaction', transactionId, 'blockNumber', transferEvent.block.number.toString());
+    assert.fieldEquals('Transaction', transactionId, 'blockTime', transferEvent.block.timestamp.toString());
     /** AccountVToken */
-    assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
-      'accrualBlockNumber',
-      transferEvent.block.number.toString(),
-    );
+    assert.fieldEquals('AccountVToken', accountVTokenId, 'accrualBlockNumber', transferEvent.block.number.toString());
 
     assert.fieldEquals('AccountVToken', accountVTokenId, 'borrowIndex', '0');
   });
@@ -718,20 +413,11 @@ describe('VToken', () => {
   test('registers new interest rate model', () => {
     const oldInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000e0e');
     const newInterestRateModel = Address.fromString('0x0000000000000000000000000000000000000f0f');
-    const newMarketInterestRateModelEvent = createNewMarketInterestRateModelEvent(
-      aTokenAddress,
-      oldInterestRateModel,
-      newInterestRateModel,
-    );
+    const newMarketInterestRateModelEvent = createNewMarketInterestRateModelEvent(aTokenAddress, oldInterestRateModel, newInterestRateModel);
 
     handleNewMarketInterestRateModel(newMarketInterestRateModelEvent);
     assert.fieldEquals('Market', aTokenAddress.toHex(), 'id', aTokenAddress.toHexString());
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHex(),
-      'interestRateModelAddress',
-      newInterestRateModel.toHexString(),
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHex(), 'interestRateModelAddress', newInterestRateModel.toHexString());
   });
 
   test('registers bad debt increased', () => {
@@ -740,76 +426,26 @@ describe('VToken', () => {
     const badDebtOld = BigInt.fromI64(1000);
     const badDebtNew = BigInt.fromI64(700);
 
-    const badDebtIncreasedEvent = createBadDebtIncreasedEvent(
-      aTokenAddress,
-      borrower,
-      badDebtDelta,
-      badDebtOld,
-      badDebtNew,
-    );
+    const badDebtIncreasedEvent = createBadDebtIncreasedEvent(aTokenAddress, borrower, badDebtDelta, badDebtOld, badDebtNew);
 
-    const accountVTokenTBadDebtId = getBadDebtEventId(
-      badDebtIncreasedEvent.transaction.hash,
-      badDebtIncreasedEvent.transaction.index,
-    ).toHexString();
+    const accountVTokenTBadDebtId = getBadDebtEventId(badDebtIncreasedEvent.transaction.hash, badDebtIncreasedEvent.transaction.index).toHexString();
 
     handleBadDebtIncreased(badDebtIncreasedEvent);
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHexString(),
-      'badDebtMantissa',
-      badDebtNew.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVTokenBadDebt',
-      accountVTokenTBadDebtId,
-      'account',
-      getAccountVTokenId(
-        badDebtIncreasedEvent.address,
-        badDebtIncreasedEvent.params.borrower,
-      ).toHexString(),
-    );
-    assert.fieldEquals(
-      'AccountVTokenBadDebt',
-      accountVTokenTBadDebtId,
-      'amountMantissa',
-      badDebtDelta.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVTokenBadDebt',
-      accountVTokenTBadDebtId,
-      'timestamp',
-      badDebtIncreasedEvent.block.timestamp.toString(),
-    );
-    assert.fieldEquals(
-      'AccountVTokenBadDebt',
-      accountVTokenTBadDebtId,
-      'block',
-      badDebtIncreasedEvent.block.number.toString(),
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHexString(), 'badDebtMantissa', badDebtNew.toString());
+    assert.fieldEquals('AccountVTokenBadDebt', accountVTokenTBadDebtId, 'account', getAccountVTokenId(badDebtIncreasedEvent.address, badDebtIncreasedEvent.params.borrower).toHexString());
+    assert.fieldEquals('AccountVTokenBadDebt', accountVTokenTBadDebtId, 'amountMantissa', badDebtDelta.toString());
+    assert.fieldEquals('AccountVTokenBadDebt', accountVTokenTBadDebtId, 'timestamp', badDebtIncreasedEvent.block.timestamp.toString());
+    assert.fieldEquals('AccountVTokenBadDebt', accountVTokenTBadDebtId, 'block', badDebtIncreasedEvent.block.number.toString());
   });
 
   test('market registers its new access control manager', () => {
-    const oldAccessControlManager = Address.fromString(
-      '0x0000000000000000000000000000000000000aaa',
-    );
-    const newAccessControlManager = Address.fromString(
-      '0x0000000000000000000000000000000000000bbb',
-    );
+    const oldAccessControlManager = Address.fromString('0x0000000000000000000000000000000000000aaa');
+    const newAccessControlManager = Address.fromString('0x0000000000000000000000000000000000000bbb');
 
-    const newAccessControlManagerEvent = createNewAccessControlManagerEvent(
-      aTokenAddress,
-      oldAccessControlManager,
-      newAccessControlManager,
-    );
+    const newAccessControlManagerEvent = createNewAccessControlManagerEvent(aTokenAddress, oldAccessControlManager, newAccessControlManager);
 
     handleNewAccessControlManager(newAccessControlManagerEvent);
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHexString(),
-      'accessControlManagerAddress',
-      newAccessControlManager.toHexString(),
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHexString(), 'accessControlManagerAddress', newAccessControlManager.toHexString());
   });
 
   test('registers market reserve increase', () => {
@@ -817,20 +453,10 @@ describe('VToken', () => {
     const addAmount = BigInt.fromString('112233445566778899');
     const newTotalReserves = BigInt.fromString('2222334455667788990');
 
-    const reservesAddedEvent = createReservesAddedEvent(
-      aTokenAddress,
-      benefactor,
-      addAmount,
-      newTotalReserves,
-    );
+    const reservesAddedEvent = createReservesAddedEvent(aTokenAddress, benefactor, addAmount, newTotalReserves);
 
     handleReservesAdded(reservesAddedEvent);
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHexString(),
-      'reservesMantissa',
-      newTotalReserves.toString(),
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHexString(), 'reservesMantissa', newTotalReserves.toString());
   });
 
   test('registers market reserve decrease', () => {
@@ -838,20 +464,10 @@ describe('VToken', () => {
     const reduceAmount = BigInt.fromString('100000000000000000');
     const newTotalReserves = BigInt.fromString('9111222333444555666');
 
-    const reservesReducedEvent = createSpreadReservesReducedEvent(
-      aTokenAddress,
-      benefactor,
-      reduceAmount,
-      newTotalReserves,
-    );
+    const reservesReducedEvent = createSpreadReservesReducedEvent(aTokenAddress, benefactor, reduceAmount, newTotalReserves);
 
     handleSpreadReservesReduced(reservesReducedEvent);
-    assert.fieldEquals(
-      'Market',
-      aTokenAddress.toHexString(),
-      'reservesMantissa',
-      '9111222333444555666',
-    );
+    assert.fieldEquals('Market', aTokenAddress.toHexString(), 'reservesMantissa', '9111222333444555666');
   });
 
   test('registers increase and decrease in the market supplier count', () => {
@@ -870,62 +486,32 @@ describe('VToken', () => {
     const halfMintTokens = mintTokens.div(BigInt.fromI64(2));
 
     const supplier01 = user1Address;
-    let mintEvent = createMintEvent(
-      aTokenAddress,
-      supplier01,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
+    let mintEvent = createMintEvent(aTokenAddress, supplier01, actualMintAmount, mintTokens, accountBalance);
     createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
     const supplier02 = user2Address;
-    mintEvent = createMintEvent(
-      aTokenAddress,
-      supplier02,
-      actualMintAmount,
-      mintTokens,
-      accountBalance,
-    );
+    mintEvent = createMintEvent(aTokenAddress, supplier02, actualMintAmount, mintTokens, accountBalance);
     createAccountVTokenBalanceOfMock(aTokenAddress, supplier02, mintTokens);
 
     handleMint(mintEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '2');
 
-    let redeemEvent = createRedeemEvent(
-      aTokenAddress,
-      supplier02,
-      actualMintAmount,
-      mintTokens,
-      zeroBigInt32,
-    );
+    let redeemEvent = createRedeemEvent(aTokenAddress, supplier02, actualMintAmount, mintTokens, zeroBigInt32);
     createAccountVTokenBalanceOfMock(aTokenAddress, supplier02, zeroBigInt32);
 
     handleRedeem(redeemEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
-    redeemEvent = createRedeemEvent(
-      aTokenAddress,
-      supplier01,
-      halfActualMintAmount,
-      halfMintTokens,
-      halfMintTokens,
-    );
+    redeemEvent = createRedeemEvent(aTokenAddress, supplier01, halfActualMintAmount, halfMintTokens, halfMintTokens);
     createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, halfMintTokens);
 
     handleRedeem(redeemEvent);
     assert.fieldEquals('Market', marketId, 'supplierCount', '1');
 
-    redeemEvent = createRedeemEvent(
-      aTokenAddress,
-      supplier01,
-      halfActualMintAmount,
-      halfMintTokens,
-      zeroBigInt32,
-    );
+    redeemEvent = createRedeemEvent(aTokenAddress, supplier01, halfActualMintAmount, halfMintTokens, zeroBigInt32);
     createAccountVTokenBalanceOfMock(aTokenAddress, supplier01, zeroBigInt32);
 
     handleRedeem(redeemEvent);
@@ -945,61 +531,28 @@ describe('VToken', () => {
     const halfBorrowAmountTokens = borrowAmount.div(BigInt.fromI64(2));
 
     const borrower01 = user1Address;
-    let borrowEvent = createBorrowEvent(
-      aTokenAddress,
-      borrower01,
-      borrowAmount,
-      borrowAmount,
-      borrowAmount,
-    );
+    let borrowEvent = createBorrowEvent(aTokenAddress, borrower01, borrowAmount, borrowAmount, borrowAmount);
 
     handleBorrow(borrowEvent);
     assert.fieldEquals('Market', marketId, 'borrowerCount', '1');
 
     const borrower02 = user2Address;
-    borrowEvent = createBorrowEvent(
-      aTokenAddress,
-      borrower02,
-      borrowAmount,
-      borrowAmount,
-      borrowAmount,
-    );
+    borrowEvent = createBorrowEvent(aTokenAddress, borrower02, borrowAmount, borrowAmount, borrowAmount);
 
     handleBorrow(borrowEvent);
     assert.fieldEquals('Market', marketId, 'borrowerCount', '2');
 
-    let repayEvent = createRepayBorrowEvent(
-      aTokenAddress,
-      borrower02,
-      borrower02,
-      borrowAmount,
-      zeroBigInt32,
-      zeroBigInt32,
-    );
+    let repayEvent = createRepayBorrowEvent(aTokenAddress, borrower02, borrower02, borrowAmount, zeroBigInt32, zeroBigInt32);
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', marketId, 'borrowerCount', '1');
 
-    repayEvent = createRepayBorrowEvent(
-      aTokenAddress,
-      borrower01,
-      borrower01,
-      halfBorrowAmountTokens,
-      halfBorrowAmountTokens,
-      halfBorrowAmountTokens,
-    );
+    repayEvent = createRepayBorrowEvent(aTokenAddress, borrower01, borrower01, halfBorrowAmountTokens, halfBorrowAmountTokens, halfBorrowAmountTokens);
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', marketId, 'borrowerCount', '1');
 
-    repayEvent = createRepayBorrowEvent(
-      aTokenAddress,
-      borrower01,
-      borrower01,
-      halfBorrowAmountTokens,
-      zeroBigInt32,
-      zeroBigInt32,
-    );
+    repayEvent = createRepayBorrowEvent(aTokenAddress, borrower01, borrower01, halfBorrowAmountTokens, zeroBigInt32, zeroBigInt32);
 
     handleRepayBorrow(repayEvent);
     assert.fieldEquals('Market', marketId, 'borrowerCount', '0');

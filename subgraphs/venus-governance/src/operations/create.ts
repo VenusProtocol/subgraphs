@@ -16,9 +16,7 @@ export function createProposal<E>(event: E): Proposal {
 
   governance.totalProposals = governance.totalProposals.plus(BIGINT_ONE);
   governance.save();
-  const targets = event.params.targets.map<Bytes>((address: Address) =>
-    Bytes.fromHexString(address.toHexString()),
-  );
+  const targets = event.params.targets.map<Bytes>((address: Address) => Bytes.fromHexString(address.toHexString()));
   proposal.proposalId = event.params.id;
   proposal.targets = targets;
   proposal.proposer = event.params.proposer;

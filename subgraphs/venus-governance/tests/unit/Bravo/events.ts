@@ -1,67 +1,37 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
-import {
-  NewAdmin,
-  NewGuardian,
-  NewImplementation,
-  NewPendingAdmin,
-  ProposalMaxOperationsUpdated,
-} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { NewAdmin, NewGuardian, NewImplementation, NewPendingAdmin, ProposalMaxOperationsUpdated } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 
-export function createNewImplementationEvent(
-  governanceAddress: Address,
-  oldImplementation: Address,
-  newImplementation: Address,
-): NewImplementation {
+export function createNewImplementationEvent(governanceAddress: Address, oldImplementation: Address, newImplementation: Address): NewImplementation {
   const event = changetype<NewImplementation>(newMockEvent());
   event.address = governanceAddress;
   event.parameters = [];
 
-  const oldImplementationParam = new ethereum.EventParam(
-    'oldImplementation',
-    ethereum.Value.fromAddress(oldImplementation),
-  );
+  const oldImplementationParam = new ethereum.EventParam('oldImplementation', ethereum.Value.fromAddress(oldImplementation));
   event.parameters.push(oldImplementationParam);
 
-  const newImplementationParam = new ethereum.EventParam(
-    'newImplementation',
-    ethereum.Value.fromAddress(newImplementation),
-  );
+  const newImplementationParam = new ethereum.EventParam('newImplementation', ethereum.Value.fromAddress(newImplementation));
   event.parameters.push(newImplementationParam);
 
   return event;
 }
 
-export function createNewPendingAdminEvent(
-  governanceAddress: Address,
-  oldPendingAdmin: Address,
-  newPendingAdmin: Address,
-): NewPendingAdmin {
+export function createNewPendingAdminEvent(governanceAddress: Address, oldPendingAdmin: Address, newPendingAdmin: Address): NewPendingAdmin {
   const event = changetype<NewPendingAdmin>(newMockEvent());
   event.address = governanceAddress;
   event.parameters = [];
 
-  const oldPendingAdminParam = new ethereum.EventParam(
-    'oldPendingAdmin',
-    ethereum.Value.fromAddress(oldPendingAdmin),
-  );
+  const oldPendingAdminParam = new ethereum.EventParam('oldPendingAdmin', ethereum.Value.fromAddress(oldPendingAdmin));
   event.parameters.push(oldPendingAdminParam);
 
-  const newPendingAdminParam = new ethereum.EventParam(
-    'newPendingAdmin',
-    ethereum.Value.fromAddress(newPendingAdmin),
-  );
+  const newPendingAdminParam = new ethereum.EventParam('newPendingAdmin', ethereum.Value.fromAddress(newPendingAdmin));
   event.parameters.push(newPendingAdminParam);
 
   return event;
 }
 
-export function createNewAdminEvent(
-  governanceAddress: Address,
-  oldAdmin: Address,
-  newAdmin: Address,
-): NewAdmin {
+export function createNewAdminEvent(governanceAddress: Address, oldAdmin: Address, newAdmin: Address): NewAdmin {
   const event = changetype<NewAdmin>(newMockEvent());
   event.address = governanceAddress;
   event.parameters = [];
@@ -75,49 +45,29 @@ export function createNewAdminEvent(
   return event;
 }
 
-export function createNewGuardianEvent(
-  governanceAddress: Address,
-  oldGuardian: Address,
-  newGuardian: Address,
-): NewGuardian {
+export function createNewGuardianEvent(governanceAddress: Address, oldGuardian: Address, newGuardian: Address): NewGuardian {
   const event = changetype<NewGuardian>(newMockEvent());
   event.address = governanceAddress;
   event.parameters = [];
 
-  const oldGuardianParam = new ethereum.EventParam(
-    'oldGuardian',
-    ethereum.Value.fromAddress(oldGuardian),
-  );
+  const oldGuardianParam = new ethereum.EventParam('oldGuardian', ethereum.Value.fromAddress(oldGuardian));
   event.parameters.push(oldGuardianParam);
 
-  const newGuardianParam = new ethereum.EventParam(
-    'newGuardian',
-    ethereum.Value.fromAddress(newGuardian),
-  );
+  const newGuardianParam = new ethereum.EventParam('newGuardian', ethereum.Value.fromAddress(newGuardian));
   event.parameters.push(newGuardianParam);
 
   return event;
 }
 
-export function createNewProposalMaxOperationsEvent(
-  governanceAddress: Address,
-  oldMaxOperations: BigInt,
-  newMaxOperations: BigInt,
-): ProposalMaxOperationsUpdated {
+export function createNewProposalMaxOperationsEvent(governanceAddress: Address, oldMaxOperations: BigInt, newMaxOperations: BigInt): ProposalMaxOperationsUpdated {
   const event = changetype<ProposalMaxOperationsUpdated>(newMockEvent());
   event.address = governanceAddress;
   event.parameters = [];
 
-  const oldMaxOperationsParam = new ethereum.EventParam(
-    'oldMaxOperations',
-    ethereum.Value.fromUnsignedBigInt(oldMaxOperations),
-  );
+  const oldMaxOperationsParam = new ethereum.EventParam('oldMaxOperations', ethereum.Value.fromUnsignedBigInt(oldMaxOperations));
   event.parameters.push(oldMaxOperationsParam);
 
-  const newMaxOperationsParam = new ethereum.EventParam(
-    'newMaxOperations',
-    ethereum.Value.fromUnsignedBigInt(newMaxOperations),
-  );
+  const newMaxOperationsParam = new ethereum.EventParam('newMaxOperations', ethereum.Value.fromUnsignedBigInt(newMaxOperations));
   event.parameters.push(newMaxOperationsParam);
 
   return event;

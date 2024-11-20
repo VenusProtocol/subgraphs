@@ -1,39 +1,13 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  beforeEach,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import {
-  ProposalCanceled,
-  ProposalCreated,
-  ProposalExecuted,
-  ProposalQueued,
-} from '../../../generated/GovernorAlpha/GovernorAlpha';
+import { ProposalCanceled, ProposalCreated, ProposalExecuted, ProposalQueued } from '../../../generated/GovernorAlpha/GovernorAlpha';
 import { Delegate } from '../../../generated/schema';
-import {
-  handleInitialization,
-  handleProposalCanceled,
-  handleProposalCreated,
-  handleProposalExecuted,
-  handleProposalQueued,
-  handleVoteCast,
-} from '../../../src/mappings/alpha';
+import { handleInitialization, handleProposalCanceled, handleProposalCreated, handleProposalExecuted, handleProposalQueued, handleVoteCast } from '../../../src/mappings/alpha';
 import { getOrCreateDelegate } from '../../../src/operations/getOrCreate';
 import { getVoteId } from '../../../src/utilities/ids';
 import { user1 } from '../../common/constants';
-import {
-  createProposalCanceledEvent,
-  createProposalCreatedEvent,
-  createProposalExecutedEvent,
-  createProposalQueuedEvent,
-  createVoteCastAlphaEvent,
-} from '../../common/events';
+import { createProposalCanceledEvent, createProposalCreatedEvent, createProposalExecutedEvent, createProposalQueuedEvent, createVoteCastAlphaEvent } from '../../common/events';
 import { createGovernorBravoMocks, createMockBlock } from '../../common/mocks';
 
 const cleanup = (): void => {

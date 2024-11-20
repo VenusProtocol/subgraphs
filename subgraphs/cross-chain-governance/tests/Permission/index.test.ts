@@ -1,14 +1,8 @@
 import { afterEach, assert, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import {
-  PermissionGranted,
-  PermissionRevoked,
-} from '../../generated/AccessControlManager/AccessControlManger';
+import { PermissionGranted, PermissionRevoked } from '../../generated/AccessControlManager/AccessControlManger';
 import { GRANTED, REVOKED } from '../../src/constants';
-import {
-  handlePermissionGranted,
-  handlePermissionRevoked,
-} from '../../src/mappings/accessControlManager';
+import { handlePermissionGranted, handlePermissionRevoked } from '../../src/mappings/accessControlManager';
 import { getPermissionId } from '../../src/utilities/ids';
 import { mockContractAddress, mockFunctionSig, user1 } from './constants';
 import { createPermission } from './events';
@@ -23,11 +17,7 @@ afterEach(() => {
 
 describe('Permission events', () => {
   test('handles permission granted event', () => {
-    const permissionGrantedEvent = createPermission<PermissionGranted>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
+    const permissionGrantedEvent = createPermission<PermissionGranted>(user1, mockContractAddress, mockFunctionSig);
     handlePermissionGranted(permissionGrantedEvent);
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
@@ -42,11 +32,7 @@ describe('Permission events', () => {
   });
 
   test('handles permission revoked', () => {
-    const permissionRevokedEvent = createPermission<PermissionRevoked>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
+    const permissionRevokedEvent = createPermission<PermissionRevoked>(user1, mockContractAddress, mockFunctionSig);
     handlePermissionRevoked(permissionRevokedEvent);
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {
@@ -61,11 +47,7 @@ describe('Permission events', () => {
   });
 
   test('handles updating a previously granted permission record', () => {
-    const permissionGrantedEvent = createPermission<PermissionGranted>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
+    const permissionGrantedEvent = createPermission<PermissionGranted>(user1, mockContractAddress, mockFunctionSig);
     handlePermissionGranted(permissionGrantedEvent);
 
     const assertPermissionGrantedDocument = (key: string, value: string): void => {
@@ -78,11 +60,7 @@ describe('Permission events', () => {
     assertPermissionGrantedDocument('contractAddress', mockContractAddress.toHexString());
     assertPermissionGrantedDocument('functionSignature', mockFunctionSig);
 
-    const permissionRevokedEvent = createPermission<PermissionRevoked>(
-      user1,
-      mockContractAddress,
-      mockFunctionSig,
-    );
+    const permissionRevokedEvent = createPermission<PermissionRevoked>(user1, mockContractAddress, mockFunctionSig);
     handlePermissionRevoked(permissionRevokedEvent);
 
     const assertPermissionRevokedDocument = (key: string, value: string): void => {

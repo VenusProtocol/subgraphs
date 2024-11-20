@@ -5,22 +5,14 @@ import { ERC20 as ERC20Contract } from '../../generated/vWeETH/ERC20';
 import { VToken as VTokenContract } from '../../generated/vWeETH/VToken';
 import { getBorrowerAccount, getSupplierAccount, getTvl } from './get';
 
-export function updateSupplierAccount(
-  accountAddress: Address,
-  tokenAddress: Address,
-  amount: BigDecimal,
-): SupplierAccount {
+export function updateSupplierAccount(accountAddress: Address, tokenAddress: Address, amount: BigDecimal): SupplierAccount {
   const account = getSupplierAccount(accountAddress, tokenAddress)!;
   account.effective_balance = amount;
   account.save();
   return account;
 }
 
-export function updateBorrowerAccount(
-  accountAddress: Address,
-  tokenAddress: Address,
-  amount: BigDecimal,
-): BorrowerAccount {
+export function updateBorrowerAccount(accountAddress: Address, tokenAddress: Address, amount: BigDecimal): BorrowerAccount {
   const account = getBorrowerAccount(accountAddress, tokenAddress)!;
   account.effective_balance = amount;
   account.save();

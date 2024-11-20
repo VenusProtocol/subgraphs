@@ -1,21 +1,8 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  beforeEach,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import { ProposalCreated as ProposalCreatedV2 } from '../../../generated/GovernorBravoDelegate2/GovernorBravoDelegate2';
-import {
-  ProposalCanceled,
-  ProposalCreated,
-  ProposalExecuted,
-  ProposalQueued,
-} from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
+import { ProposalCanceled, ProposalCreated, ProposalExecuted, ProposalQueued } from '../../../generated/GovernorBravoDelegate/GovernorBravoDelegate';
 import { Delegate } from '../../../generated/schema';
 import { GOVERNANCE } from '../../../src/constants';
 import { handleInitialization } from '../../../src/mappings/alpha';
@@ -44,13 +31,7 @@ import {
   createVoteCastBravoEvent,
 } from '../../common/events';
 import { createGovernorBravoMocks, createMockBlock } from '../../common/mocks';
-import {
-  createNewAdminEvent,
-  createNewGuardianEvent,
-  createNewImplementationEvent,
-  createNewPendingAdminEvent,
-  createNewProposalMaxOperationsEvent,
-} from './events';
+import { createNewAdminEvent, createNewGuardianEvent, createNewImplementationEvent, createNewPendingAdminEvent, createNewProposalMaxOperationsEvent } from './events';
 
 const startBlock = 4563820;
 const endBlock = 4593820;
@@ -69,17 +50,7 @@ beforeEach(() => {
   /** setup test */
   handleInitialization(createMockBlock());
   getOrCreateDelegate(user1);
-  const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
-    1,
-    user1,
-    [],
-    [],
-    [],
-    [],
-    BigInt.fromI64(startBlock),
-    BigInt.fromI64(endBlock),
-    description,
-  );
+  const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(1, user1, [], [], [], [], BigInt.fromI64(startBlock), BigInt.fromI64(endBlock), description);
   handleProposalCreated(proposalCreatedEvent);
 });
 
@@ -93,17 +64,7 @@ describe('Bravo', () => {
     const startBlock = 4563820;
     const endBlock = 4593820;
     const description = 'Very creative Proposal';
-    const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
-      1,
-      user1,
-      [],
-      [],
-      [],
-      [],
-      BigInt.fromI64(startBlock),
-      BigInt.fromI64(endBlock),
-      description,
-    );
+    const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(1, user1, [], [], [], [], BigInt.fromI64(startBlock), BigInt.fromI64(endBlock), description);
     handleProposalCreated(proposalCreatedEvent);
     // Delegate
     const assertDelegateDocument = (key: string, value: string): void => {
@@ -137,18 +98,7 @@ describe('Bravo', () => {
     const startBlock = 4563820;
     const endBlock = 4593820;
     const description = 'Very creative Proposal';
-    const proposalCreatedEvent = createProposalCreatedV2Event<ProposalCreatedV2>(
-      1,
-      user1,
-      [],
-      [],
-      [],
-      [],
-      BigInt.fromI64(startBlock),
-      BigInt.fromI64(endBlock),
-      description,
-      BigInt.fromI64(2),
-    );
+    const proposalCreatedEvent = createProposalCreatedV2Event<ProposalCreatedV2>(1, user1, [], [], [], [], BigInt.fromI64(startBlock), BigInt.fromI64(endBlock), description, BigInt.fromI64(2));
     handleProposalCreatedV2(proposalCreatedEvent);
     // Delegate
     const assertDelegateDocument = (key: string, value: string): void => {
@@ -183,17 +133,7 @@ describe('Bravo', () => {
     const startBlock = 4563820;
     const endBlock = 4593820;
     const description = 'Very creative Proposal';
-    const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(
-      1,
-      user1,
-      [],
-      [],
-      [],
-      [],
-      BigInt.fromI64(startBlock),
-      BigInt.fromI64(endBlock),
-      description,
-    );
+    const proposalCreatedEvent = createProposalCreatedEvent<ProposalCreated>(1, user1, [], [], [], [], BigInt.fromI64(startBlock), BigInt.fromI64(endBlock), description);
     handleProposalCreated(proposalCreatedEvent);
     /** run handler */
     const proposalCanceledEvent = createProposalCanceledEvent<ProposalCanceled>(1);
@@ -262,11 +202,7 @@ describe('Bravo', () => {
   test('registers new implementation', () => {
     const oldImplementation = Address.fromString('0x0a00000000000000000000000000000000000000');
     const newImplementation = Address.fromString('0x0b00000000000000000000000000000000000000');
-    const newImplementationEvent = createNewImplementationEvent(
-      governanceAddress,
-      oldImplementation,
-      newImplementation,
-    );
+    const newImplementationEvent = createNewImplementationEvent(governanceAddress, oldImplementation, newImplementation);
 
     handleNewImplementation(newImplementationEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'implementation', newImplementation.toHexString());
@@ -275,11 +211,7 @@ describe('Bravo', () => {
   test('registers new pending admin', () => {
     const oldPendingAdmin = Address.fromString('0x0000000000000000000000000000000000000000');
     const newPendingAdmin = Address.fromString('0x0b00000000000000000000000000000000000000');
-    const pendingAdminEvent = createNewPendingAdminEvent(
-      governanceAddress,
-      oldPendingAdmin,
-      newPendingAdmin,
-    );
+    const pendingAdminEvent = createNewPendingAdminEvent(governanceAddress, oldPendingAdmin, newPendingAdmin);
 
     handleNewPendingAdmin(pendingAdminEvent);
     assert.fieldEquals('Governance', GOVERNANCE, 'pendingAdmin', newPendingAdmin.toHexString());
@@ -307,18 +239,9 @@ describe('Bravo', () => {
   test('registers new proposal max operations', () => {
     const oldProposalMaxOperations = BigInt.fromI32(10);
     const newProposalMaxOperations = BigInt.fromI32(20);
-    const newProposalMaxOperationsEvent = createNewProposalMaxOperationsEvent(
-      governanceAddress,
-      oldProposalMaxOperations,
-      newProposalMaxOperations,
-    );
+    const newProposalMaxOperationsEvent = createNewProposalMaxOperationsEvent(governanceAddress, oldProposalMaxOperations, newProposalMaxOperations);
 
     handleProposalMaxOperationsUpdated(newProposalMaxOperationsEvent);
-    assert.fieldEquals(
-      'Governance',
-      GOVERNANCE,
-      'proposalMaxOperations',
-      newProposalMaxOperations.toString(),
-    );
+    assert.fieldEquals('Governance', GOVERNANCE, 'proposalMaxOperations', newProposalMaxOperations.toString());
   });
 });

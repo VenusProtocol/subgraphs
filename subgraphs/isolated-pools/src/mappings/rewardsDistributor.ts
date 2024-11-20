@@ -1,7 +1,4 @@
-import {
-  RewardTokenBorrowSpeedUpdated,
-  RewardTokenSupplySpeedUpdated,
-} from '../../generated/templates/RewardsDistributor/RewardsDistributor';
+import { RewardTokenBorrowSpeedUpdated, RewardTokenSupplySpeedUpdated } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { getOrCreateRewardSpeed } from '../operations/getOrCreate';
 
 export function handleRewardTokenBorrowSpeedUpdated(event: RewardTokenBorrowSpeedUpdated): void {

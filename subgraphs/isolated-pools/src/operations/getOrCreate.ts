@@ -1,34 +1,15 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
-import {
-  Account,
-  AccountPool,
-  AccountVToken,
-  Market,
-  Pool,
-  RewardSpeed,
-  RewardsDistributor,
-} from '../../generated/schema';
+import { Account, AccountPool, AccountVToken, Market, Pool, RewardSpeed, RewardsDistributor } from '../../generated/schema';
 import { VToken as VTokenDataSource } from '../../generated/templates';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
-import {
-  getAccountPoolId,
-  getAccountVTokenId,
-  getMarketId,
-  getPoolId,
-  getRewardSpeedId,
-  getRewardsDistributorId,
-} from '../utilities/ids';
+import { getAccountPoolId, getAccountVTokenId, getMarketId, getPoolId, getRewardSpeedId, getRewardsDistributorId } from '../utilities/ids';
 import { createAccount, createAccountPool, createMarket, createPool } from './create';
 
-export const getOrCreateMarket = (
-  vTokenAddress: Address,
-  comptrollerAddress: Address,
-  blockTimestamp: BigInt,
-): Market => {
+export const getOrCreateMarket = (vTokenAddress: Address, comptrollerAddress: Address, blockTimestamp: BigInt): Market => {
   let market = Market.load(getMarketId(vTokenAddress));
   if (!market) {
     VTokenDataSource.create(vTokenAddress);
@@ -53,10 +34,7 @@ export const getOrCreateAccount = (accountAddress: Address): Account => {
   return account;
 };
 
-export const getOrCreateAccountPool = (
-  accountAddress: Address,
-  poolAddress: Address,
-): AccountPool => {
+export const getOrCreateAccountPool = (accountAddress: Address, poolAddress: Address): AccountPool => {
   const accountPoolId = getAccountPoolId(accountAddress, poolAddress);
   let accountPool = AccountPool.load(accountPoolId);
   if (!accountPool) {
@@ -110,10 +88,7 @@ export const getOrCreateAccountVToken = (
   return { entity: accountVToken, created };
 };
 
-export const getOrCreateRewardSpeed = (
-  rewardsDistributorAddress: Address,
-  marketAddress: Address,
-): RewardSpeed => {
+export const getOrCreateRewardSpeed = (rewardsDistributorAddress: Address, marketAddress: Address): RewardSpeed => {
   const id = getRewardSpeedId(rewardsDistributorAddress, marketAddress);
   let rewardSpeed = RewardSpeed.load(id);
   if (!rewardSpeed) {
@@ -127,10 +102,7 @@ export const getOrCreateRewardSpeed = (
   return rewardSpeed;
 };
 
-export const getOrCreateRewardDistributor = (
-  rewardsDistributorAddress: Address,
-  comptrollerAddress: Address,
-): RewardsDistributor => {
+export const getOrCreateRewardDistributor = (rewardsDistributorAddress: Address, comptrollerAddress: Address): RewardsDistributor => {
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   let rewardsDistributor = RewardsDistributor.load(id);
 
@@ -151,10 +123,8 @@ export const getOrCreateRewardDistributor = (
         const marketAddress = marketAddresses[i];
 
         const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
-        rewardSpeed.borrowSpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
-        rewardSpeed.supplySpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
+        rewardSpeed.borrowSpeedPerBlockMantissa = rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
+        rewardSpeed.supplySpeedPerBlockMantissa = rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
         rewardSpeed.save();
       }
     }

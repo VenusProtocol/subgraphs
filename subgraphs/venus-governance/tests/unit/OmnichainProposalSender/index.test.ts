@@ -1,13 +1,5 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  beforeEach,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import { RemoteProposalStateTransaction } from '../../../generated/schema';
 import { nullAddress, omnichainProposalSenderAddress } from '../../../src/constants/addresses';
@@ -22,11 +14,7 @@ import {
   handleTrustedRemoteRemoved,
   handleUnpaused,
 } from '../../../src/mappings/omnichainProposalSender';
-import {
-  getRemoteProposalId,
-  getRemoteProposalStateTransactionId,
-  getTrustedRemoteId,
-} from '../../../src/utilities/ids';
+import { getRemoteProposalId, getRemoteProposalStateTransactionId, getTrustedRemoteId } from '../../../src/utilities/ids';
 import {
   createClearPayloadEvent,
   createExecuteRemoteProposalEvent,
@@ -41,11 +29,7 @@ import { createOmnichainProposalSenderMock } from './mocks';
 const MOCK_DESTINATION_ADDRESS = Address.fromString('0xa1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1a1');
 const MOCK_CONTRACT_ADDRESS = Address.fromString('0xb2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2');
 
-const createRemoteProposalStateTransaction = (
-  layerZeroChainId: i32,
-  proposalId: BigInt,
-  remoteProposalId: BigInt,
-): RemoteProposalStateTransaction => {
+const createRemoteProposalStateTransaction = (layerZeroChainId: i32, proposalId: BigInt, remoteProposalId: BigInt): RemoteProposalStateTransaction => {
   const key = getRemoteProposalId(layerZeroChainId, proposalId);
   const id = getRemoteProposalStateTransactionId(remoteProposalId);
   const remoteProposalStateTransaction = new RemoteProposalStateTransaction(id);
@@ -78,11 +62,7 @@ beforeAll(() => {
 
 describe('OmnichainProposalSender events', () => {
   test('handles SetTrustedRemoteAddress event', () => {
-    const setTrustedRemoteAddressEvent = createSetTrustedRemoteAddressEvent(
-      21,
-      nullAddress,
-      MOCK_DESTINATION_ADDRESS,
-    );
+    const setTrustedRemoteAddressEvent = createSetTrustedRemoteAddressEvent(21, nullAddress, MOCK_DESTINATION_ADDRESS);
     handleSetTrustedRemoteAddress(setTrustedRemoteAddressEvent);
 
     const assertTrustedRemoteDocument = (key: string, value: string): void => {
@@ -96,15 +76,7 @@ describe('OmnichainProposalSender events', () => {
   });
 
   test('handles ExecuteRemoteProposal event', () => {
-    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(
-      1,
-      BigInt.fromI32(1),
-      [MOCK_CONTRACT_ADDRESS],
-      [BigInt.fromI32(0)],
-      ['test()'],
-      [Bytes.fromUTF8('')],
-      0,
-    );
+    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(1, BigInt.fromI32(1), [MOCK_CONTRACT_ADDRESS], [BigInt.fromI32(0)], ['test()'], [Bytes.fromUTF8('')], 0);
     handleExecuteRemoteProposal(executeRemoteProposalEvent);
 
     const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
@@ -112,66 +84,33 @@ describe('OmnichainProposalSender events', () => {
       assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
     // stateTransactionKey
-    assertRemoteProposalStateTransactionDocument(
-      'executed',
-      executeRemoteProposalEvent.transaction.hash.toHexString(),
-    );
+    assertRemoteProposalStateTransactionDocument('executed', executeRemoteProposalEvent.transaction.hash.toHexString());
   });
 
   test('handles fallback withdraw', () => {
-    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(
-      1,
-      BigInt.fromI32(2),
-      [MOCK_CONTRACT_ADDRESS],
-      [BigInt.fromI32(0)],
-      ['test()'],
-      [Bytes.fromUTF8('')],
-      0,
-    );
+    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(1, BigInt.fromI32(2), [MOCK_CONTRACT_ADDRESS], [BigInt.fromI32(0)], ['test()'], [Bytes.fromUTF8('')], 0);
     handleExecuteRemoteProposal(executeRemoteProposalEvent);
-    const clearPayloadEvent = createClearPayloadEvent(
-      BigInt.fromI32(2),
-      Bytes.fromHexString('0xb4cb5c551a30f6c25d648560408d'),
-      true,
-    );
+    const clearPayloadEvent = createClearPayloadEvent(BigInt.fromI32(2), Bytes.fromHexString('0xb4cb5c551a30f6c25d648560408d'), true);
     handleClearPayload(clearPayloadEvent);
 
     const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
       const id = getRemoteProposalStateTransactionId(BigInt.fromI32(2));
       assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalStateTransactionDocument(
-      'withdrawn',
-      clearPayloadEvent.transaction.hash.toHexString(),
-    );
+    assertRemoteProposalStateTransactionDocument('withdrawn', clearPayloadEvent.transaction.hash.toHexString());
   });
 
   test('handles retry execution', () => {
-    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(
-      1,
-      BigInt.fromI32(3),
-      [MOCK_CONTRACT_ADDRESS],
-      [BigInt.fromI32(0)],
-      ['test()'],
-      [Bytes.fromUTF8('')],
-      0,
-    );
+    const executeRemoteProposalEvent = createExecuteRemoteProposalEvent(1, BigInt.fromI32(3), [MOCK_CONTRACT_ADDRESS], [BigInt.fromI32(0)], ['test()'], [Bytes.fromUTF8('')], 0);
     handleExecuteRemoteProposal(executeRemoteProposalEvent);
-    const clearPayloadEvent = createClearPayloadEvent(
-      BigInt.fromI32(3),
-      Bytes.fromHexString('0xb4cb5c551a30f6c25d648560408d'),
-      false,
-    );
+    const clearPayloadEvent = createClearPayloadEvent(BigInt.fromI32(3), Bytes.fromHexString('0xb4cb5c551a30f6c25d648560408d'), false);
     handleClearPayload(clearPayloadEvent);
 
     const assertRemoteProposalStateTransactionDocument = (key: string, value: string): void => {
       const id = getRemoteProposalStateTransactionId(BigInt.fromI32(3));
       assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalStateTransactionDocument(
-      'executed',
-      executeRemoteProposalEvent.transaction.hash.toHexString(),
-    );
+    assertRemoteProposalStateTransactionDocument('executed', executeRemoteProposalEvent.transaction.hash.toHexString());
   });
 
   test('handles StorePayload event', () => {
@@ -193,44 +132,25 @@ describe('OmnichainProposalSender events', () => {
       const id = getRemoteProposalStateTransactionId(BigInt.fromI32(1));
       assert.fieldEquals('RemoteProposalStateTransaction', id, key, value);
     };
-    assertRemoteProposalStateTransactionDocument(
-      'stored',
-      storePayloadEvent.transaction.hash.toHexString(),
-    );
+    assertRemoteProposalStateTransactionDocument('stored', storePayloadEvent.transaction.hash.toHexString());
     assertRemoteProposalStateTransactionDocument('failedReason', Bytes.fromUTF8('Failed').toHex());
   });
 
   test('handles NewAccessControlManager event', () => {
-    const newAccessControlManagerEvent = createNewAccessControlManagerEvent(
-      nullAddress,
-      MOCK_CONTRACT_ADDRESS,
-    );
+    const newAccessControlManagerEvent = createNewAccessControlManagerEvent(nullAddress, MOCK_CONTRACT_ADDRESS);
     handleNewAccessControlManager(newAccessControlManagerEvent);
 
     const assertOmnichainProposalSenderDocument = (key: string, value: string): void => {
-      assert.fieldEquals(
-        'OmnichainProposalSender',
-        omnichainProposalSenderAddress.toHexString(),
-        key,
-        value,
-      );
+      assert.fieldEquals('OmnichainProposalSender', omnichainProposalSenderAddress.toHexString(), key, value);
     };
-    assertOmnichainProposalSenderDocument(
-      'accessControlManagerAddress',
-      MOCK_CONTRACT_ADDRESS.toHexString(),
-    );
+    assertOmnichainProposalSenderDocument('accessControlManagerAddress', MOCK_CONTRACT_ADDRESS.toHexString());
   });
 
   test('handles Paused event', () => {
     handlePaused();
 
     const assertOmnichainProposalSenderDocument = (key: string, value: string): void => {
-      assert.fieldEquals(
-        'OmnichainProposalSender',
-        omnichainProposalSenderAddress.toHexString(),
-        key,
-        value,
-      );
+      assert.fieldEquals('OmnichainProposalSender', omnichainProposalSenderAddress.toHexString(), key, value);
     };
     assertOmnichainProposalSenderDocument('paused', 'true');
   });
@@ -239,12 +159,7 @@ describe('OmnichainProposalSender events', () => {
     handleUnpaused();
 
     const assertOmnichainProposalSenderDocument = (key: string, value: string): void => {
-      assert.fieldEquals(
-        'OmnichainProposalSender',
-        omnichainProposalSenderAddress.toHexString(),
-        key,
-        value,
-      );
+      assert.fieldEquals('OmnichainProposalSender', omnichainProposalSenderAddress.toHexString(), key, value);
     };
     assertOmnichainProposalSenderDocument('paused', 'false');
   });
@@ -261,11 +176,7 @@ describe('OmnichainProposalSender events', () => {
   });
 
   test('handles TrustedRemoteRemoved event', () => {
-    const setTrustedRemoteAddressEvent = createSetTrustedRemoteAddressEvent(
-      21,
-      nullAddress,
-      MOCK_DESTINATION_ADDRESS,
-    );
+    const setTrustedRemoteAddressEvent = createSetTrustedRemoteAddressEvent(21, nullAddress, MOCK_DESTINATION_ADDRESS);
     handleSetTrustedRemoteAddress(setTrustedRemoteAddressEvent);
     assert.entityCount('TrustedRemote', 1);
     const trustedRemoteRemovedEvent = createTrustedRemoteRemovedEvent(21);

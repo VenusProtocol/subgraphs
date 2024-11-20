@@ -1,9 +1,6 @@
 import { afterEach, assert, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
-import {
-  RoleGranted,
-  RoleRevoked,
-} from '../../../generated/AccessControlManagerV5/AccessControlMangerV5';
+import { RoleGranted, RoleRevoked } from '../../../generated/AccessControlManagerV5/AccessControlMangerV5';
 import { GRANTED, REVOKED } from '../../../src/constants';
 import { handleRoleGranted, handleRoleRevoked } from '../../../src/mappings/accessControlManager';
 import { getRoleId } from '../../../src/utilities/ids';

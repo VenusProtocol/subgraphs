@@ -5,9 +5,7 @@ import { ethers } from 'hardhat';
 
 import createSubgraphClient from '../../subgraph-client';
 
-const subgraphClient = createSubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph',
-);
+const subgraphClient = createSubgraphClient('http://graph-node:8000/subgraphs/name/venusprotocol/venus-subgraph');
 
 const syncDelay = 2000;
 
@@ -31,14 +29,7 @@ describe('VToken events', function () {
     vFdusdToken = await ethers.getContract('vFDUSD');
     vUsdtToken = await ethers.getContract('vUSDT');
 
-    markets = [
-      vUsdcToken.address,
-      vWBnbToken.address,
-      vEthToken.address,
-      vDogeToken.address,
-      vFdusdToken.address,
-      vUsdtToken.address,
-    ];
+    markets = [vUsdcToken.address, vWBnbToken.address, vEthToken.address, vDogeToken.address, vFdusdToken.address, vUsdtToken.address];
   });
 
   it('should list market correctly', async function () {
@@ -57,13 +48,9 @@ describe('VToken events', function () {
 
       expect(listedMarket.isListed).to.equal(true);
       expect(listedMarket.collateralFactorMantissa).to.equal('0');
-      expect(listedMarket.xvsSupplyStateBlock).to.equal(
-        Number(BigInt.asUintN(32, BigInt(txs[idx].blockNumber))).toString(),
-      );
+      expect(listedMarket.xvsSupplyStateBlock).to.equal(Number(BigInt.asUintN(32, BigInt(txs[idx].blockNumber))).toString());
       expect(listedMarket.xvsSupplyStateIndex).to.equal('1000000000000000000000000000000000000');
-      expect(listedMarket.xvsBorrowStateBlock).to.equal(
-        Number(BigInt.asUintN(32, BigInt(txs[idx].blockNumber))).toString(),
-      );
+      expect(listedMarket.xvsBorrowStateBlock).to.equal(Number(BigInt.asUintN(32, BigInt(txs[idx].blockNumber))).toString());
       expect(listedMarket.xvsBorrowStateIndex).to.equal('1000000000000000000000000000000000000');
     }
   });

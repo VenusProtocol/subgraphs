@@ -20,58 +20,24 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   let vDogeToken = await ethers.getContract('vDOGE');
   let vUsdtToken = await ethers.getContract('vUSDT');
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, '_setMarketSupplyCaps(address[],uint256[])', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, '_setMarketBorrowCaps(address[],uint256[])', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, '_setCollateralFactor(address,uint256)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, '_setCloseFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(comptroller.address, '_setMarketSupplyCaps(address[],uint256[])', root);
+  await acm.connect(rootSigner).giveCallPermission(comptroller.address, '_setMarketBorrowCaps(address[],uint256[])', root);
+  await acm.connect(rootSigner).giveCallPermission(comptroller.address, '_setCollateralFactor(address,uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(comptroller.address, '_setCloseFactor(uint256)', root);
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(comptroller.address, '_setActionsPaused(address[],uint8[],bool)', root);
+  await acm.connect(rootSigner).giveCallPermission(comptroller.address, '_setActionsPaused(address[],uint8[],bool)', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setMinLiquidatableCollateral(uint256)',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setMinLiquidatableCollateral(uint256)', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setActionsPaused(address[],uint256[],bool)',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setActionsPaused(address[],uint256[],bool)', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setCollateralFactor(address,uint256,uint256)',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setCollateralFactor(address,uint256,uint256)', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setLiquidationIncentive(uint256)',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setLiquidationIncentive(uint256)', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setMarketBorrowCaps(address[],uint256[])',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setMarketBorrowCaps(address[],uint256[])', root);
 
-  await acm.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setMarketSupplyCaps(address[],uint256[])',
-    root,
-  );
+  await acm.giveCallPermission(ethers.constants.AddressZero, 'setMarketSupplyCaps(address[],uint256[])', root);
 
   await acm.giveCallPermission(ethers.constants.AddressZero, 'setCloseFactor(uint256)', root);
 
@@ -81,90 +47,36 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await vWBnbToken.connect(rootSigner).setAccessControlManager(acm.address);
   await vEthToken.connect(rootSigner).setAccessControlManager(acm.address);
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vUsdcToken.address, '_setReserveFactor(uint256)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vWBnbToken.address, '_setReserveFactor(uint256)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vEthToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vUsdcToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vWBnbToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vEthToken.address, '_setReserveFactor(uint256)', root);
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vUsdtToken.address, '_setReserveFactor(uint256)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vDogeToken.address, '_setReserveFactor(uint256)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vFdusdToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vUsdtToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vDogeToken.address, '_setReserveFactor(uint256)', root);
+  await acm.connect(rootSigner).giveCallPermission(vFdusdToken.address, '_setReserveFactor(uint256)', root);
 
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vUsdtToken.address, 'setProtocolShareReserve(address)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vDogeToken.address, 'setProtocolShareReserve(address)', root);
-  await acm
-    .connect(rootSigner)
-    .giveCallPermission(vFdusdToken.address, 'setProtocolShareReserve(address)', root);
+  await acm.connect(rootSigner).giveCallPermission(vUsdtToken.address, 'setProtocolShareReserve(address)', root);
+  await acm.connect(rootSigner).giveCallPermission(vDogeToken.address, 'setProtocolShareReserve(address)', root);
+  await acm.connect(rootSigner).giveCallPermission(vFdusdToken.address, 'setProtocolShareReserve(address)', root);
 
   vDogeToken = await ethers.getContractAt('VToken', vDogeToken.address);
   vFdusdToken = await ethers.getContractAt('VToken', vFdusdToken.address);
   vUsdtToken = await ethers.getContractAt('VToken', vUsdtToken.address);
-  await vUsdtToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vDogeToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vFdusdToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
+  await vUsdtToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vDogeToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vFdusdToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
 
   await comptroller._setComptrollerLens((await ethers.getContract('ComptrollerLens')).address);
 
   await mine(1);
 
-  await vUsdcToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vWBnbToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vEthToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
+  await vUsdcToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vWBnbToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vEthToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
 
-  await vUsdtToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vDogeToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
-  await vFdusdToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
-  );
+  await vUsdtToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vDogeToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
+  await vFdusdToken.setProtocolShareReserve((await ethers.getContract('ProtocolShareReserve')).address);
 
   await vUsdcToken.accrueInterest();
   await vUsdcToken._setReserveFactor(parseUnits('0.1'));

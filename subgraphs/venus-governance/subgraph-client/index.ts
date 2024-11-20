@@ -77,6 +77,4 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-governance',
-);
+export default new SubgraphClient('http://graph-node:8000/subgraphs/name/venusprotocol/venus-governance');

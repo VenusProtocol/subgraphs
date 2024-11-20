@@ -8,11 +8,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const accessControlManager = await ethers.getContract('AccessControlManager');
   const [root] = await ethers.getSigners();
-  await accessControlManager.giveCallPermission(
-    ethers.constants.AddressZero,
-    'setTrustedRemoteAddress(uint16,bytes)',
-    root.address,
-  );
+  await accessControlManager.giveCallPermission(ethers.constants.AddressZero, 'setTrustedRemoteAddress(uint16,bytes)', root.address);
 };
 
 export default func;

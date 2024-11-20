@@ -18,11 +18,7 @@ import {
   ReservesReduced as ReservesReducedEvent,
   Transfer as TransferEvent,
 } from '../../generated/templates/VToken/VToken';
-import {
-  MintBehalf as MintBehalfEvent,
-  Mint as MintEvent,
-  Redeem as RedeemEvent,
-} from '../../generated/templates/VTokenUpdatedEvents/VToken';
+import { MintBehalf as MintBehalfEvent, Mint as MintEvent, Redeem as RedeemEvent } from '../../generated/templates/VTokenUpdatedEvents/VToken';
 
 export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEvent => {
   const event = changetype<MarketListedEvent>(newMockEvent());
@@ -34,13 +30,7 @@ export const createMarketListedEvent = (vTokenAddress: Address): MarketListedEve
   return event;
 };
 
-export const createMintEvent = (
-  vTokenAddress: Address,
-  minterAddress: Address,
-  mintAmount: BigInt,
-  mintTokens: BigInt,
-  accountBalance: BigInt,
-): MintEvent => {
+export const createMintEvent = (vTokenAddress: Address, minterAddress: Address, mintAmount: BigInt, mintTokens: BigInt, accountBalance: BigInt): MintEvent => {
   const event = changetype<MintEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -48,98 +38,53 @@ export const createMintEvent = (
   const minterParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(minterAddress));
   event.parameters.push(minterParam);
 
-  const mintAmountParam = new ethereum.EventParam(
-    'mintAmount',
-    ethereum.Value.fromUnsignedBigInt(mintAmount),
-  );
+  const mintAmountParam = new ethereum.EventParam('mintAmount', ethereum.Value.fromUnsignedBigInt(mintAmount));
   event.parameters.push(mintAmountParam);
 
-  const mintTokensParam = new ethereum.EventParam(
-    'mintTokens',
-    ethereum.Value.fromUnsignedBigInt(mintTokens),
-  );
+  const mintTokensParam = new ethereum.EventParam('mintTokens', ethereum.Value.fromUnsignedBigInt(mintTokens));
   event.parameters.push(mintTokensParam);
 
-  const accountBalanceParam = new ethereum.EventParam(
-    'accountBalance',
-    ethereum.Value.fromUnsignedBigInt(accountBalance),
-  );
+  const accountBalanceParam = new ethereum.EventParam('accountBalance', ethereum.Value.fromUnsignedBigInt(accountBalance));
   event.parameters.push(accountBalanceParam);
 
   return event;
 };
 
-export const createRedeemEvent = (
-  vTokenAddress: Address,
-  redeemerAddress: Address,
-  redeemAmount: BigInt,
-  redeemTokens: BigInt,
-  accountBalance: BigInt,
-): RedeemEvent => {
+export const createRedeemEvent = (vTokenAddress: Address, redeemerAddress: Address, redeemAmount: BigInt, redeemTokens: BigInt, accountBalance: BigInt): RedeemEvent => {
   const event = changetype<RedeemEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const redeemerParam = new ethereum.EventParam(
-    'redeemer',
-    ethereum.Value.fromAddress(redeemerAddress),
-  );
+  const redeemerParam = new ethereum.EventParam('redeemer', ethereum.Value.fromAddress(redeemerAddress));
   event.parameters.push(redeemerParam);
 
-  const redeemAmountParam = new ethereum.EventParam(
-    'redeemAmount',
-    ethereum.Value.fromUnsignedBigInt(redeemAmount),
-  );
+  const redeemAmountParam = new ethereum.EventParam('redeemAmount', ethereum.Value.fromUnsignedBigInt(redeemAmount));
   event.parameters.push(redeemAmountParam);
 
-  const redeemTokensParam = new ethereum.EventParam(
-    'redeemTokens',
-    ethereum.Value.fromUnsignedBigInt(redeemTokens),
-  );
+  const redeemTokensParam = new ethereum.EventParam('redeemTokens', ethereum.Value.fromUnsignedBigInt(redeemTokens));
   event.parameters.push(redeemTokensParam);
 
-  const accountBalanceParam = new ethereum.EventParam(
-    'accountBalance',
-    ethereum.Value.fromUnsignedBigInt(accountBalance),
-  );
+  const accountBalanceParam = new ethereum.EventParam('accountBalance', ethereum.Value.fromUnsignedBigInt(accountBalance));
   event.parameters.push(accountBalanceParam);
 
   return event;
 };
 
-export const createBorrowEvent = (
-  vTokenAddress: Address,
-  borrowerAddress: Address,
-  borrowAmount: BigInt,
-  accountBorrows: BigInt,
-  totalBorrows: BigInt,
-): BorrowEvent => {
+export const createBorrowEvent = (vTokenAddress: Address, borrowerAddress: Address, borrowAmount: BigInt, accountBorrows: BigInt, totalBorrows: BigInt): BorrowEvent => {
   const event = changetype<BorrowEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const borrowerParam = new ethereum.EventParam(
-    'borrower',
-    ethereum.Value.fromAddress(borrowerAddress),
-  );
+  const borrowerParam = new ethereum.EventParam('borrower', ethereum.Value.fromAddress(borrowerAddress));
   event.parameters.push(borrowerParam);
 
-  const borrowAmountParam = new ethereum.EventParam(
-    'borrowAmount',
-    ethereum.Value.fromUnsignedBigInt(borrowAmount),
-  );
+  const borrowAmountParam = new ethereum.EventParam('borrowAmount', ethereum.Value.fromUnsignedBigInt(borrowAmount));
   event.parameters.push(borrowAmountParam);
 
-  const accountBorrowsParam = new ethereum.EventParam(
-    'accountBorrows',
-    ethereum.Value.fromUnsignedBigInt(accountBorrows),
-  );
+  const accountBorrowsParam = new ethereum.EventParam('accountBorrows', ethereum.Value.fromUnsignedBigInt(accountBorrows));
   event.parameters.push(accountBorrowsParam);
 
-  const totalBorrowsParam = new ethereum.EventParam(
-    'totalBorrows',
-    ethereum.Value.fromUnsignedBigInt(totalBorrows),
-  );
+  const totalBorrowsParam = new ethereum.EventParam('totalBorrows', ethereum.Value.fromUnsignedBigInt(totalBorrows));
   event.parameters.push(totalBorrowsParam);
 
   return event;
@@ -160,28 +105,16 @@ export const createRepayBorrowEvent = (
   const payerParam = new ethereum.EventParam('payer', ethereum.Value.fromAddress(payerAddress));
   event.parameters.push(payerParam);
 
-  const borrowerParam = new ethereum.EventParam(
-    'borrower',
-    ethereum.Value.fromAddress(borrowerAddress),
-  );
+  const borrowerParam = new ethereum.EventParam('borrower', ethereum.Value.fromAddress(borrowerAddress));
   event.parameters.push(borrowerParam);
 
-  const repayAmountParam = new ethereum.EventParam(
-    'repayAmount',
-    ethereum.Value.fromUnsignedBigInt(repayAmount),
-  );
+  const repayAmountParam = new ethereum.EventParam('repayAmount', ethereum.Value.fromUnsignedBigInt(repayAmount));
   event.parameters.push(repayAmountParam);
 
-  const accountBorrowsParam = new ethereum.EventParam(
-    'accountBorrows',
-    ethereum.Value.fromUnsignedBigInt(accountBorrows),
-  );
+  const accountBorrowsParam = new ethereum.EventParam('accountBorrows', ethereum.Value.fromUnsignedBigInt(accountBorrows));
   event.parameters.push(accountBorrowsParam);
 
-  const totalBorrowsParam = new ethereum.EventParam(
-    'totalBorrowsMantissa',
-    ethereum.Value.fromUnsignedBigInt(totalBorrows),
-  );
+  const totalBorrowsParam = new ethereum.EventParam('totalBorrowsMantissa', ethereum.Value.fromUnsignedBigInt(totalBorrows));
   event.parameters.push(totalBorrowsParam);
 
   return event;
@@ -199,107 +132,59 @@ export const createLiquidateBorrowEvent = (
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const liquidatorParam = new ethereum.EventParam(
-    'liquidator',
-    ethereum.Value.fromAddress(liquidatorAddress),
-  );
+  const liquidatorParam = new ethereum.EventParam('liquidator', ethereum.Value.fromAddress(liquidatorAddress));
   event.parameters.push(liquidatorParam);
 
-  const borrowerParam = new ethereum.EventParam(
-    'borrower',
-    ethereum.Value.fromAddress(borrowerAddress),
-  );
+  const borrowerParam = new ethereum.EventParam('borrower', ethereum.Value.fromAddress(borrowerAddress));
   event.parameters.push(borrowerParam);
 
-  const repayAmountParam = new ethereum.EventParam(
-    'repayAmount',
-    ethereum.Value.fromUnsignedBigInt(repayAmount),
-  );
+  const repayAmountParam = new ethereum.EventParam('repayAmount', ethereum.Value.fromUnsignedBigInt(repayAmount));
   event.parameters.push(repayAmountParam);
 
-  const vTokenCollateralParam = new ethereum.EventParam(
-    'vTokenCollateral',
-    ethereum.Value.fromAddress(vTokenCollateral),
-  );
+  const vTokenCollateralParam = new ethereum.EventParam('vTokenCollateral', ethereum.Value.fromAddress(vTokenCollateral));
   event.parameters.push(vTokenCollateralParam);
 
-  const seizeTokensParam = new ethereum.EventParam(
-    'seizeTokens',
-    ethereum.Value.fromUnsignedBigInt(seizeTokens),
-  );
+  const seizeTokensParam = new ethereum.EventParam('seizeTokens', ethereum.Value.fromUnsignedBigInt(seizeTokens));
   event.parameters.push(seizeTokensParam);
 
   return event;
 };
 
-export const createAccrueInterestEvent = (
-  vTokenAddress: Address,
-  cashPrior: BigInt,
-  interestAccumulated: BigInt,
-  borrowIndex: BigInt,
-  totalBorrows: BigInt,
-): AccrueInterestEvent => {
+export const createAccrueInterestEvent = (vTokenAddress: Address, cashPrior: BigInt, interestAccumulated: BigInt, borrowIndex: BigInt, totalBorrows: BigInt): AccrueInterestEvent => {
   const event = changetype<AccrueInterestEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const cashPriorParam = new ethereum.EventParam(
-    'cashPrior',
-    ethereum.Value.fromUnsignedBigInt(cashPrior),
-  );
+  const cashPriorParam = new ethereum.EventParam('cashPrior', ethereum.Value.fromUnsignedBigInt(cashPrior));
   event.parameters.push(cashPriorParam);
 
-  const interestAccumulatedParam = new ethereum.EventParam(
-    'interestAccumulated',
-    ethereum.Value.fromUnsignedBigInt(interestAccumulated),
-  );
+  const interestAccumulatedParam = new ethereum.EventParam('interestAccumulated', ethereum.Value.fromUnsignedBigInt(interestAccumulated));
   event.parameters.push(interestAccumulatedParam);
 
-  const borrowIndexParam = new ethereum.EventParam(
-    'borrowIndex',
-    ethereum.Value.fromUnsignedBigInt(borrowIndex),
-  );
+  const borrowIndexParam = new ethereum.EventParam('borrowIndex', ethereum.Value.fromUnsignedBigInt(borrowIndex));
   event.parameters.push(borrowIndexParam);
 
-  const totalBorrowsParam = new ethereum.EventParam(
-    'totalBorrowsMantissa',
-    ethereum.Value.fromUnsignedBigInt(totalBorrows),
-  );
+  const totalBorrowsParam = new ethereum.EventParam('totalBorrowsMantissa', ethereum.Value.fromUnsignedBigInt(totalBorrows));
   event.parameters.push(totalBorrowsParam);
 
   return event;
 };
 
-export const createNewReserveFactorEvent = (
-  vTokenAddress: Address,
-  oldReserveFactorMantissa: BigInt,
-  newReserveFactorMantissa: BigInt,
-): NewReserveFactorEvent => {
+export const createNewReserveFactorEvent = (vTokenAddress: Address, oldReserveFactorMantissa: BigInt, newReserveFactorMantissa: BigInt): NewReserveFactorEvent => {
   const event = changetype<NewReserveFactorEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const oldReserveFactorMantissaParam = new ethereum.EventParam(
-    'oldReserveFactorMantissa',
-    ethereum.Value.fromUnsignedBigInt(oldReserveFactorMantissa),
-  );
+  const oldReserveFactorMantissaParam = new ethereum.EventParam('oldReserveFactorMantissa', ethereum.Value.fromUnsignedBigInt(oldReserveFactorMantissa));
   event.parameters.push(oldReserveFactorMantissaParam);
 
-  const newReserveFactorMantissaParam = new ethereum.EventParam(
-    'newReserveFactorMantissa',
-    ethereum.Value.fromUnsignedBigInt(newReserveFactorMantissa),
-  );
+  const newReserveFactorMantissaParam = new ethereum.EventParam('newReserveFactorMantissa', ethereum.Value.fromUnsignedBigInt(newReserveFactorMantissa));
   event.parameters.push(newReserveFactorMantissaParam);
 
   return event;
 };
 
-export const createTransferEvent = (
-  vTokenAddress: Address,
-  from: Address,
-  to: Address,
-  amount: BigInt,
-): TransferEvent => {
+export const createTransferEvent = (vTokenAddress: Address, from: Address, to: Address, amount: BigInt): TransferEvent => {
   const event = changetype<TransferEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -316,36 +201,21 @@ export const createTransferEvent = (
   return event;
 };
 
-export const createNewMarketInterestRateModelEvent = (
-  vTokenAddress: Address,
-  oldInterestRateModel: Address,
-  newInterestRateModel: Address,
-): NewMarketInterestRateModelEvent => {
+export const createNewMarketInterestRateModelEvent = (vTokenAddress: Address, oldInterestRateModel: Address, newInterestRateModel: Address): NewMarketInterestRateModelEvent => {
   const event = changetype<NewMarketInterestRateModelEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const oldInterestRateModelParam = new ethereum.EventParam(
-    'oldInterestRateModel',
-    ethereum.Value.fromAddress(oldInterestRateModel),
-  );
+  const oldInterestRateModelParam = new ethereum.EventParam('oldInterestRateModel', ethereum.Value.fromAddress(oldInterestRateModel));
   event.parameters.push(oldInterestRateModelParam);
 
-  const newInterestRateModelParam = new ethereum.EventParam(
-    'newInterestRateModel',
-    ethereum.Value.fromAddress(newInterestRateModel),
-  );
+  const newInterestRateModelParam = new ethereum.EventParam('newInterestRateModel', ethereum.Value.fromAddress(newInterestRateModel));
   event.parameters.push(newInterestRateModelParam);
 
   return event;
 };
 
-export const createApprovalEvent = (
-  vTokenAddress: Address,
-  owner: Address,
-  spender: Address,
-  amount: BigInt,
-): ApprovalEvent => {
+export const createApprovalEvent = (vTokenAddress: Address, owner: Address, spender: Address, amount: BigInt): ApprovalEvent => {
   const event = changetype<ApprovalEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -362,36 +232,21 @@ export const createApprovalEvent = (
   return event;
 };
 
-export const createNewComptrollerEvent = (
-  vTokenAddress: Address,
-  oldComptroller: Address,
-  newComptroller: Address,
-): NewComptrollerEvent => {
+export const createNewComptrollerEvent = (vTokenAddress: Address, oldComptroller: Address, newComptroller: Address): NewComptrollerEvent => {
   const event = changetype<NewComptrollerEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const oldComptrollerParam = new ethereum.EventParam(
-    'oldComptroller',
-    ethereum.Value.fromAddress(oldComptroller),
-  );
+  const oldComptrollerParam = new ethereum.EventParam('oldComptroller', ethereum.Value.fromAddress(oldComptroller));
   event.parameters.push(oldComptrollerParam);
 
-  const newComptrollerParam = new ethereum.EventParam(
-    'newComptroller',
-    ethereum.Value.fromAddress(newComptroller),
-  );
+  const newComptrollerParam = new ethereum.EventParam('newComptroller', ethereum.Value.fromAddress(newComptroller));
   event.parameters.push(newComptrollerParam);
 
   return event;
 };
 
-export const createMintEventV1 = (
-  vTokenAddress: Address,
-  minterAddress: Address,
-  mintAmount: BigInt,
-  mintTokens: BigInt,
-): MintEventV1 => {
+export const createMintEventV1 = (vTokenAddress: Address, minterAddress: Address, mintAmount: BigInt, mintTokens: BigInt): MintEventV1 => {
   const event = changetype<MintEventV1>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -399,28 +254,15 @@ export const createMintEventV1 = (
   const minterParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(minterAddress));
   event.parameters.push(minterParam);
 
-  const mintAmountParam = new ethereum.EventParam(
-    'mintAmount',
-    ethereum.Value.fromUnsignedBigInt(mintAmount),
-  );
+  const mintAmountParam = new ethereum.EventParam('mintAmount', ethereum.Value.fromUnsignedBigInt(mintAmount));
   event.parameters.push(mintAmountParam);
 
-  const mintTokensParam = new ethereum.EventParam(
-    'mintTokens',
-    ethereum.Value.fromUnsignedBigInt(mintTokens),
-  );
+  const mintTokensParam = new ethereum.EventParam('mintTokens', ethereum.Value.fromUnsignedBigInt(mintTokens));
   event.parameters.push(mintTokensParam);
 
   return event;
 };
-export const createMintBehalfEvent = (
-  vTokenAddress: Address,
-  payerAddress: Address,
-  receiverAddress: Address,
-  mintAmount: BigInt,
-  mintTokens: BigInt,
-  totalSupply: BigInt,
-): MintBehalfEvent => {
+export const createMintBehalfEvent = (vTokenAddress: Address, payerAddress: Address, receiverAddress: Address, mintAmount: BigInt, mintTokens: BigInt, totalSupply: BigInt): MintBehalfEvent => {
   const event = changetype<MintBehalfEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -428,39 +270,21 @@ export const createMintBehalfEvent = (
   const payerParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(payerAddress));
   event.parameters.push(payerParam);
 
-  const receiverParam = new ethereum.EventParam(
-    'minter',
-    ethereum.Value.fromAddress(receiverAddress),
-  );
+  const receiverParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(receiverAddress));
   event.parameters.push(receiverParam);
 
-  const mintAmountParam = new ethereum.EventParam(
-    'mintAmount',
-    ethereum.Value.fromUnsignedBigInt(mintAmount),
-  );
+  const mintAmountParam = new ethereum.EventParam('mintAmount', ethereum.Value.fromUnsignedBigInt(mintAmount));
   event.parameters.push(mintAmountParam);
 
-  const mintTokensParam = new ethereum.EventParam(
-    'mintTokens',
-    ethereum.Value.fromUnsignedBigInt(mintTokens),
-  );
+  const mintTokensParam = new ethereum.EventParam('mintTokens', ethereum.Value.fromUnsignedBigInt(mintTokens));
   event.parameters.push(mintTokensParam);
 
-  const totalSupplyParam = new ethereum.EventParam(
-    'totalSupply',
-    ethereum.Value.fromUnsignedBigInt(totalSupply),
-  );
+  const totalSupplyParam = new ethereum.EventParam('totalSupply', ethereum.Value.fromUnsignedBigInt(totalSupply));
   event.parameters.push(totalSupplyParam);
 
   return event;
 };
-export const createMintBehalfEventV1 = (
-  vTokenAddress: Address,
-  payerAddress: Address,
-  receiverAddress: Address,
-  mintAmount: BigInt,
-  mintTokens: BigInt,
-): MintBehalfEventV1 => {
+export const createMintBehalfEventV1 = (vTokenAddress: Address, payerAddress: Address, receiverAddress: Address, mintAmount: BigInt, mintTokens: BigInt): MintBehalfEventV1 => {
   const event = changetype<MintBehalfEventV1>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
@@ -468,111 +292,63 @@ export const createMintBehalfEventV1 = (
   const payerParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(payerAddress));
   event.parameters.push(payerParam);
 
-  const receiverParam = new ethereum.EventParam(
-    'minter',
-    ethereum.Value.fromAddress(receiverAddress),
-  );
+  const receiverParam = new ethereum.EventParam('minter', ethereum.Value.fromAddress(receiverAddress));
   event.parameters.push(receiverParam);
 
-  const mintAmountParam = new ethereum.EventParam(
-    'mintAmount',
-    ethereum.Value.fromUnsignedBigInt(mintAmount),
-  );
+  const mintAmountParam = new ethereum.EventParam('mintAmount', ethereum.Value.fromUnsignedBigInt(mintAmount));
   event.parameters.push(mintAmountParam);
 
-  const mintTokensParam = new ethereum.EventParam(
-    'mintTokens',
-    ethereum.Value.fromUnsignedBigInt(mintTokens),
-  );
+  const mintTokensParam = new ethereum.EventParam('mintTokens', ethereum.Value.fromUnsignedBigInt(mintTokens));
   event.parameters.push(mintTokensParam);
   return event;
 };
 
-export const createRedeemEventV1 = (
-  vTokenAddress: Address,
-  redeemerAddress: Address,
-  redeemAmount: BigInt,
-  redeemTokens: BigInt,
-): RedeemEventV1 => {
+export const createRedeemEventV1 = (vTokenAddress: Address, redeemerAddress: Address, redeemAmount: BigInt, redeemTokens: BigInt): RedeemEventV1 => {
   const event = changetype<RedeemEventV1>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const redeemerParam = new ethereum.EventParam(
-    'redeemer',
-    ethereum.Value.fromAddress(redeemerAddress),
-  );
+  const redeemerParam = new ethereum.EventParam('redeemer', ethereum.Value.fromAddress(redeemerAddress));
   event.parameters.push(redeemerParam);
 
-  const redeemAmountParam = new ethereum.EventParam(
-    'redeemAmount',
-    ethereum.Value.fromUnsignedBigInt(redeemAmount),
-  );
+  const redeemAmountParam = new ethereum.EventParam('redeemAmount', ethereum.Value.fromUnsignedBigInt(redeemAmount));
   event.parameters.push(redeemAmountParam);
 
-  const redeemTokensParam = new ethereum.EventParam(
-    'redeemTokens',
-    ethereum.Value.fromUnsignedBigInt(redeemTokens),
-  );
+  const redeemTokensParam = new ethereum.EventParam('redeemTokens', ethereum.Value.fromUnsignedBigInt(redeemTokens));
   event.parameters.push(redeemTokensParam);
 
   return event;
 };
 
-export const createReservesAddedEvent = (
-  vTokenAddress: Address,
-  benefactor: Address,
-  addAmount: BigInt,
-  newTotalReserves: BigInt,
-): ReservesAddedEvent => {
+export const createReservesAddedEvent = (vTokenAddress: Address, benefactor: Address, addAmount: BigInt, newTotalReserves: BigInt): ReservesAddedEvent => {
   const event = changetype<ReservesAddedEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const addAmountParam = new ethereum.EventParam(
-    'addAmount',
-    ethereum.Value.fromUnsignedBigInt(addAmount),
-  );
+  const addAmountParam = new ethereum.EventParam('addAmount', ethereum.Value.fromUnsignedBigInt(addAmount));
   event.parameters.push(addAmountParam);
 
-  const benefactorParam = new ethereum.EventParam(
-    'benefactor',
-    ethereum.Value.fromAddress(benefactor),
-  );
+  const benefactorParam = new ethereum.EventParam('benefactor', ethereum.Value.fromAddress(benefactor));
   event.parameters.push(benefactorParam);
 
-  const newTotalReservesParam = new ethereum.EventParam(
-    'newTotalReserves',
-    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
-  );
+  const newTotalReservesParam = new ethereum.EventParam('newTotalReserves', ethereum.Value.fromUnsignedBigInt(newTotalReserves));
   event.parameters.push(newTotalReservesParam);
 
   return event;
 };
 
-export const createReservesReducedEvent = (
-  vTokenAddress: Address,
-  admin: Address,
-  reduceAmount: BigInt,
-  newTotalReserves: BigInt,
-): ReservesReducedEvent => {
+export const createReservesReducedEvent = (vTokenAddress: Address, admin: Address, reduceAmount: BigInt, newTotalReserves: BigInt): ReservesReducedEvent => {
   const event = changetype<ReservesReducedEvent>(newMockEvent());
   event.address = vTokenAddress;
   event.parameters = [];
 
-  const reduceAmountParam = new ethereum.EventParam(
-    'reduceAmount',
-    ethereum.Value.fromUnsignedBigInt(reduceAmount),
-  );
+  const reduceAmountParam = new ethereum.EventParam('reduceAmount', ethereum.Value.fromUnsignedBigInt(reduceAmount));
   event.parameters.push(reduceAmountParam);
 
   const adminParam = new ethereum.EventParam('admin', ethereum.Value.fromAddress(admin));
   event.parameters.push(adminParam);
 
-  const newTotalReservesParam = new ethereum.EventParam(
-    'newTotalReserves',
-    ethereum.Value.fromUnsignedBigInt(newTotalReserves),
-  );
+  const newTotalReservesParam = new ethereum.EventParam('newTotalReserves', ethereum.Value.fromUnsignedBigInt(newTotalReserves));
   event.parameters.push(newTotalReservesParam);
 
   return event;

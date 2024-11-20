@@ -45,17 +45,7 @@ beforeAll(() => {
 
 describe('Token Converter', () => {
   test('should index new token converter config', () => {
-    handleConversionConfigUpdated(
-      createConversionConfigUpdatedEvent(
-        tokenConverter1Address,
-        token1Address,
-        token2Address,
-        '200000000000000000',
-        '300000000000000000',
-        '0',
-        '1',
-      ),
-    );
+    handleConversionConfigUpdated(createConversionConfigUpdatedEvent(tokenConverter1Address, token1Address, token2Address, '200000000000000000', '300000000000000000', '0', '1'));
     const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
 
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
@@ -70,17 +60,7 @@ describe('Token Converter', () => {
   });
 
   test('should index updating existing token converter config', () => {
-    handleConversionConfigUpdated(
-      createConversionConfigUpdatedEvent(
-        tokenConverter1Address,
-        token1Address,
-        token2Address,
-        '300000000000000000',
-        '400000000000000000',
-        '1',
-        '3',
-      ),
-    );
+    handleConversionConfigUpdated(createConversionConfigUpdatedEvent(tokenConverter1Address, token1Address, token2Address, '300000000000000000', '400000000000000000', '1', '3'));
     const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
 
@@ -108,55 +88,24 @@ describe('Token Converter', () => {
   });
 
   test('should index updating converter network address', () => {
-    const newConverterNetworkAddress = Address.fromString(
-      '0x0000000000000000000000000000000000000ddd',
-    );
-    handleConverterNetworkAddressUpdated(
-      createConverterNetworkAddressUpdatedEvent(
-        tokenConverter1Address,
-        converterNetworkAddress,
-        newConverterNetworkAddress,
-      ),
-    );
+    const newConverterNetworkAddress = Address.fromString('0x0000000000000000000000000000000000000ddd');
+    handleConverterNetworkAddressUpdated(createConverterNetworkAddressUpdatedEvent(tokenConverter1Address, converterNetworkAddress, newConverterNetworkAddress));
     const tokenConverterId = getTokenConverterId(tokenConverter1Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    assert.fieldEquals(
-      'TokenConverter',
-      tokenConverterId,
-      'converterNetwork',
-      newConverterNetworkAddress.toHexString(),
-    );
+    assert.fieldEquals('TokenConverter', tokenConverterId, 'converterNetwork', newConverterNetworkAddress.toHexString());
   });
 
   test('should index updating destination address', () => {
-    handleDestinationAddressUpdated(
-      createDestinationAddressUpdatedEvent(
-        tokenConverter2Address,
-        destination1Address,
-        destination2Address,
-      ),
-    );
+    handleDestinationAddressUpdated(createDestinationAddressUpdatedEvent(tokenConverter2Address, destination1Address, destination2Address));
     const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    assert.fieldEquals(
-      'TokenConverter',
-      tokenConverterId,
-      'destinationAddress',
-      destination2Address.toHexString(),
-    );
+    assert.fieldEquals('TokenConverter', tokenConverterId, 'destinationAddress', destination2Address.toHexString());
   });
 
   test('should update indexing base asset', () => {
-    handleBaseAssetUpdated(
-      createBaseAssetUpdatedEvent(tokenConverter2Address, token3Address, token4Address),
-    );
+    handleBaseAssetUpdated(createBaseAssetUpdatedEvent(tokenConverter2Address, token3Address, token4Address));
     const tokenConverterId = getTokenConverterId(tokenConverter2Address).toHexString();
     assert.fieldEquals('TokenConverter', tokenConverterId, 'id', tokenConverterId);
-    assert.fieldEquals(
-      'TokenConverter',
-      tokenConverterId,
-      'baseAsset',
-      token4Address.toHexString(),
-    );
+    assert.fieldEquals('TokenConverter', tokenConverterId, 'baseAsset', token4Address.toHexString());
   });
 });

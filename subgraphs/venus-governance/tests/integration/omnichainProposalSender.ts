@@ -16,10 +16,7 @@ describe('OmnichainProposalSender', function () {
   it('should index SetTrustedRemoteAddress', async function () {
     const omnichainExecutorOwner = await ethers.getContract('OmnichainExecutorOwner');
 
-    const tx = await omnichainProposalSender.setTrustedRemoteAddress(
-      21,
-      omnichainExecutorOwner.address,
-    );
+    const tx = await omnichainProposalSender.setTrustedRemoteAddress(21, omnichainExecutorOwner.address);
     await tx.wait();
     await waitForSubgraphToBeSynced(SYNC_DELAY);
     const { data } = await subgraphClient.getTrustedRemote({ id: numberToByteId(21) });

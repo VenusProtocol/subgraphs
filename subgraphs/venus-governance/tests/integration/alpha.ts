@@ -58,9 +58,7 @@ describe('GovernorAlpha', function () {
       expect(proposal.id).to.be.equal('1');
       expect(proposal.description).to.be.equal('Test proposal 1');
       expect(proposal.executionEta).to.be.null;
-      expect(proposal.targets).to.deep.equal([
-        '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
-      ]);
+      expect(proposal.targets).to.deep.equal(['0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase()]);
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
@@ -165,9 +163,7 @@ describe('GovernorAlpha', function () {
       expect(proposal.id).to.be.equal('21');
       expect(proposal.description).to.be.equal('Test proposal 21');
       expect(proposal.executionEta).to.be.null;
-      expect(proposal.targets).to.deep.equal([
-        '0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase(),
-      ]);
+      expect(proposal.targets).to.deep.equal(['0x939bD8d64c0A9583A7Dcea9933f7b21697ab6396'.toLowerCase()]);
       expect(proposal.values).to.deep.equal(['0']);
       expect(proposal.signatures).to.deep.equal(['setPendingAdmin(address)']);
       expect(proposal.calldatas).to.deep.equal([callData]);
@@ -189,9 +185,7 @@ describe('GovernorAlpha', function () {
       await governorAlpha2.queue(21);
 
       const governorAlpha2Timelock = await ethers.getContract('GovernorAlpha2Timelock');
-      const eta =
-        (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp +
-        +(await governorAlpha2Timelock.delay());
+      const eta = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp + +(await governorAlpha2Timelock.delay());
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 

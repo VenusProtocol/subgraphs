@@ -1,12 +1,5 @@
 import { Address } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeEach,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeEach, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import { handlePoolNameSet, handlePoolRegistered } from '../../src/mappings/poolRegistry';
 import { PoolInfo, createPoolRegistryMock, mockPriceOracleAddress } from '../VToken/mocks';
@@ -18,21 +11,9 @@ const cleanup = (): void => {
 
 beforeEach(() => {
   createPoolRegistryMock([
-    new PoolInfo(
-      'Gamer Pool',
-      Address.fromString('0x0000000000000000000000000000000000000072'),
-      Address.fromString('0x0000000000000000000000000000000000000c0c'),
-    ),
-    new PoolInfo(
-      'Gamer Pool1',
-      Address.fromString('0x0000000000000000000000000000000000000072'),
-      Address.fromString('0x0000000000000000000000000000000000000064'),
-    ),
-    new PoolInfo(
-      'Gamer Pool2',
-      Address.fromString('0x0000000000000000000000000000000000000072'),
-      Address.fromString('0x0000000000000000000000000000000000000025'),
-    ),
+    new PoolInfo('Gamer Pool', Address.fromString('0x0000000000000000000000000000000000000072'), Address.fromString('0x0000000000000000000000000000000000000c0c')),
+    new PoolInfo('Gamer Pool1', Address.fromString('0x0000000000000000000000000000000000000072'), Address.fromString('0x0000000000000000000000000000000000000064')),
+    new PoolInfo('Gamer Pool2', Address.fromString('0x0000000000000000000000000000000000000072'), Address.fromString('0x0000000000000000000000000000000000000025')),
   ]);
 });
 
@@ -68,11 +49,7 @@ describe('Pool Registry', () => {
     const poolRegisteredEvent = createPoolRegisteredEvent(comptrollerAddress);
 
     handlePoolRegistered(poolRegisteredEvent);
-    const poolNameSetEvent = createPoolNameSetEvent(
-      comptrollerAddress,
-      'Gamer Pool1',
-      'Summer Pool',
-    );
+    const poolNameSetEvent = createPoolNameSetEvent(comptrollerAddress, 'Gamer Pool1', 'Summer Pool');
 
     const assertPoolDocument = (key: string, value: string): void => {
       assert.fieldEquals('Pool', comptrollerAddressString, key, value);

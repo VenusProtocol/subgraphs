@@ -11,10 +11,7 @@ export function createXvsDepositEvent(user: Address, amount: BigInt): Deposit {
   const userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user));
   event.parameters.push(userParam);
 
-  const rewardTokenParam = new ethereum.EventParam(
-    'rewardToken',
-    ethereum.Value.fromAddress(mockXvsAddress),
-  );
+  const rewardTokenParam = new ethereum.EventParam('rewardToken', ethereum.Value.fromAddress(mockXvsAddress));
   event.parameters.push(rewardTokenParam);
 
   const pidParam = new ethereum.EventParam('pid', ethereum.Value.fromUnsignedBigInt(new BigInt(0)));
@@ -25,20 +22,14 @@ export function createXvsDepositEvent(user: Address, amount: BigInt): Deposit {
   return event;
 }
 
-export function createXvsWithdrawlRequestedEvent(
-  user: Address,
-  amount: BigInt,
-): RequestedWithdrawal {
+export function createXvsWithdrawlRequestedEvent(user: Address, amount: BigInt): RequestedWithdrawal {
   const event = changetype<RequestedWithdrawal>(newMockEvent());
   event.parameters = [];
 
   const userParam = new ethereum.EventParam('user', ethereum.Value.fromAddress(user));
   event.parameters.push(userParam);
 
-  const rewardTokenParam = new ethereum.EventParam(
-    'rewardToken',
-    ethereum.Value.fromAddress(mockXvsAddress),
-  );
+  const rewardTokenParam = new ethereum.EventParam('rewardToken', ethereum.Value.fromAddress(mockXvsAddress));
   event.parameters.push(rewardTokenParam);
 
   const pidParam = new ethereum.EventParam('pid', ethereum.Value.fromUnsignedBigInt(new BigInt(0)));

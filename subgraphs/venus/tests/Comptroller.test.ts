@@ -1,12 +1,5 @@
 import { BigInt } from '@graphprotocol/graph-ts';
-import {
-  afterEach,
-  assert,
-  beforeAll,
-  clearStore,
-  describe,
-  test,
-} from 'matchstick-as/assembly/index';
+import { afterEach, assert, beforeAll, clearStore, describe, test } from 'matchstick-as/assembly/index';
 
 import { handleMarketListed, handleMarketUnlisted } from '../src/mappings/comptroller';
 import { interestRateModelAddress, nullAddress, vBnbAddress } from './constants';
@@ -23,15 +16,7 @@ afterEach(() => {
 
 beforeAll(() => {
   // Mock BNB
-  createVBep20AndUnderlyingMock(
-    vBnbAddress,
-    nullAddress,
-    'BNB',
-    'BNB',
-    BigInt.fromI32(18),
-    BigInt.fromI32(100),
-    interestRateModelAddress,
-  );
+  createVBep20AndUnderlyingMock(vBnbAddress, nullAddress, 'BNB', 'BNB', BigInt.fromI32(18), BigInt.fromI32(100), interestRateModelAddress);
 
   createComptrollerMock();
 });

@@ -13,8 +13,5 @@ import { valueOrNotAvailableIntIfReverted } from '../utilities';
   - Must div by mantissa, 10^18
 */
 export function updateMarketExchangeRate(market: Market, vTokenContract: VToken): void {
-  market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
-    vTokenContract.try_exchangeRateStored(),
-    'vBEP20 try_exchangeRateStored()',
-  );
+  market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(vTokenContract.try_exchangeRateStored(), 'vBEP20 try_exchangeRateStored()');
 }

@@ -1,18 +1,13 @@
 import { Address, Bytes } from '@graphprotocol/graph-ts';
 
-import {
-  ProposalReceived,
-  ReceivePayloadFailed,
-} from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
+import { ProposalReceived, ReceivePayloadFailed } from '../../generated/OmnichainGovernanceExecutor/OmnichainGovernanceExecutor';
 import { FailedPayload, Proposal } from '../../generated/schema';
 import { getFailedPayloadId, getProposalId } from '../utilities/ids';
 
 export const createProposal = (event: ProposalReceived): Proposal => {
   const proposal = new Proposal(getProposalId(event.params.proposalId));
 
-  const targets = event.params.targets.map<Bytes>((address: Address) =>
-    Bytes.fromHexString(address.toHexString()),
-  );
+  const targets = event.params.targets.map<Bytes>((address: Address) => Bytes.fromHexString(address.toHexString()));
   proposal.proposalId = event.params.proposalId;
   proposal.targets = targets;
   proposal.values = event.params.values;

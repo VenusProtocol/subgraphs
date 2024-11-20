@@ -1,5 +1,4 @@
 module.exports = {
-  ...require('prettier-airbnb-config'),
   trailingComma: 'all',
   bracketSpacing: true,
   importOrder: [
@@ -7,4 +6,6 @@ module.exports = {
   ],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
+  singleQuote: true,
+  printWidth: 200
 };

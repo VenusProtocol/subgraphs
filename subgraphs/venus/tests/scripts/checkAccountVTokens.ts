@@ -22,22 +22,15 @@ const run = async () => {
         assert.equal(
           accountVToken.vTokenBalanceMantissa,
           accountBalance.toString(),
-          `incorrect supply balance for account ${accountVToken.account.id} in market ${
-            accountVToken.market.symbol
-          } ${accountVToken.market.id}. Subgraph Value: ${
+          `incorrect supply balance for account ${accountVToken.account.id} in market ${accountVToken.market.symbol} ${accountVToken.market.id}. Subgraph Value: ${
             accountVToken.vTokenBalanceMantissa
           }, contractValue: ${accountBalance.toString()}`,
         );
       } catch (e) {
         console.log(e.message);
       }
-      const borrowBalanceStored = await vTokenContract.borrowBalanceStored(
-        accountVToken.account.id,
-      );
-      const updatedSubgraphValue = BigNumber.from(accountVToken.storedBorrowBalanceMantissa)
-        .mul(accountVToken.market.borrowIndex)
-        .div(accountVToken.borrowIndex)
-        .toString();
+      const borrowBalanceStored = await vTokenContract.borrowBalanceStored(accountVToken.account.id);
+      const updatedSubgraphValue = BigNumber.from(accountVToken.storedBorrowBalanceMantissa).mul(accountVToken.market.borrowIndex).div(accountVToken.borrowIndex).toString();
 
       try {
         // borrower.borrowBalance * market.borrowIndex / borrower.borrowIndex

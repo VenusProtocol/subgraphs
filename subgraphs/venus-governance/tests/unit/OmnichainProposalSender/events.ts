@@ -13,14 +13,7 @@ import {
 import { DYNAMIC_TUPLE_BYTES_PREFIX } from '../../../src/constants';
 import { omnichainProposalSenderAddress } from '../../../src/constants/addresses';
 
-export const createEncodedProposalPayload = (
-  targets: Address[],
-  values: BigInt[],
-  signatures: string[],
-  calldatas: Bytes[],
-  proposalType: i32,
-  proposalId: BigInt,
-): Bytes => {
+export const createEncodedProposalPayload = (targets: Address[], values: BigInt[], signatures: string[], calldatas: Bytes[], proposalType: i32, proposalId: BigInt): Bytes => {
   const payload = [
     ethereum.Value.fromAddressArray(targets),
     ethereum.Value.fromUnsignedBigIntArray(values),
@@ -28,51 +21,28 @@ export const createEncodedProposalPayload = (
     ethereum.Value.fromBytesArray(calldatas),
     ethereum.Value.fromI32(proposalType),
   ];
-  const encodePayload = ethereum.encode(
-    ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payload)),
-  )!;
+  const encodePayload = ethereum.encode(ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payload)))!;
 
   const payloadWithId = [
-    ethereum.Value.fromBytes(
-      Bytes.fromHexString(
-        encodePayload.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'),
-      ),
-    ),
+    ethereum.Value.fromBytes(Bytes.fromHexString(encodePayload.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'))),
     ethereum.Value.fromUnsignedBigInt(proposalId),
   ];
-  const encoded = ethereum.encode(
-    ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payloadWithId)),
-  )!;
+  const encoded = ethereum.encode(ethereum.Value.fromTuple(changetype<ethereum.Tuple>(payloadWithId)))!;
 
-  return Bytes.fromHexString(
-    encoded.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'),
-  );
+  return Bytes.fromHexString(encoded.toHexString().replace(DYNAMIC_TUPLE_BYTES_PREFIX.toHexString(), '0x'));
 };
 
-export const createSetTrustedRemoteAddressEvent = (
-  remoteChainId: i32,
-  oldRemoteAddress: Address,
-  newRemoteAddress: Address,
-): SetTrustedRemoteAddress => {
+export const createSetTrustedRemoteAddressEvent = (remoteChainId: i32, oldRemoteAddress: Address, newRemoteAddress: Address): SetTrustedRemoteAddress => {
   const event = changetype<SetTrustedRemoteAddress>(newMockEvent());
   event.parameters = [];
 
-  const remoteChainIdParam = new ethereum.EventParam(
-    'remoteChainId',
-    ethereum.Value.fromI32(remoteChainId),
-  );
+  const remoteChainIdParam = new ethereum.EventParam('remoteChainId', ethereum.Value.fromI32(remoteChainId));
   event.parameters.push(remoteChainIdParam);
 
-  const oldRemoteAddressParam = new ethereum.EventParam(
-    'oldRemoteAddress',
-    ethereum.Value.fromBytes(oldRemoteAddress),
-  );
+  const oldRemoteAddressParam = new ethereum.EventParam('oldRemoteAddress', ethereum.Value.fromBytes(oldRemoteAddress));
   event.parameters.push(oldRemoteAddressParam);
 
-  const newRemoteAddressParam = new ethereum.EventParam(
-    'newRemoteAddress',
-    ethereum.Value.fromBytes(newRemoteAddress.concat(omnichainProposalSenderAddress)),
-  );
+  const newRemoteAddressParam = new ethereum.EventParam('newRemoteAddress', ethereum.Value.fromBytes(newRemoteAddress.concat(omnichainProposalSenderAddress)));
   event.parameters.push(newRemoteAddressParam);
   return event;
 };
@@ -89,26 +59,13 @@ export const createExecuteRemoteProposalEvent = (
   const event = changetype<ExecuteRemoteProposal>(newMockEvent());
   event.parameters = [];
 
-  const remoteChainIdParam = new ethereum.EventParam(
-    'remoteChainId',
-    ethereum.Value.fromI32(remoteChainId),
-  );
+  const remoteChainIdParam = new ethereum.EventParam('remoteChainId', ethereum.Value.fromI32(remoteChainId));
   event.parameters.push(remoteChainIdParam);
 
-  const proposalIdParam = new ethereum.EventParam(
-    'proposalId',
-    ethereum.Value.fromUnsignedBigInt(proposalId),
-  );
+  const proposalIdParam = new ethereum.EventParam('proposalId', ethereum.Value.fromUnsignedBigInt(proposalId));
   event.parameters.push(proposalIdParam);
 
-  const payload = createEncodedProposalPayload(
-    targets,
-    values,
-    signatures,
-    calldatas,
-    proposalType,
-    proposalId,
-  );
+  const payload = createEncodedProposalPayload(targets, values, signatures, calldatas, proposalType, proposalId);
 
   const payloadParam = new ethereum.EventParam('payload', ethereum.Value.fromBytes(payload));
   event.parameters.push(payloadParam);
@@ -116,33 +73,19 @@ export const createExecuteRemoteProposalEvent = (
   return event;
 };
 
-export const createClearPayloadEvent = (
-  proposalId: BigInt,
-  executionHash: Bytes,
-  includeWithdrawn: boolean,
-): ClearPayload => {
+export const createClearPayloadEvent = (proposalId: BigInt, executionHash: Bytes, includeWithdrawn: boolean): ClearPayload => {
   const event = changetype<ClearPayload>(newMockEvent());
   event.parameters = [];
 
-  const proposalIdParam = new ethereum.EventParam(
-    'proposalId',
-    ethereum.Value.fromUnsignedBigInt(proposalId),
-  );
+  const proposalIdParam = new ethereum.EventParam('proposalId', ethereum.Value.fromUnsignedBigInt(proposalId));
   event.parameters.push(proposalIdParam);
 
-  const executionHashParam = new ethereum.EventParam(
-    'executionHash',
-    ethereum.Value.fromFixedBytes(executionHash),
-  );
+  const executionHashParam = new ethereum.EventParam('executionHash', ethereum.Value.fromFixedBytes(executionHash));
   event.parameters.push(executionHashParam);
 
   if (includeWithdrawn) {
-    const fallbackTopic = Bytes.fromByteArray(
-      crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')),
-    );
-    const clearPayloadTopic = Bytes.fromByteArray(
-      crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')),
-    );
+    const fallbackTopic = Bytes.fromByteArray(crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')));
+    const clearPayloadTopic = Bytes.fromByteArray(crypto.keccak256(ByteArray.fromUTF8('FallbackWithdraw(indexed address,uint256)')));
     event.receipt!.logs[0].topics = [fallbackTopic, clearPayloadTopic];
   }
 
@@ -164,33 +107,17 @@ export const createStorePayloadEvent = (
   const event = changetype<StorePayload>(newMockEvent());
   event.parameters = [];
 
-  const payloadIdParam = new ethereum.EventParam(
-    'payloadId',
-    ethereum.Value.fromUnsignedBigInt(proposalId),
-  );
+  const payloadIdParam = new ethereum.EventParam('payloadId', ethereum.Value.fromUnsignedBigInt(proposalId));
   event.parameters.push(payloadIdParam);
 
-  const remoteChainIdParam = new ethereum.EventParam(
-    'remoteChainId',
-    ethereum.Value.fromI32(remoteChainId),
-  );
+  const remoteChainIdParam = new ethereum.EventParam('remoteChainId', ethereum.Value.fromI32(remoteChainId));
   event.parameters.push(remoteChainIdParam);
-  const payload = createEncodedProposalPayload(
-    targets,
-    values,
-    signatures,
-    calldatas,
-    proposalType,
-    proposalId,
-  );
+  const payload = createEncodedProposalPayload(targets, values, signatures, calldatas, proposalType, proposalId);
 
   const payloadParam = new ethereum.EventParam('payload', ethereum.Value.fromBytes(payload));
   event.parameters.push(payloadParam);
 
-  const adapterParamsParam = new ethereum.EventParam(
-    'adapterParams',
-    ethereum.Value.fromBytes(adapterParams),
-  );
+  const adapterParamsParam = new ethereum.EventParam('adapterParams', ethereum.Value.fromBytes(adapterParams));
   event.parameters.push(adapterParamsParam);
 
   const valueParam = new ethereum.EventParam('value', ethereum.Value.fromI32(value));
@@ -202,49 +129,30 @@ export const createStorePayloadEvent = (
   return event;
 };
 
-export const createNewAccessControlManagerEvent = (
-  oldAccessControlManager: Address,
-  newAccessControlManager: Address,
-): NewAccessControlManager => {
+export const createNewAccessControlManagerEvent = (oldAccessControlManager: Address, newAccessControlManager: Address): NewAccessControlManager => {
   const event = changetype<NewAccessControlManager>(newMockEvent());
   event.parameters = [];
 
-  const oldAccessControlManagerParam = new ethereum.EventParam(
-    'oldAccessControlManager',
-    ethereum.Value.fromAddress(oldAccessControlManager),
-  );
+  const oldAccessControlManagerParam = new ethereum.EventParam('oldAccessControlManager', ethereum.Value.fromAddress(oldAccessControlManager));
   event.parameters.push(oldAccessControlManagerParam);
 
-  const newAccessControlManagerParam = new ethereum.EventParam(
-    'newAccessControlManager',
-    ethereum.Value.fromAddress(newAccessControlManager),
-  );
+  const newAccessControlManagerParam = new ethereum.EventParam('newAccessControlManager', ethereum.Value.fromAddress(newAccessControlManager));
   event.parameters.push(newAccessControlManagerParam);
 
   return event;
 };
 
-export const createSetMaxDailyLimitEvent = (
-  chainId: i32,
-  oldMaxLimit: i32,
-  newMaxLimit: i32,
-): SetMaxDailyLimit => {
+export const createSetMaxDailyLimitEvent = (chainId: i32, oldMaxLimit: i32, newMaxLimit: i32): SetMaxDailyLimit => {
   const event = changetype<SetMaxDailyLimit>(newMockEvent());
   event.parameters = [];
 
   const chainIdParam = new ethereum.EventParam('chainId', ethereum.Value.fromI32(chainId));
   event.parameters.push(chainIdParam);
 
-  const oldMaxLimitParam = new ethereum.EventParam(
-    'oldMaxLimit',
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(oldMaxLimit)),
-  );
+  const oldMaxLimitParam = new ethereum.EventParam('oldMaxLimit', ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(oldMaxLimit)));
   event.parameters.push(oldMaxLimitParam);
 
-  const newMaxLimitParam = new ethereum.EventParam(
-    'newMaxLimit',
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(newMaxLimit)),
-  );
+  const newMaxLimitParam = new ethereum.EventParam('newMaxLimit', ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(newMaxLimit)));
   event.parameters.push(newMaxLimitParam);
   return event;
 };

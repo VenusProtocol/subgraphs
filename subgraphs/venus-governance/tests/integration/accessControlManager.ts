@@ -32,21 +32,13 @@ describe('AccessControlManager', function () {
       } = await subgraphClient.getPermissions();
 
       expect(allPermissions.length).to.be.equal(46);
-      allPermissions.forEach(pe => {
+      allPermissions.forEach((pe) => {
         expect(pe.status).to.be.equal('GRANTED');
       });
 
-      const tx1 = await accessControlManager.giveCallPermission(
-        ethers.constants.AddressZero,
-        functionSig,
-        account,
-      );
+      const tx1 = await accessControlManager.giveCallPermission(ethers.constants.AddressZero, functionSig, account);
 
-      const tx2 = await accessControlManager.giveCallPermission(
-        governorBravoDelegator.address,
-        functionSig,
-        account,
-      );
+      const tx2 = await accessControlManager.giveCallPermission(governorBravoDelegator.address, functionSig, account);
 
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -56,29 +48,17 @@ describe('AccessControlManager', function () {
 
       expect(openSetupPermission.createdAt).to.be.equal(tx1.hash);
       expect(openSetupPermission.updatedAt).to.be.equal(tx1.hash);
-      expect(openSetupPermission.role).to.be.equal(
-        ethers.utils.solidityKeccak256(
-          ['address', 'string'],
-          [ethers.constants.AddressZero, functionSig],
-        ),
-      );
+      expect(openSetupPermission.role).to.be.equal(ethers.utils.solidityKeccak256(['address', 'string'], [ethers.constants.AddressZero, functionSig]));
       expect(openSetupPermission.accountAddress).to.be.equal(account);
       expect(openSetupPermission.status).to.be.equal('GRANTED');
 
       const {
         data: { permission: bravoSetupPermission },
-      } = await subgraphClient.getPermission(
-        getPermissionId(account, governorBravoDelegator.address, functionSig),
-      );
+      } = await subgraphClient.getPermission(getPermissionId(account, governorBravoDelegator.address, functionSig));
 
       expect(bravoSetupPermission.createdAt).to.be.equal(tx2.hash);
       expect(bravoSetupPermission.updatedAt).to.be.equal(tx2.hash);
-      expect(bravoSetupPermission.role).to.be.equal(
-        ethers.utils.solidityKeccak256(
-          ['address', 'string'],
-          [governorBravoDelegator.address, functionSig],
-        ),
-      );
+      expect(bravoSetupPermission.role).to.be.equal(ethers.utils.solidityKeccak256(['address', 'string'], [governorBravoDelegator.address, functionSig]));
       expect(openSetupPermission.accountAddress).to.be.equal(account);
       expect(bravoSetupPermission.status).to.be.equal('GRANTED');
 
@@ -90,11 +70,7 @@ describe('AccessControlManager', function () {
 
     it('indexes permission revoked events', async function () {
       const accessControlManager = await ethers.getContract('AccessControlManager');
-      const tx = await accessControlManager.revokeCallPermission(
-        ethers.constants.AddressZero,
-        functionSig,
-        account,
-      );
+      const tx = await accessControlManager.revokeCallPermission(ethers.constants.AddressZero, functionSig, account);
       await tx.wait();
       await waitForSubgraphToBeSynced(SYNC_DELAY);
 
@@ -102,9 +78,7 @@ describe('AccessControlManager', function () {
       const { permissions } = data!;
       expect(permissions.length).to.be.equal(48);
 
-      const { data: permissionByIdData } = await subgraphClient.getPermission(
-        getPermissionId(account, nullAddress, functionSig),
-      );
+      const { data: permissionByIdData } = await subgraphClient.getPermission(getPermissionId(account, nullAddress, functionSig));
       const { permission } = permissionByIdData!;
       expect(permission.updatedAt).to.be.equal(tx.hash);
       expect(permission.status).to.be.equal('REVOKED');

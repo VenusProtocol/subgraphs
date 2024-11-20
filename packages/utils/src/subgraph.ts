@@ -99,10 +99,7 @@ export const deploy = async ({
   exec(`yarn workspace ${packageName} run codegen`, root);
   exec(`yarn workspace ${packageName} run build:docker`, root);
   exec(`yarn workspace ${packageName} run create:docker`, root);
-  exec(
-    `npx graph deploy ${subgraphAccount}/${subgraphName} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ${Date.now().toString()}`,
-    root,
-  );
+  exec(`npx graph deploy ${subgraphAccount}/${subgraphName} --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ${Date.now().toString()}`, root);
   await waitForSubgraphToBeSynced(syncDelay);
   return { subgraph };
 };

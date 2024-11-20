@@ -1,11 +1,6 @@
 import { log } from '@graphprotocol/graph-ts';
 
-import {
-  MarketAdded,
-  PoolMetadataUpdated,
-  PoolNameSet,
-  PoolRegistered,
-} from '../../generated/PoolRegistry/PoolRegistry';
+import { MarketAdded, PoolMetadataUpdated, PoolNameSet, PoolRegistered } from '../../generated/PoolRegistry/PoolRegistry';
 import { Pool } from '../../generated/schema';
 import { Pool as PoolDataSource } from '../../generated/templates';
 import { createPool } from '../operations/create';
@@ -26,9 +21,7 @@ export function handlePoolNameSet(event: PoolNameSet): void {
     pool.name = event.params.newName;
     pool.save();
   } else {
-    log.critical('Unable to fetch pool with comptroller: {}', [
-      event.params.comptroller.toHexString(),
-    ]);
+    log.critical('Unable to fetch pool with comptroller: {}', [event.params.comptroller.toHexString()]);
   }
 }
 

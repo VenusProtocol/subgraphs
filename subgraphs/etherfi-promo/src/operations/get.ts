@@ -24,10 +24,7 @@ export const getSupply = (tokenAddress: Address): Supply => {
   return supply;
 };
 
-export const getSupplierAccount = (
-  accountAddress: Address,
-  tokenAddress: Address,
-): SupplierAccount | null => {
+export const getSupplierAccount = (accountAddress: Address, tokenAddress: Address): SupplierAccount | null => {
   const supplierAccount = SupplierAccount.load(getPositionId(accountAddress, tokenAddress));
   return supplierAccount;
 };
@@ -41,10 +38,7 @@ export const getBorrow = (tokenAddress: Address): Borrow => {
   return borrow;
 };
 
-export const getBorrowerAccount = (
-  accountAddress: Address,
-  tokenAddress: Address,
-): BorrowerAccount | null => {
+export const getBorrowerAccount = (accountAddress: Address, tokenAddress: Address): BorrowerAccount | null => {
   const borrowerAccount = BorrowerAccount.load(getPositionId(accountAddress, tokenAddress));
   return borrowerAccount;
 };

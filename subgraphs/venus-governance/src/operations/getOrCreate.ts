@@ -1,21 +1,10 @@
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 
-import {
-  Delegate,
-  MaxDailyLimit,
-  RemoteProposalStateTransaction,
-  Transaction,
-  TrustedRemote,
-} from '../../generated/schema';
+import { Delegate, MaxDailyLimit, RemoteProposalStateTransaction, Transaction, TrustedRemote } from '../../generated/schema';
 import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import { getRemoteProposalId } from '../utilities/ids';
-import {
-  getDelegateId,
-  getMaxDailyLimitId,
-  getRemoteProposalStateTransactionId,
-  getTrustedRemoteId,
-} from '../utilities/ids';
+import { getDelegateId, getMaxDailyLimitId, getRemoteProposalStateTransactionId, getTrustedRemoteId } from '../utilities/ids';
 import { getGovernanceEntity } from './get';
 
 export class GetOrCreateDelegateReturn {
@@ -51,10 +40,7 @@ export class GetOrCreateTrustedRemoteReturn {
   created: boolean;
 }
 
-export const getOrCreateTrustedRemote = (
-  layerZeroChainId: i32,
-  remoteAddress: Address,
-): GetOrCreateTrustedRemoteReturn => {
+export const getOrCreateTrustedRemote = (layerZeroChainId: i32, remoteAddress: Address): GetOrCreateTrustedRemoteReturn => {
   let created = false;
   const id = getTrustedRemoteId(layerZeroChainId);
   let trustedRemote = TrustedRemote.load(id);
@@ -100,11 +86,7 @@ export const getOrCreateTransaction = (event: ethereum.Event): Transaction => {
   return transaction;
 };
 
-export const getOrCreateRemoteProposalStateTransaction = (
-  layerZeroChainId: i32,
-  proposalId: BigInt,
-  remoteProposalId: BigInt,
-): RemoteProposalStateTransaction => {
+export const getOrCreateRemoteProposalStateTransaction = (layerZeroChainId: i32, proposalId: BigInt, remoteProposalId: BigInt): RemoteProposalStateTransaction => {
   const key = getRemoteProposalId(layerZeroChainId, proposalId);
   const id = getRemoteProposalStateTransactionId(remoteProposalId);
   let remoteProposalStateTransaction = RemoteProposalStateTransaction.load(id);

@@ -15,27 +15,17 @@ export function createTokenConverter(tokenConverterAddress: Address): TokenConve
 
   if (tokenConverterAddress.equals(riskFundConverterAddress)) {
     const riskFund = RiskFund.bind(riskFundAddress);
-    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(
-      riskFund.try_convertibleBaseAsset(),
-    );
+    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(riskFund.try_convertibleBaseAsset());
   } else {
-    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(
-      tokenConverterContract.try_baseAsset(),
-    );
+    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(tokenConverterContract.try_baseAsset());
   }
   tokenConverter.paused = false;
   tokenConverter.save();
   return tokenConverter;
 }
 
-export function createTokenConverterConfig(
-  tokenConverterAddress: Address,
-  tokenAddressIn: Address,
-  tokenAddressOut: Address,
-): TokenConverterConfig {
-  const tokenConverterConfig = new TokenConverterConfig(
-    getTokenConverterConfigId(tokenConverterAddress, tokenAddressIn, tokenAddressOut),
-  );
+export function createTokenConverterConfig(tokenConverterAddress: Address, tokenAddressIn: Address, tokenAddressOut: Address): TokenConverterConfig {
+  const tokenConverterConfig = new TokenConverterConfig(getTokenConverterConfigId(tokenConverterAddress, tokenAddressIn, tokenAddressOut));
   tokenConverterConfig.tokenConverter = getTokenConverterId(tokenConverterAddress);
   tokenConverterConfig.tokenIn = getOrCreateToken(tokenAddressIn).id;
   tokenConverterConfig.tokenOut = getOrCreateToken(tokenAddressOut).id;
