@@ -22,9 +22,7 @@ const run = async () => {
         assert.equal(
           accountVToken.vTokenBalanceMantissa,
           accountBalance.toString(),
-          `incorrect supply balance for account ${accountVToken.account.id} in market ${
-            accountVToken.market.symbol
-          } ${accountVToken.market.id}. Subgraph Value: ${
+          `incorrect supply balance for account ${accountVToken.account.id} in market ${accountVToken.market.symbol} ${accountVToken.market.id}. Subgraph Value: ${
             accountVToken.vTokenBalanceMantissa
           }, contractValue: ${accountBalance.toString()}`,
         );
