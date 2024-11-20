@@ -4852,6 +4852,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/isolated-pools@npm:3.7.0-dev.5":
+  version: 3.7.0-dev.5
+  resolution: "@venusprotocol/isolated-pools@npm:3.7.0-dev.5"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": ^2.0.0
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: 0d4cea585025102481d6634ab5ec902b6d8abffcdfee4769b27023d5f4ad6d0fc86ad63ea4e30a73d43bf5f729e05bc5eb786b27233630a4982b366e124a34c6
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/oracle@npm:2.6.0":
   version: 2.6.0
   resolution: "@venusprotocol/oracle@npm:2.6.0"
@@ -8031,7 +8048,7 @@ __metadata:
   resolution: "etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
   dependencies:
     "@graphprotocol/graph-cli": ^0.80.0
-    "@venusprotocol/isolated-pools": 3.6.0
+    "@venusprotocol/isolated-pools": 3.7.0-dev.5
     ts-node: ^10.9.2
     viem: ^2.9.26
   languageName: unknown
