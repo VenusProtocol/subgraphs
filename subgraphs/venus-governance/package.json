@@ -29,7 +29,7 @@
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
     "@venusprotocol/governance-contracts": "2.5.0-dev.3",
-    "@venusprotocol/subgraph-utils": "0.0.0",
+    "@venusprotocol/subgraph-utils": "workspace:^",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "semantic-release": "^23.1.1",

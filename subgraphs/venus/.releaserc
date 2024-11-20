@@ -58,7 +58,7 @@
       }
     ],
     [
-      "@semantic-release/npm",
+      "semantic-release-yarn",
       {
         "npmPublish": false
       }
@@ -85,7 +85,7 @@
       "name": "main"
     },
     {
-      "name": "test-*",
+      "name": "pre-*",
       "prerelease": "pre"
     }
   ]
