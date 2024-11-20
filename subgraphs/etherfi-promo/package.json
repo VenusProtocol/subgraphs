@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/etherfi-promo-subgraph",
-  "version": "0.1.1",
+  "version": "1.0.0-pre.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -38,5 +38,6 @@
     "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
-  }
+  },
+  "stableVersion": "0.1.1"
 }
