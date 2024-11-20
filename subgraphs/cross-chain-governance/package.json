@@ -50,5 +50,6 @@
   "devDependencies": {
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2"
-  }
+  },
+  "stableVersion": "1.0.0-pre.1"
 }
