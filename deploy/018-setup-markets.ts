@@ -115,19 +115,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   vFdusdToken = await ethers.getContractAt('VToken', vFdusdToken.address);
   vUsdtToken = await ethers.getContractAt('VToken', vUsdtToken.address);
   await vUsdtToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vDogeToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vFdusdToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
 
   await comptroller._setComptrollerLens((await ethers.getContract('ComptrollerLens')).address);
@@ -135,35 +129,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await mine(1);
 
   await vUsdcToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vWBnbToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vEthToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
 
   await vUsdtToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vDogeToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
   await vFdusdToken.setProtocolShareReserve(
-    (
-      await ethers.getContract('ProtocolShareReserve')
-    ).address,
+    (await ethers.getContract('ProtocolShareReserve')).address,
   );
 
   await vUsdcToken.accrueInterest();

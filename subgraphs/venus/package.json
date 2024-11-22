@@ -1,5 +1,5 @@
 {
-  "name": "venus-subgraph",
+  "name": "@venusprotocol/core-pool-subgraph",
   "version": "0.0.3",
   "license": "MIT",
   "repository": {
@@ -32,5 +32,9 @@
     "@venusprotocol/venus-protocol-orig-events": "npm:@venusprotocol/venus-protocol@2.2.1",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "semantic-release": "^23.1.1",
+    "semantic-release-monorepo": "^8.0.2"
   }
 }

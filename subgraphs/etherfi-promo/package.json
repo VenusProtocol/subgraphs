@@ -34,6 +34,8 @@
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.80.0",
+    "semantic-release": "^23.1.1",
+    "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
     "viem": "^2.9.26"
   }

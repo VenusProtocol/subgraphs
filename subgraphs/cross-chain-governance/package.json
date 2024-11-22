@@ -1,6 +1,6 @@
 {
-  "name": "venus-cross-chain-governance-subgraph",
-  "version": "0.1.7",
+  "name": "@venusprotocol/cross-chain-governance-subgraph",
+  "version": "1.0.0-pre.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -41,10 +41,15 @@
     "@graphprotocol/graph-cli": "^0.80.0",
     "@layerzerolabs/solidity-examples": "^1.0.0",
     "@venusprotocol/governance-contracts": "2.5.0-dev.4",
+    "@venusprotocol/subgraph-utils": "workspace:^",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "ts-node": "^10.9.2",
-    "urql": "^3.0.3",
-    "venus-subgraph-utils": "0.0.0"
-  }
+    "urql": "^3.0.3"
+  },
+  "devDependencies": {
+    "semantic-release": "^23.1.1",
+    "semantic-release-monorepo": "^8.0.2"
+  },
+  "stableVersion": "1.0.0-pre.1"
 }

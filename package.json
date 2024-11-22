@@ -1,5 +1,5 @@
 {
-  "name": "subgraphs",
+  "name": "@venusprotocol/subgraphs",
   "private": true,
   "version": "0.0.0",
   "repository": "https://github.com/VenusProtocol/subgraphs",
@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "codegen": "yarn workspaces foreach run codegen",
+    "semantic-release": "yarn workspaces foreach run semantic-release",
     "build:docker": "yarn workspaces foreach run build:docker",
     "build:chapel": "yarn workspaces foreach run build:chapel",
     "build:bsc": "yarn workspaces foreach run build:bsc",
@@ -33,6 +34,8 @@
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.5.1",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
     "@graphprotocol/graph-ts": "^0.35.1",
@@ -41,7 +44,10 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
     "@nomiclabs/hardhat-ethers": "^2.1.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
-    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@typechain/ethers-v5": "^10.1.0",
     "@typechain/hardhat": "^6.1.2",
     "@types/mocha": "^9.1.1",
@@ -74,15 +80,15 @@
     "module-alias": "^2.2.2",
     "mustache": "^4.2.0",
     "patch-package": "6.5.1",
-    "prettier": "^2.5.1",
-    "prettier-airbnb-config": "^1.0.0",
+    "prettier": "^3.0.3",
     "ts-node": "^10.9.2",
     "typechain": "^8.1.0",
     "typescript": "^4.8.4"
   },
   "resolutions": {
     "@venusprotocol/governance-contracts": "2.5.0-dev.4",
-    "@venusprotocol/venus-protocol": "9.3.0"
+    "@venusprotocol/venus-protocol": "9.3.0",
+    "prettier": "^3.0.3"
   },
   "husky": {
     "hooks": {
@@ -92,5 +98,8 @@
   "packageManager": "yarn@3.2.2",
   "_moduleAliases": {
     "@nomiclabs/hardhat-ethers": "node_modules/hardhat-deploy-ethers"
+  },
+  "dependencies": {
+    "semantic-release-yarn": "^3.0.2"
   }
 }

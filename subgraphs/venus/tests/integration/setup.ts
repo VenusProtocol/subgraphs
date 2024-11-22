@@ -1,4 +1,4 @@
-import { deploy } from 'venus-subgraph-utils';
+import { deploy } from '@venusprotocol/subgraph-utils';
 
 import { SUBGRAPH_ACCOUNT, SUBGRAPH_NAME, SYNC_DELAY } from './constants';
 
@@ -8,7 +8,7 @@ describe('Deploy Subgraph', function () {
 
     await deploy({
       root,
-      packageName: 'venus-subgraph',
+      packageName: '@venusprotocol/core-pool-subgraph',
       subgraphAccount: SUBGRAPH_ACCOUNT,
       subgraphName: SUBGRAPH_NAME,
       syncDelay: SYNC_DELAY,
