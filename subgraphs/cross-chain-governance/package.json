@@ -14,7 +14,7 @@
     "create:docker": "yarn graph create venusprotocol/venus-subgraph --node http://graph-node:8020/",
     "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:docker": "yarn mustache config/docker.json template.yaml > subgraph.yaml && yarn graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
+    "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/crosschain-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/",
     "deploy:ethereum": "yarn prepare:ethereum && yarn graph deploy --studio venus-governance-ethereum",
     "deploy:sepolia": "yarn prepare:sepolia && yarn graph deploy --studio venus-governance-sepolia",
     "deploy:arbitrumSepolia": "yarn prepare:arbitrumSepolia && yarn graph deploy --studio venus-governance-arbisepolia",
