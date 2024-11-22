@@ -49,4 +49,5 @@ type TokenConverterConfig @entity {
     tokenOut: Token!
     incentive: BigInt!
     access: ConversionAccessibility!
+    tokenOutBalance: BigInt!
 }

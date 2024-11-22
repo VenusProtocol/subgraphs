@@ -10,7 +10,7 @@ dataSources:
     source:
       address: "{{ converterNetworkAddress }}"
       abi: ConverterNetwork
-      startBlock: {{ startBlock }}
+      startBlock: {{ converterNetworkStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -28,14 +28,13 @@ dataSources:
           handler: handleConverterAdded
         - event: ConverterRemoved(indexed address)
           handler: handleConverterRemoved
-
   - name: BTCBPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ btcbPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ btcbPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -63,13 +62,17 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+      blockHandlers:
+        - handler: handleInitializationBtcbPrimeConverter
+          filter:
+            kind: once
   - name: ETHPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ ethPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ ethPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -97,13 +100,17 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+      blockHandlers:
+        - handler: handleInitializationEthPrimeConverter
+          filter:
+            kind: once
   - name: RiskFundConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ riskFundConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ riskFundConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -129,13 +136,17 @@ dataSources:
           handler: handleConverterNetworkAddressUpdated
         - event: DestinationAddressUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+      blockHandlers:
+        - handler: handleInitializationRiskFundConverter
+          filter:
+            kind: once
   - name: USDCPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ usdcPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ usdcPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -163,13 +174,17 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+      blockHandlers:
+        - handler: handleInitializationUsdcPrimeConverter
+          filter:
+            kind: once
   - name: USDTPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ usdtPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ usdtPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -197,13 +212,17 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+      blockHandlers:
+        - handler: handleInitializationUsdtPrimeConverter
+          filter:
+            kind: once
   - name: XVSVaultConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ xvsVaultConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ xvsVaultConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -231,3 +250,31 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleBaseAssetUpdated
+      blockHandlers:
+        - handler: handleInitializationXvsVaultConverter
+          filter:
+            kind: once
+templates:
+  - name: ERC20
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/token.ts
+      entities:
+        - TokenConverterConfig
+        - TokenConverter
+      abis:
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/BEP20Interface.sol/BEP20Interface.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransferOut
+          topic1: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}"]
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransferIn
+          topic2: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}"]

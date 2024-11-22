@@ -3,6 +3,8 @@ import { Address } from '@graphprotocol/graph-ts';
 import { TokenConverter as TokenConverterContract } from '../../generated/BTCBPrimeConverter/TokenConverter';
 import { RiskFund } from '../../generated/ConverterNetwork/RiskFund';
 import { TokenConverter, TokenConverterConfig } from '../../generated/schema';
+import { ERC20 } from '../../generated/templates';
+import { zeroBigInt32 } from '../constants';
 import { riskFundAddress, riskFundConverterAddress } from '../constants/addresses';
 import { valueOrNotAvailableAddressIfReverted } from '../utilities';
 import { getTokenConverterConfigId, getTokenConverterId } from '../utilities/ids';
@@ -39,5 +41,8 @@ export function createTokenConverterConfig(
   tokenConverterConfig.tokenConverter = getTokenConverterId(tokenConverterAddress);
   tokenConverterConfig.tokenIn = getOrCreateToken(tokenAddressIn).id;
   tokenConverterConfig.tokenOut = getOrCreateToken(tokenAddressOut).id;
+  tokenConverterConfig.tokenOutBalance = zeroBigInt32;
+  ERC20.create(tokenAddressOut);
+
   return tokenConverterConfig;
 }

@@ -1,3 +1,5 @@
+import { ethereum } from '@graphprotocol/graph-ts';
+
 import {
   BaseAssetUpdated,
   ConversionConfigUpdated,
@@ -6,9 +8,54 @@ import {
   ConverterNetworkAddressUpdated,
   DestinationAddressUpdated,
 } from '../../generated/BTCBPrimeConverter/TokenConverter';
+import {
+  btcbPrimeConverterAddress,
+  ethPrimeConverterAddress,
+  riskFundConverterAddress,
+  usdcPrimeConverterAddress,
+  usdtPrimeConverterAddress,
+  wbtcPrimeConverterAddress,
+  wethPrimeConverterAddress,
+  xvsVaultConverterAddress,
+} from '../constants/addresses';
 import { getOrCreateTokenConverter } from '../operations/getOrCreate';
 import { updateOrCreateTokenConverterConfig } from '../operations/updateOrCreate';
 import { getConverterNetworkId } from '../utilities/ids';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationBtcbPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(btcbPrimeConverterAddress);
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationEthPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(ethPrimeConverterAddress);
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationRiskFundConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(riskFundConverterAddress);
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationUsdcPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(usdcPrimeConverterAddress);
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationUsdtPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(usdtPrimeConverterAddress);
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationXvsVaultConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(xvsVaultConverterAddress);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationWbtcPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(wbtcPrimeConverterAddress);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationWethPrimeConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(wethPrimeConverterAddress);
+}
 
 export function handleConversionConfigUpdated(event: ConversionConfigUpdated): void {
   getOrCreateTokenConverter(event.address);
