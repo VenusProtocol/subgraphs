@@ -1,5 +1,5 @@
 {
-  "name": "etherfi-promo-subgraph",
+  "name": "@venusprotocol/etherfi-promo-subgraph",
   "version": "0.2.0",
   "license": "MIT",
   "repository": {

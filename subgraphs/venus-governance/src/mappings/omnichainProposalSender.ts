@@ -22,10 +22,13 @@ import {
 import { removeTrustedRemote } from '../operations/remove';
 
 export function handleSetTrustedRemoteAddress(event: SetTrustedRemoteAddress): void {
-  getOrCreateTrustedRemote(
+  const result = getOrCreateTrustedRemote(
     event.params.remoteChainId,
     Address.fromString(event.params.newRemoteAddress.toHexString().slice(0, 42)),
   );
+  // Ensure it is marked active, in case it was previously created in remote proposal creation
+  result.entity.active = true;
+  result.entity.save();
 }
 
 export function handleExecuteRemoteProposal(event: ExecuteRemoteProposal): void {
