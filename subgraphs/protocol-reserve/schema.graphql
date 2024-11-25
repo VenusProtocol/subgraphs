@@ -32,11 +32,13 @@ Token Converter entity
 """
 type TokenConverter @entity {
     id: Bytes!
+    address: Bytes!
     converterNetwork: ConverterNetwork
     destinationAddress: Bytes!
     baseAsset: Bytes!
     configs: [TokenConverterConfig!]! @derivedFrom(field: "tokenConverter")
     paused: Boolean!
+    priceOracleAddress: Bytes!
 }
 
 """

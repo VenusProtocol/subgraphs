@@ -14,6 +14,7 @@ export function createTokenConverter(tokenConverterAddress: Address): TokenConve
   const tokenConverterContract = TokenConverterContract.bind(tokenConverterAddress);
   const tokenConverter = new TokenConverter(getTokenConverterId(tokenConverterAddress));
   tokenConverter.destinationAddress = tokenConverterContract.destinationAddress();
+  tokenConverter.address = tokenConverterAddress;
 
   if (tokenConverterAddress.equals(riskFundConverterAddress)) {
     const riskFund = RiskFund.bind(riskFundAddress);
