@@ -26,6 +26,9 @@ export function createTokenConverter(tokenConverterAddress: Address): TokenConve
       tokenConverterContract.try_baseAsset(),
     );
   }
+  tokenConverter.priceOracleAddress = valueOrNotAvailableAddressIfReverted(
+    tokenConverterContract.try_priceOracle(),
+  );
   tokenConverter.paused = false;
   tokenConverter.save();
   return tokenConverter;

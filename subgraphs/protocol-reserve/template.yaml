@@ -62,6 +62,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationBtcbPrimeConverter
           filter:
@@ -100,6 +102,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationEthPrimeConverter
           filter:
@@ -136,6 +140,8 @@ dataSources:
           handler: handleConverterNetworkAddressUpdated
         - event: DestinationAddressUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationRiskFundConverter
           filter:
@@ -174,6 +180,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationUsdcPrimeConverter
           filter:
@@ -212,6 +220,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationUsdtPrimeConverter
           filter:
@@ -250,6 +260,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleBaseAssetUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationXvsVaultConverter
           filter:

@@ -63,6 +63,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationWbtcPrimeConverter
           filter:
@@ -101,6 +103,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationWethPrimeConverter
           filter:
@@ -139,6 +143,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationUsdcPrimeConverter
           filter:
@@ -177,6 +183,8 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationUsdtPrimeConverter
           filter:
@@ -219,6 +227,8 @@ dataSources:
         - handler: handleInitializationXvsVaultConverter
           filter:
             kind: once
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
 templates:
   - name: ERC20
     kind: ethereum/contract

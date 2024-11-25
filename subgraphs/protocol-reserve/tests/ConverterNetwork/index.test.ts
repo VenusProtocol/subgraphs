@@ -12,10 +12,21 @@ const tokenConverter2Address = Address.fromString('0x000000000000000000000000000
 
 const token1Address = Address.fromString('0x000000000000000000000000000000000000c111');
 const destination1Address = Address.fromString('0x000000000000000000000000000000000000d111');
+const priceOracleAddress = Address.fromString('0x000000000000000000000000000000000000abab');
 
 beforeAll(() => {
-  createTokenConverterMock(tokenConverter1Address, destination1Address, token1Address);
-  createTokenConverterMock(tokenConverter2Address, destination1Address, token1Address);
+  createTokenConverterMock(
+    tokenConverter1Address,
+    destination1Address,
+    token1Address,
+    priceOracleAddress,
+  );
+  createTokenConverterMock(
+    tokenConverter2Address,
+    destination1Address,
+    token1Address,
+    priceOracleAddress,
+  );
 });
 
 describe('Converter Network', () => {

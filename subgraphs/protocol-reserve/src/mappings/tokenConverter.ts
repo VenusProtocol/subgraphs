@@ -7,6 +7,7 @@ import {
   ConversionResumed,
   ConverterNetworkAddressUpdated,
   DestinationAddressUpdated,
+  PriceOracleUpdated,
 } from '../../generated/BTCBPrimeConverter/TokenConverter';
 import {
   btcbPrimeConverterAddress,
@@ -18,6 +19,7 @@ import {
   wethPrimeConverterAddress,
   xvsVaultConverterAddress,
 } from '../constants/addresses';
+import { getTokenConverter } from '../operations/get';
 import { getOrCreateTokenConverter } from '../operations/getOrCreate';
 import { updateOrCreateTokenConverterConfig } from '../operations/updateOrCreate';
 import { getConverterNetworkId } from '../utilities/ids';
@@ -89,5 +91,11 @@ export function handleDestinationAddressUpdated(event: DestinationAddressUpdated
 export function handleBaseAssetUpdated(event: BaseAssetUpdated): void {
   const tokenConverter = getOrCreateTokenConverter(event.address);
   tokenConverter.baseAsset = event.params.newBaseAsset;
+  tokenConverter.save();
+}
+
+export function handlePriceOracleUpdated(event: PriceOracleUpdated): void {
+  const tokenConverter = getTokenConverter(event.address)!;
+  tokenConverter.priceOracleAddress = event.params.priceOracle;
   tokenConverter.save();
 }

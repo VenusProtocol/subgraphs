@@ -33,10 +33,21 @@ const token4Address = Address.fromString('0x000000000000000000000000000000000000
 
 const destination1Address = Address.fromString('0x000000000000000000000000000000000000d111');
 const destination2Address = Address.fromString('0x000000000000000000000000000000000000d222');
+const priceOracleAddress = Address.fromString('0x000000000000000000000000000000000000abab');
 
 beforeAll(() => {
-  createTokenConverterMock(tokenConverter1Address, destination1Address, token3Address);
-  createTokenConverterMock(tokenConverter2Address, destination1Address, token3Address);
+  createTokenConverterMock(
+    tokenConverter1Address,
+    destination1Address,
+    token3Address,
+    priceOracleAddress,
+  );
+  createTokenConverterMock(
+    tokenConverter2Address,
+    destination1Address,
+    token3Address,
+    priceOracleAddress,
+  );
   createTokenMock(token1Address, 'BNB');
   createTokenMock(token2Address, 'BTC');
   createTokenMock(token3Address, 'USDC');
