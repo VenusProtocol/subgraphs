@@ -151,6 +151,8 @@ templates:
           handler: handleSpreadReservesReduced
         - event: ProtocolSeize(indexed address,indexed address,uint256)
           handler: handleProtocolSeize
+        - event: BadDebtRecovered(uint256,uint256)
+          handler: handleBadDebtRecovered
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}

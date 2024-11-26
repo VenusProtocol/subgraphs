@@ -3,6 +3,7 @@ import { Address } from '@graphprotocol/graph-ts';
 import {
   AccrueInterest,
   BadDebtIncreased,
+  BadDebtRecovered,
   Borrow,
   LiquidateBorrow,
   Mint,
@@ -314,6 +315,13 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   market.save();
 
   createAccountVTokenBadDebt(vTokenAddress, event);
+}
+
+export function handleBadDebtRecovered(event: BadDebtRecovered): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress)!;
+  market.badDebtMantissa = event.params.badDebtNew;
+  market.save();
 }
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {
