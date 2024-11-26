@@ -28,7 +28,10 @@ dataSources:
           handler: handleConverterAdded
         - event: ConverterRemoved(indexed address)
           handler: handleConverterRemoved
-
+      blockHandlers:
+        - handler: handleInitializationConverterNetwork
+          filter:
+            kind: once
   - name: WBTCPrimeConverter
     kind: ethereum/contract
     network: {{ network }}

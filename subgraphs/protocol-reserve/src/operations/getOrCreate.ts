@@ -1,13 +1,8 @@
 import { Address } from '@graphprotocol/graph-ts';
 
 import { ERC20 } from '../../generated/RiskFundConverter/ERC20';
-import {
-  ConverterNetwork,
-  Token,
-  TokenConverter,
-  TokenConverterConfig,
-} from '../../generated/schema';
-import { getAssetId, getConverterNetworkId } from '../utilities/ids';
+import { Token, TokenConverter, TokenConverterConfig } from '../../generated/schema';
+import { getAssetId } from '../utilities/ids';
 import { createTokenConverter, createTokenConverterConfig } from './create';
 import { getTokenConverter, getTokenConverterConfig } from './get';
 
@@ -25,22 +20,6 @@ export function getOrCreateTokenConverter(tokenConverterAddress: Address): Token
   }
 
   return tokenConverter;
-}
-
-/**
- * ConverterNetwork is hardcoded in the subgraph definition
- *
- * @param converterNetworkAddress
- * @returns
- */
-export function getOrCreateConverterNetwork(converterNetworkAddress: Address): ConverterNetwork {
-  let converterNetwork = ConverterNetwork.load(getConverterNetworkId(converterNetworkAddress));
-
-  if (!converterNetwork) {
-    converterNetwork = new ConverterNetwork(getConverterNetworkId(converterNetworkAddress));
-  }
-
-  return converterNetwork;
 }
 
 export function getOrCreateTokenConverterConfig(

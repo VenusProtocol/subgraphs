@@ -10,6 +10,7 @@ Converter Network entity
 """
 type ConverterNetwork @entity {
     id: Bytes!
+    address: Bytes!
     tokenConverters: [TokenConverter!]! @derivedFrom(field: "converterNetwork")
 }
 

@@ -1,5 +1,6 @@
 import { Address } from '@graphprotocol/graph-ts';
 
+import { ConverterNetwork } from '../../generated/schema';
 import { TokenConverter as TokenConverterContract } from '../../generated/BTCBPrimeConverter/TokenConverter';
 import { RiskFund } from '../../generated/ConverterNetwork/RiskFund';
 import { TokenConverter, TokenConverterConfig } from '../../generated/schema';
@@ -7,8 +8,26 @@ import { ERC20 } from '../../generated/templates';
 import { zeroBigInt32 } from '../constants';
 import { riskFundAddress, riskFundConverterAddress } from '../constants/addresses';
 import { valueOrNotAvailableAddressIfReverted } from '../utilities';
-import { getTokenConverterConfigId, getTokenConverterId } from '../utilities/ids';
+import {
+  getTokenConverterConfigId,
+  getTokenConverterId,
+  getConverterNetworkId,
+} from '../utilities/ids';
 import { getOrCreateToken } from './getOrCreate';
+import { converterNetworkAddress } from '../constants/addresses';
+
+/**
+ * ConverterNetwork is hardcoded in the subgraph definition
+ *
+ * @param converterNetworkAddress
+ * @returns
+ */
+export function createConverterNetwork(): ConverterNetwork {
+  const converterNetwork = new ConverterNetwork(getConverterNetworkId(converterNetworkAddress));
+  converterNetwork.address = converterNetworkAddress;
+
+  return converterNetwork;
+}
 
 export function createTokenConverter(tokenConverterAddress: Address): TokenConverter {
   const tokenConverterContract = TokenConverterContract.bind(tokenConverterAddress);
