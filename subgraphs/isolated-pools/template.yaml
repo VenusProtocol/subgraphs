@@ -149,6 +149,8 @@ templates:
           handler: handleReservesAdded
         - event: SpreadReservesReduced(indexed address,uint256,uint256)
           handler: handleSpreadReservesReduced
+        - event: ProtocolSeize(indexed address,indexed address,uint256)
+          handler: handleProtocolSeize
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}

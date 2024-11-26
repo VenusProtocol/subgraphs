@@ -9,6 +9,7 @@ import {
   NewAccessControlManager,
   NewMarketInterestRateModel,
   NewReserveFactor,
+  ProtocolSeize,
   Redeem,
   RepayBorrow,
   ReservesAdded,
@@ -68,7 +69,8 @@ export function handleMint(event: Mint): void {
     market.supplierCount = market.supplierCount.plus(oneBigInt);
   }
   // and finally we update the market total supply
-  market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
   market.save();
 }
 
@@ -202,6 +204,14 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   borrower.save();
 
   createLiquidateBorrowTransaction(event);
+}
+
+export function handleProtocolSeize(event: ProtocolSeize): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress)!;
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+  market.save();
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
