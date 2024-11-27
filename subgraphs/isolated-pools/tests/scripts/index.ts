@@ -5,10 +5,14 @@ import checkAccountVTokens from './checkAccountVTokens';
 import checkComptroller from './checkComptroller';
 import checkMarkets from './checkMarkets';
 
-const run = async () => {
-  const provider = new ethers.providers.JsonRpcProvider(process.env.RPC);
+import dotenv from 'dotenv';
+dotenv.config({ path: '../../.env' });
 
-  const subgraphClient = createSubgraphClient(process.env.SUBGRAPH_URL);
+const run = async () => {
+  const NETWORK = process.argv[2];
+  const provider = new ethers.providers.JsonRpcProvider(process.env[`RPC_${NETWORK}`] as string);
+
+  const subgraphClient = createSubgraphClient(process.env[`SUBGRAPH_URL_${NETWORK}`] as string);
 
   await checkComptroller(provider, subgraphClient);
   await checkMarkets(provider, subgraphClient);

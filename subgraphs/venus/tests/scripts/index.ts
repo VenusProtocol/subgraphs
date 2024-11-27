@@ -6,9 +6,13 @@ import checkAccountVTokens from './checkAccountVTokens';
 import checkComptroller from './checkComptroller';
 import checkMarkets from './checkMarkets';
 
+import dotenv from 'dotenv';
+dotenv.config({ path: '../../.env' });
+
 const run = async () => {
+  const NETWORK = process.argv[2];
   const provider = new providers.MulticallProvider(
-    new ethers.providers.JsonRpcProvider(process.env.RPC),
+    new ethers.providers.JsonRpcProvider(process.env[`RPC_${NETWORK}`]),
   );
 
   const subgraphClient = createSubgraphClient(
