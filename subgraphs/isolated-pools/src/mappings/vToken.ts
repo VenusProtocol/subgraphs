@@ -5,6 +5,7 @@ import {
   BadDebtIncreased,
   BadDebtRecovered,
   Borrow,
+  HealBorrow,
   LiquidateBorrow,
   Mint,
   NewAccessControlManager,
@@ -342,5 +343,22 @@ export function handleSpreadReservesReduced(event: SpreadReservesReduced): void 
   const vTokenAddress = event.address;
   const market = getMarket(vTokenAddress)!;
   market.reservesMantissa = event.params.newTotalReserves;
+  market.save();
+}
+
+export function handleHealBorrow(event: HealBorrow): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress)!;
+  const pool = market.id;
+  updateAccountVTokenBorrow(
+    event.params.borrower,
+    Address.fromBytes(pool),
+    Address.fromBytes(market.id),
+    event.block.number,
+    zeroBigInt32,
+  );
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
+  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.borrowerCount = market.borrowerCount.minus(oneBigInt);
   market.save();
 }

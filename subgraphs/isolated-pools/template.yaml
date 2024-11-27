@@ -153,6 +153,8 @@ templates:
           handler: handleProtocolSeize
         - event: BadDebtRecovered(uint256,uint256)
           handler: handleBadDebtRecovered
+        - event: HealBorrow(indexed address,indexed address,uint256)
+          handler: handleHealBorrow
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}
