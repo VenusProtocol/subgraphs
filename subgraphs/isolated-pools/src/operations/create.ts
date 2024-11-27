@@ -91,6 +91,7 @@ export function createMarket(
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress);
 
+  market.address = vTokenAddress;
   market.pool = comptroller;
 
   market.name = vTokenContract.name();
