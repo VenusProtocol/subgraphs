@@ -3,3 +3,13 @@
 export const poolRegistryAddress = '{{ poolRegistryAddress }}';
 // @ts-ignore When the template is created this will fallback to a null string
 export const vBifiAddress = '{{ vBifiAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vLisUsdAddress = '{{ vLisUsdAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vagEURAddress = '{{ vagEURAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vSnBNBAddress = '{{ vSnBNBAddress }}' || '0x0000000000000000000000000000000000000000'
