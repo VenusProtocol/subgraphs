@@ -31,10 +31,10 @@ import {
   createTransferTransaction,
 } from '../operations/create';
 import { getMarket } from '../operations/get';
+import { getAccountVToken } from '../operations/get';
 import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
-  updateAccountVTokenRepayBorrow,
   updateAccountVTokenSupply,
   updateMarket,
 } from '../operations/update';
@@ -163,8 +163,9 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   const market = getMarket(vTokenAddress)!;
 
   market.totalBorrowsMantissa = event.params.totalBorrows;
-
-  updateAccountVTokenRepayBorrow(
+  const vTokenAccount = getAccountVToken(vTokenAddress, event.params.borrower);
+  // Its possible to call repayborrow was called without having previously borrowed
+  updateAccountVTokenBorrow(
     event.params.borrower,
     Address.fromBytes(market.pool),
     vTokenAddress,
@@ -174,10 +175,12 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   createRepayBorrowTransaction(event);
 
-  if (event.params.accountBorrows.equals(zeroBigInt32)) {
-    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+  if (vTokenAccount && vTokenAccount.storedBorrowBalanceMantissa.gt(zeroBigInt32)) {
+    if (event.params.accountBorrows.equals(zeroBigInt32)) {
+      market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+    }
+    market.save();
   }
-  market.save();
 }
 
 /*

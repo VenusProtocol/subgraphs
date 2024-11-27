@@ -59,26 +59,6 @@ export const updateAccountVTokenBorrow = (
   return accountVToken as AccountVToken;
 };
 
-export const updateAccountVTokenRepayBorrow = (
-  accountAddress: Address,
-  poolAddress: Address,
-  marketAddress: Address,
-  blockNumber: BigInt,
-  accountBorrows: BigInt,
-): AccountVToken => {
-  const accountVToken = updateAccountVTokenAccrualBlockNumber(
-    accountAddress,
-    poolAddress,
-    marketAddress,
-    blockNumber,
-  );
-  accountVToken.storedBorrowBalanceMantissa = accountBorrows;
-  const vTokenContract = VToken.bind(marketAddress);
-  accountVToken.borrowIndex = vTokenContract.borrowIndex();
-  accountVToken.save();
-  return accountVToken as AccountVToken;
-};
-
 export const updateAccountVTokenTransferFrom = (
   accountAddress: Address,
   poolAddress: Address,
