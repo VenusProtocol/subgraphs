@@ -10,6 +10,59 @@ import createSubgraphClient from '../../subgraph-client';
 
 const { getAddress } = ethers.utils;
 
+const sleep = (ms: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+};
+
+const countSuppliers = async (
+  subgraphClient: ReturnType<typeof createSubgraphClient>,
+  marketAddress: string,
+) => {
+  let supplierCount = 0;
+  let page = 0;
+  while (page >= 0) {
+    const { accountVTokens } = await subgraphClient.getAccountVTokensWithSupplyByMarketId(
+      marketAddress,
+      page,
+    );
+    supplierCount += accountVTokens.length;
+
+    if (accountVTokens.length == 0) {
+      page = -1;
+    } else {
+      page += 1;
+      await sleep(1000);
+    }
+  }
+  return supplierCount;
+};
+
+const countBorrower = async (
+  subgraphClient: ReturnType<typeof createSubgraphClient>,
+  marketAddress: string,
+) => {
+  let borrowerCount = 0;
+  let page = 0;
+  while (page >= 0) {
+    const { accountVTokens } = await subgraphClient.getAccountVTokensWithBorrowByMarketId(
+      marketAddress,
+      page,
+    );
+
+    borrowerCount += accountVTokens.length;
+
+    if (accountVTokens.length == 0) {
+      page = -1;
+    } else {
+      page += 1;
+      await sleep(1000);
+    }
+  }
+  return borrowerCount;
+};
+
 const checkMarkets = async (
   provider: ethers.providers.JsonRpcProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
@@ -17,6 +70,7 @@ const checkMarkets = async (
   const {
     data: { markets },
   } = await subgraphClient.getMarkets();
+
   for (const market of markets) {
     const vTokenContract = new ethers.Contract(market.id, VBep20Abi, provider);
     const name = await vTokenContract.name();
@@ -86,7 +140,7 @@ const checkMarkets = async (
     const bdFactor = 36 - underlyingDecimals - 2;
     const underlyingPriceInCents = underlyingPrice.div(10n ** BigInt(bdFactor));
     assertEqual(market, underlyingPriceInCents, 'lastUnderlyingPriceCents');
-    // assertEqual(market, totalXvsDistributedMantissa, 'totalXvsDistributedMantissa')
+
     assertEqual(market, borrowCapMantissa, 'borrowCapMantissa');
     assertEqual(market, supplyCapMantissa, 'supplyCapMantissa');
     assertEqual(market, badDebtMantissa, 'badDebtMantissa');
@@ -94,8 +148,10 @@ const checkMarkets = async (
     assertEqual(market, accessControlManagerAddress, 'accessControlManagerAddress', getAddress);
 
     // Compare accounts
-    assertEqual(market, market.suppliers.length, 'supplierCount');
-    assertEqual(market, market.borrowers.length, 'borrowerCount');
+    const supplierCount = await countSuppliers(subgraphClient, market.id);
+    assertEqual(market, supplierCount, 'supplierCount');
+    const borrowerCount = await countBorrower(subgraphClient, market.id);
+    assertEqual(market, borrowerCount, 'borrowerCount');
 
     try {
       assert.equal(

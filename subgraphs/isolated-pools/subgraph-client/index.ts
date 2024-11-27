@@ -97,15 +97,35 @@ class SubgraphClient {
 
   async getAccountVTokensWithSupplyByMarketId(
     marketId: string,
+    page: number,
   ): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
-    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, { marketId });
+    const first = 100;
+    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, {
+      marketId,
+      first,
+      skip: first * page,
+    } as unknown as {
+      marketAddress: string;
+      first: string;
+      skip: string;
+    });
     return result.data;
   }
 
   async getAccountVTokensWithBorrowByMarketId(
     marketId: string,
+    page: number,
   ): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
-    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, { marketId });
+    const first = 100;
+    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, {
+      marketId,
+      first,
+      skip: first * page,
+    } as unknown as {
+      marketAddress: string;
+      first: string;
+      skip: string;
+    });
     return result.data;
   }
 
