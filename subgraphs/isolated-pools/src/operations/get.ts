@@ -1,7 +1,7 @@
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { Market, Pool } from '../../generated/schema';
-import { getMarketId, getPoolId } from '../utilities/ids';
+import { AccountVToken, Market, Pool } from '../../generated/schema';
+import { getAccountVTokenId, getMarketId, getPoolId } from '../utilities/ids';
 
 export const getPool = (comptroller: Address): Pool | null => {
   const pool = Pool.load(getPoolId(comptroller));
@@ -18,4 +18,12 @@ export const getMarket = (vTokenAddress: Address): Market | null => {
     log.error('Market {} not found', [id.toHexString()]);
   }
   return market;
+};
+
+export const getAccountVToken = (
+  marketAddress: Address,
+  accountAddress: Address,
+): AccountVToken | null => {
+  const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
+  return AccountVToken.load(accountVTokenId);
 };

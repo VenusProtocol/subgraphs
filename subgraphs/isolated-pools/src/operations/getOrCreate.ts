@@ -23,6 +23,7 @@ import {
   getRewardsDistributorId,
 } from '../utilities/ids';
 import { createAccount, createAccountPool, createMarket, createPool } from './create';
+import { getAccountVToken } from './get';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
@@ -76,11 +77,11 @@ export const getOrCreateAccountVToken = (
   marketAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
 ): GetOrCreateAccountVTokenReturn => {
-  const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
-  let accountVToken = AccountVToken.load(accountVTokenId);
+  let accountVToken = getAccountVToken(marketAddress, accountAddress);
   let created = false;
   if (!accountVToken) {
     created = true;
+    const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.account = accountAddress;
     accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
