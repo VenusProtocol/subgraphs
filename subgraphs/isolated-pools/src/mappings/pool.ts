@@ -32,10 +32,12 @@ import Box from '../utilities/box';
 export function handleMarketSupported(event: MarketSupported): void {
   const comptroller = event.address;
   const market = getOrCreateMarket(event.params.vToken, comptroller, event.block.number);
-  market.isListed = true;
-  market.collateralFactorMantissa = zeroBigInt32;
-  market.liquidationThresholdMantissa = zeroBigInt32;
-  market.save();
+  if (market) {
+    market.isListed = true;
+    market.collateralFactorMantissa = zeroBigInt32;
+    market.liquidationThresholdMantissa = zeroBigInt32;
+    market.save();
+  }
 }
 
 export function handleMarketUnlisted(event: MarketUnlisted): void {
@@ -90,17 +92,20 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
   const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.number);
-  market.collateralFactorMantissa = newCollateralFactorMantissa;
-
-  market.save();
+  if (market) {
+    market.collateralFactorMantissa = newCollateralFactorMantissa;
+    market.save();
+  }
 }
 
 export function handleNewLiquidationThreshold(event: NewLiquidationThreshold): void {
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.number);
-  market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
-  market.save();
+  if (market) {
+    market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
+    market.save();
+  }
 }
 
 export function handleNewLiquidationIncentive(event: NewLiquidationIncentive): void {
@@ -131,9 +136,11 @@ export function handleActionPausedMarket(event: ActionPausedMarket): void {
 export function handleNewBorrowCap(event: NewBorrowCap): void {
   const vTokenAddress = event.params.vToken;
   const borrowCap = event.params.newBorrowCap;
-  const market = getMarket(vTokenAddress)!;
-  market.borrowCapMantissa = borrowCap;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.borrowCapMantissa = borrowCap;
+    market.save();
+  }
 }
 
 export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableCollateral): void {
@@ -147,9 +154,11 @@ export function handleNewMinLiquidatableCollateral(event: NewMinLiquidatableColl
 export function handleNewSupplyCap(event: NewSupplyCap): void {
   const vTokenAddress = event.params.vToken;
   const newSupplyCap = event.params.newSupplyCap;
-  const market = getMarket(vTokenAddress)!;
-  market.supplyCapMantissa = newSupplyCap;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.supplyCapMantissa = newSupplyCap;
+    market.save();
+  }
 }
 
 export function handleNewRewardsDistributor(event: NewRewardsDistributor): void {

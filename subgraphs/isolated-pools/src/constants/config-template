@@ -1,3 +1,5 @@
 // Use yarn prepare commands to generate config typescript file per env
 
 export const poolRegistryAddress = '{{ poolRegistryAddress }}';
+// @ts-ignore When the template is created this will fallback to a null string
+export const vBifiAddress = '{{ vBifiAddress }}' || '0x0000000000000000000000000000000000000000'

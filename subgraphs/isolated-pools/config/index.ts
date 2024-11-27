@@ -56,11 +56,13 @@ const main = () => {
     chapel: {
       network: 'chapel',
       poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
+      vBifiAddress: '0xEF949287834Be010C1A5EDd757c385FB9b644E4A',
       startBlock: '30870000',
     },
     bsc: {
       network: 'bsc',
       poolRegistryAddress: bscMainnetDeployments.addresses.PoolRegistry,
+      vBifiAddress: '0xC718c51958d3fd44f5F9580c9fFAC2F89815C909',
       startBlock: '29300000',
     },
     opbnbMainnet: {

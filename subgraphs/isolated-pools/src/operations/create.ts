@@ -2,6 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
+import { VToken as VTokenDataSource } from '../../generated/templates';
 import {
   BadDebtIncreased,
   Borrow,
@@ -25,7 +26,7 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
-import { poolRegistryAddress } from '../constants/addresses';
+import { poolRegistryAddress, vBifiAddress } from '../constants/addresses';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
@@ -84,7 +85,11 @@ export function createMarket(
   vTokenAddress: Address,
   comptroller: Address,
   blockNumber: BigInt,
-): Market {
+): Market | null {
+  if (vTokenAddress.equals(vBifiAddress)) {
+    return null;
+  }
+  VTokenDataSource.create(vTokenAddress);
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
