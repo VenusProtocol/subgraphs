@@ -42,9 +42,10 @@ export function createProposal<E>(event: E): Proposal {
 
 export function createVoteAlpha(event: VoteCastAlpha): Vote {
   const id = getVoteId(event.params.voter, event.params.proposalId);
+  const voter = getDelegate(event.params.voter);
   const vote = new Vote(id);
   vote.proposal = getProposalId(event.params.proposalId);
-  vote.voter = event.params.voter;
+  vote.voter = voter.id;
   vote.votes = event.params.votes;
   vote.support = event.params.support ? FOR : AGAINST;
 
