@@ -1,22 +1,20 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { PoolMetadataUpdatedNewMetadataStruct } from '../../generated/PoolRegistry/PoolRegistry';
-import { AccountVToken, Market } from '../../generated/schema';
+import { AccountVToken } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { valueOrNotAvailableIntIfReverted } from '../utilities';
-import { getTokenPriceInCents } from '../utilities';
+
 import { getMarket } from './get';
-import { getOrCreateAccount, getOrCreateAccountVToken, getOrCreatePool } from './getOrCreate';
+import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
 
 export const updateAccountVTokenAccrualBlockNumber = (
   accountAddress: Address,
-  poolAddress: Address,
   marketAddress: Address,
   blockNumber: BigInt,
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
-  const accountVToken = getOrCreateAccountVToken(accountAddress, poolAddress, marketAddress, false);
+  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress);
   accountVToken.entity.accrualBlockNumber = blockNumber;
   accountVToken.entity.save();
   return accountVToken.entity as AccountVToken;
@@ -31,7 +29,6 @@ export const updateAccountVTokenSupply = (
   const market = getMarket(marketAddress)!;
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
-    Address.fromBytes(market.pool),
     marketAddress,
     blockNumber,
   );
@@ -63,7 +60,6 @@ export const updateAccountVTokenBorrow = (
   const market = getMarket(marketAddress)!;
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
-    Address.fromBytes(market.pool),
     marketAddress,
     blockNumber,
   );
@@ -84,59 +80,3 @@ export const updateAccountVTokenBorrow = (
   market.save();
   return accountVToken as AccountVToken;
 };
-
-export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Market => {
-  const market = getMarket(vTokenAddress)!;
-
-  // Only updateMarket if it has not been updated this block
-  if (market.accrualBlockNumber.equals(blockNumber)) {
-    return market as Market;
-  }
-  const marketContract = VToken.bind(vTokenAddress);
-
-  const tokenPriceCents = getTokenPriceInCents(
-    Address.fromBytes(market.pool),
-    vTokenAddress,
-    market.underlyingDecimals,
-  );
-  market.lastUnderlyingPriceCents = tokenPriceCents;
-  market.lastUnderlyingPriceBlockNumber = blockNumber;
-
-  market.accrualBlockNumber = valueOrNotAvailableIntIfReverted(
-    marketContract.try_accrualBlockNumber(),
-  );
-
-  const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_exchangeRateStored(),
-  );
-  market.exchangeRateMantissa = exchangeRateMantissa;
-
-  market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
-
-  const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
-  market.cashMantissa = cashBigInt;
-
-  // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
-  market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_borrowRatePerBlock(),
-  );
-  market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_supplyRatePerBlock(),
-  );
-
-  market.save();
-  return market as Market;
-};
-
-export function updatePoolMetadata(
-  comptroller: Address,
-  newMetadata: PoolMetadataUpdatedNewMetadataStruct,
-): void {
-  const pool = getOrCreatePool(comptroller);
-  if (pool) {
-    pool.category = newMetadata.category;
-    pool.logoUrl = newMetadata.logoURL;
-    pool.description = newMetadata.description;
-    pool.save();
-  }
-}

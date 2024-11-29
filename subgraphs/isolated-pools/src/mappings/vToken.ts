@@ -20,7 +20,7 @@ import {
 } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import { nullAddress } from '../constants/addresses';
-import { oneBigInt, zeroBigInt32 } from '../constants/index';
+import { zeroBigInt32 } from '../constants/index';
 import {
   createAccountVTokenBadDebt,
   createBorrowTransaction,
@@ -31,8 +31,7 @@ import {
   createTransferTransaction,
 } from '../operations/create';
 import { getMarket } from '../operations/get';
-import { getAccountVToken } from '../operations/get';
-import { getOrCreateAccount, getOrCreateAccountVToken } from '../operations/getOrCreate';
+import { getOrCreateAccount } from '../operations/getOrCreate';
 import {
   updateAccountVTokenBorrow,
   updateAccountVTokenSupply,
@@ -53,25 +52,15 @@ import {
  */
 export function handleMint(event: Mint): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
   createMintTransaction(event);
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
-  updateAccountVTokenSupply(
-    event.params.minter,
-    Address.fromBytes(market.pool),
-    vTokenAddress,
-    event.block.number,
-    suppliedTotal,
-  );
+  updateAccountVTokenSupply(event.params.minter, vTokenAddress, event.block.number, suppliedTotal);
 
-  if (suppliedTotal.equals(event.params.mintTokens)) {
-    // and if they are the same, it means it's a new supplier
-    market.supplierCount = market.supplierCount.plus(oneBigInt);
-  }
   // and finally we update the market total supply
   const vTokenContract = VTokenContract.bind(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
   market.save();
 }
@@ -88,26 +77,20 @@ export function handleMint(event: Mint): void {
  */
 export function handleRedeem(event: Redeem): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
   createRedeemTransaction(event);
-
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
-  updateAccountVTokenSupply(
+  const accountVToken = updateAccountVTokenSupply(
     event.params.redeemer,
-    Address.fromBytes(market.pool),
     vTokenAddress,
     event.block.number,
     currentBalance,
   );
-
-  if (event.params.redeemAmount.gt(zeroBigInt32) && currentBalance.equals(zeroBigInt32)) {
-    // if the current balance is 0 then the user has withdrawn all their assets from this market
-    market.supplierCount = market.supplierCount.minus(oneBigInt);
-  }
-
+  accountVToken.totalUnderlyingRedeemedMantissa =
+    accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
   // and finally we update the market total supply
   const vTokenContract = VTokenContract.bind(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
   market.save();
 }
@@ -123,13 +106,9 @@ export function handleRedeem(event: Redeem): void {
  */
 export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-
-  market.totalBorrowsMantissa = event.params.totalBorrows;
 
   updateAccountVTokenBorrow(
     event.params.borrower,
-    Address.fromBytes(market.pool),
     vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
@@ -137,10 +116,9 @@ export function handleBorrow(event: Borrow): void {
 
   createBorrowTransaction(event);
 
-  if (event.params.accountBorrows.equals(event.params.borrowAmount)) {
-    // if both the accountBorrows and the borrowAmount are the same, it means the account is a new borrower
-    market.borrowerCount = market.borrowerCount.plus(oneBigInt);
-  }
+  const market = getMarket(vTokenAddress)!;
+
+  market.totalBorrowsMantissa = event.params.totalBorrows;
   market.save();
 }
 
@@ -160,27 +138,21 @@ export function handleBorrow(event: Borrow): void {
  */
 export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-
-  market.totalBorrowsMantissa = event.params.totalBorrows;
-  const vTokenAccount = getAccountVToken(vTokenAddress, event.params.borrower);
   // Its possible to call repayborrow was called without having previously borrowed
-  updateAccountVTokenBorrow(
+  const accountVToken = updateAccountVTokenBorrow(
     event.params.borrower,
-    Address.fromBytes(market.pool),
     vTokenAddress,
     event.block.number,
     event.params.accountBorrows,
   );
+  const market = getMarket(vTokenAddress)!;
+  market.totalBorrowsMantissa = event.params.totalBorrows;
+  market.save();
 
+  accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
+    event.params.repayAmount,
+  );
   createRepayBorrowTransaction(event);
-
-  if (vTokenAccount && vTokenAccount.storedBorrowBalanceMantissa.gt(zeroBigInt32)) {
-    if (event.params.accountBorrows.equals(zeroBigInt32)) {
-      market.borrowerCount = market.borrowerCount.minus(oneBigInt);
-    }
-    market.save();
-  }
 }
 
 /*
@@ -200,6 +172,9 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  *    add liquidation counts in this handler.
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
+  const vTokenAddress = event.address;
+  const market = getMarket(vTokenAddress)!;
+  const vTokenContract = VTokenContract.bind(vTokenAddress);
   const liquidator = getOrCreateAccount(event.params.liquidator);
   liquidator.countLiquidator = liquidator.countLiquidator + 1;
   liquidator.save();
@@ -207,6 +182,9 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const borrower = getOrCreateAccount(event.params.borrower);
   borrower.countLiquidated = borrower.countLiquidated + 1;
   borrower.save();
+
+  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+  market.save();
 
   createLiquidateBorrowTransaction(event);
 }
@@ -251,55 +229,42 @@ export function handleNewReserveFactor(event: NewReserveFactor): void {
 export function handleTransfer(event: Transfer): void {
   // We only updateMarket() if accrual block number is not up to date. This will only happen
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
-  const market = updateMarket(event.address, event.block.number);
+  updateMarket(event.address, event.block.number);
   const accountFromAddress = event.params.from;
   const accountToAddress = event.params.to;
   // Checking if the event is FROM the vToken contract or null (i.e. this will not run when minting)
   // Checking if the event is TO the vToken contract (i.e. this will not run when redeeming)
   // @TODO Edge case where someone who accidentally sends vTokens to a vToken contract, where it will not get recorded.
+  const vTokenContract = VTokenContract.bind(event.address);
+
   if (
-    accountFromAddress.notEqual(event.address) &&
     accountFromAddress.notEqual(nullAddress) &&
+    accountFromAddress.notEqual(event.address) &&
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountFromAddress);
-    const resultFrom = getOrCreateAccountVToken(
+    updateAccountVTokenSupply(
       accountFromAddress,
-      Address.fromBytes(market.pool),
       event.address,
+      event.block.number,
+      vTokenContract.balanceOf(accountFromAddress),
     );
-    const accountFromVToken = resultFrom.entity;
-    accountFromVToken.vTokenBalanceMantissa = accountFromVToken.vTokenBalanceMantissa.plus(
-      event.params.amount,
-    );
-    accountFromVToken.save();
+  }
 
-    if (accountFromVToken.vTokenBalanceMantissa.equals(zeroBigInt32)) {
-      // Decrease if no longer minter
-      const market = getMarket(event.address)!;
-      market.supplierCount = market.supplierCount.minus(oneBigInt);
-      market.save();
-    }
-
+  if (
+    event.params.amount.gt(zeroBigInt32) &&
+    accountToAddress.notEqual(nullAddress) &&
+    accountFromAddress.notEqual(nullAddress) &&
+    accountFromAddress.notEqual(event.address) &&
+    accountToAddress.notEqual(event.address)
+  ) {
     getOrCreateAccount(accountToAddress);
-
-    const resultTo = getOrCreateAccountVToken(
+    updateAccountVTokenSupply(
       accountToAddress,
-      Address.fromBytes(market.pool),
       event.address,
+      event.block.number,
+      vTokenContract.balanceOf(accountToAddress),
     );
-    const accountToVToken = resultTo.entity;
-
-    accountToVToken.vTokenBalanceMantissa = accountToVToken.vTokenBalanceMantissa.plus(
-      event.params.amount,
-    );
-    accountToVToken.save();
-    // Increase balance if now minter
-    if (accountToVToken.vTokenBalanceMantissa.equals(event.params.amount)) {
-      const market = getMarket(event.address)!;
-      market.supplierCount = market.supplierCount.plus(oneBigInt);
-      market.save();
-    }
   }
 
   createTransferTransaction(event);
@@ -351,17 +316,14 @@ export function handleSpreadReservesReduced(event: SpreadReservesReduced): void 
 
 export function handleHealBorrow(event: HealBorrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  const pool = market.id;
   updateAccountVTokenBorrow(
     event.params.borrower,
-    Address.fromBytes(pool),
-    Address.fromBytes(market.id),
+    Address.fromBytes(vTokenAddress),
     event.block.number,
     zeroBigInt32,
   );
   const vTokenContract = VTokenContract.bind(vTokenAddress);
+  const market = getMarket(vTokenAddress)!;
   market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-  market.borrowerCount = market.borrowerCount.minus(oneBigInt);
   market.save();
 }

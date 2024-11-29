@@ -120,6 +120,8 @@ type AccountVToken @entity {
     market: Market!
     "Relation to user"
     account: Account!
+    "Block the position is updated to"
+    accrualBlockNumber: BigInt!
     "Borrow Index this position last accrued interest"
     borrowIndex: BigInt!
     "True if user is entered, false if they are exited"

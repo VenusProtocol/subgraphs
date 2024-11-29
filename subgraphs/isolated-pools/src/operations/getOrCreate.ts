@@ -17,20 +17,19 @@ import { zeroBigInt32 } from '../constants';
 import {
   getAccountPoolId,
   getAccountVTokenId,
-  getMarketId,
   getPoolId,
   getRewardSpeedId,
   getRewardsDistributorId,
 } from '../utilities/ids';
 import { createAccount, createAccountPool, createMarket, createPool } from './create';
-import { getAccountVToken } from './get';
+import { getAccountVToken, getMarket } from './get';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
   comptrollerAddress: Address,
   blockNumber: BigInt,
 ): Market => {
-  let market = Market.load(getMarketId(vTokenAddress));
+  let market = getMarket(vTokenAddress);
   if (!market) {
     VTokenDataSource.create(vTokenAddress);
     market = createMarket(comptrollerAddress, vTokenAddress, blockNumber);
