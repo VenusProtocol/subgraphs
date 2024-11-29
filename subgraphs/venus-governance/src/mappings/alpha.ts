@@ -86,6 +86,8 @@ export function handleVoteCast(event: VoteCast): void {
 }
 
 export function handleVoteCastV2(event: VoteCast): void {
+  // Always check for a delegate in order to support 0 value votes
+  getOrCreateDelegate(event.params.voter);
   createVoteAlpha(event);
   updateAlphaProposalVotes(event.params.proposalId, event.params.votes, event.params.support);
 }
