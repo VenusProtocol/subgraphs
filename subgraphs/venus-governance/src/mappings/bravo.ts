@@ -26,11 +26,13 @@ import {
 } from '../operations/update';
 
 export function handleProposalCreated(event: ProposalCreated): void {
+  // Always check for a delegate in order to support 0 value votes
   getOrCreateDelegate(event.params.proposer);
   createProposal<ProposalCreated>(event);
 }
 
 export function handleProposalCreatedV2(event: ProposalCreatedV2): void {
+  // Always check for a delegate in order to support 0 value votes
   getOrCreateDelegate(event.params.proposer);
   const proposal = createProposal<ProposalCreatedV2>(event);
   const indexProposalTypeConstant = [NORMAL, FAST_TRACK, CRITICAL];
