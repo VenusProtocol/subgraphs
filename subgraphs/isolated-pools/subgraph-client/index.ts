@@ -137,7 +137,7 @@ class SubgraphClient {
     marketId: string;
   }): Promise<AccountVTokenByAccountAndMarketQuery> {
     const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
-      id: `${marketId}${accountId.replace('0x', '')}`,
+      id: `${accountId}${marketId.replace('0x', '')}`,
     });
     return result.data || { accountVToken: null };
   }

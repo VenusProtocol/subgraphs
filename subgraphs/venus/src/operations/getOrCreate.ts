@@ -9,7 +9,7 @@ import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { Comptroller } from '../../generated/templates/VToken/Comptroller';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { nullAddress } from '../constants/addresses';
+import { nativeAddress } from '../constants/addresses';
 import {
   getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
@@ -48,7 +48,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
 
     // It is vBNB, which has a slightly different interface
     if (market.symbol == 'vBNB') {
-      market.underlyingAddress = nullAddress;
+      market.underlyingAddress = nativeAddress;
       market.underlyingDecimals = 18;
       market.underlyingName = 'BNB';
       market.underlyingSymbol = 'BNB';
@@ -80,7 +80,10 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
     market.totalSupplyVTokenMantissa = zeroBigInt32;
-    market.borrowIndex = vTokenContract.borrowIndex();
+    market.borrowIndex = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_borrowIndex(),
+      'vBEP20 try_borrowIndex()',
+    );
     market.totalBorrowsMantissa = zeroBigInt32;
     market.reservesMantissa = zeroBigInt32;
 
@@ -112,10 +115,10 @@ export class GetOrCreateAccountVTokenReturn {
 }
 
 export function getOrCreateAccountVToken(
-  marketId: Address,
   accountId: Address,
+  marketId: Address,
 ): GetOrCreateAccountVTokenReturn {
-  const accountVTokenId = getAccountVTokenId(marketId, accountId);
+  const accountVTokenId = getAccountVTokenId(accountId, marketId);
   let accountVToken = AccountVToken.load(accountVTokenId);
   let created = false;
   if (!accountVToken) {
@@ -132,7 +135,11 @@ export function getOrCreateAccountVToken(
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    accountVToken.borrowIndex = vTokenContract.borrowIndex();
+    accountVToken.accrualBlockNumber = zeroBigInt32;
+    accountVToken.borrowIndex = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_borrowIndex(),
+      'vBEP20 try_borrowIndex()',
+    );
     accountVToken.enteredMarket = false;
     accountVToken.save();
   }

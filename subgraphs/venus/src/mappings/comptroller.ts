@@ -49,7 +49,7 @@ export function handleMarketUnlisted(event: MarketListed): void {
 
 export function handleMarketEntered(event: MarketEntered): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
+  const result = getOrCreateAccountVToken(event.params.account, Address.fromBytes(market.id));
   const accountVToken = result.entity;
   accountVToken.enteredMarket = true;
   accountVToken.save();
@@ -57,7 +57,7 @@ export function handleMarketEntered(event: MarketEntered): void {
 
 export function handleMarketExited(event: MarketExited): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const result = getOrCreateAccountVToken(Address.fromBytes(market.id), event.params.account);
+  const result = getOrCreateAccountVToken(event.params.account, Address.fromBytes(market.id));
   const accountVToken = result.entity;
   accountVToken.enteredMarket = false;
   accountVToken.save();

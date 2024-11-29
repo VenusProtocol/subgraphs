@@ -3,7 +3,6 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { AccountVToken } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { valueOrNotAvailableIntIfReverted } from '../utilities';
-
 import { getMarket } from './get';
 import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
@@ -66,7 +65,10 @@ export const updateAccountVTokenBorrow = (
   const _storedBorrowBalanceMantissa = accountVToken.storedBorrowBalanceMantissa;
   accountVToken.storedBorrowBalanceMantissa = accountBorrows;
   const vTokenContract = VToken.bind(marketAddress);
-  accountVToken.borrowIndex = vTokenContract.borrowIndex();
+  accountVToken.borrowIndex = valueOrNotAvailableIntIfReverted(
+    vTokenContract.try_borrowIndex(),
+    'vBEP20 try_borrowIndex()',
+  );
   accountVToken.save();
 
   if (_storedBorrowBalanceMantissa.equals(zeroBigInt32) && accountBorrows.notEqual(zeroBigInt32)) {

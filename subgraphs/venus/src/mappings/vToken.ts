@@ -1,7 +1,5 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { Address, BigInt } from '@graphprotocol/graph-ts';
-
 import {
   AccrueInterest,
   Borrow,
@@ -17,9 +15,8 @@ import {
   Transfer,
   VToken,
 } from '../../generated/templates/VToken/VToken';
-import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { Mint, MintBehalf, Redeem } from '../../generated/templates/VTokenUpdatedEvents/VToken';
-import { oneBigInt, zeroBigInt32 } from '../constants';
+import { zeroBigInt32 } from '../constants';
 import { nullAddress } from '../constants/addresses';
 import {
   createBorrowEvent,
@@ -187,9 +184,6 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
 
-  if (event.params.accountBorrows.equals(zeroBigInt32)) {
-    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
-  }
   market.totalBorrowsMantissa = event.params.totalBorrows;
 
   // we'll update the cash value of the market
@@ -258,7 +252,6 @@ export function handleTransfer(event: Transfer): void {
   // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   let accountFromAddress = event.params.from;
   let accountToAddress = event.params.to;
-  const vTokenContract = VToken.bind(event.address);
 
   // Checking if the event is FROM the vToken contract or null (i.e. this will not run when minting)
   // Checking if the event is TO the vToken contract (i.e. this will not run when redeeming)
@@ -269,11 +262,12 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountFromAddress);
+    const accountVToken = getOrCreateAccountVToken(accountFromAddress, event.address);
     updateAccountVTokenSupply(
       accountFromAddress,
       event.address,
       event.block.number,
-      vTokenContract.balanceOf(accountFromAddress),
+      accountVToken.entity.vTokenBalanceMantissa.minus(event.params.amount),
     );
   }
 
@@ -285,11 +279,12 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountToAddress);
+    const accountVToken = getOrCreateAccountVToken(accountToAddress, event.address);
     updateAccountVTokenSupply(
       accountToAddress,
       event.address,
       event.block.number,
-      vTokenContract.balanceOf(accountToAddress),
+      accountVToken.entity.vTokenBalanceMantissa.plus(event.params.amount),
     );
   }
 
@@ -332,17 +327,16 @@ export function handleNewMarketInterestRateModel(event: NewMarketInterestRateMod
   market.save();
 }
 
-function getVTokenBalance(vTokenAddress: Address, accountAddress: Address): BigInt {
-  const vTokenContract = VTokenContract.bind(vTokenAddress);
-  return vTokenContract.balanceOf(accountAddress);
-}
-
 export function handleMintV1(event: MintV1): void {
-  if (event.params.mintAmount.equals(zeroBigInt32)) {
-    return;
-  }
-
   const marketAddress = event.address;
+  const accountVToken = getOrCreateAccountVToken(event.params.minter, marketAddress);
+  // Creation updates balance
+  updateAccountVTokenSupply(
+    event.params.minter,
+    event.address,
+    event.block.number,
+    accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
+  );
   const market = getOrCreateMarket(event.address, event);
   const vTokenContract = VToken.bind(marketAddress);
   // we'll first update the cash value of the market and then the rates, since they depend on it
@@ -353,22 +347,20 @@ export function handleMintV1(event: MintV1): void {
 
   createMintEvent<MintV1>(event);
 
-  // Creation updates balance
-  updateAccountVTokenSupply(
-    event.params.minter,
-    event.address,
-    event.block.number,
-    vTokenContract.balanceOf(event.params.minter),
-  );
-
   market.save();
 }
 
 export function handleMintBehalfV1(event: MintBehalfV1): void {
-  if (event.params.mintAmount.equals(zeroBigInt32)) {
-    return;
-  }
   const marketAddress = event.address;
+
+  const accountVToken = getOrCreateAccountVToken(event.params.receiver, marketAddress);
+  // Creation updates balance
+  updateAccountVTokenSupply(
+    event.params.receiver,
+    event.address,
+    event.block.number,
+    accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
+  );
   const market = getOrCreateMarket(event.address, event);
   const vTokenContract = VToken.bind(marketAddress);
 
@@ -381,24 +373,12 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
   market.save();
 
   createMintBehalfEvent<MintBehalfV1>(event);
-
-  // Creation updates balance
-  updateAccountVTokenSupply(
-    event.params.receiver,
-    event.address,
-    event.block.number,
-    vTokenContract.balanceOf(event.params.receiver),
-  );
 }
 
 export function handleRedeemV1(event: RedeemV1): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(event.address, event);
   const vTokenContract = VToken.bind(marketAddress);
-  if (getVTokenBalance(event.address, event.params.redeemer).equals(zeroBigInt32)) {
-    // if the current balance is 0 then the user has withdrawn all their assets from this market
-    market.supplierCount = market.supplierCount.minus(oneBigInt);
-  }
   // we'll first update the cash value of the market and then the rates, since they depend on it
   updateMarketCashMantissa(market, vTokenContract);
 
@@ -410,7 +390,7 @@ export function handleRedeemV1(event: RedeemV1): void {
 
   createRedeemEvent<RedeemV1>(event);
 
-  const result = getOrCreateAccountVToken(marketAddress, event.params.redeemer);
+  const result = getOrCreateAccountVToken(event.params.redeemer, marketAddress);
   const accountVToken = result.entity;
 
   updateAccountVTokenSupply(
