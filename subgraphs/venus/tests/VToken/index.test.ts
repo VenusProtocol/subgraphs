@@ -427,7 +427,7 @@ describe('VToken', () => {
   });
 
   test('registers increase and decrease in the market supplier count', () => {
-    let market = getMarket(aaaTokenAddress)!;
+    const market = getMarket(aaaTokenAddress)!;
     const marketId = aaaTokenAddress.toHexString();
     assert.assertNotNull(market);
     if (!market) {
@@ -497,9 +497,6 @@ describe('VToken', () => {
       zeroBigInt32,
     );
 
-    market = getMarket(aaaTokenAddress)!;
-
-    market = getMarket(aaaTokenAddress)!;
     handleRedeem(redeemEvent);
 
     assert.fieldEquals('Market', marketId, 'supplierCount', '3');
@@ -511,7 +508,6 @@ describe('VToken', () => {
       halfMintTokens,
     );
 
-    market = getMarket(aaaTokenAddress)!;
     handleRedeemV1(redeemEventV1);
 
     redeemEvent = createRedeemEvent(
