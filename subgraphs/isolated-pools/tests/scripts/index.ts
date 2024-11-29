@@ -1,3 +1,4 @@
+import { providers } from '@0xsequence/multicall';
 import { ethers } from 'ethers';
 
 import createSubgraphClient from '../../subgraph-client';
@@ -10,7 +11,9 @@ dotenv.config({ path: '../../.env' });
 
 const run = async () => {
   const NETWORK = process.argv[2];
-  const provider = new ethers.providers.JsonRpcProvider(process.env[`RPC_${NETWORK}`] as string);
+  const provider = new providers.MulticallProvider(
+    new ethers.providers.JsonRpcProvider(process.env[`RPC_${NETWORK}`]),
+  );
 
   const subgraphClient = createSubgraphClient(process.env[`SUBGRAPH_URL_${NETWORK}`] as string);
 

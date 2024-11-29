@@ -1,3 +1,4 @@
+import { providers } from '@0xsequence/multicall';
 import { abi as ComptrollerAbi } from '@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json';
 import { ethers } from 'ethers';
 import { MarketsQuery } from '../../subgraph-client/.graphclient';
@@ -8,17 +9,25 @@ import { assertEqual } from '@venusprotocol/subgraph-utils';
 const { getAddress } = ethers.utils;
 
 const checkComptroller = async (
-  provider: ethers.providers.JsonRpcProvider,
+  provider: providers.MulticallProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
 ) => {
   const { pools } = await subgraphClient.getPools();
   for (const pool of pools) {
     const comptrollerContract = new ethers.Contract(pool.id, ComptrollerAbi, provider);
-    const closeFactor = await comptrollerContract.closeFactorMantissa();
-    const priceOracleAddress = await comptrollerContract.oracle();
-    const liquidationIncentive = await comptrollerContract.liquidationIncentiveMantissa();
-    const minLiquidatableCollateralMantissa = await comptrollerContract.minLiquidatableCollateral();
-    const allMarkets = await comptrollerContract.getAllMarkets();
+    const [
+      closeFactor,
+      priceOracleAddress,
+      liquidationIncentive,
+      minLiquidatableCollateralMantissa,
+      allMarkets,
+    ] = await Promise.all([
+      comptrollerContract.closeFactorMantissa(),
+      comptrollerContract.oracle(),
+      comptrollerContract.liquidationIncentiveMantissa(),
+      comptrollerContract.minLiquidatableCollateral(),
+      comptrollerContract.getAllMarkets(),
+    ]);
     try {
       assertEqual(pool, priceOracleAddress, 'priceOracleAddress', getAddress);
       assertEqual(pool, closeFactor, 'closeFactorMantissa');

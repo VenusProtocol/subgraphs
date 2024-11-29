@@ -1,3 +1,4 @@
+import { providers } from '@0xsequence/multicall';
 import { abi as ComptrollerAbi } from '@venusprotocol/isolated-pools/artifacts/contracts/Comptroller.sol/Comptroller.json';
 import { abi as VBep20Abi } from '@venusprotocol/isolated-pools/artifacts/contracts/VToken.sol/VToken.json';
 import { abi as ResilientOracleAbi } from '@venusprotocol/oracle/artifacts/contracts/ResilientOracle.sol/ResilientOracle.json';
@@ -64,7 +65,7 @@ const countBorrower = async (
 };
 
 const checkMarkets = async (
-  provider: ethers.providers.JsonRpcProvider,
+  provider: providers.MulticallProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
 ) => {
   const {
@@ -73,34 +74,55 @@ const checkMarkets = async (
 
   for (const market of markets) {
     const vTokenContract = new ethers.Contract(market.id, VBep20Abi, provider);
-    const name = await vTokenContract.name();
-    const symbol = await vTokenContract.symbol();
-    const decimals = await vTokenContract.decimals();
+    const underlyingAddress = await vTokenContract.underlying();
     const poolAddress = await vTokenContract.comptroller();
     const comptrollerContract = new ethers.Contract(poolAddress, ComptrollerAbi, provider);
-    const marketStorage = await comptrollerContract.markets(market.id);
-    const cashMantissa = await vTokenContract.getCash();
-    const exchangeRateMantissa = await vTokenContract.exchangeRateStored();
-    const interestRateModelAddress = await vTokenContract.interestRateModel();
-    const reservesMantissa = await vTokenContract.totalReserves();
-    const reserveFactorMantissa = await vTokenContract.reserveFactorMantissa();
-    const borrowRateMantissa = await vTokenContract.borrowRatePerBlock();
-    const supplyRateMantissa = await vTokenContract.supplyRatePerBlock();
-    const totalSupply = await vTokenContract.totalSupply();
-    const totalBorrows = await vTokenContract.totalBorrows();
-    const underlyingAddress = await vTokenContract.underlying();
-    const underlyingContract = new ethers.Contract(underlyingAddress, Bep20Abi, provider);
-    const underlyingName = await underlyingContract.name();
-    const underlyingSymbol = await underlyingContract.symbol();
-    const underlyingDecimals = await underlyingContract.decimals();
-    const accrualBlockNumber = await vTokenContract.accrualBlockNumber();
-    const borrowIndex = await vTokenContract.borrowIndex();
     const priceOracleAddress = await comptrollerContract.oracle();
+    const underlyingContract = new ethers.Contract(underlyingAddress, Bep20Abi, provider);
     const priceOracleContract = new ethers.Contract(
       priceOracleAddress,
       ResilientOracleAbi,
       provider,
     );
+    const [
+      name,
+      symbol,
+      decimals,
+      marketStorage,
+      cashMantissa,
+      exchangeRateMantissa,
+      interestRateModelAddress,
+      reservesMantissa,
+      reserveFactorMantissa,
+      borrowRateMantissa,
+      supplyRateMantissa,
+      totalSupply,
+      totalBorrows,
+      underlyingName,
+      underlyingSymbol,
+      underlyingDecimals,
+      accrualBlockNumber,
+      borrowIndex,
+    ] = await Promise.all([
+      vTokenContract.name(),
+      vTokenContract.symbol(),
+      vTokenContract.decimals(),
+      comptrollerContract.markets(market.id),
+      vTokenContract.getCash(),
+      vTokenContract.exchangeRateStored(),
+      vTokenContract.interestRateModel(),
+      vTokenContract.totalReserves(),
+      vTokenContract.reserveFactorMantissa(),
+      vTokenContract.borrowRatePerBlock(),
+      vTokenContract.supplyRatePerBlock(),
+      vTokenContract.totalSupply(),
+      vTokenContract.totalBorrows(),
+      underlyingContract.name(),
+      underlyingContract.symbol(),
+      underlyingContract.decimals(),
+      vTokenContract.accrualBlockNumber(),
+      vTokenContract.borrowIndex(),
+    ]);
 
     let underlyingPrice = BigNumber.from(0);
     try {
