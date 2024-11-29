@@ -57,7 +57,7 @@ import {
   createTransferEvent,
 } from './events';
 import { PoolInfo, createAccountVTokenBalanceOfMock, createPoolRegistryMock } from './mocks';
-import { createMarketMock, createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
+import { createPriceOracleMock, createVBep20AndUnderlyingMock } from './mocks';
 
 const underlying1Address = Address.fromString('0x0000000000000000000000000000000000000111');
 const underlying2Address = Address.fromString('0x0000000000000000000000000000000000000222');
@@ -69,6 +69,9 @@ const bTokenAddress = Address.fromString('0x000000000000000000000000000000000000
 const rootAddress = Address.fromString('0x0000000000000000000000000000000000000072');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
+const accessControlManagerAddress = Address.fromString(
+  '0x45f8a08F534f34A97187626E05d4b6648Eeaa9AA',
+);
 
 const underlyingPrice = BigInt.fromString('15000000000000000');
 
@@ -86,6 +89,7 @@ beforeAll(() => {
     BigInt.fromI32(18),
     BigInt.fromI32(100),
     interestRateModelAddress,
+    accessControlManagerAddress,
     underlyingPrice,
   );
 
@@ -98,10 +102,9 @@ beforeAll(() => {
     BigInt.fromI32(18),
     BigInt.fromI32(100),
     interestRateModelAddress,
+    accessControlManagerAddress,
     underlyingPrice,
   );
-
-  createMarketMock(aTokenAddress);
 
   createPriceOracleMock([[ethereum.Value.fromAddress(aTokenAddress), ethereum.Value.fromI32(99)]]);
 
@@ -553,11 +556,11 @@ describe('VToken', () => {
     };
 
     assertMarketDocument('accrualBlockNumber', '999');
-    assertMarketDocument('totalSupplyVTokenMantissa', '36504567163409'); // value from mock
+    assertMarketDocument('totalSupplyVTokenMantissa', '0'); // value from mock
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
-    assertMarketDocument('borrowIndex', '300000000000000000000');
+    assertMarketDocument('borrowIndex', '1');
     assertMarketDocument('reservesMantissa', '5128924555022289393');
-    assertMarketDocument('totalBorrowsMantissa', '2641234234636158123');
+    assertMarketDocument('totalBorrowsMantissa', '62197468301');
     assertMarketDocument('cashMantissa', '1418171344423412457');
     assertMarketDocument('borrowRateMantissa', '12678493');
     assertMarketDocument('supplyRateMantissa', '12678493');
@@ -829,7 +832,7 @@ describe('VToken', () => {
 
   test('registers increase and decrease in the market supplier count', () => {
     const market = getMarket(aTokenAddress)!;
-    const marketId = market.id.toHexString();
+    const marketId = aTokenAddress.toHexString();
     assert.assertNotNull(market);
     if (!market) {
       return;

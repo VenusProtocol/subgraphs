@@ -18,7 +18,7 @@ import {
 } from '../../src/mappings/rewardsDistributor';
 import { getRewardSpeedId } from '../../src/utilities/ids';
 import { createNewRewardsDistributor } from '../Pool/events';
-import { createMarketMock } from '../VToken/mocks';
+import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
 import {
   createRewardTokenBorrowSpeedUpdatedEvent,
   createRewardTokenSupplySpeedUpdatedEvent,
@@ -26,9 +26,15 @@ import {
 import { createRewardsDistributorMock } from './mocks';
 
 const vTokenAddress = Address.fromString('0x0000000000000000000000000000000000000a0a');
+const underlyingAddress = Address.fromString('0x0000000000000000000000000000000000000111');
 const comptrollerAddress = Address.fromString('0x0000000000000000000000000000000000000c0c');
 const rewardsDistributorAddress = Address.fromString('0x082F27894f3E3CbC2790899AEe82D6f149521AFa');
 const tokenAddress = Address.fromString('0x0000000000000000000000000000000000000b0b');
+const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
+const accessControlManagerAddress = Address.fromString(
+  '0x45f8a08F534f34A97187626E05d4b6648Eeaa9AA',
+);
+const underlyingPrice = BigInt.fromString('15000000000000000');
 
 const cleanup = (): void => {
   clearStore();
@@ -48,7 +54,18 @@ beforeEach(() => {
   );
 
   handleNewRewardsDistributor(newRewardsDistributorEvent);
-  createMarketMock(vTokenAddress);
+  createVBep20AndUnderlyingMock(
+    vTokenAddress,
+    underlyingAddress,
+    comptrollerAddress,
+    'AAA Coin',
+    'AAA',
+    BigInt.fromI32(18),
+    BigInt.fromI32(100),
+    interestRateModelAddress,
+    accessControlManagerAddress,
+    underlyingPrice,
+  );
 });
 
 afterEach(() => {
