@@ -351,14 +351,14 @@ describe('VToken events', function () {
 
     await checkMarket(vBnxToken.address);
 
-    const {
-      data: { account: accountBorrower },
-    } = await subgraphClient.getAccountById(borrower1.address.toLowerCase());
+    const { account: accountBorrower } = await subgraphClient.getAccountById(
+      borrower1.address.toLowerCase(),
+    );
     expect(accountBorrower.countLiquidated).to.equal(1);
 
-    const {
-      data: { account: accountLiquidator },
-    } = await subgraphClient.getAccountById(liquidator1.address.toLowerCase());
+    const { account: accountLiquidator } = await subgraphClient.getAccountById(
+      liquidator1.address.toLowerCase(),
+    );
     expect(accountLiquidator.countLiquidator).to.equal(1);
 
     const vBnxMarket = await checkMarket(vBnxToken.address);

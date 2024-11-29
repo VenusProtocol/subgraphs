@@ -59,9 +59,7 @@ describe('VToken events', function () {
     await waitForSubgraphToBeSynced(syncDelay);
 
     for (const market of markets) {
-      const {
-        data: { market: unlistedMarket },
-      } = await subgraphClient.getMarketById(market.toLowerCase());
+      const { market: unlistedMarket } = await subgraphClient.getMarketById(market.toLowerCase());
 
       expect(unlistedMarket.isListed).to.equal(false);
     }

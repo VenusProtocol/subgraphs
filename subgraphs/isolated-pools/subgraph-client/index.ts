@@ -38,12 +38,12 @@ class SubgraphClient {
     if (result.error) {
       console.error(result.error);
     }
-    return result;
+    return result.data;
   }
 
   async getPools(): Promise<PoolsQuery> {
     const result = await this.query(PoolsDocument, {});
-    return result.data;
+    return result;
   }
 
   async getPool(id: string) {
@@ -58,7 +58,7 @@ class SubgraphClient {
 
   async getMarketById(id: string): Promise<MarketByIdQuery> {
     const result = await this.query(MarketByIdDocument, { id });
-    return result.data;
+    return result;
   }
 
   async getAccountById(id: string) {
@@ -77,7 +77,7 @@ class SubgraphClient {
       first: string;
       skip: string;
     });
-    return result.data;
+    return result;
   }
 
   async getMarketActions() {
@@ -109,7 +109,7 @@ class SubgraphClient {
       first: string;
       skip: string;
     });
-    return result.data;
+    return result;
   }
 
   async getAccountVTokensWithBorrowByMarketId(
@@ -126,7 +126,7 @@ class SubgraphClient {
       first: string;
       skip: string;
     });
-    return result.data;
+    return result;
   }
 
   async getAccountVTokenByAccountAndMarket({
@@ -139,7 +139,7 @@ class SubgraphClient {
     const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
       id: `${accountId}${marketId.replace('0x', '')}`,
     });
-    return result.data || { accountVToken: null };
+    return result || { accountVToken: null };
   }
 
   async getAccountPositions(id: string) {

@@ -18,8 +18,7 @@ describe('Pools', function () {
 
   it('handles MarketAdded event', async function () {
     // check markets
-    const { data: marketsData } = await subgraphClient.getMarkets();
-    const { markets } = marketsData!;
+    const { markets } = await subgraphClient.getMarkets();
 
     expect(markets.length).to.equal(9);
 
@@ -29,8 +28,7 @@ describe('Pools', function () {
   });
 
   it('handles NewCloseFactor event', async function () {
-    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
-    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
+    const { pools: poolsBeforeUpdate } = await subgraphClient.getPools();
 
     expect(poolsBeforeUpdate[0].closeFactorMantissa).to.equal('50000000000000000');
 
@@ -40,15 +38,13 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
+    const { pools } = await subgraphClient.getPools();
 
     expect(pools[0].closeFactorMantissa).to.equal('600000000000000000');
   });
 
   it('handles NewCollateralFactor event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarkets();
-    const { markets: marketsBeforeEvent } = dataBeforeEvent!;
+    const { markets: marketsBeforeEvent } = await subgraphClient.getMarkets();
     const market = marketsBeforeEvent[1];
     const poolLens = await ethers.getContract('PoolLens');
     const vTokenMetadata = await poolLens.vTokenMetadata(market.id);
@@ -80,8 +76,7 @@ describe('Pools', function () {
   });
 
   it('handles NewLiquidationIncentive event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getPools();
-    const { pools: poolsBeforeEvent } = dataBeforeEvent!;
+    const { pools: poolsBeforeEvent } = await subgraphClient.getPools();
 
     expect(poolsBeforeEvent[0].liquidationIncentiveMantissa).to.equal('1000000000000000000');
 
@@ -91,8 +86,7 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
+    const { pools } = await subgraphClient.getPools();
 
     expect(pools[0].liquidationIncentiveMantissa).to.equal('3000000000000000000');
     // reset
@@ -101,8 +95,7 @@ describe('Pools', function () {
 
   it('handles NewPriceOracle event', async function () {
     const newPriceOracle = '0x0000000000000000000000000000000000000123';
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
+    const { pools } = await subgraphClient.getPools();
 
     const priceOracle = await ethers.getContract('ResilientOracle');
 
@@ -114,22 +107,19 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: updatedPoolData } = await subgraphClient.getPools();
+    const { pools: updatedPools } = await subgraphClient.getPools();
 
-    const { pools: updatedPools } = updatedPoolData!;
     expect(updatedPools[0].priceOracleAddress).to.equal(newPriceOracle);
     // Reset oracle address
     await comptrollerProxy.setPriceOracle(priceOracle.address);
   });
 
   it('handles ActionPausedMarket event', async function () {
-    const { data: dataBeforeEvent } = await subgraphClient.getMarketActions();
-    const { marketActions: marketActionsBeforeEvent } = dataBeforeEvent!;
+    const { marketActions: marketActionsBeforeEvent } = await subgraphClient.getMarketActions();
 
     expect(marketActionsBeforeEvent.length).to.be.equal(0);
 
-    const { data: marketsData } = await subgraphClient.getMarkets();
-    const { markets } = marketsData!;
+    const { markets } = await subgraphClient.getMarkets();
     const market = markets[1];
     const comptrollerProxy = await ethers.getContractAt('Comptroller', market.pool.id);
 
@@ -137,8 +127,7 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(4000);
 
-    const { data } = await subgraphClient.getMarketActions();
-    const { marketActions } = data!;
+    const { marketActions } = await subgraphClient.getMarketActions();
 
     expect(marketActions.length).to.be.equal(1);
     marketActions.forEach(ma => {
@@ -151,8 +140,7 @@ describe('Pools', function () {
   });
 
   it('handles NewBorrowCap event', async function () {
-    const { data } = await subgraphClient.getMarkets();
-    const { markets: marketsBeforeUpdate } = data!;
+    const { markets: marketsBeforeUpdate } = await subgraphClient.getMarkets();
 
     const poolLens = await ethers.getContract('PoolLens');
     let vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
@@ -167,16 +155,14 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: marketsData } = await subgraphClient.getMarkets();
-    const { markets } = marketsData!;
+    const { markets } = await subgraphClient.getMarkets();
 
     vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
     expect(markets[0].borrowCapMantissa).to.equal(vTokenMetadata.borrowCaps.toString());
   });
 
   it('handles NewMinLiquidatableCollateral event', async function () {
-    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
-    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
+    const { pools: poolsBeforeUpdate } = await subgraphClient.getPools();
 
     expect(poolsBeforeUpdate[0].minLiquidatableCollateralMantissa).to.equal(
       '100000000000000000000',
@@ -188,8 +174,7 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
+    const { pools } = await subgraphClient.getPools();
 
     expect(pools[0].minLiquidatableCollateralMantissa).to.equal('200000000000000000000');
     // reset
@@ -197,8 +182,7 @@ describe('Pools', function () {
   });
 
   it('handles NewSupplyCap event', async function () {
-    const { data } = await subgraphClient.getMarkets();
-    const { markets: marketsBeforeUpdate } = data!;
+    const { markets: marketsBeforeUpdate } = await subgraphClient.getMarkets();
 
     const poolLens = await ethers.getContract('PoolLens');
     let vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
@@ -216,8 +200,7 @@ describe('Pools', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data: marketsData } = await subgraphClient.getMarkets();
-    const { markets } = marketsData!;
+    const { markets } = await subgraphClient.getMarkets();
 
     vTokenMetadata = await poolLens.vTokenMetadata(marketsBeforeUpdate[0].id);
     expect(markets[0].supplyCapMantissa).to.equal(vTokenMetadata.supplyCaps.toString());

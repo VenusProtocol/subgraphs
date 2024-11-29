@@ -12,9 +12,10 @@ const checkAccountVTokens = async (
   let skip = 0;
   while (skip >= 0) {
     console.log(`processed ${skip * 25}...`);
-    const {
-      data: { accountVTokens },
-    } = await subgraphClient.getAccountVTokens({ first: 25, skip: skip * 25 });
+    const { accountVTokens } = await subgraphClient.getAccountVTokens({
+      first: 25,
+      skip: skip * 25,
+    });
     for (const accountVToken of accountVTokens) {
       const vTokenContract = new ethers.Contract(accountVToken.market.id, VBep20Abi.abi, provider);
       const accountBalance = await vTokenContract.balanceOf(accountVToken.account.id);

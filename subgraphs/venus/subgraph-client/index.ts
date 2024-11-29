@@ -31,7 +31,7 @@ class SubgraphClient {
     if (result.error) {
       console.error(result.error);
     }
-    return result;
+    return result.data;
   }
 
   async getComptroller(): Promise<{ comptroller: ComptrollersQuery['comptrollers'][number] }> {
@@ -81,7 +81,7 @@ class SubgraphClient {
       first: string;
       skip: string;
     });
-    return result.data;
+    return result;
   }
 
   async getAccountVTokensWithBorrowByMarketId({
@@ -101,7 +101,7 @@ class SubgraphClient {
       first: string;
       skip: string;
     });
-    return result.data;
+    return result;
   }
 
   async getAccountVTokensByAccountId(accountId: string) {

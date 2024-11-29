@@ -14,9 +14,9 @@ export const checkMarket = async (marketAddress: string) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
   const comptroller = await ethers.getContractAt('Comptroller', await vToken.comptroller());
   const { accountVTokens: accountVTokensSupply } =
-    await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase());
+    await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase(), 0);
   const { accountVTokens: accountVTokensBorrow } =
-    await subgraphClient.getAccountVTokensWithBorrowByMarketId(marketAddress.toLowerCase());
+    await subgraphClient.getAccountVTokensWithBorrowByMarketId(marketAddress.toLowerCase(), 0);
   const { market } = await subgraphClient.getMarketById(marketAddress.toLowerCase());
   expect(market?.supplierCount).to.equal(accountVTokensSupply.length.toString());
   expect(market?.borrowerCount).to.equal(accountVTokensBorrow.length.toString());

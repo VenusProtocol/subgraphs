@@ -67,9 +67,7 @@ const checkMarkets = async (
   provider: providers.MulticallProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
 ) => {
-  const {
-    data: { markets },
-  } = await subgraphClient.getMarkets();
+  const { markets } = await subgraphClient.getMarkets();
   for (const market of markets) {
     const vTokenContract = new ethers.Contract(market.id, VBep20Abi, provider);
     const [comptrollerAddress, underlyingAddress] = await Promise.all([
@@ -199,8 +197,8 @@ const checkMarkets = async (
         market.totalSupplyVTokenMantissa,
         `
       incorrect total supply market ${market.symbol} ${
-          market.id
-        } contract ${totalSupply.toString()} subgraph ${market.totalSupplyVTokenMantissa.toString()}`,
+        market.id
+      } contract ${totalSupply.toString()} subgraph ${market.totalSupplyVTokenMantissa.toString()}`,
       );
       console.log(`correct supply for ${market.symbol}`);
     } catch (e) {
@@ -217,8 +215,8 @@ const checkMarkets = async (
         market.totalBorrowsMantissa.toString(),
         `
     incorrect total borrow on market ${market.symbol} ${
-          market.id
-        } contract ${totalBorrows.toString()} subgraph ${market.totalBorrowsMantissa.toString()}`,
+      market.id
+    } contract ${totalBorrows.toString()} subgraph ${market.totalBorrowsMantissa.toString()}`,
       );
       console.log(`correct borrow for ${market.symbol}`);
     } catch (e) {

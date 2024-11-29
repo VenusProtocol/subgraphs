@@ -68,9 +68,7 @@ const checkMarkets = async (
   provider: providers.MulticallProvider,
   subgraphClient: ReturnType<typeof createSubgraphClient>,
 ) => {
-  const {
-    data: { markets },
-  } = await subgraphClient.getMarkets();
+  const { markets } = await subgraphClient.getMarkets();
 
   for (const market of markets) {
     const vTokenContract = new ethers.Contract(market.id, VBep20Abi, provider);
