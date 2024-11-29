@@ -21,9 +21,9 @@ export const getMarket = (vTokenAddress: Address): Market | null => {
 };
 
 export const getAccountVToken = (
-  marketAddress: Address,
   accountAddress: Address,
+  marketAddress: Address,
 ): AccountVToken | null => {
-  const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
+  const accountVTokenId = getAccountVTokenId(accountAddress, marketAddress);
   return AccountVToken.load(accountVTokenId);
 };

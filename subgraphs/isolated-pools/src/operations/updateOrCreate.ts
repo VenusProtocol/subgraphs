@@ -8,8 +8,8 @@ import { getOrCreateAccountVToken } from './getOrCreate';
 
 export const updateOrCreateAccountVToken = (
   accountAddress: Address,
-  poolAddress: Address,
   marketAddress: Address,
+  poolAddress: Address,
   blockNumber: BigInt,
   enteredMarket: Box<boolean> | null = null,
 ): AccountVToken => {
@@ -20,8 +20,8 @@ export const updateOrCreateAccountVToken = (
 
   const result = getOrCreateAccountVToken(
     accountAddress,
-    poolAddress,
     marketAddress,
+    poolAddress,
     enteredMarketBool,
   );
   const accountVToken = result.entity;

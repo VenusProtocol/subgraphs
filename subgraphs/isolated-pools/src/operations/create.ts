@@ -81,8 +81,8 @@ export function createAccountPool(accountAddress: Address, poolAddress: Address)
 }
 
 export function createMarket(
-  comptroller: Address,
   vTokenAddress: Address,
+  comptroller: Address,
   blockNumber: BigInt,
 ): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
@@ -243,7 +243,7 @@ export const createAccountVTokenBadDebt = (
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
   const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
-  const accountVTokenId = getAccountVTokenId(marketAddress, event.params.borrower);
+  const accountVTokenId = getAccountVTokenId(event.params.borrower, marketAddress);
   accountVTokenBadDebt.account = accountVTokenId;
   accountVTokenBadDebt.block = event.block.number;
   accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;

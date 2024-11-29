@@ -11,12 +11,12 @@ import { oneBigInt, zeroBigInt32 } from '../constants';
 
 export const updateAccountVTokenAccrualBlockNumber = (
   accountAddress: Address,
-  poolAddress: Address,
   marketAddress: Address,
+  poolAddress: Address,
   blockNumber: BigInt,
 ): AccountVToken => {
   getOrCreateAccount(accountAddress);
-  const accountVToken = getOrCreateAccountVToken(accountAddress, poolAddress, marketAddress, false);
+  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress, poolAddress, false);
   accountVToken.entity.accrualBlockNumber = blockNumber;
   accountVToken.entity.save();
   return accountVToken.entity as AccountVToken;
@@ -31,8 +31,8 @@ export const updateAccountVTokenSupply = (
   const market = getMarket(marketAddress)!;
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
-    Address.fromBytes(market.pool),
     marketAddress,
+    Address.fromBytes(market.pool),
     blockNumber,
   );
   const _vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa;
@@ -63,8 +63,8 @@ export const updateAccountVTokenBorrow = (
   const market = getMarket(marketAddress)!;
   const accountVToken = updateAccountVTokenAccrualBlockNumber(
     accountAddress,
-    Address.fromBytes(market.pool),
     marketAddress,
+    Address.fromBytes(market.pool),
     blockNumber,
   );
   const _storedBorrowBalanceMantissa = accountVToken.storedBorrowBalanceMantissa;

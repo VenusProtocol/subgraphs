@@ -53,8 +53,8 @@ export function handleMarketEntered(event: MarketEntered): void {
 
   updateOrCreateAccountVToken(
     accountAddress,
-    poolAddress,
     vTokenAddress,
+    poolAddress,
     event.block.number,
     new Box(true),
   );
@@ -69,8 +69,8 @@ export function handleMarketExited(event: MarketExited): void {
 
   updateOrCreateAccountVToken(
     accountAddress,
-    poolAddress,
     vTokenAddress,
+    poolAddress,
     event.block.number,
     new Box(false),
   );

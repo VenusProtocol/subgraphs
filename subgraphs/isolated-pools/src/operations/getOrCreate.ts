@@ -32,7 +32,7 @@ export const getOrCreateMarket = (
   let market = getMarket(vTokenAddress);
   if (!market) {
     VTokenDataSource.create(vTokenAddress);
-    market = createMarket(comptrollerAddress, vTokenAddress, blockNumber);
+    market = createMarket(vTokenAddress, comptrollerAddress, blockNumber);
   }
   return market;
 };
@@ -72,15 +72,15 @@ export class GetOrCreateAccountVTokenReturn {
 
 export const getOrCreateAccountVToken = (
   accountAddress: Address,
-  poolAddress: Address,
   marketAddress: Address,
+  poolAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
 ): GetOrCreateAccountVTokenReturn => {
-  let accountVToken = getAccountVToken(marketAddress, accountAddress);
+  let accountVToken = getAccountVToken(accountAddress, marketAddress);
   let created = false;
   if (!accountVToken) {
     created = true;
-    const accountVTokenId = getAccountVTokenId(marketAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(accountAddress, marketAddress);
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.account = accountAddress;
     accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;

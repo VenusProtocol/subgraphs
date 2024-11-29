@@ -206,7 +206,7 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'blockTime', mintEvent.block.timestamp.toString());
 
     // AccountVToken
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, minter).toHexString();
+    const accountVTokenId = getAccountVTokenId(minter, aTokenAddress).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', minter.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
     assert.fieldEquals(
@@ -280,7 +280,7 @@ describe('VToken', () => {
     assert.fieldEquals('Transaction', id, 'blockTime', redeemEvent.block.timestamp.toString());
 
     // AccountVToken
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, redeemer).toHexString();
+    const accountVTokenId = getAccountVTokenId(redeemer, aTokenAddress).toHexString();
     assert.fieldEquals('AccountVToken', accountVTokenId, 'account', redeemer.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'market', aTokenAddress.toHexString());
     assert.fieldEquals(
@@ -346,7 +346,7 @@ describe('VToken', () => {
       borrowEvent.transaction.hash,
       borrowEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
+    const accountVTokenId = getAccountVTokenId(borrower, aTokenAddress).toHexString();
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -429,7 +429,7 @@ describe('VToken', () => {
       repayBorrowEvent.transaction.hash,
       repayBorrowEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, borrower).toHexString();
+    const accountVTokenId = getAccountVTokenId(borrower, aTokenAddress).toHexString();
     const market = getMarket(aTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -610,7 +610,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, from).toHexString();
+    const accountVTokenId = getAccountVTokenId(from, aTokenAddress).toHexString();
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -663,7 +663,7 @@ describe('VToken', () => {
       transferEvent.transaction.hash,
       transferEvent.transactionLogIndex,
     ).toHexString();
-    const accountVTokenId = getAccountVTokenId(aTokenAddress, to).toHexString();
+    const accountVTokenId = getAccountVTokenId(to, aTokenAddress).toHexString();
 
     /** Transaction */
     assert.fieldEquals('Transaction', transactionId, 'id', transactionId);
@@ -741,8 +741,8 @@ describe('VToken', () => {
       accountVTokenTBadDebtId,
       'account',
       getAccountVTokenId(
-        badDebtIncreasedEvent.address,
         badDebtIncreasedEvent.params.borrower,
+        badDebtIncreasedEvent.address,
       ).toHexString(),
     );
     assert.fieldEquals(

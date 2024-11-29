@@ -180,7 +180,7 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
@@ -207,7 +207,7 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress).toHexString();
+    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress).toHexString();
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
