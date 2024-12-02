@@ -8,6 +8,8 @@ import {
   vankrBNBLiquidStakedBNBAddress as vankrBNBLiquidStakedBNBAddressString,
   vankrBNBDeFiAddress as vankrBNBDeFiAddressString,
   vSnBNBAddress as vSnBNBAddressString,
+  vWETHLiquidStakedETHAddress as vWETHLiquidStakedETHAddressString,
+  vWETHCoreAddress as vWETHCoreAddressString,
 } from './config';
 
 export const poolRegistryAddress = Address.fromString(poolRegistryAddressString);
@@ -22,3 +24,5 @@ export const vankrBNBLiquidStakedBNBAddress = Address.fromString(
 );
 export const vankrBNBDeFiAddress = Address.fromString(vankrBNBDeFiAddressString);
 export const vSnBNBAddress = Address.fromString(vSnBNBAddressString);
+export const vWETHLiquidStakedETHAddress = Address.fromString(vWETHLiquidStakedETHAddressString);
+export const vWETHCoreAddress = Address.fromString(vWETHCoreAddressString);

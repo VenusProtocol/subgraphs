@@ -13,3 +13,9 @@ export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress
 export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}' || '0x0000000000000000000000000000000000000000'
 // @ts-ignore When the template is created this will fallback to a null string
 export const vSnBNBAddress = '{{ vSnBNBAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vWETHLiquidStakedETHAddress = '{{ vWETHLiquidStakedETHAddress }}' || '0x0000000000000000000000000000000000000000'
+// @ts-ignore When the template is created this will fallback to a null string
+export const vWETHCoreAddress = '{{ vWETHCoreAddress }}' || '0x0000000000000000000000000000000000000000'
+
+

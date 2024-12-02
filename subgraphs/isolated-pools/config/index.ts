@@ -52,6 +52,8 @@ const main = () => {
       network: 'sepolia',
       poolRegistryAddress: sepoliaDeployments.addresses.PoolRegistry,
       startBlock: '3930059',
+      vWETHLiquidStakedETHAddress: sepoliaDeployments.addresses.VToken_vWETH_LiquidStakedETH,
+      vWETHCoreAddress: sepoliaDeployments.addresses.VToken_vWETH_Core,
     },
     chapel: {
       network: 'chapel',
