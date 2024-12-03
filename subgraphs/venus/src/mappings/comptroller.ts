@@ -125,7 +125,7 @@ export function handleVenusSupplySpeedUpdated(event: VenusSupplySpeedUpdated): v
   const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
   const xvsSupplyState = comptrollerContract.venusSupplyState(marketAddress);
   market.xvsSupplySpeed = event.params.newSpeed;
-  market.xvsBorrowStateIndex = xvsSupplyState.getIndex();
-  market.xvsBorrowStateBlock = xvsSupplyState.getBlock();
+  market.xvsSupplyStateIndex = xvsSupplyState.getIndex();
+  market.xvsSupplyStateBlock = xvsSupplyState.getBlock();
   market.save();
 }
