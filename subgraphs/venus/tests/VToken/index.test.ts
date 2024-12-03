@@ -324,7 +324,7 @@ describe('VToken', () => {
       assert.fieldEquals('Market', aaaTokenAddress.toHexString(), key, value);
     };
 
-    assertMarketDocument('accrualBlockNumber', '999');
+    assertMarketDocument('accrualBlockNumber', '1');
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
     assertMarketDocument('borrowIndex', newBorrowIndex.toString());
     assertMarketDocument('reservesMantissa', '5128000000000000000');

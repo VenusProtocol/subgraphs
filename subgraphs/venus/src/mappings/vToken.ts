@@ -59,10 +59,6 @@ export function handleMint(event: Mint): void {
   );
 
   const market = getOrCreateMarket(marketAddress, event);
-  const vTokenContract = VToken.bind(marketAddress);
-
-  // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
 
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
@@ -82,10 +78,6 @@ export function handleMintBehalf(event: MintBehalf): void {
   );
 
   const market = getOrCreateMarket(marketAddress, event);
-  const vTokenContract = VToken.bind(marketAddress);
-
-  // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
 
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
@@ -120,10 +112,6 @@ export function handleRedeem(event: Redeem): void {
   accountVToken.entity.save();
 
   const market = getOrCreateMarket(marketAddress, event);
-  const vTokenContract = VToken.bind(marketAddress);
-
-  // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
 
   // and finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.minus(
@@ -145,11 +133,8 @@ export function handleRedeem(event: Redeem): void {
 export function handleBorrow(event: Borrow): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
-  const vTokenContract = VToken.bind(marketAddress);
   market.totalBorrowsMantissa = event.params.totalBorrows;
 
-  // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
   market.save();
 
   const account = getOrCreateAccount(event.params.borrower);
@@ -182,12 +167,8 @@ export function handleBorrow(event: Borrow): void {
 export function handleRepayBorrow(event: RepayBorrow): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(marketAddress, event);
-  const vTokenContract = VToken.bind(marketAddress);
 
   market.totalBorrowsMantissa = event.params.totalBorrows;
-
-  // we'll update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
 
   market.save();
 
@@ -330,9 +311,6 @@ export function handleMintV1(event: MintV1): void {
     accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
   );
   const market = getOrCreateMarket(event.address, event);
-  const vTokenContract = VToken.bind(marketAddress);
-  // we'll first update the cash value of the market and then the rates, since they depend on it
-  updateMarketCashMantissa(market, vTokenContract);
 
   // finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
@@ -354,10 +332,6 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
     accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
   );
   const market = getOrCreateMarket(event.address, event);
-  const vTokenContract = VToken.bind(marketAddress);
-
-  // we'll first update the cash value of the market
-  updateMarketCashMantissa(market, vTokenContract);
 
   // and then we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.plus(event.params.mintTokens);
@@ -370,9 +344,6 @@ export function handleMintBehalfV1(event: MintBehalfV1): void {
 export function handleRedeemV1(event: RedeemV1): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(event.address, event);
-  const vTokenContract = VToken.bind(marketAddress);
-  // we'll first update the cash value of the market and then the rates, since they depend on it
-  updateMarketCashMantissa(market, vTokenContract);
 
   // finally we update the market total supply
   market.totalSupplyVTokenMantissa = market.totalSupplyVTokenMantissa.minus(
