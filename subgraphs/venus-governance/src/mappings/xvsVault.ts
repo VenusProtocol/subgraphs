@@ -2,7 +2,6 @@
 
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { BigInt } from '@graphprotocol/graph-ts';
-import { store } from '@graphprotocol/graph-ts';
 
 import {
   DelegateChangedV2,
@@ -13,6 +12,8 @@ import {
 import { xvsVaultPid } from '../constants/config';
 import { getOrCreateDelegate } from '../operations/getOrCreate';
 import { updateDelegateChanged, updateDelegateVoteChanged } from '../operations/update';
+import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
+import { getGovernanceEntity } from '../operations/get';
 
 // - event: DelegateChanged(indexed address,indexed address,indexed address)
 //   handler: handleDelegateChanged
@@ -35,8 +36,15 @@ export function handleDeposit(event: Deposit): void {
     const amount = event.params.amount;
     // Update user's staked XVS
     const result = getOrCreateDelegate(user);
+    const previousStake = result.entity.stakedXvsMantissa;
     result.entity.stakedXvsMantissa = result.entity.stakedXvsMantissa.plus(amount);
     result.entity.save();
+
+    if (previousStake.equals(BIGINT_ZERO) && amount.gt(BIGINT_ZERO)) {
+      const governance = getGovernanceEntity();
+      governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
+      governance.save();
+    }
   }
 }
 
@@ -47,12 +55,13 @@ export function handleRequestedWithdrawal(event: RequestedWithdrawal): void {
     const amount = event.params.amount;
     const result = getOrCreateDelegate(user);
     const newAmount = result.entity.stakedXvsMantissa.minus(amount);
+    result.entity.stakedXvsMantissa = newAmount;
+    result.entity.save();
     // Update their delegate
-    if (newAmount.equals(new BigInt(0))) {
-      store.remove('Delegate', user.toHex());
-    } else {
-      result.entity.stakedXvsMantissa = newAmount;
-      result.entity.save();
+    if (newAmount.equals(BIGINT_ZERO)) {
+      const governance = getGovernanceEntity();
+      governance.totalDelegates = governance.totalDelegates.minus(BIGINT_ONE);
+      governance.save();
     }
   }
 }

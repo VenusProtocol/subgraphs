@@ -190,7 +190,7 @@ describe('XVS Vault and Delegation', function () {
       expect(delegate2.totalVotesMantissa).to.equal('0');
     });
 
-    it('should remove delegate when xvs is withdrawn', async function () {
+    it('should update delegate when xvs is withdrawn', async function () {
       const [_, user1, user2] = signers;
 
       await xvsVault.connect(user1).requestWithdrawal(xvs.address, 0, amount.toFixed());
@@ -201,7 +201,8 @@ describe('XVS Vault and Delegation', function () {
         data: { delegate: delegate1 },
       } = await subgraphClient.getDelegateById(user1.address.toLowerCase());
 
-      expect(delegate1).to.equal(null);
+      expect(delegate1.stakedXvsMantissa).to.equal('0');
+      expect(delegate1.totalVotesMantissa).to.equal('0');
 
       const {
         data: { delegate: delegate2 },
