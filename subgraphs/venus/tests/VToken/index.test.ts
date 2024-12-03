@@ -327,7 +327,7 @@ describe('VToken', () => {
     assertMarketDocument('accrualBlockNumber', '999');
     assertMarketDocument('exchangeRateMantissa', '365045823500000000000000');
     assertMarketDocument('borrowIndex', newBorrowIndex.toString());
-    assertMarketDocument('reservesMantissa', '5128924555022289393');
+    assertMarketDocument('reservesMantissa', '5128000000000000000');
     assertMarketDocument('totalBorrowsMantissa', newTotalBorrows.toString());
     assertMarketDocument('cashMantissa', '1418171344423412457'); // get cash mock return
     assertMarketDocument('borrowRateMantissa', '12678493');

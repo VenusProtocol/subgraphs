@@ -248,8 +248,6 @@ export function handleLiquidateBorrow(event: LiquidateBorrow): void {
  *    Transfer events emitted by mint, redeem, and seize are handled by their respective handlers.
  */
 export function handleTransfer(event: Transfer): void {
-  // We only updateMarket() if accrual block number is not up to date. This will only happen
-  // with normal transfers, since mint, redeem, and seize transfers will already run updateMarket()
   let accountFromAddress = event.params.from;
   let accountToAddress = event.params.to;
 
@@ -304,14 +302,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
   market.lastUnderlyingPriceBlockNumber = event.block.number;
 
-  // the AccrueInterest event updates the reserves but does not report the new value in the params
-  const totalReserves = vTokenContract.totalReserves();
-  if (totalReserves.notEqual(market.reservesMantissa)) {
-    market.reservesMantissa = totalReserves;
-    // since the total reserves changed, we'll also update the market rates
-    updateMarketRates(market, vTokenContract);
-  }
-
+  updateMarketRates(market, vTokenContract);
   market.save();
 }
 
