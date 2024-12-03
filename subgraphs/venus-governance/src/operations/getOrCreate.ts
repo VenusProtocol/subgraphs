@@ -7,8 +7,7 @@ import {
   Transaction,
   TrustedRemote,
 } from '../../generated/schema';
-import { BIGINT_ONE, BIGINT_ZERO } from '../constants';
-import { nullAddress } from '../constants/addresses';
+import { BIGINT_ZERO } from '../constants';
 import { getRemoteProposalId } from '../utilities/ids';
 import {
   getDelegateId,
@@ -16,7 +15,6 @@ import {
   getRemoteProposalStateTransactionId,
   getTrustedRemoteId,
 } from '../utilities/ids';
-import { getGovernanceEntity } from './get';
 
 export class GetOrCreateDelegateReturn {
   entity: Delegate;
@@ -32,12 +30,6 @@ export const getOrCreateDelegate = (address: Address): GetOrCreateDelegateReturn
     delegate.stakedXvsMantissa = BIGINT_ZERO;
     delegate.totalVotesMantissa = BIGINT_ZERO;
     delegate.delegateCount = 0;
-
-    if (id != nullAddress) {
-      const governance = getGovernanceEntity();
-      governance.totalDelegates = governance.totalDelegates.plus(BIGINT_ONE);
-      governance.save();
-    }
 
     delegate.save();
     created = true;

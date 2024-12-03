@@ -76,7 +76,7 @@ describe('XVS Vault', () => {
     assert.fieldEquals('Delegate', user.toHex(), 'stakedXvsMantissa', '800000000000000000');
   });
 
-  test('removes delegate after withdrawing everything', () => {
+  test('updates delegate after withdrawing everything', () => {
     const user = Address.fromString('0x0000000000000000000000000000000000000404');
     const amount = '800000000000000000';
     /** run handler */
@@ -89,8 +89,8 @@ describe('XVS Vault', () => {
 
     handleRequestedWithdrawal(withdrawRequestedEvent);
 
-    // Expect delegate to have been removed
-    assert.entityCount('Delegate', 1);
+    assert.entityCount('Delegate', 2);
+    assert.fieldEquals('Delegate', user.toHex(), 'stakedXvsMantissa', '0');
   });
 
   test('delegate changed', () => {
