@@ -112,7 +112,7 @@ export const createVBep20AndUnderlyingMock = (
   ]);
 
   createMockedFunction(contractAddress, 'totalReserves', 'totalReserves():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('5128924555022289393')),
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('5128000000000000000')),
   ]);
 
   createMockedFunction(

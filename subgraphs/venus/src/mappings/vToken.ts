@@ -295,7 +295,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   const market = getOrCreateMarket(marketAddress, event);
   const vTokenContract = VToken.bind(marketAddress);
 
-  market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
+  market.accrualBlockNumber = event.block.number;
   market.borrowIndex = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);
@@ -303,6 +303,7 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.lastUnderlyingPriceBlockNumber = event.block.number;
 
   updateMarketRates(market, vTokenContract);
+  market.reservesMantissa = vTokenContract.totalReserves();
   market.save();
 }
 
