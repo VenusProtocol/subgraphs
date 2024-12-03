@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
 import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
-
+import { Comptroller as ComptrollerContract } from '../../generated/templates/VToken/Comptroller';
 import {
   DistributedBorrowerVenus,
   DistributedSupplierVenus,
@@ -109,13 +109,23 @@ export function handleXvsDistributedBorrower(event: DistributedBorrowerVenus): v
 }
 
 export function handleVenusBorrowSpeedUpdated(event: VenusBorrowSpeedUpdated): void {
-  const market = getMarket(event.params.vToken)!;
+  const marketAddress = event.params.vToken;
+  const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
+  const xvsBorrowState = comptrollerContract.venusBorrowState(marketAddress);
+  const market = getMarket(marketAddress)!;
   market.xvsBorrowSpeed = event.params.newSpeed;
+  market.xvsBorrowStateIndex = xvsBorrowState.getIndex();
+  market.xvsBorrowStateBlock = xvsBorrowState.getBlock();
   market.save();
 }
 
 export function handleVenusSupplySpeedUpdated(event: VenusSupplySpeedUpdated): void {
+  const marketAddress = event.params.vToken;
   const market = getMarket(event.params.vToken)!;
+  const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
+  const xvsSupplyState = comptrollerContract.venusSupplyState(marketAddress);
   market.xvsSupplySpeed = event.params.newSpeed;
+  market.xvsBorrowStateIndex = xvsSupplyState.getIndex();
+  market.xvsBorrowStateBlock = xvsSupplyState.getBlock();
   market.save();
 }
