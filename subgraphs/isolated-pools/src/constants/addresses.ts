@@ -13,16 +13,34 @@ import {
 } from './config';
 
 export const poolRegistryAddress = Address.fromString(poolRegistryAddressString);
+const nullAddressString = '0x0000000000000000000000000000000000000000';
+export const nullAddress = Address.fromString(nullAddressString);
 
-export const nullAddress = Address.fromString('0x0000000000000000000000000000000000000000');
-
-export const vBifiAddress = Address.fromString(vBifiAddressString);
-export const vLisUsdAddress = Address.fromString(vLisUsdAddressString);
-export const vagEURAddress = Address.fromString(vagEURAddressString);
-export const vankrBNBLiquidStakedBNBAddress = Address.fromString(
-  vankrBNBLiquidStakedBNBAddressString,
+export const vBifiAddress = Address.fromString(
+  vBifiAddressString.length > 0 ? vBifiAddressString : nullAddressString,
 );
-export const vankrBNBDeFiAddress = Address.fromString(vankrBNBDeFiAddressString);
-export const vSnBNBAddress = Address.fromString(vSnBNBAddressString);
-export const vWETHLiquidStakedETHAddress = Address.fromString(vWETHLiquidStakedETHAddressString);
-export const vWETHCoreAddress = Address.fromString(vWETHCoreAddressString);
+export const vLisUsdAddress = Address.fromString(
+  vLisUsdAddressString.length > 0 ? vLisUsdAddressString : nullAddressString,
+);
+export const vagEURAddress = Address.fromString(
+  vagEURAddressString.length > 0 ? vagEURAddressString : nullAddressString,
+);
+export const vankrBNBLiquidStakedBNBAddress = Address.fromString(
+  vankrBNBLiquidStakedBNBAddressString.length > 0
+    ? vankrBNBLiquidStakedBNBAddressString
+    : nullAddressString,
+);
+export const vankrBNBDeFiAddress = Address.fromString(
+  vankrBNBDeFiAddressString.length > 0 ? vankrBNBDeFiAddressString : nullAddressString,
+);
+export const vSnBNBAddress = Address.fromString(
+  vSnBNBAddressString.length > 0 ? vSnBNBAddressString : nullAddressString,
+);
+export const vWETHLiquidStakedETHAddress = Address.fromString(
+  vWETHLiquidStakedETHAddressString.length > 0
+    ? vWETHLiquidStakedETHAddressString
+    : nullAddressString,
+);
+export const vWETHCoreAddress = Address.fromString(
+  vWETHCoreAddressString.length > 0 ? vWETHCoreAddressString : nullAddressString,
+);

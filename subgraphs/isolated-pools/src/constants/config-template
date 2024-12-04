@@ -1,21 +1,19 @@
 // Use yarn prepare commands to generate config typescript file per env
 
 export const poolRegistryAddress = '{{ poolRegistryAddress }}';
-// @ts-ignore When the template is created this will fallback to a null string
-export const vBifiAddress = '{{ vBifiAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vLisUsdAddress = '{{ vLisUsdAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vagEURAddress = '{{ vagEURAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vSnBNBAddress = '{{ vSnBNBAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vWETHLiquidStakedETHAddress = '{{ vWETHLiquidStakedETHAddress }}' || '0x0000000000000000000000000000000000000000'
-// @ts-ignore When the template is created this will fallback to a null string
-export const vWETHCoreAddress = '{{ vWETHCoreAddress }}' || '0x0000000000000000000000000000000000000000'
 
+export const vBifiAddress = '{{ vBifiAddress }}'
 
+export const vLisUsdAddress = '{{ vLisUsdAddress }}'
+
+export const vagEURAddress = '{{ vagEURAddress }}'
+
+export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress }}'
+
+export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}'
+
+export const vSnBNBAddress = '{{ vSnBNBAddress }}'
+
+export const vWETHLiquidStakedETHAddress = '{{ vWETHLiquidStakedETHAddress }}'
+
+export const vWETHCoreAddress = '{{ vWETHCoreAddress }}'
