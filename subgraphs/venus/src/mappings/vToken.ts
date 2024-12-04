@@ -29,10 +29,10 @@ import {
 } from '../operations/create';
 import {
   getOrCreateAccount,
-  getOrCreateAccountVToken,
+  getOrCreateMarketPosition,
   getOrCreateMarket,
 } from '../operations/getOrCreate';
-import { updateAccountVTokenSupply, updateAccountVTokenBorrow } from '../operations/update';
+import { updateMarketPositionSupply, updateMarketPositionBorrow } from '../operations/update';
 import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
 import { updateMarketRates } from '../operations/updateMarketRates';
 import { getUnderlyingPrice } from '../utilities';
@@ -51,7 +51,7 @@ import { getUnderlyingPrice } from '../utilities';
 export function handleMint(event: Mint): void {
   const marketAddress = event.address;
 
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.minter,
     marketAddress,
     event.block.number,
@@ -70,7 +70,7 @@ export function handleMint(event: Mint): void {
 export function handleMintBehalf(event: MintBehalf): void {
   const marketAddress = event.address;
 
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.receiver,
     marketAddress,
     event.block.number,
@@ -99,17 +99,17 @@ export function handleMintBehalf(event: MintBehalf): void {
 export function handleRedeem(event: Redeem): void {
   const marketAddress = event.address;
 
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.redeemer,
     marketAddress,
     event.block.number,
     event.params.totalSupply,
   );
 
-  const accountVToken = getOrCreateAccountVToken(event.params.redeemer, marketAddress);
-  accountVToken.entity.totalUnderlyingRedeemedMantissa =
-    accountVToken.entity.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
-  accountVToken.entity.save();
+  const marketPosition = getOrCreateMarketPosition(event.params.redeemer, marketAddress);
+  marketPosition.entity.totalUnderlyingRedeemedMantissa =
+    marketPosition.entity.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
+  marketPosition.entity.save();
 
   const market = getOrCreateMarket(marketAddress, event);
 
@@ -141,7 +141,7 @@ export function handleBorrow(event: Borrow): void {
   account.hasBorrowed = true;
   account.save();
 
-  updateAccountVTokenBorrow(
+  updateMarketPositionBorrow(
     event.params.borrower,
     marketAddress,
     event.block.number,
@@ -172,17 +172,17 @@ export function handleRepayBorrow(event: RepayBorrow): void {
 
   market.save();
 
-  const accountVToken = updateAccountVTokenBorrow(
+  const marketPosition = updateMarketPositionBorrow(
     event.params.borrower,
     marketAddress,
     event.block.number,
     event.params.accountBorrows,
   );
 
-  accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
+  marketPosition.totalUnderlyingRepaidMantissa = marketPosition.totalUnderlyingRepaidMantissa.plus(
     event.params.repayAmount,
   );
-  accountVToken.save();
+  marketPosition.save();
 
   createRepayEvent<RepayBorrow>(event);
 }
@@ -241,12 +241,12 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountFromAddress);
-    const accountVToken = getOrCreateAccountVToken(accountFromAddress, event.address);
-    updateAccountVTokenSupply(
+    const marketPosition = getOrCreateMarketPosition(accountFromAddress, event.address);
+    updateMarketPositionSupply(
       accountFromAddress,
       event.address,
       event.block.number,
-      accountVToken.entity.vTokenBalanceMantissa.minus(event.params.amount),
+      marketPosition.entity.vTokenBalanceMantissa.minus(event.params.amount),
     );
   }
 
@@ -258,12 +258,12 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountToAddress);
-    const accountVToken = getOrCreateAccountVToken(accountToAddress, event.address);
-    updateAccountVTokenSupply(
+    const marketPosition = getOrCreateMarketPosition(accountToAddress, event.address);
+    updateMarketPositionSupply(
       accountToAddress,
       event.address,
       event.block.number,
-      accountVToken.entity.vTokenBalanceMantissa.plus(event.params.amount),
+      marketPosition.entity.vTokenBalanceMantissa.plus(event.params.amount),
     );
   }
 
@@ -302,13 +302,13 @@ export function handleNewMarketInterestRateModel(event: NewMarketInterestRateMod
 
 export function handleMintV1(event: MintV1): void {
   const marketAddress = event.address;
-  const accountVToken = getOrCreateAccountVToken(event.params.minter, marketAddress);
+  const marketPosition = getOrCreateMarketPosition(event.params.minter, marketAddress);
   // Creation updates balance
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.minter,
     event.address,
     event.block.number,
-    accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
+    marketPosition.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
   );
   const market = getOrCreateMarket(event.address, event);
 
@@ -323,13 +323,13 @@ export function handleMintV1(event: MintV1): void {
 export function handleMintBehalfV1(event: MintBehalfV1): void {
   const marketAddress = event.address;
 
-  const accountVToken = getOrCreateAccountVToken(event.params.receiver, marketAddress);
+  const marketPosition = getOrCreateMarketPosition(event.params.receiver, marketAddress);
   // Creation updates balance
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.receiver,
     event.address,
     event.block.number,
-    accountVToken.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
+    marketPosition.entity.vTokenBalanceMantissa.plus(event.params.mintTokens),
   );
   const market = getOrCreateMarket(event.address, event);
 
@@ -353,14 +353,14 @@ export function handleRedeemV1(event: RedeemV1): void {
 
   createRedeemEvent<RedeemV1>(event);
 
-  const result = getOrCreateAccountVToken(event.params.redeemer, marketAddress);
-  const accountVToken = result.entity;
+  const result = getOrCreateMarketPosition(event.params.redeemer, marketAddress);
+  const marketPosition = result.entity;
 
-  updateAccountVTokenSupply(
+  updateMarketPositionSupply(
     event.params.redeemer,
     event.address,
     event.block.number,
-    accountVToken.vTokenBalanceMantissa.minus(event.params.redeemTokens),
+    marketPosition.vTokenBalanceMantissa.minus(event.params.redeemTokens),
   );
 }
 

@@ -1,7 +1,7 @@
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { AccountVToken, Market, Pool } from '../../generated/schema';
-import { getAccountVTokenId, getMarketId, getPoolId } from '../utilities/ids';
+import { MarketPosition, Market, Pool } from '../../generated/schema';
+import { getMarketPositionId, getMarketId, getPoolId } from '../utilities/ids';
 
 export const getPool = (comptroller: Address): Pool | null => {
   const pool = Pool.load(getPoolId(comptroller));
@@ -20,10 +20,10 @@ export const getMarket = (vTokenAddress: Address): Market | null => {
   return market;
 };
 
-export const getAccountVToken = (
+export const getMarketPosition = (
   accountAddress: Address,
   marketAddress: Address,
-): AccountVToken | null => {
-  const accountVTokenId = getAccountVTokenId(accountAddress, marketAddress);
-  return AccountVToken.load(accountVTokenId);
+): MarketPosition | null => {
+  const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
+  return MarketPosition.load(marketPositionId);
 };

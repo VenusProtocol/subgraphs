@@ -125,7 +125,7 @@ type Market @entity {
     liquidationThresholdMantissa: BigInt!
 
     "Accounts who participate in this market"
-    accounts: [AccountVToken!]! @derivedFrom(field:"market")
+    accounts: [MarketPosition!]! @derivedFrom(field:"market")
 }
 
 """
@@ -153,14 +153,14 @@ type AccountPool @entity(immutable: true) {
     id: Bytes!
     pool: Pool!
     account: Account!
-    tokens: [AccountVToken!]! @derivedFrom(field:"accountPool")
+    tokens: [MarketPosition!]! @derivedFrom(field:"accountPool")
 }
 
 """
-AccountVToken is a single account within a single vToken market, with data such
+MarketPosition is a single account within a single vToken market, with data such
 as interest earned or paid
 """
-type AccountVToken @entity {
+type MarketPosition @entity {
     "Concatenation of VToken address and user address"
     id: Bytes!
     "Pool of the market"
@@ -170,7 +170,7 @@ type AccountVToken @entity {
     "Relation to user"
     account: Account!
     "Bad debt data for the account in the market"
-    badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
+    badDebt: [MarketPositionBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
     "Borrow Index this position last accrued interest"
@@ -188,13 +188,13 @@ type AccountVToken @entity {
 }
 
 """
-Auxiliary entity for AccountVToken indicating when a certain amount of bad debt was healed
+Auxiliary entity for MarketPosition indicating when a certain amount of bad debt was healed
 """
-type AccountVTokenBadDebt @entity {
+type MarketPositionBadDebt @entity {
     "Concatenation of borrower and vToken Address"
     id: Bytes!
     "Market that was healed"
-    account: AccountVToken!
+    account: MarketPosition!
     "Amount that was healed"
     amountMantissa: BigInt!
     "Timestamp"

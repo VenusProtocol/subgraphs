@@ -4,7 +4,7 @@ export const getPoolId = (comptroller: Address): Bytes => comptroller;
 
 export const getMarketId = (vTokenAddress: Address): Bytes => vTokenAddress;
 
-export const getAccountVTokenId = (accountAddress: Address, marketAddress: Address): Bytes =>
+export const getMarketPositionId = (accountAddress: Address, marketAddress: Address): Bytes =>
   accountAddress.concat(marketAddress);
 
 export const getAccountId = (accountAddress: Address): Bytes => accountAddress;

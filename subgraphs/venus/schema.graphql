@@ -89,7 +89,7 @@ type Market @entity {
     borrowerCount: BigInt!
 
     "Accounts who participate in this market"
-    accounts: [AccountVToken!]! @derivedFrom(field:"market")
+    accounts: [MarketPosition!]! @derivedFrom(field:"market")
 }
 
 """
@@ -100,7 +100,7 @@ type Account @entity {
     "User BNB address"
     id: Bytes!
     "Array of VTokens user is in"
-    tokens: [AccountVToken!]! @derivedFrom(field: "account")
+    tokens: [MarketPosition!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
     countLiquidated: Int!
     "Count user has liquidated others"
@@ -110,10 +110,9 @@ type Account @entity {
 }
 
 """
-AccountVToken is a single account within a single vToken market, with data such
-as interest earned or paid
+MarketPosition is a single account within a single vToken market
 """
-type AccountVToken @entity {
+type MarketPosition @entity {
     "Concatenation of VToken address and user address"
     id: Bytes!
     "Relation to market"

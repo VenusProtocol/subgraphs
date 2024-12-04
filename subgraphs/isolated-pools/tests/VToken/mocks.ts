@@ -228,7 +228,7 @@ export const createPriceOracleMock = (tokens: Array<Array<ethereum.Value>>): voi
   });
 };
 
-export const createAccountVTokenBalanceOfMock = (
+export const createMarketPositionBalanceOfMock = (
   vTokenAddress: Address,
   accountAddress: Address,
   balance: BigInt,

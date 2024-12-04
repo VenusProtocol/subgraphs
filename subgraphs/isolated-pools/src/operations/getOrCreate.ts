@@ -4,7 +4,7 @@ import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import {
   Account,
   AccountPool,
-  AccountVToken,
+  MarketPosition,
   Market,
   Pool,
   RewardSpeed,
@@ -15,13 +15,13 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { zeroBigInt32 } from '../constants';
 import {
   getAccountPoolId,
-  getAccountVTokenId,
+  getMarketPositionId,
   getPoolId,
   getRewardSpeedId,
   getRewardsDistributorId,
 } from '../utilities/ids';
 import { createAccount, createAccountPool, createMarket, createPool } from './create';
-import { getAccountVToken, getMarket } from './get';
+import { getMarketPosition, getMarket } from './get';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
@@ -63,41 +63,41 @@ export const getOrCreateAccountPool = (
   return accountPool;
 };
 
-export class GetOrCreateAccountVTokenReturn {
-  entity: AccountVToken;
+export class GetOrCreateMarketPositionReturn {
+  entity: MarketPosition;
   created: boolean;
 }
 
-export const getOrCreateAccountVToken = (
+export const getOrCreateMarketPosition = (
   accountAddress: Address,
   marketAddress: Address,
   poolAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
-): GetOrCreateAccountVTokenReturn => {
-  let accountVToken = getAccountVToken(accountAddress, marketAddress);
+): GetOrCreateMarketPositionReturn => {
+  let marketPosition = getMarketPosition(accountAddress, marketAddress);
   let created = false;
-  if (!accountVToken) {
+  if (!marketPosition) {
     created = true;
-    const accountVTokenId = getAccountVTokenId(accountAddress, marketAddress);
-    accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.account = accountAddress;
-    accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
-    accountVToken.market = marketAddress;
-    accountVToken.enteredMarket = enteredMarket;
-    accountVToken.accrualBlockNumber = zeroBigInt32;
+    const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
+    marketPosition = new MarketPosition(marketPositionId);
+    marketPosition.account = accountAddress;
+    marketPosition.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
+    marketPosition.market = marketAddress;
+    marketPosition.enteredMarket = enteredMarket;
+    marketPosition.accrualBlockNumber = zeroBigInt32;
 
     const vTokenContract = VTokenContract.bind(marketAddress);
 
-    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
-    accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    accountVToken.borrowIndex = vTokenContract.borrowIndex();
+    marketPosition.vTokenBalanceMantissa = zeroBigInt32;
+    marketPosition.storedBorrowBalanceMantissa = zeroBigInt32;
+    marketPosition.borrowIndex = vTokenContract.borrowIndex();
 
-    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
-    accountVToken.enteredMarket = false;
-    accountVToken.save();
+    marketPosition.totalUnderlyingRedeemedMantissa = zeroBigInt32;
+    marketPosition.totalUnderlyingRepaidMantissa = zeroBigInt32;
+    marketPosition.enteredMarket = false;
+    marketPosition.save();
   }
-  return { entity: accountVToken, created };
+  return { entity: marketPosition, created };
 };
 
 export const getOrCreateRewardSpeed = (

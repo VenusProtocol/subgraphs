@@ -15,7 +15,7 @@ import {
 import {
   Account,
   AccountPool,
-  AccountVTokenBadDebt,
+  MarketPositionBadDebt,
   Market,
   Pool,
   RewardsDistributor,
@@ -41,7 +41,7 @@ import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utili
 import {
   getAccountId,
   getAccountPoolId,
-  getAccountVTokenId,
+  getMarketPositionId,
   getBadDebtEventId,
   getPoolId,
   getRewardsDistributorId,
@@ -282,19 +282,19 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.save();
 };
 
-export const createAccountVTokenBadDebt = (
+export const createMarketPositionBadDebt = (
   marketAddress: Address,
   event: BadDebtIncreased,
 ): void => {
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
-  const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
-  const accountVTokenId = getAccountVTokenId(event.params.borrower, marketAddress);
-  accountVTokenBadDebt.account = accountVTokenId;
-  accountVTokenBadDebt.block = event.block.number;
-  accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;
-  accountVTokenBadDebt.timestamp = event.block.timestamp;
-  accountVTokenBadDebt.save();
+  const marketPositionBadDebt = new MarketPositionBadDebt(id);
+  const marketPositionId = getMarketPositionId(event.params.borrower, marketAddress);
+  marketPositionBadDebt.account = marketPositionId;
+  marketPositionBadDebt.block = event.block.number;
+  marketPositionBadDebt.amountMantissa = event.params.badDebtDelta;
+  marketPositionBadDebt.timestamp = event.block.timestamp;
+  marketPositionBadDebt.save();
 };
 
 export const createRewardDistributor = (

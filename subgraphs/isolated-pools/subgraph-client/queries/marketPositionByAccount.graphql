@@ -1,10 +1,8 @@
-query AccountVTokens($first: Int, $skip: Int) {
-  accountVTokens(first: $first, skip: $skip) {
+query MarketPositionByAccountId($accountId: String!) {
+  marketPositions(where: { account: $accountId }) {
     id
     market {
       id
-      symbol
-      borrowIndex
     }
     account {
       id

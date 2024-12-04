@@ -29,7 +29,7 @@ import {
   handleNewSupplyCap,
 } from '../../src/mappings/pool';
 import { handleMarketAdded, handlePoolRegistered } from '../../src/mappings/poolRegistry';
-import { getAccountVTokenId, getMarketActionId } from '../../src/utilities/ids';
+import { getMarketPositionId, getMarketActionId } from '../../src/utilities/ids';
 import { createPoolRegisteredEvent } from '../PoolRegistry/events';
 import { createRewardsDistributorMock } from '../RewardsDistributor/mocks';
 import { PoolInfo, createPoolRegistryMock, createVBep20AndUnderlyingMock } from '../VToken/mocks';
@@ -180,19 +180,19 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress);
+    const marketPositionId = getMarketPositionId(accountAddress, vTokenAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId.toHexString(),
+      'MarketPosition',
+      marketPositionId.toHexString(),
       'id',
-      accountVTokenId.toHexString(),
+      marketPositionId.toHexString(),
     );
-    assert.fieldEquals('AccountVToken', accountVTokenId.toHexString(), 'enteredMarket', 'true');
+    assert.fieldEquals('MarketPosition', marketPositionId.toHexString(), 'enteredMarket', 'true');
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId.toHexString(),
+      'MarketPosition',
+      marketPositionId.toHexString(),
       'accrualBlockNumber',
       marketEnteredEvent.block.number.toString(),
     );
@@ -207,14 +207,14 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress).toHexString();
+    const marketPositionId = getMarketPositionId(accountAddress, vTokenAddress).toHexString();
 
     assertAccountDocument('id', accountAddress.toHexString());
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);
-    assert.fieldEquals('AccountVToken', accountVTokenId, 'enteredMarket', 'false');
+    assert.fieldEquals('MarketPosition', marketPositionId, 'id', marketPositionId);
+    assert.fieldEquals('MarketPosition', marketPositionId, 'enteredMarket', 'false');
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
+      'MarketPosition',
+      marketPositionId,
       'accrualBlockNumber',
       marketExitedEvent.block.number.toString(),
     );
