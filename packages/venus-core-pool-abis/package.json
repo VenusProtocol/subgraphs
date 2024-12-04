@@ -1,0 +1,22 @@
+{
+  "name": "venus-core-pool-abis",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "codegen": "true",
+    "create:docker": "true",
+    "create:chapel": "true",
+    "create:bsc": "true",
+    "build:docker": "true",
+    "build:chapel": "true",
+    "build:bsc": "true",
+    "deploy:docker": "true",
+    "deploy:chapel": "true",
+    "deploy:bsc": "true",
+    "prepare:docker": "true",
+    "prepare:chapel": "true",
+    "prepare:bsc": "true",
+    "pretty": "prettier —-write '**/*.json'",
+    "test": "true"
+  }
+}

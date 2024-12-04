@@ -15,6 +15,7 @@ import {
   VenusBorrowSpeedUpdated,
   VenusSupplySpeedUpdated,
 } from '../../generated/DiamondComptroller/Comptroller';
+import { VenusSpeedUpdated } from '../../generated/Comptroller/Comptroller';
 import { Comptroller } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
@@ -105,6 +106,18 @@ export function handleXvsDistributedBorrower(event: DistributedBorrowerVenus): v
   market.totalXvsDistributedMantissa = market.totalXvsDistributedMantissa.plus(
     event.params.venusDelta,
   );
+  market.save();
+}
+
+export function handleVenusSpeedUpdated(event: VenusSpeedUpdated): void {
+  const marketAddress = event.params.vToken;
+  const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
+  const xvsBorrowState = comptrollerContract.venusBorrowState(marketAddress);
+  const market = getMarket(marketAddress)!;
+  market.xvsBorrowSpeed = event.params.newSpeed;
+  market.xvsSupplySpeed = event.params.newSpeed;
+  market.xvsBorrowStateIndex = xvsBorrowState.getIndex();
+  market.xvsBorrowStateBlock = xvsBorrowState.getBlock();
   market.save();
 }
 

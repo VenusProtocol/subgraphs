@@ -66,7 +66,7 @@ dataSources:
         - Market
       abis:
         - name: Comptroller
-          file: ../../node_modules/@venusprotocol/venus-protocol-orig-events/artifacts/contracts/Comptroller/Comptroller.sol/Comptroller.json
+          file: ../../packages/venus-core-pool-abis/Comptroller.json
         - name: VToken
           file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/VTokens/VBep20.sol/VBep20.json
         - name: PriceOracle
@@ -86,6 +86,8 @@ dataSources:
           handler: handleVenusBorrowSpeedUpdated
         - event: VenusSupplySpeedUpdated(indexed address,uint256)
           handler: handleVenusSupplySpeedUpdated
+        - event: VenusSpeedUpdated(indexed address,uint256)
+          handler: handleVenusSpeedUpdated
       blockHandlers:
         - handler: handleInitialization
           filter:
