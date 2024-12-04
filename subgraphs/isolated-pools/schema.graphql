@@ -4,6 +4,8 @@ The Pool entity
 type Pool @entity {
     "Pool Address as id"
     id: Bytes!
+    "Pool Comptroller address"
+    address: Bytes!
     "Name of the pool"
     name: String!
     "Creator of the pool"
@@ -135,6 +137,8 @@ participated in, along with liquidation information.
 type Account @entity {
     "User address"
     id: Bytes!
+    "User address"
+    address: Bytes!
     "Pools the user is participating on"
     pools: [AccountPool!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -238,6 +242,8 @@ An interface for rewards distributor that distribute rewards to isolated pools
 type RewardsDistributor @entity {
     "Address of the rewards distributor"
     id: Bytes!
+    "Address of the rewards distributor"
+    address: Bytes!
     "Address of the pool"
     pool: Pool!
     "Address of the reward token"

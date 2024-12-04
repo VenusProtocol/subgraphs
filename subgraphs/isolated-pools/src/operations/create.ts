@@ -56,6 +56,7 @@ export function createPool(comptroller: Address): Pool {
   const poolData = poolRegistryContract.getPoolByComptroller(comptroller);
   const poolMetaData = poolRegistryContract.getVenusPoolMetadata(comptroller);
 
+  pool.address = comptroller;
   pool.name = poolData.name;
   pool.creator = poolData.creator;
   pool.blockPosted = poolData.blockPosted;
@@ -75,6 +76,7 @@ export function createPool(comptroller: Address): Pool {
 
 export function createAccount(accountAddress: Address): Account {
   const account = new Account(accountAddress);
+  account.address = accountAddress;
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
@@ -305,6 +307,7 @@ export const createRewardDistributor = (
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   const rewardsDistributor = new RewardsDistributor(id);
+  rewardsDistributor.address = rewardsDistributorAddress;
   rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.reward = rewardToken;
   rewardsDistributor.save();
