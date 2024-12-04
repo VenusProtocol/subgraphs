@@ -31,6 +31,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     const vTokenContract = VToken.bind(marketAddress);
     const comptrollerContract = Comptroller.bind(vTokenContract.comptroller());
     market = new Market(marketAddress);
+    market.address = marketAddress;
     market.isListed = true;
     market.xvsBorrowStateBlock = event.block.number;
     market.xvsSupplyStateBlock = event.block.number;
@@ -122,6 +123,7 @@ export function getOrCreateAccount(accountId: Bytes): Account {
   let account = Account.load(accountId);
   if (!account) {
     account = new Account(accountId);
+    account.address = accountId;
     account.countLiquidated = 0;
     account.countLiquidator = 0;
     account.hasBorrowed = false;

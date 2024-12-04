@@ -4,6 +4,8 @@ The Comptroller type has protocol level variables stored
 type Comptroller @entity {
     "ID is set to comptroller address"
     id: Bytes!
+    "Comptroller Address"
+    address: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
@@ -20,8 +22,9 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     "VToken address"
     id: Bytes!
+    "Vtoken Address"
+    address: Bytes!
     "vToken decimal length"
-    #Fields that match Venus API
     vTokenDecimals: Int!
     "Name of the vToken"
     name: String!
@@ -97,8 +100,10 @@ Account is an BNB address, with a list of all vToken markets the account has
 participated in, along with liquidation information.
 """
 type Account @entity {
-    "User BNB address"
+    "Account address"
     id: Bytes!
+    "Account address"
+    address: Bytes!
     "Array of VTokens user is in"
     tokens: [MarketPosition!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
