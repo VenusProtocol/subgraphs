@@ -1,3 +1,9 @@
 // Use yarn prepare commands to generate config typescript file per env
 
 export const comptrollerAddress = '{{ comptrollerAddress }}';
+
+export const vwbETHAddress = '{{ vwbETHAddress }}';
+
+export const vTRXAddress = '{{ vTRXAddress }}';
+
+export const vTUSDOldAddress = '{{ vTUSDOldAddress }}';

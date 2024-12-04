@@ -9,7 +9,12 @@ import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { Comptroller } from '../../generated/templates/VToken/Comptroller';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { nativeAddress, vwbETHAddress, vTRXAddressAddress, vTUSDOldAddress } from '../constants/addresses';
+import {
+  nativeAddress,
+  vwbETHAddress,
+  vTRXAddressAddress,
+  vTUSDOldAddress,
+} from '../constants/addresses';
 import {
   getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
