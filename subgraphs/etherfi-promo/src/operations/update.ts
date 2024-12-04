@@ -4,6 +4,7 @@ import { BorrowerAccount, SupplierAccount, TVL } from '../../generated/schema';
 import { ERC20 as ERC20Contract } from '../../generated/vWeETH/ERC20';
 import { VToken as VTokenContract } from '../../generated/vWeETH/VToken';
 import { getBorrowerAccount, getSupplierAccount, getTvl } from './get';
+import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
 export function updateSupplierAccount(
   accountAddress: Address,
@@ -35,7 +36,11 @@ export function updateTvl(event: ethereum.Event): TVL {
   const totalBorrows = vTokenContract.totalBorrowsCurrent();
   const totalReserves = vTokenContract.totalReserves();
   const vTokenContractBalance = underlyingContract.balanceOf(event.address);
-  tvl.tvl = vTokenContractBalance.plus(totalBorrows).minus(totalReserves);
+  tvl.tvl = vTokenContractBalance
+    .plus(totalBorrows)
+    .minus(totalReserves)
+    .toBigDecimal()
+    .div(exponentToBigDecimal(18));
   tvl.save();
   return tvl;
 }

@@ -1,6 +1,6 @@
 import { BigDecimal } from '@graphprotocol/graph-ts';
 
-function exponentToBigInt(decimals: i32): BigDecimal {
+function exponentToBigDecimal(decimals: i32): BigDecimal {
   let bd = BigDecimal.fromString('1');
   for (let i = 0; i < decimals; i++) {
     bd = bd.times(BigDecimal.fromString('10'));
@@ -8,4 +8,4 @@ function exponentToBigInt(decimals: i32): BigDecimal {
   return bd;
 }
 
-export default exponentToBigInt;
+export default exponentToBigDecimal;
