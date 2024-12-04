@@ -60,6 +60,9 @@ const newAddress = Address.fromString('0x0000000000000000000000000000000000000e0
 const accountAddress = Address.fromString('0x0000000000000000000000000000000000000d0d');
 
 const interestRateModelAddress = Address.fromString('0x594942C0e62eC577889777424CD367545C796A74');
+const accessControlManagerAddress = Address.fromString(
+  '0x45f8a08F534f34A97187626E05d4b6648Eeaa9AA',
+);
 
 const rewardsDistributorAddress = Address.fromString('0x082F27894f3E3CbC2790899AEe82D6f149521AFa');
 
@@ -80,6 +83,7 @@ beforeAll(() => {
     BigInt.fromI32(18),
     balanceOfAccount,
     interestRateModelAddress,
+    accessControlManagerAddress,
     underlyingPrice,
   );
 
@@ -176,7 +180,7 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress);
+    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress);
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals(
@@ -203,7 +207,7 @@ describe('Pool Events', () => {
       assert.fieldEquals('Account', accountAddress.toHex(), key, value);
     };
 
-    const accountVTokenId = getAccountVTokenId(vTokenAddress, accountAddress).toHexString();
+    const accountVTokenId = getAccountVTokenId(accountAddress, vTokenAddress).toHexString();
 
     assertAccountDocument('id', accountAddress.toHexString());
     assert.fieldEquals('AccountVToken', accountVTokenId, 'id', accountVTokenId);

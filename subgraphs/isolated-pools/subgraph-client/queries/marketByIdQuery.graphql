@@ -1,13 +1,15 @@
-query Markets {
-  markets {
+query MarketById($id: ID!) {
+  market(id: $id) {
     id
     pool {
       id
     }
+    isListed
     badDebtMantissa
     borrowRateMantissa
     cashMantissa
     collateralFactorMantissa
+    liquidationThresholdMantissa
     exchangeRateMantissa
     interestRateModelAddress
     name
@@ -16,18 +18,18 @@ query Markets {
     symbol
     underlyingAddress
     underlyingName
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
     underlyingSymbol
     borrowCapMantissa
-    accrualBlockNumber
-    blockTimestamp
-    borrowIndexMantissa
-    liquidationThresholdMantissa
-    reserveFactorMantissa
-    underlyingPriceCentsMantissa
-    underlyingDecimals
     supplyCapMantissa
-    accessControlManagerAddress
+    accrualBlockNumber
+    borrowIndex
+    reserveFactorMantissa
+    underlyingDecimals
     supplierCount
     borrowerCount
+    totalBorrowsMantissa
+    totalSupplyVTokenMantissa
   }
 }

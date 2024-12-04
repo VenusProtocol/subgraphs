@@ -7,10 +7,10 @@ type Comptroller @entity {
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
-    closeFactor: BigInt!
+    closeFactorMantissa: BigInt!
     "The percent bonus liquidators get for liquidating"
     liquidationIncentive: BigInt!
-    "Max assets a single user can enter"
+    "Max assets a single user can enter (not used in comptroller logic)"
     maxAssets: BigInt!
 }
 
@@ -20,7 +20,13 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     "VToken address"
     id: Bytes!
+    "vToken decimal length"
     #Fields that match Venus API
+    vTokenDecimals: Int!
+    "Name of the vToken"
+    name: String!
+    "VToken symbol"
+    symbol: String!
     "Flag indicating if the market is listed"
     isListed: Boolean!
     "Borrow rate per block"
@@ -33,14 +39,10 @@ type Market @entity {
     exchangeRateMantissa:  BigInt!
     "Address of the interest rate model"
     interestRateModelAddress: Bytes!
-    "Name of the vToken"
-    name: String!
     "Reserves stored in the contract"
     reservesMantissa: BigInt!
     "Supply rate per block"
     supplyRateMantissa: BigInt!
-    "VToken symbol"
-    symbol: String!
     "Borrows in the market"
     totalBorrowsMantissa: BigInt!
     "Total vToken supplied"
@@ -51,6 +53,8 @@ type Market @entity {
     underlyingName: String!
     "Underlying token symbol"
     underlyingSymbol: String!
+    "Underlying token decimal length"
+    underlyingDecimals: Int!
     "XVS Supply Distribution Block"
     xvsSupplyStateBlock:  BigInt!
     "XVS Supply Distribution Index"
@@ -59,35 +63,33 @@ type Market @entity {
     xvsBorrowStateBlock:  BigInt!
     "XVS Reward Distribution Index"
     xvsBorrowStateIndex:  BigInt!
+    "The rate at which XVS is distributed to the corresponding supply market (per block)"
+    xvsSupplySpeed: BigInt!
+    "The rate at which XVS is distributed to the corresponding borrow market (per block)"
+    xvsBorrowSpeed: BigInt!
 
     # Fields that are not in Venus api
     "Block the market is updated to"
-    accrualBlockNumber: Int!
-    "Timestamp the market was most recently updated"
-    blockTimestamp: Int!
+    accrualBlockNumber: BigInt!
     "The history of the markets borrow index return (Think S&P 500)"
     borrowIndex: BigInt!
     "The factor determining interest that goes to reserves"
-    reserveFactor: BigInt!
+    reserveFactorMantissa: BigInt!
     "Last recorded Underlying token price in USD cents"
     lastUnderlyingPriceCents: BigInt!
     "Block price was last updated"
     lastUnderlyingPriceBlockNumber: BigInt!
-    "Underlying token decimal length"
-    underlyingDecimals: Int!
     "Total XVS Distributed for this market"
     totalXvsDistributedMantissa: BigInt!
-    "vToken decimal length"
-    vTokenDecimals: Int!
 
     "Number of accounts currently supplying to this market"
     supplierCount: BigInt!
 
-    "Number of accounts with reasonable borrow positions in this market (excludes accounts with dust (potentially left over from liquidations))"
-    borrowerCountAdjusted: BigInt!
-
     "Number of accounts currently borrowing from this market"
     borrowerCount: BigInt!
+
+    "Accounts who participate in this market"
+    accounts: [AccountVToken!]! @derivedFrom(field:"market")
 }
 
 """
@@ -118,6 +120,8 @@ type AccountVToken @entity {
     market: Market!
     "Relation to user"
     account: Account!
+    "Block the position is updated to"
+    accrualBlockNumber: BigInt!
     "Borrow Index this position last accrued interest"
     borrowIndex: BigInt!
     "True if user is entered, false if they are exited"

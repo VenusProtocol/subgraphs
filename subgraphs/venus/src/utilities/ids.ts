@@ -1,7 +1,7 @@
 import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
-export const getAccountVTokenId = (marketAddress: Address, accountAddress: Address): Bytes =>
-  marketAddress.concat(accountAddress);
+export const getAccountVTokenId = (accountAddress: Address, marketAddress: Address): Bytes =>
+  accountAddress.concat(marketAddress);
 
 export const getTransactionId = (transactionHash: Bytes, logIndex: BigInt): Bytes =>
   transactionHash.concatI32(logIndex.toI32());

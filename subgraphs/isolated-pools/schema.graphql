@@ -56,9 +56,11 @@ Market stores all high level variables for a vToken market
 type Market @entity {
     "VToken address"
     id: Bytes!
+    "VToken address"
+    address: Bytes!
     "Pool the market belongs to"
     pool: Pool!
-    #Fields that match Venus API
+
     "Name of the vToken"
     name: String!
     "Flag for if the token is listed"
@@ -92,17 +94,16 @@ type Market @entity {
     "Total vToken supplied"
     totalSupplyVTokenMantissa: BigInt!
 
-    # Fields that are not in Venus api
     "Block the market is updated to"
-    accrualBlockNumber: Int!
-    "Timestamp the market was most recently updated"
-    blockTimestamp: Int!
+    accrualBlockNumber: BigInt!
     "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndexMantissa: BigInt!
+    borrowIndex: BigInt!
     "The factor determining interest that goes to reserves"
     reserveFactorMantissa: BigInt!
     "Underlying token price in USD cents (updated based on the last received event)"
-    underlyingPriceCentsMantissa: BigInt!
+    lastUnderlyingPriceCents: BigInt!
+    "Block price was last updated"
+    lastUnderlyingPriceBlockNumber: BigInt!
     "Underlying token decimal length"
     underlyingDecimals: Int!
     "vToken decimal length"
@@ -113,7 +114,7 @@ type Market @entity {
     "The amount of bad debt in the market"
     badDebtMantissa: BigInt!
     "Contract address for the Access Control Manager"
-    accessControlManagerAddress: Bytes
+    accessControlManagerAddress: Bytes!
 
     "Number of accounts currently supplying to this market"
     supplierCount: BigInt!

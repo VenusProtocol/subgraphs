@@ -133,8 +133,6 @@ templates:
           handler: handleRepayBorrow
         - event: LiquidateBorrow(indexed address,indexed address,uint256,indexed address,uint256)
           handler: handleLiquidateBorrow
-        - event: ProtocolSeize(indexed address,indexed address,uint256)
-          handler: handleProtocolSeize
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
         - event: NewReserveFactor(uint256,uint256)
@@ -151,6 +149,12 @@ templates:
           handler: handleReservesAdded
         - event: SpreadReservesReduced(indexed address,uint256,uint256)
           handler: handleSpreadReservesReduced
+        - event: ProtocolSeize(indexed address,indexed address,uint256)
+          handler: handleProtocolSeize
+        - event: BadDebtRecovered(uint256,uint256)
+          handler: handleBadDebtRecovered
+        - event: HealBorrow(indexed address,indexed address,uint256)
+          handler: handleHealBorrow
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}

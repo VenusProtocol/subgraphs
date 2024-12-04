@@ -51,9 +51,7 @@ describe('VToken events', function () {
     await waitForSubgraphToBeSynced(syncDelay);
 
     for (const [idx, market] of markets.entries()) {
-      const {
-        data: { market: listedMarket },
-      } = await subgraphClient.getMarketById(market.toLowerCase());
+      const { market: listedMarket } = await subgraphClient.getMarketById(market.toLowerCase());
 
       expect(listedMarket.isListed).to.equal(true);
       expect(listedMarket.collateralFactorMantissa).to.equal('0');

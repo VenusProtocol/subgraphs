@@ -1,26 +1,35 @@
 query Markets {
   markets {
     id
+    name
+    symbol
+    vTokenDecimals
+    underlyingAddress
+    underlyingName
+    underlyingSymbol
+    underlyingDecimals
+    isListed
     borrowRateMantissa
     cashMantissa
     collateralFactorMantissa
     exchangeRateMantissa
     interestRateModelAddress
-    name
     reservesMantissa
+    reserveFactorMantissa
     supplyRateMantissa
-    symbol
-    underlyingAddress
-    underlyingName
-    underlyingSymbol
     accrualBlockNumber
-    blockTimestamp
     borrowIndex
     lastUnderlyingPriceCents
     lastUnderlyingPriceBlockNumber
-    underlyingDecimals
     supplierCount
     borrowerCount
-    borrowerCountAdjusted
+    totalSupplyVTokenMantissa
+    totalBorrowsMantissa
+    xvsSupplyStateBlock
+    xvsBorrowStateBlock
+    xvsSupplyStateIndex
+    xvsBorrowStateIndex
+    xvsSupplySpeed
+    xvsBorrowSpeed
   }
 }

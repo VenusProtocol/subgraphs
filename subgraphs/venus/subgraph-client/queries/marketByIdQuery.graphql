@@ -17,14 +17,12 @@ query MarketById($id: ID!) {
     lastUnderlyingPriceBlockNumber
     underlyingSymbol
     accrualBlockNumber
-    blockTimestamp
     borrowIndex
     totalSupplyVTokenMantissa
     totalBorrowsMantissa
     underlyingDecimals
     supplierCount
     borrowerCount
-    borrowerCountAdjusted
     xvsSupplyStateBlock
     xvsSupplyStateIndex
     xvsBorrowStateBlock

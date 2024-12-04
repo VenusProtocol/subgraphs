@@ -4,7 +4,11 @@ import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 describe('Pool Registry', function () {
   let root: SignerWithAddress;
@@ -41,8 +45,7 @@ describe('Pool Registry', function () {
   });
 
   it('indexes pool registry events', async function () {
-    const { data } = await subgraphClient.getPools();
-    const { pools } = data!;
+    const { pools } = await subgraphClient.getPools();
 
     expect(pools.length).to.equal(2);
 
@@ -63,10 +66,9 @@ describe('Pool Registry', function () {
 
   it('updates and returns metadata from the pool', async function () {
     const pools = await poolLens.getAllPools(poolRegistry.address);
-    const { data: dataBeforeUpdate } = await subgraphClient.getPool(
+    const { pool: poolBeforeUpdate } = await subgraphClient.getPool(
       pools[1].comptroller.toLowerCase(),
     );
-    const { pool: poolBeforeUpdate } = dataBeforeUpdate!;
     const onChainPool = await poolLens.getPoolByComptroller(
       poolRegistry.address,
       poolBeforeUpdate.id,
@@ -83,8 +85,8 @@ describe('Pool Registry', function () {
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPool(poolBeforeUpdate.id.toLowerCase());
-    const { pool } = data!;
+    const { pool } = await subgraphClient.getPool(poolBeforeUpdate.id.toLowerCase());
+
     expect(pool.category).to.equal(category);
     expect(pool.logoUrl).to.equal(logoUrl);
     expect(pool.description).to.equal(description);
@@ -92,15 +94,14 @@ describe('Pool Registry', function () {
 
   it('sets the pool name', async function () {
     const newName = 'New Pool 1';
-    const { data: dataBeforeUpdate } = await subgraphClient.getPools();
-    const { pools: poolsBeforeUpdate } = dataBeforeUpdate!;
+    const { pools: poolsBeforeUpdate } = await subgraphClient.getPools();
+
     const tx = await poolRegistry.setPoolName(poolsBeforeUpdate[0].id, newName);
     await tx.wait(1);
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { data } = await subgraphClient.getPools();
+    const { pools } = await subgraphClient.getPools();
 
-    const { pools } = data!;
     const pool = pools[0];
     expect(pool.name).to.be.equal(newName);
   });

@@ -46,9 +46,9 @@ dataSources:
         - event: NewPriceOracle(address,address)
           handler: handleNewPriceOracle
         - event: DistributedBorrowerVenus(indexed address,indexed address,uint256,uint256)
-          handler: handleXvsDistributed
+          handler: handleXvsDistributedBorrower
         - event: DistributedSupplierVenus(indexed address,indexed address,uint256,uint256)
-          handler: handleXvsDistributed
+          handler: handleXvsDistributedSupplier
   - kind: ethereum/contract
     name: Comptroller
     network: {{ network }}
@@ -82,6 +82,10 @@ dataSources:
           handler: handleMarketEntered
         - event: MarketExited(address,address)
           handler: handleMarketExited
+        - event: VenusBorrowSpeedUpdated(indexed address,uint256)
+          handler: handleVenusBorrowSpeedUpdated
+        - event: VenusSupplySpeedUpdated(indexed address,uint256)
+          handler: handleVenusSupplySpeedUpdated
       blockHandlers:
         - handler: handleInitialization
           filter:

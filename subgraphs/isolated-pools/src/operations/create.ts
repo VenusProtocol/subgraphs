@@ -81,9 +81,9 @@ export function createAccountPool(accountAddress: Address, poolAddress: Address)
 }
 
 export function createMarket(
-  comptroller: Address,
   vTokenAddress: Address,
-  blockTimestamp: BigInt,
+  comptroller: Address,
+  blockNumber: BigInt,
 ): Market {
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
@@ -91,22 +91,25 @@ export function createMarket(
   const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
   const market = new Market(vTokenAddress);
 
+  market.address = vTokenAddress;
   market.pool = comptroller;
 
   market.name = vTokenContract.name();
   market.isListed = true;
   market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
+  market.vTokenDecimals = vTokenContract.decimals();
 
-  const underlyingDecimals = underlyingContract.decimals();
-  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
   market.underlyingAddress = underlyingAddress;
   market.underlyingName = underlyingContract.name();
   market.underlyingSymbol = underlyingContract.symbol();
-  market.underlyingPriceCentsMantissa = underlyingValue;
+  const underlyingDecimals = underlyingContract.decimals();
   market.underlyingDecimals = underlyingDecimals;
-  market.vTokenDecimals = vTokenContract.decimals();
 
+  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
+  market.lastUnderlyingPriceCents = underlyingValue;
+  market.lastUnderlyingPriceBlockNumber = blockNumber;
+  market.accessControlManagerAddress = vTokenContract.accessControlManager();
   market.borrowRateMantissa = vTokenContract.borrowRatePerBlock();
 
   market.cashMantissa = vTokenContract.getCash();
@@ -119,19 +122,17 @@ export function createMarket(
   market.reservesMantissa = vTokenContract.totalReserves();
   market.supplyRateMantissa = vTokenContract.supplyRatePerBlock();
 
-  market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
+  market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
 
-  market.blockTimestamp = blockTimestamp.toI32();
-
-  market.borrowIndexMantissa = vTokenContract.borrowIndex();
+  market.borrowIndex = vTokenContract.borrowIndex();
 
   market.reserveFactorMantissa = vTokenContract.reserveFactorMantissa();
 
-  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+  market.totalBorrowsMantissa = zeroBigInt32;
 
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+  market.totalSupplyVTokenMantissa = zeroBigInt32;
 
-  market.badDebtMantissa = vTokenContract.badDebt();
+  market.badDebtMantissa = zeroBigInt32;
 
   market.supplyCapMantissa = poolComptroller.supplyCaps(vTokenAddress);
   market.borrowCapMantissa = poolComptroller.borrowCaps(vTokenAddress);
@@ -242,7 +243,7 @@ export const createAccountVTokenBadDebt = (
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
   const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
-  const accountVTokenId = getAccountVTokenId(marketAddress, event.params.borrower);
+  const accountVTokenId = getAccountVTokenId(event.params.borrower, marketAddress);
   accountVTokenBadDebt.account = accountVTokenId;
   accountVTokenBadDebt.block = event.block.number;
   accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;

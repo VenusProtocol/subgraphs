@@ -14,17 +14,17 @@ export function getTokenPriceCents(eventAddress: Address, underlyingDecimals: i3
   }
   const oracleAddress = Address.fromBytes(comptroller.priceOracle);
 
-  /* PriceOracle2 is used from starting of Comptroller.
+  /* PriceOracle is used from starting of Comptroller.
    * This must use the vToken address.
    *
    * Note this returns the value without factoring in token decimals and wei, so we must divide
    * the number by (bnbDecimals - tokenDecimals) and again by the mantissa.
    */
-  const mantissaDecimalFactor = 36 - underlyingDecimals;
+  const mantissaDecimalFactor = 36 - underlyingDecimals - 2;
   const bdFactor = exponentToBigInt(mantissaDecimalFactor);
-  const oracle2 = PriceOracle.bind(oracleAddress);
+  const oracle = PriceOracle.bind(oracleAddress);
   const oracleUnderlyingPrice = valueOrNotAvailableIntIfReverted(
-    oracle2.try_getUnderlyingPrice(eventAddress),
+    oracle.try_getUnderlyingPrice(eventAddress),
     'PriceOracle try_getUnderlyingPrice',
   );
   if (oracleUnderlyingPrice.equals(BigInt.zero())) {
@@ -32,5 +32,5 @@ export function getTokenPriceCents(eventAddress: Address, underlyingDecimals: i3
   }
   const underlyingPrice = oracleUnderlyingPrice.div(bdFactor);
 
-  return underlyingPrice.times(BigInt.fromI32(100));
+  return underlyingPrice;
 }

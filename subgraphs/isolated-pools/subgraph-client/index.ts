@@ -11,6 +11,7 @@ import {
   AccountVTokensDocument,
   AccountVTokensQuery,
   AccountVTokensWithBorrowByMarketIdDocument,
+  AccountVTokensWithBorrowByMarketIdQuery,
   AccountVTokensWithSupplyByMarketIdDocument,
   AccountVTokensWithSupplyByMarketIdQuery,
   MarketActionsDocument,
@@ -19,6 +20,7 @@ import {
   MarketsDocument,
   PoolByIdDocument,
   PoolsDocument,
+  PoolsQuery,
 } from './.graphclient';
 
 class SubgraphClient {
@@ -36,10 +38,10 @@ class SubgraphClient {
     if (result.error) {
       console.error(result.error);
     }
-    return result;
+    return result.data;
   }
 
-  async getPools() {
+  async getPools(): Promise<PoolsQuery> {
     const result = await this.query(PoolsDocument, {});
     return result;
   }
@@ -56,7 +58,7 @@ class SubgraphClient {
 
   async getMarketById(id: string): Promise<MarketByIdQuery> {
     const result = await this.query(MarketByIdDocument, { id });
-    return result.data;
+    return result;
   }
 
   async getAccountById(id: string) {
@@ -64,9 +66,18 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokens(): Promise<AccountVTokensQuery> {
-    const result = await this.query(AccountVTokensDocument, {});
-    return result.data;
+  async getAccountVTokens({
+    first = 100,
+    skip = 0,
+  }: {
+    first: number;
+    skip: number;
+  }): Promise<AccountVTokensQuery> {
+    const result = await this.query(AccountVTokensDocument, { first, skip } as unknown as {
+      first: string;
+      skip: string;
+    });
+    return result;
   }
 
   async getMarketActions() {
@@ -86,16 +97,36 @@ class SubgraphClient {
 
   async getAccountVTokensWithSupplyByMarketId(
     marketId: string,
+    page: number,
   ): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
-    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, { marketId });
-    return result.data;
+    const first = 100;
+    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, {
+      marketId,
+      first,
+      skip: first * page,
+    } as unknown as {
+      marketAddress: string;
+      first: string;
+      skip: string;
+    });
+    return result;
   }
 
   async getAccountVTokensWithBorrowByMarketId(
     marketId: string,
-  ): Promise<AccountVTokensWithBorrowByMarketId> {
-    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, { marketId });
-    return result.data;
+    page: number,
+  ): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
+    const first = 100;
+    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, {
+      marketId,
+      first,
+      skip: first * page,
+    } as unknown as {
+      marketAddress: string;
+      first: string;
+      skip: string;
+    });
+    return result;
   }
 
   async getAccountVTokenByAccountAndMarket({
@@ -106,9 +137,9 @@ class SubgraphClient {
     marketId: string;
   }): Promise<AccountVTokenByAccountAndMarketQuery> {
     const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
-      id: `${marketId}${accountId.replace('0x', '')}`,
+      id: `${accountId}${marketId.replace('0x', '')}`,
     });
-    return result.data || { accountVToken: null };
+    return result || { accountVToken: null };
   }
 
   async getAccountPositions(id: string) {
@@ -117,6 +148,6 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
-);
+const createSubgraphClient = (url: string) => new SubgraphClient(url);
+
+export default createSubgraphClient;

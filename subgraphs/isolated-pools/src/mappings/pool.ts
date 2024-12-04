@@ -31,7 +31,7 @@ import Box from '../utilities/box';
 
 export function handleMarketSupported(event: MarketSupported): void {
   const comptroller = event.address;
-  const market = getOrCreateMarket(event.params.vToken, comptroller, event.block.timestamp);
+  const market = getOrCreateMarket(event.params.vToken, comptroller, event.block.number);
   market.isListed = true;
   market.collateralFactorMantissa = zeroBigInt32;
   market.liquidationThresholdMantissa = zeroBigInt32;
@@ -53,8 +53,8 @@ export function handleMarketEntered(event: MarketEntered): void {
 
   updateOrCreateAccountVToken(
     accountAddress,
-    poolAddress,
     vTokenAddress,
+    poolAddress,
     event.block.number,
     new Box(true),
   );
@@ -69,8 +69,8 @@ export function handleMarketExited(event: MarketExited): void {
 
   updateOrCreateAccountVToken(
     accountAddress,
-    poolAddress,
     vTokenAddress,
+    poolAddress,
     event.block.number,
     new Box(false),
   );
@@ -89,7 +89,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
   const newCollateralFactorMantissa = event.params.newCollateralFactorMantissa;
-  const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.timestamp);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.number);
   market.collateralFactorMantissa = newCollateralFactorMantissa;
 
   market.save();
@@ -98,7 +98,7 @@ export function handleNewCollateralFactor(event: NewCollateralFactor): void {
 export function handleNewLiquidationThreshold(event: NewLiquidationThreshold): void {
   const poolAddress = event.address;
   const vTokenAddress = event.params.vToken;
-  const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.timestamp);
+  const market = getOrCreateMarket(vTokenAddress, poolAddress, event.block.number);
   market.liquidationThresholdMantissa = event.params.newLiquidationThresholdMantissa;
   market.save();
 }

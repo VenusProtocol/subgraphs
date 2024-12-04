@@ -1,5 +1,5 @@
-query MarketById($id: ID!) {
-  market(id: $id) {
+query Markets {
+  markets {
     id
     pool {
       id
@@ -9,7 +9,6 @@ query MarketById($id: ID!) {
     borrowRateMantissa
     cashMantissa
     collateralFactorMantissa
-    liquidationThresholdMantissa
     exchangeRateMantissa
     interestRateModelAddress
     name
@@ -18,18 +17,29 @@ query MarketById($id: ID!) {
     symbol
     underlyingAddress
     underlyingName
-    underlyingPriceCentsMantissa
     underlyingSymbol
+    vTokenDecimals
     borrowCapMantissa
-    supplyCapMantissa
     accrualBlockNumber
-    blockTimestamp
-    borrowIndexMantissa
+    borrowIndex
+    liquidationThresholdMantissa
     reserveFactorMantissa
+    lastUnderlyingPriceCents
+    lastUnderlyingPriceBlockNumber
     underlyingDecimals
+    supplyCapMantissa
+    accessControlManagerAddress
     supplierCount
     borrowerCount
-    totalBorrowsMantissa
     totalSupplyVTokenMantissa
+    totalBorrowsMantissa
+    suppliers: accounts(where: { vTokenBalanceMantissa_gt: 0 }) {
+      id
+      vTokenBalanceMantissa
+    }
+    borrowers: accounts(where: { storedBorrowBalanceMantissa_gt: 0 }) {
+      id
+      storedBorrowBalanceMantissa
+    }
   }
 }

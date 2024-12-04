@@ -4,8 +4,12 @@ import { expect } from 'chai';
 import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 
-import subgraphClient from '../../subgraph-client';
+import createSubgraphClient from '../../subgraph-client';
 import { checkAccountVToken, checkMarket } from './checkEntities';
+
+const subgraphClient = createSubgraphClient(
+  'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
+);
 
 const { parseUnits } = ethers.utils;
 const { MaxUint256 } = ethers.constants;
@@ -347,14 +351,14 @@ describe('VToken events', function () {
 
     await checkMarket(vBnxToken.address);
 
-    const {
-      data: { account: accountBorrower },
-    } = await subgraphClient.getAccountById(borrower1.address.toLowerCase());
+    const { account: accountBorrower } = await subgraphClient.getAccountById(
+      borrower1.address.toLowerCase(),
+    );
     expect(accountBorrower.countLiquidated).to.equal(1);
 
-    const {
-      data: { account: accountLiquidator },
-    } = await subgraphClient.getAccountById(liquidator1.address.toLowerCase());
+    const { account: accountLiquidator } = await subgraphClient.getAccountById(
+      liquidator1.address.toLowerCase(),
+    );
     expect(accountLiquidator.countLiquidator).to.equal(1);
 
     const vBnxMarket = await checkMarket(vBnxToken.address);
@@ -451,7 +455,7 @@ describe('VToken events', function () {
 
     expect(market?.badDebtMantissa).to.equal((await vBnxToken.badDebt()).toString());
 
-    const { accountVTokens } = await subgraphClient.getAccountVTokens();
+    const { accountVTokens } = await subgraphClient.getAccountVTokens({ first: 100, skip: 0 });
 
     const vBnxAccountTokens = accountVTokens.find(
       avt =>

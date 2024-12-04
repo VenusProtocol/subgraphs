@@ -6,9 +6,10 @@ import {
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
 } from '../../generated/templates';
 import { BEP20 } from '../../generated/templates/VToken/BEP20';
+import { Comptroller } from '../../generated/templates/VToken/Comptroller';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { nullAddress } from '../constants/addresses';
+import { nativeAddress } from '../constants/addresses';
 import {
   getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
@@ -23,6 +24,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
   let market = getMarket(marketAddress);
   if (!market) {
     const vTokenContract = VToken.bind(marketAddress);
+    const comptrollerContract = Comptroller.bind(vTokenContract.comptroller());
     market = new Market(marketAddress);
     market.isListed = true;
     market.xvsBorrowStateBlock = event.block.number;
@@ -32,11 +34,21 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.name = vTokenContract.name();
     market.symbol = vTokenContract.symbol();
     market.vTokenDecimals = vTokenContract.decimals();
-    market.blockTimestamp = event.block.timestamp.toI32();
+    market.accrualBlockNumber = event.block.number;
+    market.xvsSupplySpeed = zeroBigInt32;
+    const supplySpeedResult = comptrollerContract.try_venusSupplySpeeds(marketAddress);
+    if (!supplySpeedResult.reverted) {
+      market.xvsSupplySpeed = supplySpeedResult.value;
+    }
+    const borrowSpeedResult = comptrollerContract.try_venusBorrowSpeeds(marketAddress);
+    market.xvsBorrowSpeed = zeroBigInt32;
+    if (!supplySpeedResult.reverted) {
+      market.xvsBorrowSpeed = borrowSpeedResult.value;
+    }
 
     // It is vBNB, which has a slightly different interface
     if (market.symbol == 'vBNB') {
-      market.underlyingAddress = nullAddress;
+      market.underlyingAddress = nativeAddress;
       market.underlyingDecimals = 18;
       market.underlyingName = 'BNB';
       market.underlyingSymbol = 'BNB';
@@ -52,29 +64,28 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       vTokenContract.try_interestRateModel(),
       'vBEP20 try_interestRateModel()',
     );
-    market.reserveFactor = valueOrNotAvailableIntIfReverted(
+    market.reserveFactorMantissa = valueOrNotAvailableIntIfReverted(
       vTokenContract.try_reserveFactorMantissa(),
       'vBEP20 try_reserveFactorMantissa()',
     );
-    market.lastUnderlyingPriceCents =
-      market.symbol == 'vBNB'
-        ? zeroBigInt32
-        : getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+    market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
-    market.accrualBlockNumber = vTokenContract.accrualBlockNumber().toI32();
+    market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
     market.totalXvsDistributedMantissa = zeroBigInt32;
     market.collateralFactorMantissa = zeroBigInt32;
     market.supplierCount = zeroBigInt32;
     market.borrowerCount = zeroBigInt32;
-    market.borrowerCountAdjusted = zeroBigInt32;
 
     updateMarketRates(market, vTokenContract);
     updateMarketCashMantissa(market, vTokenContract);
-    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-    market.borrowIndex = vTokenContract.borrowIndex();
-    market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-    market.reservesMantissa = vTokenContract.totalReserves();
+    market.totalSupplyVTokenMantissa = zeroBigInt32;
+    market.borrowIndex = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_borrowIndex(),
+      'vBEP20 try_borrowIndex()',
+    );
+    market.totalBorrowsMantissa = zeroBigInt32;
+    market.reservesMantissa = zeroBigInt32;
 
     // Dynamically index all new listed tokens
     VTokenTemplate.create(marketAddress);
@@ -104,25 +115,31 @@ export class GetOrCreateAccountVTokenReturn {
 }
 
 export function getOrCreateAccountVToken(
-  marketId: Address,
   accountId: Address,
+  marketId: Address,
 ): GetOrCreateAccountVTokenReturn {
-  const accountVTokenId = getAccountVTokenId(marketId, accountId);
+  const accountVTokenId = getAccountVTokenId(accountId, marketId);
   let accountVToken = AccountVToken.load(accountVTokenId);
   let created = false;
   if (!accountVToken) {
     created = true;
     accountVToken = new AccountVToken(accountVTokenId);
     accountVToken.market = marketId;
+
+    getOrCreateAccount(accountId);
     accountVToken.account = accountId;
-    // we need to set an initial real onchain value to this otherwise it will never be accurate
+
     const vTokenContract = VToken.bind(marketId);
-    accountVToken.vTokenBalanceMantissa = vTokenContract.balanceOf(accountId);
+    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
 
     accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
     accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
     accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    accountVToken.borrowIndex = vTokenContract.borrowIndex();
+    accountVToken.accrualBlockNumber = zeroBigInt32;
+    accountVToken.borrowIndex = valueOrNotAvailableIntIfReverted(
+      vTokenContract.try_borrowIndex(),
+      'vBEP20 try_borrowIndex()',
+    );
     accountVToken.enteredMarket = false;
     accountVToken.save();
   }
