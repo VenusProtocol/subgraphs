@@ -35,6 +35,6 @@ class SubgraphClient {
   }
 }
 
-export default new SubgraphClient(
-  'http://127.0.0.1:8000/subgraphs/name/venusprotocol/etherfi-promo',
-);
+const createSubgraphClient = (url: string) => new SubgraphClient(url);
+
+export default createSubgraphClient;

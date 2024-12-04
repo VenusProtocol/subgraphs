@@ -1,14 +1,14 @@
 import { Address } from '@graphprotocol/graph-ts';
 
 import { Borrow, BorrowerAccount, SupplierAccount, Supply, TVL } from '../../generated/schema';
-import { zeroBigInt32 } from '../constants';
+import { zeroBigDecimal } from '../constants';
 import { getPositionId } from '../utilities/ids';
 
 export const getTvl = (vTokenAddress: Address): TVL => {
   let tvl = TVL.load(vTokenAddress);
   if (!tvl) {
     tvl = new TVL(vTokenAddress);
-    tvl.tvl = zeroBigInt32;
+    tvl.tvl = zeroBigDecimal;
     tvl.save();
   }
   tvl.save();

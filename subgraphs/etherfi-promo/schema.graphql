@@ -3,7 +3,7 @@ TVL
 """
 type TVL @entity {
     id: Bytes!
-    tvl: BigInt!
+    tvl: BigDecimal!
 }
 
 """
