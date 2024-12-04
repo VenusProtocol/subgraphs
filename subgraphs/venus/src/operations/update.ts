@@ -1,39 +1,39 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { AccountVToken } from '../../generated/schema';
+import { MarketPosition } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getMarket } from './get';
-import { getOrCreateAccount, getOrCreateAccountVToken } from './getOrCreate';
+import { getOrCreateAccount, getOrCreateMarketPosition } from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
 
-export const updateAccountVTokenAccrualBlockNumber = (
+export const updateMarketPositionAccrualBlockNumber = (
   accountAddress: Address,
   marketAddress: Address,
   blockNumber: BigInt,
-): AccountVToken => {
+): MarketPosition => {
   getOrCreateAccount(accountAddress);
-  const accountVToken = getOrCreateAccountVToken(accountAddress, marketAddress);
-  accountVToken.entity.accrualBlockNumber = blockNumber;
-  accountVToken.entity.save();
-  return accountVToken.entity as AccountVToken;
+  const marketPosition = getOrCreateMarketPosition(accountAddress, marketAddress);
+  marketPosition.entity.accrualBlockNumber = blockNumber;
+  marketPosition.entity.save();
+  return marketPosition.entity as MarketPosition;
 };
 
-export const updateAccountVTokenSupply = (
+export const updateMarketPositionSupply = (
   accountAddress: Address,
   marketAddress: Address,
   blockNumber: BigInt,
   accountSupplyBalanceMantissa: BigInt,
-): AccountVToken => {
+): MarketPosition => {
   const market = getMarket(marketAddress)!;
-  const accountVToken = updateAccountVTokenAccrualBlockNumber(
+  const marketPosition = updateMarketPositionAccrualBlockNumber(
     accountAddress,
     marketAddress,
     blockNumber,
   );
-  const _vTokenBalanceMantissa = accountVToken.vTokenBalanceMantissa;
-  accountVToken.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
-  accountVToken.save();
+  const _vTokenBalanceMantissa = marketPosition.vTokenBalanceMantissa;
+  marketPosition.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
+  marketPosition.save();
 
   if (
     _vTokenBalanceMantissa.equals(zeroBigInt32) &&
@@ -47,29 +47,29 @@ export const updateAccountVTokenSupply = (
     market.supplierCount = market.supplierCount.minus(oneBigInt);
   }
   market.save();
-  return accountVToken as AccountVToken;
+  return marketPosition as MarketPosition;
 };
 
-export const updateAccountVTokenBorrow = (
+export const updateMarketPositionBorrow = (
   accountAddress: Address,
   marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
-): AccountVToken => {
+): MarketPosition => {
   const market = getMarket(marketAddress)!;
-  const accountVToken = updateAccountVTokenAccrualBlockNumber(
+  const marketPosition = updateMarketPositionAccrualBlockNumber(
     accountAddress,
     marketAddress,
     blockNumber,
   );
-  const _storedBorrowBalanceMantissa = accountVToken.storedBorrowBalanceMantissa;
-  accountVToken.storedBorrowBalanceMantissa = accountBorrows;
+  const _storedBorrowBalanceMantissa = marketPosition.storedBorrowBalanceMantissa;
+  marketPosition.storedBorrowBalanceMantissa = accountBorrows;
   const vTokenContract = VToken.bind(marketAddress);
-  accountVToken.borrowIndex = valueOrNotAvailableIntIfReverted(
+  marketPosition.borrowIndex = valueOrNotAvailableIntIfReverted(
     vTokenContract.try_borrowIndex(),
     'vBEP20 try_borrowIndex()',
   );
-  accountVToken.save();
+  marketPosition.save();
 
   if (_storedBorrowBalanceMantissa.equals(zeroBigInt32) && accountBorrows.notEqual(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
@@ -80,5 +80,5 @@ export const updateAccountVTokenBorrow = (
     market.borrowerCount = market.borrowerCount.minus(oneBigInt);
   }
   market.save();
-  return accountVToken as AccountVToken;
+  return marketPosition as MarketPosition;
 };

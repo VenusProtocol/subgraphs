@@ -1,35 +1,35 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
-import { AccountVToken, MarketAction } from '../../generated/schema';
+import { MarketPosition, MarketAction } from '../../generated/schema';
 import { Actions } from '../constants';
 import Box from '../utilities/box';
 import { getMarketActionId } from '../utilities/ids';
-import { getOrCreateAccountVToken } from './getOrCreate';
+import { getOrCreateMarketPosition } from './getOrCreate';
 
-export const updateOrCreateAccountVToken = (
+export const updateOrCreateMarketPosition = (
   accountAddress: Address,
   marketAddress: Address,
   poolAddress: Address,
   blockNumber: BigInt,
   enteredMarket: Box<boolean> | null = null,
-): AccountVToken => {
+): MarketPosition => {
   let enteredMarketBool = false;
   if (enteredMarket !== null) {
     enteredMarketBool = enteredMarket.value;
   }
 
-  const result = getOrCreateAccountVToken(
+  const result = getOrCreateMarketPosition(
     accountAddress,
     marketAddress,
     poolAddress,
     enteredMarketBool,
   );
-  const accountVToken = result.entity;
-  accountVToken.enteredMarket = enteredMarketBool;
-  accountVToken.accrualBlockNumber = blockNumber;
-  accountVToken.save();
+  const marketPosition = result.entity;
+  marketPosition.enteredMarket = enteredMarketBool;
+  marketPosition.accrualBlockNumber = blockNumber;
+  marketPosition.save();
 
-  return accountVToken;
+  return marketPosition;
 };
 
 export const updateOrCreateMarketAction = (
