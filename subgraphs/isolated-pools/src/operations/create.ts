@@ -37,6 +37,7 @@ import {
   vWETHLiquidStakedETHAddress,
   vWETHCoreAddress,
 } from '../constants/addresses';
+import { getOrCreateRewardSpeed } from './getOrCreate';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
@@ -302,7 +303,7 @@ export const createMarketPositionBadDebt = (
 export const createRewardDistributor = (
   rewardsDistributorAddress: Address,
   comptrollerAddress: Address,
-): void => {
+): RewardsDistributor => {
   const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
@@ -311,4 +312,22 @@ export const createRewardDistributor = (
   rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.reward = rewardToken;
   rewardsDistributor.save();
+
+  // we get the current speeds for all known markets at this point in time
+  const comptroller = Comptroller.bind(comptrollerAddress);
+  const marketAddresses = comptroller.getAllMarkets();
+
+  if (marketAddresses !== null) {
+    for (let i = 0; i < marketAddresses.length; i++) {
+      const marketAddress = marketAddresses[i];
+
+      const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
+      rewardSpeed.borrowSpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
+      rewardSpeed.supplySpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
+      rewardSpeed.save();
+    }
+  }
+  return rewardsDistributor;
 };
