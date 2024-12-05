@@ -10,8 +10,6 @@ import {
   RewardSpeed,
   RewardsDistributor,
 } from '../../generated/schema';
-import { Comptroller } from '../../generated/templates/Pool/Comptroller';
-import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
 import {
   getAccountPoolId,
@@ -20,7 +18,13 @@ import {
   getRewardSpeedId,
   getRewardsDistributorId,
 } from '../utilities/ids';
-import { createAccount, createAccountPool, createMarket, createPool } from './create';
+import {
+  createAccount,
+  createAccountPool,
+  createMarket,
+  createPool,
+  createRewardDistributor,
+} from './create';
 import { getMarketPosition, getMarket } from './get';
 
 export const getOrCreateMarket = (
@@ -114,7 +118,7 @@ export const getOrCreateRewardSpeed = (
     rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.save();
   }
-  return rewardSpeed;
+  return rewardSpeed as RewardSpeed;
 };
 
 export const getOrCreateRewardDistributor = (
@@ -125,30 +129,8 @@ export const getOrCreateRewardDistributor = (
   let rewardsDistributor = RewardsDistributor.load(id);
 
   if (!rewardsDistributor) {
-    const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
-    const rewardToken = rewardDistributorContract.rewardToken();
-    rewardsDistributor = new RewardsDistributor(id);
-    rewardsDistributor.pool = comptrollerAddress;
-    rewardsDistributor.reward = rewardToken;
-    rewardsDistributor.save();
-
-    // we get the current speeds for all known markets at this point in time
-    const comptroller = Comptroller.bind(comptrollerAddress);
-    const marketAddresses = comptroller.getAllMarkets();
-
-    if (marketAddresses !== null) {
-      for (let i = 0; i < marketAddresses.length; i++) {
-        const marketAddress = marketAddresses[i];
-
-        const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
-        rewardSpeed.borrowSpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
-        rewardSpeed.supplySpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
-        rewardSpeed.save();
-      }
-    }
+    rewardsDistributor = createRewardDistributor(rewardsDistributorAddress, comptrollerAddress);
   }
 
-  return rewardsDistributor;
+  return rewardsDistributor as RewardsDistributor;
 };
