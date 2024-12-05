@@ -104,10 +104,10 @@ export const getOrCreateMarketPosition = (
   return { entity: marketPosition, created };
 };
 
-export const getOrCreateRewardSpeed = (
+export function getOrCreateRewardSpeed(
   rewardsDistributorAddress: Address,
   marketAddress: Address,
-): RewardSpeed => {
+): RewardSpeed {
   const id = getRewardSpeedId(rewardsDistributorAddress, marketAddress);
   let rewardSpeed = RewardSpeed.load(id);
   if (!rewardSpeed) {
@@ -119,7 +119,7 @@ export const getOrCreateRewardSpeed = (
     rewardSpeed.save();
   }
   return rewardSpeed as RewardSpeed;
-};
+}
 
 export const getOrCreateRewardDistributor = (
   rewardsDistributorAddress: Address,

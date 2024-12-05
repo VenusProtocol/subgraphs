@@ -300,10 +300,10 @@ export const createMarketPositionBadDebt = (
   marketPositionBadDebt.save();
 };
 
-export const createRewardDistributor = (
+export function createRewardDistributor(
   rewardsDistributorAddress: Address,
   comptrollerAddress: Address,
-): RewardsDistributor => {
+): RewardsDistributor {
   const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
@@ -330,4 +330,4 @@ export const createRewardDistributor = (
     }
   }
   return rewardsDistributor;
-};
+}
