@@ -26,11 +26,16 @@ const main = () => {
       network: 'chapel',
       comptrollerAddress: bscTestnetCoreDeployments.addresses.Unitroller,
       startBlock: '2802485',
+      vwbETHAddress: bscTestnetCoreDeployments.addresses.vWBETH,
+      vTRXAddress: '0x369fea97f6fb7510755dca389088d9e2e2819278',
+      vTUSDOldAddress: '0x3a00d9b02781f47d033bad62edc55fbf8d083fb0',
     },
     bsc: {
       network: 'bsc',
       comptrollerAddress: bscMainnetCoreDeployments.addresses.Unitroller,
       startBlock: '2471512',
+      vTRXAddress: '0x61edcfe8dd6ba3c891cb9bec2dc7657b3b422e93',
+      vTUSDOldAddress: '0x08ceb3f4a7ed3500ca0982bcd0fc7816688084c3',
     },
   };
 

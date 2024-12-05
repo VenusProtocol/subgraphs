@@ -1,3 +1,19 @@
 // Use yarn prepare commands to generate config typescript file per env
 
 export const poolRegistryAddress = '{{ poolRegistryAddress }}';
+
+export const vBifiAddress = '{{ vBifiAddress }}'
+
+export const vLisUsdAddress = '{{ vLisUsdAddress }}'
+
+export const vagEURAddress = '{{ vagEURAddress }}'
+
+export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress }}'
+
+export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}'
+
+export const vSnBNBAddress = '{{ vSnBNBAddress }}'
+
+export const vWETHLiquidStakedETHAddress = '{{ vWETHLiquidStakedETHAddress }}'
+
+export const vWETHCoreAddress = '{{ vWETHCoreAddress }}'

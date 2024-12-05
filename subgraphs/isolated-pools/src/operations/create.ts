@@ -2,6 +2,7 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
+import { VToken as VTokenDataSource } from '../../generated/templates';
 import {
   BadDebtIncreased,
   Borrow,
@@ -25,7 +26,17 @@ import { RewardsDistributor as RewardDistributorContract } from '../../generated
 import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
-import { poolRegistryAddress } from '../constants/addresses';
+import {
+  poolRegistryAddress,
+  vBifiAddress,
+  vLisUsdAddress,
+  vSnBNBAddress,
+  vagEURAddress,
+  vankrBNBDeFiAddress,
+  vankrBNBLiquidStakedBNBAddress,
+  vWETHLiquidStakedETHAddress,
+  vWETHCoreAddress,
+} from '../constants/addresses';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
@@ -84,7 +95,11 @@ export function createMarket(
   vTokenAddress: Address,
   comptroller: Address,
   blockNumber: BigInt,
-): Market {
+): Market | null {
+  if (vTokenAddress.equals(vBifiAddress)) {
+    return null;
+  }
+  VTokenDataSource.create(vTokenAddress);
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
@@ -147,6 +162,37 @@ export function createMarket(
   market.liquidationThresholdMantissa = poolComptroller
     .markets(vTokenAddress)
     .getLiquidationThresholdMantissa();
+
+  if (vTokenAddress.equals(vLisUsdAddress)) {
+    market.name = 'Venus lisUSD (Stablecoins)';
+    market.symbol = 'vlisUSD_Stablecoins';
+  }
+
+  if (vTokenAddress.equals(vagEURAddress)) {
+    market.name = 'Venus EURA (Stablecoins)';
+    market.symbol = 'vEURA_Stablecoins';
+  }
+
+  if (vTokenAddress.equals(vankrBNBLiquidStakedBNBAddress)) {
+    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.symbol = 'vankrBNB_LiquidStakedBNB';
+    market.underlyingName = 'Ankr Staked BNB ';
+  }
+
+  if (vTokenAddress.equals(vankrBNBDeFiAddress)) {
+    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.symbol = 'vankrBNB_DeFi';
+    market.underlyingName = 'Ankr Staked BNB ';
+  }
+
+  if (vTokenAddress.equals(vSnBNBAddress)) {
+    market.name = 'Venus slisBNB (Liquid Staked BNB)';
+    market.symbol = 'vslisBNB_LiquidStakedBNB';
+  }
+
+  if (vTokenAddress.equals(vWETHLiquidStakedETHAddress) || vTokenAddress.equals(vWETHCoreAddress)) {
+    market.underlyingAddress = Address.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9');
+  }
 
   market.save();
   return market;

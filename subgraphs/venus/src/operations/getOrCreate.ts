@@ -9,7 +9,12 @@ import { BEP20 } from '../../generated/templates/VToken/BEP20';
 import { Comptroller } from '../../generated/templates/VToken/Comptroller';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
-import { nativeAddress } from '../constants/addresses';
+import {
+  nativeAddress,
+  vwbETHAddress,
+  vTRXAddressAddress,
+  vTUSDOldAddress,
+} from '../constants/addresses';
 import {
   getUnderlyingPrice,
   valueOrNotAvailableAddressIfReverted,
@@ -86,6 +91,22 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     );
     market.totalBorrowsMantissa = zeroBigInt32;
     market.reservesMantissa = zeroBigInt32;
+
+    if (marketAddress.equals(vwbETHAddress)) {
+      market.underlyingAddress = Address.fromHexString(
+        '0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f',
+      );
+    }
+
+    if (marketAddress.equals(vTRXAddressAddress)) {
+      market.symbol = 'vTRXOLD';
+      market.name = 'Venus TRXOLD';
+    }
+
+    if (marketAddress.equals(vTUSDOldAddress)) {
+      market.symbol = 'vTUSDOLD';
+      market.name = 'Venus TUSDOLD';
+    }
 
     // Dynamically index all new listed tokens
     VTokenTemplate.create(marketAddress);

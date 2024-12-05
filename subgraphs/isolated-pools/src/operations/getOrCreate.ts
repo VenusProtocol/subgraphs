@@ -10,7 +10,6 @@ import {
   RewardSpeed,
   RewardsDistributor,
 } from '../../generated/schema';
-import { VToken as VTokenDataSource } from '../../generated/templates';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
@@ -31,10 +30,9 @@ export const getOrCreateMarket = (
 ): Market => {
   let market = getMarket(vTokenAddress);
   if (!market) {
-    VTokenDataSource.create(vTokenAddress);
     market = createMarket(vTokenAddress, comptrollerAddress, blockNumber);
   }
-  return market;
+  return market as Market;
 };
 
 export const getOrCreatePool = (comptroller: Address): Pool => {
