@@ -7,11 +7,11 @@ import exponentToBigInt from './exponentToBigInt';
 import valueOrNotAvailableIntIfReverted from './valueOrNotAvailableIntIfReverted';
 
 // Used for all vBEP20 contracts
-const getTokenPriceInCents = (
+function getTokenPriceInCents(
   poolAddress: Address,
   tokenAddress: Address,
   underlyingDecimals: i32,
-): BigInt => {
+): BigInt {
   const pool = getPool(poolAddress);
   // will return NOT_AVAILABLE if the price cannot be fetched
   let underlyingPrice = NOT_AVAILABLE_BIG_INT;
@@ -31,6 +31,6 @@ const getTokenPriceInCents = (
     underlyingPrice;
   }
   return underlyingPrice;
-};
+}
 
 export default getTokenPriceInCents;
