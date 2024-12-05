@@ -8,6 +8,7 @@ import optimismSepoliaDeployments from '@venusprotocol/governance-contracts/depl
 import sepoliaDeployments from '@venusprotocol/governance-contracts/deployments/sepolia_addresses.json';
 import zkSyncDeployments from '@venusprotocol/governance-contracts/deployments/zksyncmainnet_addresses.json';
 import zkSyncSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/zksyncsepolia_addresses.json';
+import baseSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/basesepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -23,6 +24,7 @@ export const getNetwork = () => {
     'zkSync',
     'optimismSepolia',
     'optimism',
+    'baseSepolia',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -136,6 +138,16 @@ const main = () => {
       startBlockOmnichainGovernanceExecutor: '127723676',
       accessControlManagerAddress: optimismDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '125490536',
+    },
+    baseSepolia: {
+      network: 'base-sepolia',
+      layerZeroChainId: 10245,
+      omnichainGovernanceOwnerAddress: baseSepoliaDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '18475319',
+      omnichainExecutorOwnerAddress: baseSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '18470846',
+      accessControlManagerAddress: baseSepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '16737038',
     },
   };
 

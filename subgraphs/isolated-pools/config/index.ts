@@ -9,6 +9,7 @@ import optimismSepoliaDeployments from '@venusprotocol/isolated-pools/deployment
 import sepoliaDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import zksyncDeployments from '@venusprotocol/isolated-pools/deployments/zksyncmainnet_addresses.json';
 import zksyncSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/zksyncsepolia_addresses.json';
+import baseSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/basesepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -26,6 +27,7 @@ export const getNetwork = () => {
     'zksync',
     'optimismSepolia',
     'optimism',
+    'baseSepolia',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -97,6 +99,11 @@ const main = () => {
       network: 'optimism',
       poolRegistryAddress: optimismDeployments.addresses.PoolRegistry,
       startBlock: '126048098',
+    },
+    baseSepolia: {
+      network: 'base-sepolia',
+      poolRegistryAddress: baseSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '18242654',
     },
   };
 
