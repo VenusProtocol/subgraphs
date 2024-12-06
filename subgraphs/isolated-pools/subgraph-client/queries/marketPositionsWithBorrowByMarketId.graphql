@@ -1,0 +1,10 @@
+query MarketPositionsWithBorrowByMarketId($first: Int, $skip: Int, $marketId: String!) {
+  marketPositions(first: $first, skip: $skip, where: { market: $marketId, storedBorrowBalanceMantissa_gt: 0 }) {
+    id
+    account {
+      id
+    }
+    storedBorrowBalanceMantissa
+    borrowIndex
+  }
+}

@@ -24,7 +24,7 @@ import {
   getOrCreateRewardDistributor,
 } from '../operations/getOrCreate';
 import {
-  updateOrCreateAccountVToken,
+  updateOrCreateMarketPosition,
   updateOrCreateMarketAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
@@ -53,7 +53,7 @@ export function handleMarketEntered(event: MarketEntered): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
+  updateOrCreateMarketPosition(
     accountAddress,
     vTokenAddress,
     poolAddress,
@@ -69,7 +69,7 @@ export function handleMarketExited(event: MarketExited): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
+  updateOrCreateMarketPosition(
     accountAddress,
     vTokenAddress,
     poolAddress,
