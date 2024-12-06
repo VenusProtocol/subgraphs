@@ -3,7 +3,7 @@ import { assert, beforeAll, describe, test } from 'matchstick-as/assembly/index'
 
 import { handleConverterAdded, handleConverterRemoved } from '../../src/mappings/converterNetwork';
 import { getConverterNetworkId, getTokenConverterId } from '../../src/utilities/ids';
-import { createTokenConverterMock } from '../TokenConverter/mocks';
+import { createTokenConverterMock, createTokenMock } from '../TokenConverter/mocks';
 import { createConverterAddedEvent, createConverterRemovedEvent } from './events';
 
 const converterNetworkAddress = Address.fromString('0x0000000000000000000000000000000000000ccc');
@@ -27,6 +27,7 @@ beforeAll(() => {
     token1Address,
     priceOracleAddress,
   );
+  createTokenMock(token1Address, 'BNB');
 });
 
 describe('Converter Network', () => {

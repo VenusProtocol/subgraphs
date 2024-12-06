@@ -36,7 +36,7 @@ type TokenConverter @entity {
     address: Bytes!
     converterNetwork: ConverterNetwork
     destinationAddress: Bytes!
-    baseAsset: Bytes!
+    baseAsset: Token!
     configs: [TokenConverterConfig!]! @derivedFrom(field: "tokenConverter")
     paused: Boolean!
     priceOracleAddress: Bytes!

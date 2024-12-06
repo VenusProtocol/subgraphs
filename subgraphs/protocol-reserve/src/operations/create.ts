@@ -37,13 +37,14 @@ export function createTokenConverter(tokenConverterAddress: Address): TokenConve
 
   if (tokenConverterAddress.equals(riskFundConverterAddress)) {
     const riskFund = RiskFund.bind(riskFundAddress);
-    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(
-      riskFund.try_convertibleBaseAsset(),
-    );
+    const baseAsset = valueOrNotAvailableAddressIfReverted(riskFund.try_convertibleBaseAsset());
+
+    tokenConverter.baseAsset = getOrCreateToken(Address.fromBytes(baseAsset)).id;
   } else {
-    tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(
+    const baseAsset = (tokenConverter.baseAsset = valueOrNotAvailableAddressIfReverted(
       tokenConverterContract.try_baseAsset(),
-    );
+    ));
+    tokenConverter.baseAsset = getOrCreateToken(Address.fromBytes(baseAsset)).id;
   }
   tokenConverter.priceOracleAddress = valueOrNotAvailableAddressIfReverted(
     tokenConverterContract.try_priceOracle(),
