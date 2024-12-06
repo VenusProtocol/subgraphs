@@ -1,0 +1,8 @@
+sources:
+  - name: venus-protocol-reserve-subgraph
+    handler:
+      graphql:
+        endpoint: https://api.studio.thegraph.com/query/64786/venus-protocol-reserve-chapel/version/latest
+
+documents:
+  - '../**/*.graphql'

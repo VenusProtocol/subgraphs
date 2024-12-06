@@ -10,7 +10,7 @@ dataSources:
     source:
       address: "{{ converterNetworkAddress }}"
       abi: ConverterNetwork
-      startBlock: {{ startBlock }}
+      startBlock: {{ converterNetworkStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -28,14 +28,17 @@ dataSources:
           handler: handleConverterAdded
         - event: ConverterRemoved(indexed address)
           handler: handleConverterRemoved
-
+      blockHandlers:
+        - handler: handleInitializationConverterNetwork
+          filter:
+            kind: once
   - name: WBTCPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ wbtcPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ wbtcPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -63,13 +66,19 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+      blockHandlers:
+        - handler: handleInitializationWbtcPrimeConverter
+          filter:
+            kind: once
   - name: WETHPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ wethPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ wethPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -97,13 +106,19 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+      blockHandlers:
+        - handler: handleInitializationWethPrimeConverter
+          filter:
+            kind: once
   - name: USDCPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ usdcPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ usdcPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -131,13 +146,19 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+      blockHandlers:
+        - handler: handleInitializationUsdcPrimeConverter
+          filter:
+            kind: once
   - name: USDTPrimeConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ usdtPrimeConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ usdtPrimeConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -165,13 +186,19 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleDestinationAddressUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+      blockHandlers:
+        - handler: handleInitializationUsdtPrimeConverter
+          filter:
+            kind: once
   - name: XVSVaultConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
       abi: TokenConverter
       address: "{{ xvsVaultConverterAddress }}"
-      startBlock: {{ startBlock }}
+      startBlock: {{ xvsVaultConverterStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
@@ -199,3 +226,33 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleBaseAssetUpdated
+      blockHandlers:
+        - handler: handleInitializationXvsVaultConverter
+          filter:
+            kind: once
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+templates:
+  - name: ERC20
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: ERC20
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/token.ts
+      entities:
+        - TokenConverterConfig
+        - TokenConverter
+      abis:
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/venus-protocol/artifacts/contracts/Tokens/BEP20Interface.sol/BEP20Interface.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransferOut
+          topic1: ["{{ wbtcPrimeConverterAddress }}", "{{ wethPrimeConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}", "{{ xvsVaultConverterAddress }}"]
+        - event: Transfer(indexed address,indexed address,uint256)
+          handler: handleTransferIn
+          topic2: ["{{ wbtcPrimeConverterAddress }}", "{{ wethPrimeConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}", "{{ xvsVaultConverterAddress }}"] 

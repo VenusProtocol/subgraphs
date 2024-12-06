@@ -37,8 +37,7 @@ services:
     command:
       - sh
       - -c
-      - |
-        yarn && yarn run node:integration
+      - yarn && yarn run node:integration
 # Installing again to link workspaces
     ports:
       - 8545:8545

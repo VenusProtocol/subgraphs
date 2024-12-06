@@ -1,0 +1,21 @@
+query TokenConverterConfigs {
+  tokenConverterConfigs {
+    id
+    tokenIn {
+      address
+      symbol
+      decimals
+    }
+    tokenOut {
+      address
+      symbol
+      decimals
+    }
+    tokenOutBalance
+    incentive
+    access
+    tokenConverter {
+      id
+    }
+  }
+}

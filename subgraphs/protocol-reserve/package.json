@@ -15,7 +15,7 @@
     "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-protocol-reserve --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && yarn graph deploy --studio venus-protocol-reserve --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/venus-protocol-reserve --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
     "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-protocol-reserve-chapel",
     "deploy:ethereum": "yarn prepare:ethereum && graph deploy --studio venus-protocol-reserve-eth",
     "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio venus-protocol-reserve-sepolia",
@@ -31,6 +31,7 @@
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "devDependencies": {
+    "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
     "@venusprotocol/subgraph-utils": "workspace:^",
     "apollo-fetch": "^0.7.0",

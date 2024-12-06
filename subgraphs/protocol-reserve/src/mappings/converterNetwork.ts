@@ -1,12 +1,18 @@
+import { ethereum } from '@graphprotocol/graph-ts';
 import {
   ConverterAdded,
   ConverterRemoved,
 } from '../../generated/ConverterNetwork/ConverterNetwork';
-import { getOrCreateConverterNetwork, getOrCreateTokenConverter } from '../operations/getOrCreate';
+import { getOrCreateTokenConverter } from '../operations/getOrCreate';
+import { createConverterNetwork } from '../operations/create';
 import { getConverterNetworkId } from '../utilities/ids';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationConverterNetwork(block: ethereum.Block): void {
+  createConverterNetwork();
+}
+
 export function handleConverterAdded(event: ConverterAdded): void {
-  getOrCreateConverterNetwork(event.address);
   const tokenConverter = getOrCreateTokenConverter(event.params.converter);
   tokenConverter.converterNetwork = getConverterNetworkId(event.address);
   tokenConverter.save();

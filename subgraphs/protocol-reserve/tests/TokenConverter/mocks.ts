@@ -5,6 +5,7 @@ export const createTokenConverterMock = (
   tokenConverterAddress: Address,
   destinationAddress: Address,
   baseAssetAddress: Address,
+  priceOracleAddress: Address,
 ): void => {
   createMockedFunction(
     tokenConverterAddress,
@@ -14,6 +15,10 @@ export const createTokenConverterMock = (
 
   createMockedFunction(tokenConverterAddress, 'baseAsset', 'baseAsset():(address)').returns([
     ethereum.Value.fromAddress(baseAssetAddress),
+  ]);
+
+  createMockedFunction(tokenConverterAddress, 'priceOracle', 'priceOracle():(address)').returns([
+    ethereum.Value.fromAddress(priceOracleAddress),
   ]);
 };
 
