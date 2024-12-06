@@ -18440,6 +18440,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"venus-core-pool-abis@workspace:packages/venus-core-pool-abis":
+  version: 0.0.0-use.local
+  resolution: "venus-core-pool-abis@workspace:packages/venus-core-pool-abis"
+  languageName: unknown
+  linkType: soft
+
 "venus-governance-abis@workspace:packages/venus-governance-abis":
   version: 0.0.0-use.local
   resolution: "venus-governance-abis@workspace:packages/venus-governance-abis"
