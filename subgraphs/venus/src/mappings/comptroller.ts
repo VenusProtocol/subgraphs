@@ -20,13 +20,14 @@ import { Comptroller } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import { comptrollerAddress, nullAddress } from '../constants/addresses';
 import { getComptroller, getMarket } from '../operations/get';
-import { getOrCreateAccountVToken, getOrCreateMarket } from '../operations/getOrCreate';
+import { getOrCreateMarketPosition, getOrCreateMarket } from '../operations/getOrCreate';
 import { updateXvsBorrowState } from '../operations/updateXvsBorrowState';
 import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitialization(block: ethereum.Block): void {
   const comptroller = new Comptroller(comptrollerAddress);
+  comptroller.address = comptrollerAddress;
   comptroller.priceOracle = nullAddress;
   comptroller.closeFactorMantissa = zeroBigInt32;
   comptroller.liquidationIncentive = zeroBigInt32;
@@ -50,18 +51,18 @@ export function handleMarketUnlisted(event: MarketListed): void {
 
 export function handleMarketEntered(event: MarketEntered): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const result = getOrCreateAccountVToken(event.params.account, Address.fromBytes(market.id));
-  const accountVToken = result.entity;
-  accountVToken.enteredMarket = true;
-  accountVToken.save();
+  const result = getOrCreateMarketPosition(event.params.account, Address.fromBytes(market.id));
+  const marketPosition = result.entity;
+  marketPosition.enteredMarket = true;
+  marketPosition.save();
 }
 
 export function handleMarketExited(event: MarketExited): void {
   const market = getOrCreateMarket(event.params.vToken, event);
-  const result = getOrCreateAccountVToken(event.params.account, Address.fromBytes(market.id));
-  const accountVToken = result.entity;
-  accountVToken.enteredMarket = false;
-  accountVToken.save();
+  const result = getOrCreateMarketPosition(event.params.account, Address.fromBytes(market.id));
+  const marketPosition = result.entity;
+  marketPosition.enteredMarket = false;
+  marketPosition.save();
 }
 
 export function handleNewCloseFactor(event: NewCloseFactor): void {

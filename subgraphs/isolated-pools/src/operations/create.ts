@@ -15,7 +15,7 @@ import {
 import {
   Account,
   AccountPool,
-  AccountVTokenBadDebt,
+  MarketPositionBadDebt,
   Market,
   Pool,
   RewardsDistributor,
@@ -37,11 +37,12 @@ import {
   vWETHLiquidStakedETHAddress,
   vWETHCoreAddress,
 } from '../constants/addresses';
+import { getOrCreateRewardSpeed } from './getOrCreate';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
   getAccountPoolId,
-  getAccountVTokenId,
+  getMarketPositionId,
   getBadDebtEventId,
   getPoolId,
   getRewardsDistributorId,
@@ -56,6 +57,7 @@ export function createPool(comptroller: Address): Pool {
   const poolData = poolRegistryContract.getPoolByComptroller(comptroller);
   const poolMetaData = poolRegistryContract.getVenusPoolMetadata(comptroller);
 
+  pool.address = comptroller;
   pool.name = poolData.name;
   pool.creator = poolData.creator;
   pool.blockPosted = poolData.blockPosted;
@@ -75,6 +77,7 @@ export function createPool(comptroller: Address): Pool {
 
 export function createAccount(accountAddress: Address): Account {
   const account = new Account(accountAddress);
+  account.address = accountAddress;
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
@@ -282,30 +285,49 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.save();
 };
 
-export const createAccountVTokenBadDebt = (
+export const createMarketPositionBadDebt = (
   marketAddress: Address,
   event: BadDebtIncreased,
 ): void => {
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
-  const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
-  const accountVTokenId = getAccountVTokenId(event.params.borrower, marketAddress);
-  accountVTokenBadDebt.account = accountVTokenId;
-  accountVTokenBadDebt.block = event.block.number;
-  accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;
-  accountVTokenBadDebt.timestamp = event.block.timestamp;
-  accountVTokenBadDebt.save();
+  const marketPositionBadDebt = new MarketPositionBadDebt(id);
+  const marketPositionId = getMarketPositionId(event.params.borrower, marketAddress);
+  marketPositionBadDebt.account = marketPositionId;
+  marketPositionBadDebt.block = event.block.number;
+  marketPositionBadDebt.amountMantissa = event.params.badDebtDelta;
+  marketPositionBadDebt.timestamp = event.block.timestamp;
+  marketPositionBadDebt.save();
 };
 
-export const createRewardDistributor = (
+export function createRewardDistributor(
   rewardsDistributorAddress: Address,
   comptrollerAddress: Address,
-): void => {
+): RewardsDistributor {
   const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   const rewardsDistributor = new RewardsDistributor(id);
+  rewardsDistributor.address = rewardsDistributorAddress;
   rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.reward = rewardToken;
   rewardsDistributor.save();
-};
+
+  // we get the current speeds for all known markets at this point in time
+  const comptroller = Comptroller.bind(comptrollerAddress);
+  const marketAddresses = comptroller.getAllMarkets();
+
+  if (marketAddresses !== null) {
+    for (let i = 0; i < marketAddresses.length; i++) {
+      const marketAddress = marketAddresses[i];
+
+      const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
+      rewardSpeed.borrowSpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
+      rewardSpeed.supplySpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
+      rewardSpeed.save();
+    }
+  }
+  return rewardsDistributor;
+}

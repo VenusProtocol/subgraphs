@@ -1,5 +1,5 @@
-query AccountVTokenByAccountAndMarketQuery($id: ID!) {
-  accountVToken(id: $id) {
+query MarketPositionByAccountAndMarketQuery($id: ID!) {
+  marketPosition(id: $id) {
     id
     market {
       id

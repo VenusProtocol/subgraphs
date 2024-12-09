@@ -33,7 +33,7 @@ import {
   handleTransfer,
 } from '../../src/mappings/vToken';
 import { getMarket } from '../../src/operations/get';
-import { getAccountVTokenId } from '../../src/utilities/ids';
+import { getMarketPositionId } from '../../src/utilities/ids';
 import {
   createAccrueInterestEvent,
   createBorrowEvent,
@@ -54,7 +54,7 @@ import {
 } from './events';
 import {
   createComptrollerMock,
-  createAccountVTokenBalanceOfMock,
+  createMarketPositionBalanceOfMock,
   createBorrowBalanceCurrentMock,
   createMockBlock,
   createPriceOracleMock,
@@ -91,8 +91,8 @@ beforeAll(() => {
     [ethereum.Value.fromAddress(aaaTokenAddress), ethereum.Value.fromI32(99)],
   ]);
 
-  createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, zeroBigInt32);
-  createAccountVTokenBalanceOfMock(aaaTokenAddress, user2Address, zeroBigInt32);
+  createMarketPositionBalanceOfMock(aaaTokenAddress, user1Address, zeroBigInt32);
+  createMarketPositionBalanceOfMock(aaaTokenAddress, user2Address, zeroBigInt32);
 });
 
 beforeEach(() => {
@@ -115,7 +115,7 @@ describe('VToken', () => {
     const minter = user1Address;
     const actualMintAmount = BigInt.fromString('124620530798726345');
     const mintTokens = BigInt.fromString('37035970026454');
-    createAccountVTokenBalanceOfMock(aaaTokenAddress, user1Address, mintTokens);
+    createMarketPositionBalanceOfMock(aaaTokenAddress, user1Address, mintTokens);
     const accountBalance = mintTokens;
     const mintEvent = createMintEvent(
       aaaTokenAddress,
@@ -129,11 +129,11 @@ describe('VToken', () => {
 
     handleMint(mintEvent);
 
-    const accountVTokenId = getAccountVTokenId(minter, aaaTokenAddress).toHexString();
+    const marketPositionId = getMarketPositionId(minter, aaaTokenAddress).toHexString();
 
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
+      'MarketPosition',
+      marketPositionId,
       'vTokenBalanceMantissa',
       mintTokens.toString(),
     );
@@ -154,7 +154,7 @@ describe('VToken', () => {
     );
     handleMint(mintEvent);
 
-    const accountVTokenId = getAccountVTokenId(redeemer, aaaTokenAddress).toHexString();
+    const marketPositionId = getMarketPositionId(redeemer, aaaTokenAddress).toHexString();
 
     const redeemEvent = createRedeemEvent(
       aaaTokenAddress,
@@ -169,15 +169,15 @@ describe('VToken', () => {
     handleRedeem(redeemEvent);
 
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
+      'MarketPosition',
+      marketPositionId,
       'vTokenBalanceMantissa',
       accountBalance.toString(),
     );
 
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
+      'MarketPosition',
+      marketPositionId,
       'totalUnderlyingRedeemedMantissa',
       redeemEvent.params.redeemAmount.toString(),
     );
@@ -257,7 +257,7 @@ describe('VToken', () => {
     /** Fire Event */
     handleRepayBorrow(repayBorrowEvent);
 
-    const accountVTokenId = getAccountVTokenId(borrower, aaaTokenAddress).toHexString();
+    const marketPositionId = getMarketPositionId(borrower, aaaTokenAddress).toHexString();
     const market = getMarket(aaaTokenAddress);
     assert.assertNotNull(market);
     if (!market) {
@@ -265,8 +265,8 @@ describe('VToken', () => {
     }
 
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenId,
+      'MarketPosition',
+      marketPositionId,
       'storedBorrowBalanceMantissa',
       accountBorrows.toString(),
     );
@@ -376,13 +376,13 @@ describe('VToken', () => {
 
     handleMint(mintEvent);
 
-    const accountVTokenFromId = getAccountVTokenId(from, aaaTokenAddress).toHexString();
-    const accountVTokenToId = getAccountVTokenId(to, aaaTokenAddress).toHexString();
+    const marketPositionFromId = getMarketPositionId(from, aaaTokenAddress).toHexString();
+    const marketPositionToId = getMarketPositionId(to, aaaTokenAddress).toHexString();
 
-    /** AccountVTokens */
+    /** MarketPositions */
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenFromId,
+      'MarketPosition',
+      marketPositionFromId,
       'vTokenBalanceMantissa',
       mintTokens.toString(),
     );
@@ -391,17 +391,17 @@ describe('VToken', () => {
     /** Fire Event */
     handleTransfer(transferEvent);
 
-    /** AccountVToken */
+    /** MarketPosition */
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenFromId,
+      'MarketPosition',
+      marketPositionFromId,
       'vTokenBalanceMantissa',
       mintTokens.minus(amount).toString(),
     );
 
     assert.fieldEquals(
-      'AccountVToken',
-      accountVTokenToId,
+      'MarketPosition',
+      marketPositionToId,
       'vTokenBalanceMantissa',
       amount.toString(),
     );
