@@ -10,6 +10,7 @@ Converter Network entity
 """
 type ConverterNetwork @entity {
     id: Bytes!
+    address: Bytes!
     tokenConverters: [TokenConverter!]! @derivedFrom(field: "converterNetwork")
 }
 
@@ -32,11 +33,13 @@ Token Converter entity
 """
 type TokenConverter @entity {
     id: Bytes!
+    address: Bytes!
     converterNetwork: ConverterNetwork
     destinationAddress: Bytes!
-    baseAsset: Bytes!
+    baseAsset: Token!
     configs: [TokenConverterConfig!]! @derivedFrom(field: "tokenConverter")
     paused: Boolean!
+    priceOracleAddress: Bytes!
 }
 
 """
@@ -49,4 +52,5 @@ type TokenConverterConfig @entity {
     tokenOut: Token!
     incentive: BigInt!
     access: ConversionAccessibility!
+    tokenOutBalance: BigInt!
 }
