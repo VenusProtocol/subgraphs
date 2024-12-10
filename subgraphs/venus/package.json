@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/core-pool-subgraph",
-  "version": "1.1.2",
+  "version": "1.2.0-pre-add-ci-deployments.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -36,5 +36,6 @@
   "devDependencies": {
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2"
-  }
+  },
+  "stableVersion": "1.1.2"
 }
