@@ -85,9 +85,8 @@
       "name": "main"
     },
     {
-      "name": "pre-*",
-      "channel": "pre",
-      "prerelease": true
+      "name": "testnet",
+      "prerelease": "testnet"
     }
   ]
 }

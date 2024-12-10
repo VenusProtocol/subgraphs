@@ -2,7 +2,7 @@
 
 version=($(jq -r '.version' package.json))
 
-if [[ $string == *"-pre"* ]]; then
+if [[ $string == *"testnet"* ]]; then
   yarn deploy:sepolia --version-label $version
 else
   yarn deploy:bsc --version-label $version
