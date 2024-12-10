@@ -24,4 +24,8 @@ export const createRewardsDistributorMock = (
   )
     .withArgs([ethereum.Value.fromAddress(rewardTokenAddress)])
     .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('30000000000'))]);
+
+  createMockedFunction(rewardsDistributorAddress, 'isTimeBased', 'isTimeBased():(bool)').returns([
+    ethereum.Value.fromBoolean(false),
+  ]);
 };

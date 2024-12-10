@@ -21,7 +21,7 @@ export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: B
 
 export const getRewardsDistributorId = (rewardsDistributor: Address): Bytes => rewardsDistributor;
 
-export const getRewardSpeedId = (
+export const getMarketRewardId = (
   rewardsDistributorAddress: Address,
   marketAddress: Address,
 ): Bytes => rewardsDistributorAddress.concat(marketAddress);
