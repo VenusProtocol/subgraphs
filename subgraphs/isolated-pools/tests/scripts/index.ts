@@ -5,6 +5,7 @@ import createSubgraphClient from '../../subgraph-client';
 import checkMarketPositions from './checkMarketPositions';
 import checkComptroller from './checkComptroller';
 import checkMarkets from './checkMarkets';
+import checkRewardsDistributors from './rewardsDistributors';
 
 import dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' });
@@ -20,6 +21,7 @@ const run = async () => {
   await checkComptroller(provider, subgraphClient);
   await checkMarkets(provider, subgraphClient);
   await checkMarketPositions(provider, subgraphClient);
+  await checkRewardsDistributors(provider, subgraphClient);
 };
 
 export default run();

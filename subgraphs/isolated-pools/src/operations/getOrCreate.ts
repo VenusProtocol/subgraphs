@@ -7,7 +7,7 @@ import {
   MarketPosition,
   Market,
   Pool,
-  RewardSpeed,
+  MarketReward,
   RewardsDistributor,
 } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
@@ -15,7 +15,7 @@ import {
   getAccountPoolId,
   getMarketPositionId,
   getPoolId,
-  getRewardSpeedId,
+  getMarketRewardId,
   getRewardsDistributorId,
 } from '../utilities/ids';
 import {
@@ -104,21 +104,27 @@ export const getOrCreateMarketPosition = (
   return { entity: marketPosition, created };
 };
 
-export function getOrCreateRewardSpeed(
+export function getOrCreateMarketReward(
   rewardsDistributorAddress: Address,
   marketAddress: Address,
-): RewardSpeed {
-  const id = getRewardSpeedId(rewardsDistributorAddress, marketAddress);
-  let rewardSpeed = RewardSpeed.load(id);
+): MarketReward {
+  const id = getMarketRewardId(rewardsDistributorAddress, marketAddress);
+  let rewardSpeed = MarketReward.load(id);
   if (!rewardSpeed) {
-    rewardSpeed = new RewardSpeed(id);
+    rewardSpeed = new MarketReward(id);
     rewardSpeed.rewardsDistributor = rewardsDistributorAddress;
     rewardSpeed.market = marketAddress;
     rewardSpeed.borrowSpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
+    rewardSpeed.supplyStateIndex = zeroBigInt32;
+    rewardSpeed.supplyStateBlockNumberOrTimestamp = zeroBigInt32;
+    rewardSpeed.borrowStateIndex = zeroBigInt32;
+    rewardSpeed.borrowStateBlockNumberOrTimestamp = zeroBigInt32;
+    rewardSpeed.supplyLastRewardingBlockTimestamp = zeroBigInt32;
+    rewardSpeed.borrowLastRewardingBlockTimestamp = zeroBigInt32;
     rewardSpeed.save();
   }
-  return rewardSpeed as RewardSpeed;
+  return rewardSpeed as MarketReward;
 }
 
 export const getOrCreateRewardDistributor = (

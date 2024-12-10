@@ -1,7 +1,12 @@
 import { Address, log } from '@graphprotocol/graph-ts';
 
-import { MarketPosition, Market, Pool } from '../../generated/schema';
-import { getMarketPositionId, getMarketId, getPoolId } from '../utilities/ids';
+import { MarketPosition, Market, Pool, RewardsDistributor } from '../../generated/schema';
+import {
+  getMarketPositionId,
+  getRewardsDistributorId,
+  getMarketId,
+  getPoolId,
+} from '../utilities/ids';
 
 export const getPool = (comptroller: Address): Pool | null => {
   const pool = Pool.load(getPoolId(comptroller));
@@ -26,4 +31,11 @@ export const getMarketPosition = (
 ): MarketPosition | null => {
   const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
   return MarketPosition.load(marketPositionId);
+};
+
+export const getRewardDistributor = (
+  rewardsDistributorAddress: Address,
+): RewardsDistributor | null => {
+  const id = getRewardsDistributorId(rewardsDistributorAddress);
+  return RewardsDistributor.load(id);
 };

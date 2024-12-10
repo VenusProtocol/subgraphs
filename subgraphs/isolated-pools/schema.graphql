@@ -247,15 +247,16 @@ type RewardsDistributor @entity {
     "Address of the pool"
     pool: Pool!
     "Address of the reward token"
-    reward: Bytes!
+    rewardTokenAddress: Bytes!
     "Distribution rate for suppliers"
-    rewardSpeeds: [RewardSpeed!]! @derivedFrom(field:"rewardsDistributor")
+    marketRewards: [MarketReward!]! @derivedFrom(field:"rewardsDistributor")
+    isTimeBased: Boolean!
 }
 
 """
 A interface for rewards distributor that distribute rewards to isolated pools
 """
-type RewardSpeed @entity {
+type MarketReward @entity {
     "ID created from the reward distributor and market this speed applies to"
     id: Bytes!
     "Address of rewards distributor"
@@ -263,7 +264,19 @@ type RewardSpeed @entity {
     "Address of the market this speed applies to"
     market: Market!
     "Distribution rate for borrowers"
-    borrowSpeedPerBlockMantissa: BigInt
+    borrowSpeedPerBlockMantissa: BigInt!
     "Distribution rate for suppliers"
-    supplySpeedPerBlockMantissa: BigInt
+    supplySpeedPerBlockMantissa: BigInt!
+    "Index of the last supply state update"
+    supplyStateIndex: BigInt!
+    "Timestamp or block number of the last supply state update"
+    supplyStateBlockNumberOrTimestamp: BigInt!
+    "Index of the last borrow state update"
+    borrowStateIndex: BigInt!
+    "Timestamp or block number of the last borrow state update"
+    borrowStateBlockNumberOrTimestamp: BigInt!
+    "Supply last rewarding block or timestamp"
+    supplyLastRewardingBlockTimestamp: BigInt!
+    "Borrow last rewarding block or timestamp"
+    borrowLastRewardingBlockTimestamp: BigInt!
 }

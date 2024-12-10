@@ -21,6 +21,7 @@ import {
   PoolByIdDocument,
   PoolsDocument,
   PoolsQuery,
+  RewardsDistributorsDocument,
 } from './.graphclient';
 
 class SubgraphClient {
@@ -144,6 +145,10 @@ class SubgraphClient {
 
   async getAccountPositions(id: string) {
     const result = await this.query(AccountPositionsDocument, { id });
+    return result;
+  }
+  async getRewardsDistributors() {
+    const result = await this.query(RewardsDistributorsDocument, {});
     return result;
   }
 }
