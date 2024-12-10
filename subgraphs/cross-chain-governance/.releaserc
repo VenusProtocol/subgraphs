@@ -80,7 +80,8 @@
     },
     {
       "name": "pre-*",
-      "prerelease": "pre"
+      "channel": "pre",
+      "prerelease": true
     }
   ]
 }
