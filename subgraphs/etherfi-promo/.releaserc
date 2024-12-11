@@ -72,6 +72,12 @@
         ],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "success": "./deploy.sh"
+      }
     ]
   ],
   "branches": [
@@ -79,8 +85,8 @@
       "name": "main"
     },
     {
-      "name": "pre-*",
-      "prerelease": "pre"
+      "name": "testnet",
+      "prerelease": "testnet"
     }
   ]
 }
