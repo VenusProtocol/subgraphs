@@ -162,6 +162,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
@@ -187,6 +189,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
@@ -212,6 +216,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
@@ -237,6 +243,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
@@ -262,6 +270,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
@@ -287,6 +297,8 @@ jobs:
 
       - name: Release subgraph
         env:
+          MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
+          TESTNET_GRAPH_CLI_API_KEY: ${{ secrets.TESTNET_GRAPH_CLI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.VENUS_TOOLS_TOKEN }}
           GIT_AUTHOR_NAME: Venus Tools
           GIT_AUTHOR_EMAIL: tools@venus.io
