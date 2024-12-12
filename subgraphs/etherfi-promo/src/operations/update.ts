@@ -3,7 +3,7 @@ import { Address, BigDecimal, ethereum } from '@graphprotocol/graph-ts';
 import { BorrowerAccount, SupplierAccount, TVL } from '../../generated/schema';
 import { ERC20 as ERC20Contract } from '../../generated/vWeETH/ERC20';
 import { VToken as VTokenContract } from '../../generated/vWeETH/VToken';
-import { getBorrowerAccount, getSupplierAccount, getTvl } from './get';
+import { getBorrowerAccount, getSupplierAccount, getTvl, getSupply } from './get';
 import exponentToBigDecimal from '../utilities/exponentToBigDecimal';
 
 export function updateSupplierAccount(
@@ -31,6 +31,7 @@ export function updateBorrowerAccount(
 export function updateTvl(event: ethereum.Event): TVL {
   const vTokenContract = VTokenContract.bind(event.address);
   const underlyingAddress = vTokenContract.underlying();
+  const vToken = getSupply(event.address);
   const underlyingContract = ERC20Contract.bind(underlyingAddress);
   const tvl = getTvl(event.address);
   const totalBorrows = vTokenContract.totalBorrowsCurrent();
@@ -40,7 +41,7 @@ export function updateTvl(event: ethereum.Event): TVL {
     .plus(totalBorrows)
     .minus(totalReserves)
     .toBigDecimal()
-    .div(exponentToBigDecimal(18));
+    .div(exponentToBigDecimal(vToken.underlyingDecimals));
   tvl.save();
   return tvl;
 }
