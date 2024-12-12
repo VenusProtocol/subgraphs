@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/governance-subgraph",
-  "version": "1.1.0-pre-add-ci-deployments.1",
+  "version": "1.1.0-testnet.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
