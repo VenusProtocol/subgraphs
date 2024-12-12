@@ -48,6 +48,7 @@ import {
   getRewardsDistributorId,
   getTransactionEventId,
 } from '../utilities/ids';
+import valueOrFalseIfReverted from '../utilities/valueOrFalseIfReverted';
 
 export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
@@ -311,7 +312,9 @@ export function createRewardDistributor(
   rewardsDistributor.address = rewardsDistributorAddress;
   rewardsDistributor.pool = comptrollerAddress;
   rewardsDistributor.rewardTokenAddress = rewardToken;
-  rewardsDistributor.isTimeBased = rewardDistributorContract.isTimeBased();
+  rewardsDistributor.isTimeBased = valueOrFalseIfReverted(
+    rewardDistributorContract.try_isTimeBased(),
+  );
   rewardsDistributor.save();
 
   // we get the current speeds for all known markets at this point in time

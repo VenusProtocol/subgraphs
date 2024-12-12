@@ -250,6 +250,7 @@ type RewardsDistributor @entity {
     rewardTokenAddress: Bytes!
     "Distribution rate for suppliers"
     marketRewards: [MarketReward!]! @derivedFrom(field:"rewardsDistributor")
+    "Depending on the Chain, the rewards distributor is time based or block based"
     isTimeBased: Boolean!
 }
 
