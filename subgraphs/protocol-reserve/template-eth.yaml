@@ -226,12 +226,12 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: BaseAssetUpdated(indexed address,indexed address)
           handler: handleBaseAssetUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
       blockHandlers:
         - handler: handleInitializationXvsVaultConverter
           filter:
             kind: once
-        - event: PriceOracleUpdated(indexed address,indexed address)
-          handler: handlePriceOracleUpdated
 templates:
   - name: ERC20
     kind: ethereum/contract
