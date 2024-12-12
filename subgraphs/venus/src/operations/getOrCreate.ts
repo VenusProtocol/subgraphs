@@ -1,6 +1,6 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
-import { Account, AccountVToken, Market } from '../../generated/schema';
+import { Account, MarketPosition, Market } from '../../generated/schema';
 import {
   VToken as VTokenTemplate,
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
@@ -20,7 +20,7 @@ import {
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { getAccountVTokenId } from '../utilities/ids';
+import { getMarketPositionId } from '../utilities/ids';
 import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
 import { updateMarketRates } from './updateMarketRates';
@@ -31,6 +31,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     const vTokenContract = VToken.bind(marketAddress);
     const comptrollerContract = Comptroller.bind(vTokenContract.comptroller());
     market = new Market(marketAddress);
+    market.address = marketAddress;
     market.isListed = true;
     market.xvsBorrowStateBlock = event.block.number;
     market.xvsSupplyStateBlock = event.block.number;
@@ -122,6 +123,7 @@ export function getOrCreateAccount(accountId: Bytes): Account {
   let account = Account.load(accountId);
   if (!account) {
     account = new Account(accountId);
+    account.address = accountId;
     account.countLiquidated = 0;
     account.countLiquidator = 0;
     account.hasBorrowed = false;
@@ -130,39 +132,39 @@ export function getOrCreateAccount(accountId: Bytes): Account {
   return account;
 }
 
-export class GetOrCreateAccountVTokenReturn {
-  entity: AccountVToken;
+export class GetOrCreateMarketPositionReturn {
+  entity: MarketPosition;
   created: boolean;
 }
 
-export function getOrCreateAccountVToken(
+export function getOrCreateMarketPosition(
   accountId: Address,
   marketId: Address,
-): GetOrCreateAccountVTokenReturn {
-  const accountVTokenId = getAccountVTokenId(accountId, marketId);
-  let accountVToken = AccountVToken.load(accountVTokenId);
+): GetOrCreateMarketPositionReturn {
+  const marketPositionId = getMarketPositionId(accountId, marketId);
+  let marketPosition = MarketPosition.load(marketPositionId);
   let created = false;
-  if (!accountVToken) {
+  if (!marketPosition) {
     created = true;
-    accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.market = marketId;
+    marketPosition = new MarketPosition(marketPositionId);
+    marketPosition.market = marketId;
 
     getOrCreateAccount(accountId);
-    accountVToken.account = accountId;
+    marketPosition.account = accountId;
 
     const vTokenContract = VToken.bind(marketId);
-    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
+    marketPosition.vTokenBalanceMantissa = zeroBigInt32;
 
-    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
-    accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    accountVToken.accrualBlockNumber = zeroBigInt32;
-    accountVToken.borrowIndex = valueOrNotAvailableIntIfReverted(
+    marketPosition.totalUnderlyingRedeemedMantissa = zeroBigInt32;
+    marketPosition.totalUnderlyingRepaidMantissa = zeroBigInt32;
+    marketPosition.storedBorrowBalanceMantissa = zeroBigInt32;
+    marketPosition.accrualBlockNumber = zeroBigInt32;
+    marketPosition.borrowIndex = valueOrNotAvailableIntIfReverted(
       vTokenContract.try_borrowIndex(),
       'vBEP20 try_borrowIndex()',
     );
-    accountVToken.enteredMarket = false;
-    accountVToken.save();
+    marketPosition.enteredMarket = false;
+    marketPosition.save();
   }
-  return { entity: accountVToken, created };
+  return { entity: marketPosition, created };
 }

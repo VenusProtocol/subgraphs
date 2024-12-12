@@ -24,13 +24,13 @@ const countSuppliers = async (
   let supplierCount = 0;
   let page = 0;
   while (page >= 0) {
-    const { accountVTokens } = await subgraphClient.getAccountVTokensWithSupplyByMarketId(
+    const { marketPositions } = await subgraphClient.getMarketPositionsWithSupplyByMarketId(
       marketAddress,
       page,
     );
-    supplierCount += accountVTokens.length;
+    supplierCount += marketPositions.length;
 
-    if (accountVTokens.length == 0) {
+    if (marketPositions.length == 0) {
       page = -1;
     } else {
       page += 1;
@@ -47,14 +47,14 @@ const countBorrower = async (
   let borrowerCount = 0;
   let page = 0;
   while (page >= 0) {
-    const { accountVTokens } = await subgraphClient.getAccountVTokensWithBorrowByMarketId(
+    const { marketPositions } = await subgraphClient.getMarketPositionsWithBorrowByMarketId(
       marketAddress,
       page,
     );
 
-    borrowerCount += accountVTokens.length;
+    borrowerCount += marketPositions.length;
 
-    if (accountVTokens.length == 0) {
+    if (marketPositions.length == 0) {
       page = -1;
     } else {
       page += 1;

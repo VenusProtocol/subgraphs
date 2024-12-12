@@ -23,7 +23,7 @@ export const createBep20Mock = (
     .returns([ethereum.Value.fromUnsignedBigInt(balanceOf)]);
 };
 
-export const createAccountVTokenBalanceOfMock = (
+export const createMarketPositionBalanceOfMock = (
   vTokenAddress: Address,
   underlyingAddress: Address,
   accountAddress: Address,
