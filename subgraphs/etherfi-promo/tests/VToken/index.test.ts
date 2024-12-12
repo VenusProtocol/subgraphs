@@ -37,7 +37,7 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
-  createVBep20Mock(vTokenAddress, exchangeRateCurrent);
+  createVBep20Mock(vTokenAddress, underlyingAddress, exchangeRateCurrent);
 });
 
 afterEach(() => {

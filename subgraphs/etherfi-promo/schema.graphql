@@ -10,8 +10,12 @@ type TVL @entity {
 Entity to iterate over suppliers
 """
 type Supply @entity {
-    "Token Address"
+    "VToken Address"
     id: Bytes!
+    "Address of the asset"
+    underlyingAddress: Bytes!
+    "Decimals of the asset"
+    underlyingDecimals: Int!
     suppliers: [SupplierAccount!]! @derivedFrom(field: "token")
 }
 
@@ -21,6 +25,10 @@ Entity to iterate over borrowers
 type Borrow @entity {
     "Token Address"
     id: Bytes!
+    "Address of the asset"
+    underlyingAddress: Bytes!
+    "Decimals of the asset"
+    underlyingDecimals: Int!
     borrowers: [BorrowerAccount!]! @derivedFrom(field: "token")
 }
 
