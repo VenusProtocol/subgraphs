@@ -159,6 +159,11 @@ jobs:
 
       - name: Install deps
         run: yarn
+      
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
 
       - name: Release subgraph
         env:
@@ -186,6 +191,11 @@ jobs:
 
       - name: Install deps
         run: yarn
+      
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
 
       - name: Release subgraph
         env:
@@ -214,6 +224,11 @@ jobs:
       - name: Install deps
         run: yarn
 
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
+
       - name: Release subgraph
         env:
           MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
@@ -241,6 +256,11 @@ jobs:
       - name: Install deps
         run: yarn
 
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
+
       - name: Release subgraph
         env:
           MAINNET_GRAPH_CLI_API_KEY: ${{ secrets.MAINNET_GRAPH_CLI_API_KEY }}
@@ -267,6 +287,11 @@ jobs:
 
       - name: Install deps
         run: yarn
+      
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
 
       - name: Release subgraph
         env:
@@ -294,6 +319,11 @@ jobs:
 
       - name: Install deps
         run: yarn
+
+      - name: Codegen
+        run: |
+          yarn prepare:docker
+          yarn codegen
 
       - name: Release subgraph
         env:
