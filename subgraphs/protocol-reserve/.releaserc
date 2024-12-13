@@ -76,6 +76,7 @@
     [
       "@semantic-release/exec",
       {
+        "prepareCmd": "./prepare.sh",
         "successCmd": "./deploy.sh"
       }
     ]
