@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
@@ -23,7 +23,6 @@ import {
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
-import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
 import {
@@ -37,7 +36,7 @@ import {
   vWETHLiquidStakedETHAddress,
   vWETHCoreAddress,
 } from '../constants/addresses';
-import { getOrCreateMarketReward } from './getOrCreate';
+import { getOrCreateMarketReward, getOrCreateToken } from './getOrCreate';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
@@ -107,7 +106,7 @@ export function createMarket(
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
-  const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
+
   const market = new Market(vTokenAddress);
 
   market.address = vTokenAddress;
@@ -118,14 +117,14 @@ export function createMarket(
   market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
   market.vTokenDecimals = vTokenContract.decimals();
+  const underlyingToken = getOrCreateToken(underlyingAddress);
+  market.underlyingToken = underlyingToken.id;
 
-  market.underlyingAddress = underlyingAddress;
-  market.underlyingName = underlyingContract.name();
-  market.underlyingSymbol = underlyingContract.symbol();
-  const underlyingDecimals = underlyingContract.decimals();
-  market.underlyingDecimals = underlyingDecimals;
-
-  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
+  const underlyingValue = getTokenPriceInCents(
+    comptroller,
+    vTokenAddress,
+    underlyingToken.decimals,
+  );
   market.lastUnderlyingPriceCents = underlyingValue;
   market.lastUnderlyingPriceBlockNumber = blockNumber;
   market.accessControlManagerAddress = vTokenContract.accessControlManager();
@@ -178,15 +177,17 @@ export function createMarket(
   }
 
   if (vTokenAddress.equals(vankrBNBLiquidStakedBNBAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
+    ).id;
     market.symbol = 'vankrBNB_LiquidStakedBNB';
-    market.underlyingName = 'Ankr Staked BNB ';
   }
 
   if (vTokenAddress.equals(vankrBNBDeFiAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
+    ).id;
     market.symbol = 'vankrBNB_DeFi';
-    market.underlyingName = 'Ankr Staked BNB ';
   }
 
   if (vTokenAddress.equals(vSnBNBAddress)) {
@@ -195,7 +196,9 @@ export function createMarket(
   }
 
   if (vTokenAddress.equals(vWETHLiquidStakedETHAddress) || vTokenAddress.equals(vWETHCoreAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9')),
+    ).id;
   }
 
   market.save();
@@ -311,7 +314,7 @@ export function createRewardDistributor(
   const rewardsDistributor = new RewardsDistributor(id);
   rewardsDistributor.address = rewardsDistributorAddress;
   rewardsDistributor.pool = comptrollerAddress;
-  rewardsDistributor.rewardTokenAddress = rewardToken;
+  rewardsDistributor.rewardToken = getOrCreateToken(rewardToken).id;
   rewardsDistributor.isTimeBased = valueOrFalseIfReverted(
     rewardDistributorContract.try_isTimeBased(),
   );

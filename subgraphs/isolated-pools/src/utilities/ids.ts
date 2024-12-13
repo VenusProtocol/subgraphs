@@ -28,3 +28,5 @@ export const getMarketRewardId = (
 
 export const getAccountPoolId = (accountAddress: Address, poolAddress: Address): Bytes =>
   accountAddress.concat(poolAddress);
+
+export const getTokenId = (tokenAddress: Address): Bytes => tokenAddress;

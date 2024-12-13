@@ -321,7 +321,7 @@ describe('Pool Events', () => {
     const id = getMarketActionId(vTokenAddress, action).toHexString();
 
     assert.fieldEquals('MarketAction', id, 'id', id);
-    assert.fieldEquals('MarketAction', id, 'vToken', vTokenAddress.toHexString());
+    assert.fieldEquals('MarketAction', id, 'market', vTokenAddress.toHexString());
     assert.fieldEquals('MarketAction', id, 'action', 'MINT');
     assert.fieldEquals('MarketAction', id, 'pauseState', pauseState.toString());
   });

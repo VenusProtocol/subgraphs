@@ -1,5 +1,6 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
+import { Address } from '@graphprotocol/graph-ts';
 import {
   AccrueInterest,
   Borrow,
@@ -31,6 +32,7 @@ import {
   getOrCreateAccount,
   getOrCreateMarketPosition,
   getOrCreateMarket,
+  getOrCreateToken,
 } from '../operations/getOrCreate';
 import { updateMarketPositionSupply, updateMarketPositionBorrow } from '../operations/update';
 import { updateMarketCashMantissa } from '../operations/updateMarketCashMantissa';
@@ -280,7 +282,8 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.borrowIndex = event.params.borrowIndex;
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);
-  market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+  const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+  market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
   market.lastUnderlyingPriceBlockNumber = event.block.number;
 
   updateMarketRates(market, vTokenContract);

@@ -16,3 +16,5 @@ export const getMarketActionId = (vTokenAddress: Address, action: i32): Bytes =>
   vTokenAddress.concatI32(action);
 
 export const getMarketId = (vTokenAddress: Address): Bytes => vTokenAddress;
+
+export const getTokenId = (tokenAddress: Address): Bytes => tokenAddress;

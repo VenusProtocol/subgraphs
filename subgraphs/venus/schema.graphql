@@ -17,6 +17,22 @@ type Comptroller @entity {
 }
 
 """
+ERC20 Token
+"""
+type Token @entity(immutable: true) {
+    "Address of the asset"
+    id: Bytes!
+    "Address of the asset"
+    address: Bytes!
+    "Name of the asset"
+    name: String!
+    "Symbol of the asset"
+    symbol: String
+    "Decimals of the asset"
+    decimals: Int!
+}
+
+"""
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
@@ -50,14 +66,8 @@ type Market @entity {
     totalBorrowsMantissa: BigInt!
     "Total vToken supplied"
     totalSupplyVTokenMantissa: BigInt!
-    "Underlying token address"
-    underlyingAddress: Bytes!
-    "Underlying token name"
-    underlyingName: String!
-    "Underlying token symbol"
-    underlyingSymbol: String!
-    "Underlying token decimal length"
-    underlyingDecimals: Int!
+    "Underlying Token"
+    underlyingToken: Token!
     "XVS Supply Distribution Block"
     xvsSupplyStateBlock:  BigInt!
     "XVS Supply Distribution Index"
@@ -71,7 +81,6 @@ type Market @entity {
     "The rate at which XVS is distributed to the corresponding borrow market (per block)"
     xvsBorrowSpeed: BigInt!
 
-    # Fields that are not in Venus api
     "Block the market is updated to"
     accrualBlockNumber: BigInt!
     "The history of the markets borrow index return (Think S&P 500)"

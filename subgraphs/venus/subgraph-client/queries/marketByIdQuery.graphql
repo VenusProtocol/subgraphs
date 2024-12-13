@@ -11,16 +11,18 @@ query MarketById($id: ID!) {
     reservesMantissa
     supplyRateMantissa
     symbol
-    underlyingAddress
-    underlyingName
+    underlyingToken {
+      name
+      symbol
+            address
+            decimals
+          }
     lastUnderlyingPriceCents
     lastUnderlyingPriceBlockNumber
-    underlyingSymbol
     accrualBlockNumber
     borrowIndex
     totalSupplyVTokenMantissa
     totalBorrowsMantissa
-    underlyingDecimals
     supplierCount
     borrowerCount
     xvsSupplyStateBlock

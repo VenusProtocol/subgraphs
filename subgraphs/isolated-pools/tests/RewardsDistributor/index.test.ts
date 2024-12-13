@@ -18,7 +18,7 @@ import {
 } from '../../src/mappings/rewardsDistributor';
 import { getMarketRewardId } from '../../src/utilities/ids';
 import { createNewRewardsDistributor } from '../Pool/events';
-import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { createVBep20AndUnderlyingMock, createBep20Mock } from '../VToken/mocks';
 import {
   createRewardTokenBorrowSpeedUpdatedEvent,
   createRewardTokenSupplySpeedUpdatedEvent,
@@ -48,6 +48,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   createRewardsDistributorMock(rewardsDistributorAddress, tokenAddress);
+  createBep20Mock(tokenAddress, 'B0B Coin', 'B0B', BigInt.fromI32(18));
   const newRewardsDistributorEvent = createNewRewardsDistributor(
     comptrollerAddress,
     rewardsDistributorAddress,

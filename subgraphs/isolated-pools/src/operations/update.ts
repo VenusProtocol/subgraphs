@@ -6,7 +6,12 @@ import { VToken } from '../../generated/templates/VToken/VToken';
 import { valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getTokenPriceInCents } from '../utilities';
 import { getMarket } from './get';
-import { getOrCreateAccount, getOrCreateMarketPosition, getOrCreatePool } from './getOrCreate';
+import {
+  getOrCreateAccount,
+  getOrCreateMarketPosition,
+  getOrCreatePool,
+  getOrCreateToken,
+} from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
 
 export const updateMarketPositionAccrualBlockNumber = (
@@ -98,11 +103,11 @@ export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Marke
     return market as Market;
   }
   const marketContract = VToken.bind(vTokenAddress);
-
+  const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
   const tokenPriceCents = getTokenPriceInCents(
     Address.fromBytes(market.pool),
     vTokenAddress,
-    market.underlyingDecimals,
+    underlyingToken.decimals,
   );
   market.lastUnderlyingPriceCents = tokenPriceCents;
   market.lastUnderlyingPriceBlockNumber = blockNumber;

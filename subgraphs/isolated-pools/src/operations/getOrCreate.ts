@@ -1,6 +1,7 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
+import { BEP20 } from '../../generated/PoolRegistry/BEP20';
 import {
   Account,
   AccountPool,
@@ -9,6 +10,7 @@ import {
   Pool,
   MarketReward,
   RewardsDistributor,
+  Token,
 } from '../../generated/schema';
 import { zeroBigInt32 } from '../constants';
 import {
@@ -17,6 +19,7 @@ import {
   getPoolId,
   getMarketRewardId,
   getRewardsDistributorId,
+  getTokenId,
 } from '../utilities/ids';
 import {
   createAccount,
@@ -140,3 +143,24 @@ export const getOrCreateRewardDistributor = (
 
   return rewardsDistributor as RewardsDistributor;
 };
+
+/**
+ * Creates and Token object with symbol and address
+ *
+ * @param asset Address of the token
+ * @returns Token
+ */
+export function getOrCreateToken(asset: Address): Token {
+  let tokenEntity = Token.load(getTokenId(asset));
+
+  if (!tokenEntity) {
+    const erc20 = BEP20.bind(asset);
+    tokenEntity = new Token(getTokenId(asset));
+    tokenEntity.address = asset;
+    tokenEntity.name = erc20.name();
+    tokenEntity.symbol = erc20.symbol();
+    tokenEntity.decimals = erc20.decimals();
+    tokenEntity.save();
+  }
+  return tokenEntity;
+}

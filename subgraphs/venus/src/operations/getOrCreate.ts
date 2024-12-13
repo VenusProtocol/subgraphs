@@ -1,6 +1,6 @@
 import { Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts';
 
-import { Account, MarketPosition, Market } from '../../generated/schema';
+import { Account, MarketPosition, Market, Token } from '../../generated/schema';
 import {
   VToken as VTokenTemplate,
   VTokenUpdatedEvents as VTokenUpdatedEventsTemplate,
@@ -20,7 +20,7 @@ import {
   valueOrNotAvailableAddressIfReverted,
   valueOrNotAvailableIntIfReverted,
 } from '../utilities';
-import { getMarketPositionId } from '../utilities/ids';
+import { getMarketPositionId, getTokenId } from '../utilities/ids';
 import { getMarket } from './get';
 import { updateMarketCashMantissa } from './updateMarketCashMantissa';
 import { updateMarketRates } from './updateMarketRates';
@@ -54,16 +54,15 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
 
     // It is vBNB, which has a slightly different interface
     if (market.symbol == 'vBNB') {
-      market.underlyingAddress = nativeAddress;
-      market.underlyingDecimals = 18;
-      market.underlyingName = 'BNB';
-      market.underlyingSymbol = 'BNB';
+      const tokenEntity = new Token(getTokenId(nativeAddress));
+      tokenEntity.address = nativeAddress;
+      tokenEntity.name = 'BNB';
+      tokenEntity.symbol = 'BNB';
+      tokenEntity.decimals = 18;
+      tokenEntity.save();
+      market.underlyingToken = tokenEntity.id;
     } else {
-      market.underlyingAddress = vTokenContract.underlying();
-      const underlyingContract = BEP20.bind(Address.fromBytes(market.underlyingAddress));
-      market.underlyingDecimals = underlyingContract.decimals();
-      market.underlyingName = underlyingContract.name();
-      market.underlyingSymbol = underlyingContract.symbol();
+      market.underlyingToken = getOrCreateToken(vTokenContract.underlying()).id;
     }
 
     market.interestRateModelAddress = valueOrNotAvailableAddressIfReverted(
@@ -74,7 +73,8 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       vTokenContract.try_reserveFactorMantissa(),
       'vBEP20 try_reserveFactorMantissa()',
     );
-    market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, market.underlyingDecimals);
+    const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+    market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
@@ -94,9 +94,9 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.reservesMantissa = zeroBigInt32;
 
     if (marketAddress.equals(vwbETHAddress)) {
-      market.underlyingAddress = Address.fromHexString(
-        '0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f',
-      );
+      market.underlyingToken = getOrCreateToken(
+        Address.fromBytes(Bytes.fromHexString('0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f')),
+      ).id;
     }
 
     if (marketAddress.equals(vTRXAddressAddress)) {
@@ -167,4 +167,25 @@ export function getOrCreateMarketPosition(
     marketPosition.save();
   }
   return { entity: marketPosition, created };
+}
+
+/**
+ * Creates and Token object with symbol and address
+ *
+ * @param asset Address of the token
+ * @returns Token
+ */
+export function getOrCreateToken(asset: Address): Token {
+  let tokenEntity = Token.load(getTokenId(asset));
+
+  if (!tokenEntity) {
+    const erc20 = BEP20.bind(asset);
+    tokenEntity = new Token(getTokenId(asset));
+    tokenEntity.address = asset;
+    tokenEntity.name = erc20.name();
+    tokenEntity.symbol = erc20.symbol();
+    tokenEntity.decimals = erc20.decimals();
+    tokenEntity.save();
+  }
+  return tokenEntity;
 }

@@ -155,10 +155,10 @@ const checkMarkets = async (
     assertEqual(market, name, 'name');
     assertEqual(market, symbol, 'symbol');
     assertEqual(market, decimals, 'vTokenDecimals');
-    assertEqual(market, underlyingAddress, 'underlyingAddress', getAddress);
-    assertEqual(market, underlyingName, 'underlyingName');
-    assertEqual(market, underlyingSymbol, 'underlyingSymbol');
-    assertEqual(market, underlyingDecimals, 'underlyingDecimals');
+    assertEqual(market.underlyingToken, underlyingAddress, 'address', getAddress);
+    assertEqual(market.underlyingToken, underlyingName, 'name');
+    assertEqual(market.underlyingToken, underlyingSymbol, 'symbol');
+    assertEqual(market.underlyingToken, underlyingDecimals, 'decimals');
 
     assertEqual(market, marketStorage.isListed, 'isListed');
     assertEqual(market, marketStorage.collateralFactorMantissa, 'collateralFactorMantissa');

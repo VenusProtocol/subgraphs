@@ -17,9 +17,11 @@ query AccountPositions($id: ID!) {
           id
           liquidationThresholdMantissa
           exchangeRateMantissa
-          underlyingAddress
+          underlyingToken {
+            address
+            decimals
+          }
           vTokenDecimals
-          underlyingDecimals
         }
       }
       borrows: tokens(where: { storedBorrowBalanceMantissa_gt: 0 }) {
@@ -28,9 +30,11 @@ query AccountPositions($id: ID!) {
         borrowIndex
         market {
           id
-          underlyingAddress
+          underlyingToken {
+            address
+            decimals
+          }
           vTokenDecimals
-          underlyingDecimals
         }
       } 
     }

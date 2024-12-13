@@ -2,7 +2,9 @@ query RewardsDistributors {
   rewardsDistributors {
     id
     address
-    rewardTokenAddress
+    rewardToken {
+      address
+    }
     isTimeBased
     marketRewards {
       id

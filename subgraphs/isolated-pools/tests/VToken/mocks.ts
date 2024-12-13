@@ -78,6 +78,25 @@ export const createPoolRegistryMock = (pools: Array<PoolInfo>): void => {
   });
 };
 
+export const createBep20Mock = (
+  contractAddress: Address,
+  name: string,
+  symbol: string,
+  decimals: BigInt,
+): void => {
+  createMockedFunction(contractAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromUnsignedBigInt(decimals),
+  ]);
+
+  createMockedFunction(contractAddress, 'name', 'name():(string)').returns([
+    ethereum.Value.fromString(name),
+  ]);
+
+  createMockedFunction(contractAddress, 'symbol', 'symbol():(string)').returns([
+    ethereum.Value.fromString(symbol),
+  ]);
+};
+
 export const createVBep20AndUnderlyingMock = (
   contractAddress: Address,
   underlyingAddress: Address,
@@ -130,17 +149,7 @@ export const createVBep20AndUnderlyingMock = (
   ).returns([ethereum.Value.fromAddress(accessControlManagerAddress)]);
 
   // Underlying
-  createMockedFunction(underlyingAddress, 'decimals', 'decimals():(uint8)').returns([
-    ethereum.Value.fromUnsignedBigInt(decimals),
-  ]);
-
-  createMockedFunction(underlyingAddress, 'name', 'name():(string)').returns([
-    ethereum.Value.fromString(name),
-  ]);
-
-  createMockedFunction(underlyingAddress, 'symbol', 'symbol():(string)').returns([
-    ethereum.Value.fromString(symbol),
-  ]);
+  createBep20Mock(underlyingAddress, name, symbol, decimals);
 
   createMockedFunction(
     mockPriceOracleAddress,

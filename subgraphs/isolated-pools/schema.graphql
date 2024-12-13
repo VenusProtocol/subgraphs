@@ -36,6 +36,23 @@ type Pool @entity {
 }
 
 """
+ERC20 Token
+"""
+type Token @entity(immutable: true) {
+    "Address of the asset"
+    id: Bytes!
+    "Address of the asset"
+    address: Bytes!
+    "Name of the asset"
+    name: String!
+    "Symbol of the asset"
+    symbol: String!
+    "Decimals of the asset"
+    decimals: Int!
+}
+
+"""
+MarketAction is an action that can be taken on a market
 enum MarketPauseGuardianAction {
   Mint = "Mint",
   Borrow = "Borrow",
@@ -45,7 +62,7 @@ type MarketAction @entity {
     "Concatentation of address and action"
     id: Bytes!
     "vToken Address affected"
-    vToken: Bytes!
+    market: Market!
     "Action (Borrow, Mint)"
     action: String!
     "True if paused, otherwise False if active"
@@ -83,12 +100,8 @@ type Market @entity {
     supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
-    "Underlying token address"
-    underlyingAddress: Bytes!
-    "Underlying token name"
-    underlyingName: String!
-    "Underlying token symbol"
-    underlyingSymbol: String!
+    "Underlying Token"
+    underlyingToken: Token!
     "Max token borrow amount allowed"
     borrowCapMantissa: BigInt!
     "Total borrowed underlying token"
@@ -106,8 +119,6 @@ type Market @entity {
     lastUnderlyingPriceCents: BigInt!
     "Block price was last updated"
     lastUnderlyingPriceBlockNumber: BigInt!
-    "Underlying token decimal length"
-    underlyingDecimals: Int!
     "vToken decimal length"
     vTokenDecimals: Int!
 
@@ -247,7 +258,7 @@ type RewardsDistributor @entity {
     "Address of the pool"
     pool: Pool!
     "Address of the reward token"
-    rewardTokenAddress: Bytes!
+    rewardToken: Token!
     "Distribution rate for suppliers"
     marketRewards: [MarketReward!]! @derivedFrom(field:"rewardsDistributor")
     "Depending on the Chain, the rewards distributor is time based or block based"
