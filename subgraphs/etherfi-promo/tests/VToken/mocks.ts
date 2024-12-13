@@ -5,12 +5,24 @@ export const mockPriceOracleAddress = Address.fromString(
   '0xb0b0000000000000000000000000000000000000',
 );
 
-export const createVBep20Mock = (contractAddress: Address, exchangeRateCurrent: BigInt): void => {
+export const createVBep20Mock = (
+  contractAddress: Address,
+  underlyingAddress: Address,
+  exchangeRateCurrent: BigInt,
+): void => {
   createMockedFunction(
     contractAddress,
     'exchangeRateCurrent',
     'exchangeRateCurrent():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(exchangeRateCurrent)]);
+
+  createMockedFunction(contractAddress, 'underlying', 'underlying():(address)').returns([
+    ethereum.Value.fromAddress(underlyingAddress),
+  ]);
+
+  createMockedFunction(underlyingAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromI32(18),
+  ]);
 };
 
 export const createBep20Mock = (
@@ -21,9 +33,13 @@ export const createBep20Mock = (
   createMockedFunction(contractAddress, 'balanceOf', 'balanceOf(address):(uint256)')
     .withArgs([ethereum.Value.fromAddress(accountAddress)])
     .returns([ethereum.Value.fromUnsignedBigInt(balanceOf)]);
+
+  createMockedFunction(contractAddress, 'decimals', 'decimals():(uint8)').returns([
+    ethereum.Value.fromI32(18),
+  ]);
 };
 
-export const createAccountVTokenBalanceOfMock = (
+export const createMarketPositionBalanceOfMock = (
   vTokenAddress: Address,
   underlyingAddress: Address,
   accountAddress: Address,

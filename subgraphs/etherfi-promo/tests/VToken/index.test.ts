@@ -24,7 +24,7 @@ import {
   createMintEvent,
   createTransferEvent,
 } from './events';
-import { createAccountVTokenBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
+import { createMarketPositionBalanceOfMock, createBep20Mock, createVBep20Mock } from './mocks';
 
 const user1Address = Address.fromString('0x0000000000000000000000000000000000000101');
 const user2Address = Address.fromString('0x0000000000000000000000000000000000000202');
@@ -37,7 +37,7 @@ const cleanup = (): void => {
 };
 
 beforeAll(() => {
-  createVBep20Mock(vTokenAddress, exchangeRateCurrent);
+  createVBep20Mock(vTokenAddress, underlyingAddress, exchangeRateCurrent);
 });
 
 afterEach(() => {
@@ -143,7 +143,7 @@ describe('VToken', () => {
       totalBorrows,
     );
     createBep20Mock(underlyingAddress, vTokenAddress, cashPrior);
-    createAccountVTokenBalanceOfMock(
+    createMarketPositionBalanceOfMock(
       vTokenAddress,
       underlyingAddress,
       user1Address,
@@ -152,7 +152,7 @@ describe('VToken', () => {
       totalBorrows,
       reserves,
     );
-    createAccountVTokenBalanceOfMock(
+    createMarketPositionBalanceOfMock(
       vTokenAddress,
       underlyingAddress,
       user2Address,

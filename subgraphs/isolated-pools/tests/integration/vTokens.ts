@@ -5,7 +5,7 @@ import { Contract } from 'ethers';
 import { ethers } from 'hardhat';
 
 import createSubgraphClient from '../../subgraph-client';
-import { checkAccountVToken, checkMarket } from './checkEntities';
+import { checkMarketPosition, checkMarket } from './checkEntities';
 
 const subgraphClient = createSubgraphClient(
   'http://graph-node:8000/subgraphs/name/venusprotocol/venus-isolated-pools',
@@ -116,9 +116,9 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx1);
 
-    checkAccountVToken(supplier2.address, vBtcbToken.address, tx2);
+    checkMarketPosition(supplier2.address, vBtcbToken.address, tx2);
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
     // Deployer is initial supplier
     expect(vBtcbMarket?.supplierCount).to.equal('3');
@@ -140,9 +140,9 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx1);
 
-    checkAccountVToken(supplier2.address, vBtcbToken.address, tx2);
+    checkMarketPosition(supplier2.address, vBtcbToken.address, tx2);
 
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
     // Deployer is initial supplier
@@ -153,9 +153,9 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(supplier1.address, vBnxToken.address, tx1);
+    checkMarketPosition(supplier1.address, vBnxToken.address, tx1);
 
-    checkAccountVToken(supplier2.address, vBnxToken.address, tx2);
+    checkMarketPosition(supplier2.address, vBnxToken.address, tx2);
 
     const vBnxMarket = await checkMarket(vBnxToken.address);
     expect(vBnxMarket?.supplierCount).to.equal('3');
@@ -173,8 +173,8 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx2);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx2);
 
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
 
@@ -193,8 +193,8 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx1);
-    checkAccountVToken(supplier1.address, vBtcbToken.address, tx2);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(supplier1.address, vBtcbToken.address, tx2);
 
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
 
@@ -208,19 +208,19 @@ describe('VToken events', function () {
     await waitForSubgraphToBeSynced(syncDelay);
 
     for (const vTokenAddress of [vBnxToken.address, vBtcbToken.address]) {
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vTokenAddress.toLowerCase(),
         accountId: borrower1.address,
       });
-      expect(accountVToken?.enteredMarket).to.equal(true);
+      expect(marketPosition?.enteredMarket).to.equal(true);
     }
 
     for (const vTokenAddress of [vBnxToken.address, vBtcbToken.address]) {
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vTokenAddress.toLowerCase(),
         accountId: borrower2.address,
       });
-      expect(accountVToken?.enteredMarket).to.equal(true);
+      expect(marketPosition?.enteredMarket).to.equal(true);
     }
   });
 
@@ -230,19 +230,19 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    const { accountVToken: accountVTokenVUsdt } =
-      await subgraphClient.getAccountVTokenByAccountAndMarket({
+    const { marketPosition: marketPositionVUsdt } =
+      await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vBtcbToken.address.toLowerCase(),
         accountId: borrower1.address,
       });
-    expect(accountVTokenVUsdt?.enteredMarket).to.equal(false);
+    expect(marketPositionVUsdt?.enteredMarket).to.equal(false);
 
-    const { accountVToken: accountVTokenVDoge } =
-      await subgraphClient.getAccountVTokenByAccountAndMarket({
+    const { marketPosition: marketPositionVDoge } =
+      await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vBnxToken.address.toLowerCase(),
         accountId: borrower2.address,
       });
-    expect(accountVTokenVDoge?.enteredMarket).to.equal(false);
+    expect(marketPositionVDoge?.enteredMarket).to.equal(false);
   });
 
   it('should update the borrower count on the market for new borrows', async function () {
@@ -266,8 +266,8 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
-    checkAccountVToken(borrower2.address, vBnxToken.address, tx2);
+    checkMarketPosition(borrower1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(borrower2.address, vBnxToken.address, tx2);
 
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
     expect(vBtcbMarket?.borrowerCount).to.equal('1');
@@ -286,8 +286,8 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
-    checkAccountVToken(borrower2.address, vBnxToken.address, tx2);
+    checkMarketPosition(borrower1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(borrower2.address, vBnxToken.address, tx2);
 
     const vBtcbMarket = await checkMarket(vBtcbToken.address);
     expect(vBtcbMarket?.borrowerCount).to.equal('1');
@@ -303,7 +303,7 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(borrower1.address, vBtcbToken.address, tx1);
+    checkMarketPosition(borrower1.address, vBtcbToken.address, tx1);
 
     const vBnxMarket = await checkMarket(vBnxToken.address);
     expect(vBnxMarket?.borrowerCount).to.equal('1');
@@ -347,7 +347,7 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(borrower1.address, vBnxToken.address, tx);
+    checkMarketPosition(borrower1.address, vBnxToken.address, tx);
 
     await checkMarket(vBnxToken.address);
 
@@ -365,7 +365,7 @@ describe('VToken events', function () {
     // root, one borrower, 2suppliers, and liquidator added as suppliers
     expect(vBnxMarket?.supplierCount).to.equal('5');
 
-    checkAccountVToken(liquidator1.address, vBnxToken.address, tx);
+    checkMarketPosition(liquidator1.address, vBnxToken.address, tx);
     // @todo check why repaying exact amount causes an overflow error
     // let borrowBalanceCurrent = await vBnxToken.borrowBalanceStored(borrower2.address);
     // await vBtcbToken.connect(borrower1).repayBorrow(borrowBalanceCurrent.sub(750000000000000));
@@ -403,7 +403,7 @@ describe('VToken events', function () {
 
     await waitForSubgraphToBeSynced(syncDelay);
 
-    checkAccountVToken(borrower2.address, vBnxToken.address, tx);
+    checkMarketPosition(borrower2.address, vBnxToken.address, tx);
 
     const vBnxMarket = await checkMarket(vBnxToken.address);
     expect(vBnxMarket?.borrowerCount).to.equal('0');
@@ -422,8 +422,8 @@ describe('VToken events', function () {
 
       await waitForSubgraphToBeSynced(syncDelay);
 
-      checkAccountVToken(supplier.address, vToken.address, tx);
-      checkAccountVToken(liquidator1.address, vToken.address, tx);
+      checkMarketPosition(supplier.address, vToken.address, tx);
+      checkMarketPosition(liquidator1.address, vToken.address, tx);
     }
   });
 
@@ -455,9 +455,9 @@ describe('VToken events', function () {
 
     expect(market?.badDebtMantissa).to.equal((await vBnxToken.badDebt()).toString());
 
-    const { accountVTokens } = await subgraphClient.getAccountVTokens({ first: 100, skip: 0 });
+    const { marketPositions } = await subgraphClient.getMarketPositions({ first: 100, skip: 0 });
 
-    const vBnxAccountTokens = accountVTokens.find(
+    const vBnxAccountTokens = marketPositions.find(
       avt =>
         avt.id.includes(borrower2.address.slice(2, 42).toLowerCase()) &&
         avt.market.id.toLowerCase() == vBnxToken.address.toLowerCase(),

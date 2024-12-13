@@ -22,7 +22,7 @@ import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import { nullAddress } from '../constants/addresses';
 import { zeroBigInt32 } from '../constants/index';
 import {
-  createAccountVTokenBadDebt,
+  createMarketPositionBadDebt,
   createBorrowTransaction,
   createLiquidateBorrowTransaction,
   createMintTransaction,
@@ -33,8 +33,8 @@ import {
 import { getMarket } from '../operations/get';
 import { getOrCreateAccount } from '../operations/getOrCreate';
 import {
-  updateAccountVTokenBorrow,
-  updateAccountVTokenSupply,
+  updateMarketPositionBorrow,
+  updateMarketPositionSupply,
   updateMarket,
 } from '../operations/update';
 
@@ -56,7 +56,7 @@ export function handleMint(event: Mint): void {
 
   // we read the current total amount of supplied tokens by this account in the market
   const suppliedTotal = event.params.accountBalance;
-  updateAccountVTokenSupply(event.params.minter, vTokenAddress, event.block.number, suppliedTotal);
+  updateMarketPositionSupply(event.params.minter, vTokenAddress, event.block.number, suppliedTotal);
 
   // and finally we update the market total supply
   const vTokenContract = VTokenContract.bind(vTokenAddress);
@@ -80,14 +80,14 @@ export function handleRedeem(event: Redeem): void {
   createRedeemTransaction(event);
   // we read the account's balance and...
   const currentBalance = event.params.accountBalance;
-  const accountVToken = updateAccountVTokenSupply(
+  const marketPosition = updateMarketPositionSupply(
     event.params.redeemer,
     vTokenAddress,
     event.block.number,
     currentBalance,
   );
-  accountVToken.totalUnderlyingRedeemedMantissa =
-    accountVToken.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
+  marketPosition.totalUnderlyingRedeemedMantissa =
+    marketPosition.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
   // and finally we update the market total supply
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const market = getMarket(vTokenAddress)!;
@@ -107,7 +107,7 @@ export function handleRedeem(event: Redeem): void {
 export function handleBorrow(event: Borrow): void {
   const vTokenAddress = event.address;
 
-  updateAccountVTokenBorrow(
+  updateMarketPositionBorrow(
     event.params.borrower,
     vTokenAddress,
     event.block.number,
@@ -139,7 +139,7 @@ export function handleBorrow(event: Borrow): void {
 export function handleRepayBorrow(event: RepayBorrow): void {
   const vTokenAddress = event.address;
   // Its possible to call repayborrow was called without having previously borrowed
-  const accountVToken = updateAccountVTokenBorrow(
+  const marketPosition = updateMarketPositionBorrow(
     event.params.borrower,
     vTokenAddress,
     event.block.number,
@@ -149,7 +149,7 @@ export function handleRepayBorrow(event: RepayBorrow): void {
   market.totalBorrowsMantissa = event.params.totalBorrows;
   market.save();
 
-  accountVToken.totalUnderlyingRepaidMantissa = accountVToken.totalUnderlyingRepaidMantissa.plus(
+  marketPosition.totalUnderlyingRepaidMantissa = marketPosition.totalUnderlyingRepaidMantissa.plus(
     event.params.repayAmount,
   );
   createRepayBorrowTransaction(event);
@@ -243,7 +243,7 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountFromAddress);
-    updateAccountVTokenSupply(
+    updateMarketPositionSupply(
       accountFromAddress,
       event.address,
       event.block.number,
@@ -259,7 +259,7 @@ export function handleTransfer(event: Transfer): void {
     accountToAddress.notEqual(event.address)
   ) {
     getOrCreateAccount(accountToAddress);
-    updateAccountVTokenSupply(
+    updateMarketPositionSupply(
       accountToAddress,
       event.address,
       event.block.number,
@@ -283,7 +283,7 @@ export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   market.badDebtMantissa = event.params.badDebtNew;
   market.save();
 
-  createAccountVTokenBadDebt(vTokenAddress, event);
+  createMarketPositionBadDebt(vTokenAddress, event);
 }
 
 export function handleBadDebtRecovered(event: BadDebtRecovered): void {
@@ -316,7 +316,7 @@ export function handleSpreadReservesReduced(event: SpreadReservesReduced): void 
 
 export function handleHealBorrow(event: HealBorrow): void {
   const vTokenAddress = event.address;
-  updateAccountVTokenBorrow(
+  updateMarketPositionBorrow(
     event.params.borrower,
     Address.fromBytes(vTokenAddress),
     event.block.number,

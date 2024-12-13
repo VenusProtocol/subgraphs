@@ -16,9 +16,9 @@ import {
   handleRewardTokenBorrowSpeedUpdated,
   handleRewardTokenSupplySpeedUpdated,
 } from '../../src/mappings/rewardsDistributor';
-import { getRewardSpeedId } from '../../src/utilities/ids';
+import { getMarketRewardId } from '../../src/utilities/ids';
 import { createNewRewardsDistributor } from '../Pool/events';
-import { createVBep20AndUnderlyingMock } from '../VToken/mocks';
+import { createVBep20AndUnderlyingMock, createBep20Mock } from '../VToken/mocks';
 import {
   createRewardTokenBorrowSpeedUpdatedEvent,
   createRewardTokenSupplySpeedUpdatedEvent,
@@ -48,6 +48,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   createRewardsDistributorMock(rewardsDistributorAddress, tokenAddress);
+  createBep20Mock(tokenAddress, 'B0B Coin', 'B0B', BigInt.fromI32(18));
   const newRewardsDistributorEvent = createNewRewardsDistributor(
     comptrollerAddress,
     rewardsDistributorAddress,
@@ -83,21 +84,21 @@ describe('Rewards Distributor', () => {
 
     handleRewardTokenBorrowSpeedUpdated(rewardTokenBorrowSpeedUpdatedEvent);
 
-    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress).toHexString();
-    assert.fieldEquals('RewardSpeed', rewardId, 'id', rewardId);
-    assert.fieldEquals('RewardSpeed', rewardId, 'market', vTokenAddress.toHexString());
+    const rewardId = getMarketRewardId(rewardsDistributorAddress, vTokenAddress).toHexString();
+    assert.fieldEquals('MarketReward', rewardId, 'id', rewardId);
+    assert.fieldEquals('MarketReward', rewardId, 'market', vTokenAddress.toHexString());
     assert.fieldEquals(
-      'RewardSpeed',
+      'MarketReward',
       rewardId,
       'rewardsDistributor',
       rewardsDistributorAddress.toHexString(),
     );
-    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', '0');
-    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', newBorrowRate);
+    assert.fieldEquals('MarketReward', rewardId, 'supplySpeedPerBlockMantissa', '0');
+    assert.fieldEquals('MarketReward', rewardId, 'borrowSpeedPerBlockMantissa', newBorrowRate);
 
     const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress)!;
-    const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
-    assert.stringEquals(rewardId, rewardSpeeds[0].id.toHexString());
+    const marketRewards = rewardsDistributor.marketRewards.load();
+    assert.stringEquals(rewardId, marketRewards[0].id.toHexString());
   });
 
   test('indexes new supply speed', () => {
@@ -109,21 +110,21 @@ describe('Rewards Distributor', () => {
     );
 
     handleRewardTokenSupplySpeedUpdated(rewardTokenSupplySpeedUpdatedEvent);
-    const rewardId = getRewardSpeedId(rewardsDistributorAddress, vTokenAddress).toHexString();
+    const rewardId = getMarketRewardId(rewardsDistributorAddress, vTokenAddress).toHexString();
 
-    assert.fieldEquals('RewardSpeed', rewardId, 'id', rewardId);
-    assert.fieldEquals('RewardSpeed', rewardId, 'market', vTokenAddress.toHexString());
+    assert.fieldEquals('MarketReward', rewardId, 'id', rewardId);
+    assert.fieldEquals('MarketReward', rewardId, 'market', vTokenAddress.toHexString());
     assert.fieldEquals(
-      'RewardSpeed',
+      'MarketReward',
       rewardId,
       'rewardsDistributor',
       rewardsDistributorAddress.toHexString(),
     );
-    assert.fieldEquals('RewardSpeed', rewardId, 'supplySpeedPerBlockMantissa', newSupplyRate);
-    assert.fieldEquals('RewardSpeed', rewardId, 'borrowSpeedPerBlockMantissa', '0');
+    assert.fieldEquals('MarketReward', rewardId, 'supplySpeedPerBlockMantissa', newSupplyRate);
+    assert.fieldEquals('MarketReward', rewardId, 'borrowSpeedPerBlockMantissa', '0');
 
     const rewardsDistributor = RewardsDistributor.load(rewardsDistributorAddress)!;
-    const rewardSpeeds = rewardsDistributor.rewardSpeeds.load();
-    assert.stringEquals(rewardId, rewardSpeeds[0].id.toHexString());
+    const marketRewards = rewardsDistributor.marketRewards.load();
+    assert.stringEquals(rewardId, marketRewards[0].id.toHexString());
   });
 });

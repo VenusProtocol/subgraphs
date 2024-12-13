@@ -4,7 +4,7 @@ export const getPoolId = (comptroller: Address): Bytes => comptroller;
 
 export const getMarketId = (vTokenAddress: Address): Bytes => vTokenAddress;
 
-export const getAccountVTokenId = (accountAddress: Address, marketAddress: Address): Bytes =>
+export const getMarketPositionId = (accountAddress: Address, marketAddress: Address): Bytes =>
   accountAddress.concat(marketAddress);
 
 export const getAccountId = (accountAddress: Address): Bytes => accountAddress;
@@ -21,10 +21,12 @@ export const getBadDebtEventId = (transactionHash: Bytes, transactionLogIndex: B
 
 export const getRewardsDistributorId = (rewardsDistributor: Address): Bytes => rewardsDistributor;
 
-export const getRewardSpeedId = (
+export const getMarketRewardId = (
   rewardsDistributorAddress: Address,
   marketAddress: Address,
 ): Bytes => rewardsDistributorAddress.concat(marketAddress);
 
 export const getAccountPoolId = (accountAddress: Address, poolAddress: Address): Bytes =>
   accountAddress.concat(poolAddress);
+
+export const getTokenId = (tokenAddress: Address): Bytes => tokenAddress;

@@ -4,6 +4,8 @@ The Pool entity
 type Pool @entity {
     "Pool Address as id"
     id: Bytes!
+    "Pool Comptroller address"
+    address: Bytes!
     "Name of the pool"
     name: String!
     "Creator of the pool"
@@ -34,6 +36,23 @@ type Pool @entity {
 }
 
 """
+ERC20 Token
+"""
+type Token @entity(immutable: true) {
+    "Address of the asset"
+    id: Bytes!
+    "Address of the asset"
+    address: Bytes!
+    "Name of the asset"
+    name: String!
+    "Symbol of the asset"
+    symbol: String!
+    "Decimals of the asset"
+    decimals: Int!
+}
+
+"""
+MarketAction is an action that can be taken on a market
 enum MarketPauseGuardianAction {
   Mint = "Mint",
   Borrow = "Borrow",
@@ -43,7 +62,7 @@ type MarketAction @entity {
     "Concatentation of address and action"
     id: Bytes!
     "vToken Address affected"
-    vToken: Bytes!
+    market: Market!
     "Action (Borrow, Mint)"
     action: String!
     "True if paused, otherwise False if active"
@@ -81,12 +100,8 @@ type Market @entity {
     supplyRateMantissa: BigInt!
     "VToken symbol"
     symbol: String!
-    "Underlying token address"
-    underlyingAddress: Bytes!
-    "Underlying token name"
-    underlyingName: String!
-    "Underlying token symbol"
-    underlyingSymbol: String!
+    "Underlying Token"
+    underlyingToken: Token!
     "Max token borrow amount allowed"
     borrowCapMantissa: BigInt!
     "Total borrowed underlying token"
@@ -104,8 +119,6 @@ type Market @entity {
     lastUnderlyingPriceCents: BigInt!
     "Block price was last updated"
     lastUnderlyingPriceBlockNumber: BigInt!
-    "Underlying token decimal length"
-    underlyingDecimals: Int!
     "vToken decimal length"
     vTokenDecimals: Int!
 
@@ -125,7 +138,7 @@ type Market @entity {
     liquidationThresholdMantissa: BigInt!
 
     "Accounts who participate in this market"
-    accounts: [AccountVToken!]! @derivedFrom(field:"market")
+    accounts: [MarketPosition!]! @derivedFrom(field:"market")
 }
 
 """
@@ -135,6 +148,8 @@ participated in, along with liquidation information.
 type Account @entity {
     "User address"
     id: Bytes!
+    "User address"
+    address: Bytes!
     "Pools the user is participating on"
     pools: [AccountPool!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
@@ -153,14 +168,14 @@ type AccountPool @entity(immutable: true) {
     id: Bytes!
     pool: Pool!
     account: Account!
-    tokens: [AccountVToken!]! @derivedFrom(field:"accountPool")
+    tokens: [MarketPosition!]! @derivedFrom(field:"accountPool")
 }
 
 """
-AccountVToken is a single account within a single vToken market, with data such
+MarketPosition is a single account within a single vToken market, with data such
 as interest earned or paid
 """
-type AccountVToken @entity {
+type MarketPosition @entity {
     "Concatenation of VToken address and user address"
     id: Bytes!
     "Pool of the market"
@@ -170,7 +185,7 @@ type AccountVToken @entity {
     "Relation to user"
     account: Account!
     "Bad debt data for the account in the market"
-    badDebt: [AccountVTokenBadDebt!]! @derivedFrom(field:"account")
+    badDebt: [MarketPositionBadDebt!]! @derivedFrom(field:"account")
     "Block number this asset was updated at in the contract"
     accrualBlockNumber: BigInt!
     "Borrow Index this position last accrued interest"
@@ -188,13 +203,13 @@ type AccountVToken @entity {
 }
 
 """
-Auxiliary entity for AccountVToken indicating when a certain amount of bad debt was healed
+Auxiliary entity for MarketPosition indicating when a certain amount of bad debt was healed
 """
-type AccountVTokenBadDebt @entity {
+type MarketPositionBadDebt @entity {
     "Concatenation of borrower and vToken Address"
     id: Bytes!
     "Market that was healed"
-    account: AccountVToken!
+    account: MarketPosition!
     "Amount that was healed"
     amountMantissa: BigInt!
     "Timestamp"
@@ -238,18 +253,22 @@ An interface for rewards distributor that distribute rewards to isolated pools
 type RewardsDistributor @entity {
     "Address of the rewards distributor"
     id: Bytes!
+    "Address of the rewards distributor"
+    address: Bytes!
     "Address of the pool"
     pool: Pool!
     "Address of the reward token"
-    reward: Bytes!
+    rewardToken: Token!
     "Distribution rate for suppliers"
-    rewardSpeeds: [RewardSpeed!]! @derivedFrom(field:"rewardsDistributor")
+    marketRewards: [MarketReward!]! @derivedFrom(field:"rewardsDistributor")
+    "Depending on the Chain, the rewards distributor is time based or block based"
+    isTimeBased: Boolean!
 }
 
 """
 A interface for rewards distributor that distribute rewards to isolated pools
 """
-type RewardSpeed @entity {
+type MarketReward @entity {
     "ID created from the reward distributor and market this speed applies to"
     id: Bytes!
     "Address of rewards distributor"
@@ -257,7 +276,19 @@ type RewardSpeed @entity {
     "Address of the market this speed applies to"
     market: Market!
     "Distribution rate for borrowers"
-    borrowSpeedPerBlockMantissa: BigInt
+    borrowSpeedPerBlockMantissa: BigInt!
     "Distribution rate for suppliers"
-    supplySpeedPerBlockMantissa: BigInt
+    supplySpeedPerBlockMantissa: BigInt!
+    "Index of the last supply state update"
+    supplyStateIndex: BigInt!
+    "Timestamp or block number of the last supply state update"
+    supplyStateBlockNumberOrTimestamp: BigInt!
+    "Index of the last borrow state update"
+    borrowStateIndex: BigInt!
+    "Timestamp or block number of the last borrow state update"
+    borrowStateBlockNumberOrTimestamp: BigInt!
+    "Supply last rewarding block or timestamp"
+    supplyLastRewardingBlockTimestamp: BigInt!
+    "Borrow last rewarding block or timestamp"
+    borrowLastRewardingBlockTimestamp: BigInt!
 }

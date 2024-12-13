@@ -1,27 +1,34 @@
 import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
+import { BEP20 } from '../../generated/PoolRegistry/BEP20';
 import {
   Account,
   AccountPool,
-  AccountVToken,
+  MarketPosition,
   Market,
   Pool,
-  RewardSpeed,
+  MarketReward,
   RewardsDistributor,
+  Token,
 } from '../../generated/schema';
-import { Comptroller } from '../../generated/templates/Pool/Comptroller';
-import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
 import { zeroBigInt32 } from '../constants';
 import {
   getAccountPoolId,
-  getAccountVTokenId,
+  getMarketPositionId,
   getPoolId,
-  getRewardSpeedId,
+  getMarketRewardId,
   getRewardsDistributorId,
+  getTokenId,
 } from '../utilities/ids';
-import { createAccount, createAccountPool, createMarket, createPool } from './create';
-import { getAccountVToken, getMarket } from './get';
+import {
+  createAccount,
+  createAccountPool,
+  createMarket,
+  createPool,
+  createRewardDistributor,
+} from './create';
+import { getMarketPosition, getMarket } from './get';
 
 export const getOrCreateMarket = (
   vTokenAddress: Address,
@@ -63,59 +70,65 @@ export const getOrCreateAccountPool = (
   return accountPool;
 };
 
-export class GetOrCreateAccountVTokenReturn {
-  entity: AccountVToken;
+export class GetOrCreateMarketPositionReturn {
+  entity: MarketPosition;
   created: boolean;
 }
 
-export const getOrCreateAccountVToken = (
+export const getOrCreateMarketPosition = (
   accountAddress: Address,
   marketAddress: Address,
   poolAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
-): GetOrCreateAccountVTokenReturn => {
-  let accountVToken = getAccountVToken(accountAddress, marketAddress);
+): GetOrCreateMarketPositionReturn => {
+  let marketPosition = getMarketPosition(accountAddress, marketAddress);
   let created = false;
-  if (!accountVToken) {
+  if (!marketPosition) {
     created = true;
-    const accountVTokenId = getAccountVTokenId(accountAddress, marketAddress);
-    accountVToken = new AccountVToken(accountVTokenId);
-    accountVToken.account = accountAddress;
-    accountVToken.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
-    accountVToken.market = marketAddress;
-    accountVToken.enteredMarket = enteredMarket;
-    accountVToken.accrualBlockNumber = zeroBigInt32;
+    const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
+    marketPosition = new MarketPosition(marketPositionId);
+    marketPosition.account = accountAddress;
+    marketPosition.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
+    marketPosition.market = marketAddress;
+    marketPosition.enteredMarket = enteredMarket;
+    marketPosition.accrualBlockNumber = zeroBigInt32;
 
     const vTokenContract = VTokenContract.bind(marketAddress);
 
-    accountVToken.vTokenBalanceMantissa = zeroBigInt32;
-    accountVToken.storedBorrowBalanceMantissa = zeroBigInt32;
-    accountVToken.borrowIndex = vTokenContract.borrowIndex();
+    marketPosition.vTokenBalanceMantissa = zeroBigInt32;
+    marketPosition.storedBorrowBalanceMantissa = zeroBigInt32;
+    marketPosition.borrowIndex = vTokenContract.borrowIndex();
 
-    accountVToken.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    accountVToken.totalUnderlyingRepaidMantissa = zeroBigInt32;
-    accountVToken.enteredMarket = false;
-    accountVToken.save();
+    marketPosition.totalUnderlyingRedeemedMantissa = zeroBigInt32;
+    marketPosition.totalUnderlyingRepaidMantissa = zeroBigInt32;
+    marketPosition.enteredMarket = false;
+    marketPosition.save();
   }
-  return { entity: accountVToken, created };
+  return { entity: marketPosition, created };
 };
 
-export const getOrCreateRewardSpeed = (
+export function getOrCreateMarketReward(
   rewardsDistributorAddress: Address,
   marketAddress: Address,
-): RewardSpeed => {
-  const id = getRewardSpeedId(rewardsDistributorAddress, marketAddress);
-  let rewardSpeed = RewardSpeed.load(id);
+): MarketReward {
+  const id = getMarketRewardId(rewardsDistributorAddress, marketAddress);
+  let rewardSpeed = MarketReward.load(id);
   if (!rewardSpeed) {
-    rewardSpeed = new RewardSpeed(id);
+    rewardSpeed = new MarketReward(id);
     rewardSpeed.rewardsDistributor = rewardsDistributorAddress;
     rewardSpeed.market = marketAddress;
     rewardSpeed.borrowSpeedPerBlockMantissa = zeroBigInt32;
     rewardSpeed.supplySpeedPerBlockMantissa = zeroBigInt32;
+    rewardSpeed.supplyStateIndex = zeroBigInt32;
+    rewardSpeed.supplyStateBlockNumberOrTimestamp = zeroBigInt32;
+    rewardSpeed.borrowStateIndex = zeroBigInt32;
+    rewardSpeed.borrowStateBlockNumberOrTimestamp = zeroBigInt32;
+    rewardSpeed.supplyLastRewardingBlockTimestamp = zeroBigInt32;
+    rewardSpeed.borrowLastRewardingBlockTimestamp = zeroBigInt32;
     rewardSpeed.save();
   }
-  return rewardSpeed;
-};
+  return rewardSpeed as MarketReward;
+}
 
 export const getOrCreateRewardDistributor = (
   rewardsDistributorAddress: Address,
@@ -125,30 +138,29 @@ export const getOrCreateRewardDistributor = (
   let rewardsDistributor = RewardsDistributor.load(id);
 
   if (!rewardsDistributor) {
-    const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
-    const rewardToken = rewardDistributorContract.rewardToken();
-    rewardsDistributor = new RewardsDistributor(id);
-    rewardsDistributor.pool = comptrollerAddress;
-    rewardsDistributor.reward = rewardToken;
-    rewardsDistributor.save();
-
-    // we get the current speeds for all known markets at this point in time
-    const comptroller = Comptroller.bind(comptrollerAddress);
-    const marketAddresses = comptroller.getAllMarkets();
-
-    if (marketAddresses !== null) {
-      for (let i = 0; i < marketAddresses.length; i++) {
-        const marketAddress = marketAddresses[i];
-
-        const rewardSpeed = getOrCreateRewardSpeed(rewardsDistributorAddress, marketAddress);
-        rewardSpeed.borrowSpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
-        rewardSpeed.supplySpeedPerBlockMantissa =
-          rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
-        rewardSpeed.save();
-      }
-    }
+    rewardsDistributor = createRewardDistributor(rewardsDistributorAddress, comptrollerAddress);
   }
 
-  return rewardsDistributor;
+  return rewardsDistributor as RewardsDistributor;
 };
+
+/**
+ * Creates and Token object with symbol and address
+ *
+ * @param asset Address of the token
+ * @returns Token
+ */
+export function getOrCreateToken(asset: Address): Token {
+  let tokenEntity = Token.load(getTokenId(asset));
+
+  if (!tokenEntity) {
+    const erc20 = BEP20.bind(asset);
+    tokenEntity = new Token(getTokenId(asset));
+    tokenEntity.address = asset;
+    tokenEntity.name = erc20.name();
+    tokenEntity.symbol = erc20.symbol();
+    tokenEntity.decimals = erc20.decimals();
+    tokenEntity.save();
+  }
+  return tokenEntity;
+}

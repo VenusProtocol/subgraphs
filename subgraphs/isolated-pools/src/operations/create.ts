@@ -1,4 +1,4 @@
-import { Address, BigInt } from '@graphprotocol/graph-ts';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
@@ -15,7 +15,7 @@ import {
 import {
   Account,
   AccountPool,
-  AccountVTokenBadDebt,
+  MarketPositionBadDebt,
   Market,
   Pool,
   RewardsDistributor,
@@ -23,7 +23,6 @@ import {
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
-import { BEP20 as BEP20Contract } from '../../generated/templates/VToken/BEP20';
 import { VToken as VTokenContract } from '../../generated/templates/VToken/VToken';
 import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '../constants';
 import {
@@ -37,16 +36,18 @@ import {
   vWETHLiquidStakedETHAddress,
   vWETHCoreAddress,
 } from '../constants/addresses';
+import { getOrCreateMarketReward, getOrCreateToken } from './getOrCreate';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
   getAccountPoolId,
-  getAccountVTokenId,
+  getMarketPositionId,
   getBadDebtEventId,
   getPoolId,
   getRewardsDistributorId,
   getTransactionEventId,
 } from '../utilities/ids';
+import valueOrFalseIfReverted from '../utilities/valueOrFalseIfReverted';
 
 export function createPool(comptroller: Address): Pool {
   const pool = new Pool(getPoolId(comptroller));
@@ -56,6 +57,7 @@ export function createPool(comptroller: Address): Pool {
   const poolData = poolRegistryContract.getPoolByComptroller(comptroller);
   const poolMetaData = poolRegistryContract.getVenusPoolMetadata(comptroller);
 
+  pool.address = comptroller;
   pool.name = poolData.name;
   pool.creator = poolData.creator;
   pool.blockPosted = poolData.blockPosted;
@@ -75,6 +77,7 @@ export function createPool(comptroller: Address): Pool {
 
 export function createAccount(accountAddress: Address): Account {
   const account = new Account(accountAddress);
+  account.address = accountAddress;
   account.countLiquidated = 0;
   account.countLiquidator = 0;
   account.hasBorrowed = false;
@@ -103,7 +106,7 @@ export function createMarket(
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
-  const underlyingContract = BEP20Contract.bind(Address.fromBytes(underlyingAddress));
+
   const market = new Market(vTokenAddress);
 
   market.address = vTokenAddress;
@@ -114,14 +117,14 @@ export function createMarket(
   market.interestRateModelAddress = vTokenContract.interestRateModel();
   market.symbol = vTokenContract.symbol();
   market.vTokenDecimals = vTokenContract.decimals();
+  const underlyingToken = getOrCreateToken(underlyingAddress);
+  market.underlyingToken = underlyingToken.id;
 
-  market.underlyingAddress = underlyingAddress;
-  market.underlyingName = underlyingContract.name();
-  market.underlyingSymbol = underlyingContract.symbol();
-  const underlyingDecimals = underlyingContract.decimals();
-  market.underlyingDecimals = underlyingDecimals;
-
-  const underlyingValue = getTokenPriceInCents(comptroller, vTokenAddress, underlyingDecimals);
+  const underlyingValue = getTokenPriceInCents(
+    comptroller,
+    vTokenAddress,
+    underlyingToken.decimals,
+  );
   market.lastUnderlyingPriceCents = underlyingValue;
   market.lastUnderlyingPriceBlockNumber = blockNumber;
   market.accessControlManagerAddress = vTokenContract.accessControlManager();
@@ -174,15 +177,17 @@ export function createMarket(
   }
 
   if (vTokenAddress.equals(vankrBNBLiquidStakedBNBAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
+    ).id;
     market.symbol = 'vankrBNB_LiquidStakedBNB';
-    market.underlyingName = 'Ankr Staked BNB ';
   }
 
   if (vTokenAddress.equals(vankrBNBDeFiAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
+    ).id;
     market.symbol = 'vankrBNB_DeFi';
-    market.underlyingName = 'Ankr Staked BNB ';
   }
 
   if (vTokenAddress.equals(vSnBNBAddress)) {
@@ -191,7 +196,9 @@ export function createMarket(
   }
 
   if (vTokenAddress.equals(vWETHLiquidStakedETHAddress) || vTokenAddress.equals(vWETHCoreAddress)) {
-    market.underlyingAddress = Address.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9');
+    market.underlyingToken = getOrCreateToken(
+      Address.fromBytes(Bytes.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9')),
+    ).id;
   }
 
   market.save();
@@ -282,30 +289,52 @@ export const createTransferTransaction = (event: Transfer): void => {
   transaction.save();
 };
 
-export const createAccountVTokenBadDebt = (
+export const createMarketPositionBadDebt = (
   marketAddress: Address,
   event: BadDebtIncreased,
 ): void => {
   const id = getBadDebtEventId(event.transaction.hash, event.transactionLogIndex);
 
-  const accountVTokenBadDebt = new AccountVTokenBadDebt(id);
-  const accountVTokenId = getAccountVTokenId(event.params.borrower, marketAddress);
-  accountVTokenBadDebt.account = accountVTokenId;
-  accountVTokenBadDebt.block = event.block.number;
-  accountVTokenBadDebt.amountMantissa = event.params.badDebtDelta;
-  accountVTokenBadDebt.timestamp = event.block.timestamp;
-  accountVTokenBadDebt.save();
+  const marketPositionBadDebt = new MarketPositionBadDebt(id);
+  const marketPositionId = getMarketPositionId(event.params.borrower, marketAddress);
+  marketPositionBadDebt.account = marketPositionId;
+  marketPositionBadDebt.block = event.block.number;
+  marketPositionBadDebt.amountMantissa = event.params.badDebtDelta;
+  marketPositionBadDebt.timestamp = event.block.timestamp;
+  marketPositionBadDebt.save();
 };
 
-export const createRewardDistributor = (
+export function createRewardDistributor(
   rewardsDistributorAddress: Address,
   comptrollerAddress: Address,
-): void => {
+): RewardsDistributor {
   const rewardDistributorContract = RewardDistributorContract.bind(rewardsDistributorAddress);
   const rewardToken = rewardDistributorContract.rewardToken();
   const id = getRewardsDistributorId(rewardsDistributorAddress);
   const rewardsDistributor = new RewardsDistributor(id);
+  rewardsDistributor.address = rewardsDistributorAddress;
   rewardsDistributor.pool = comptrollerAddress;
-  rewardsDistributor.reward = rewardToken;
+  rewardsDistributor.rewardToken = getOrCreateToken(rewardToken).id;
+  rewardsDistributor.isTimeBased = valueOrFalseIfReverted(
+    rewardDistributorContract.try_isTimeBased(),
+  );
   rewardsDistributor.save();
-};
+
+  // we get the current speeds for all known markets at this point in time
+  const comptroller = Comptroller.bind(comptrollerAddress);
+  const marketAddresses = comptroller.getAllMarkets();
+
+  if (marketAddresses !== null) {
+    for (let i = 0; i < marketAddresses.length; i++) {
+      const marketAddress = marketAddresses[i];
+
+      const rewardSpeed = getOrCreateMarketReward(rewardsDistributorAddress, marketAddress);
+      rewardSpeed.borrowSpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenBorrowSpeeds(marketAddress);
+      rewardSpeed.supplySpeedPerBlockMantissa =
+        rewardDistributorContract.rewardTokenSupplySpeeds(marketAddress);
+      rewardSpeed.save();
+    }
+  }
+  return rewardsDistributor;
+}

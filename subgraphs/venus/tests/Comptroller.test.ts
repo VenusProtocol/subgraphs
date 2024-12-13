@@ -76,10 +76,7 @@ describe('handleMarketListing', () => {
     };
     assertMarketDocument('id', vBnbAddress.toHex());
     assertMarketDocument('isListed', 'true');
-    assertMarketDocument('underlyingAddress', nativeAddress.toHex());
-    assertMarketDocument('underlyingDecimals', '18');
-    assertMarketDocument('underlyingName', 'BNB');
-    assertMarketDocument('underlyingSymbol', 'BNB');
+    assertMarketDocument('underlyingToken', nativeAddress.toHex());
     assertMarketDocument('lastUnderlyingPriceCents', '0');
     assertMarketDocument('lastUnderlyingPriceBlockNumber', '1');
     assertMarketDocument('borrowRateMantissa', '12678493');
@@ -100,6 +97,10 @@ describe('handleMarketListing', () => {
     assertMarketDocument('xvsSupplyStateIndex', '1000000000000000000000000000000000000');
     assertMarketDocument('xvsBorrowStateBlock', '1');
     assertMarketDocument('xvsSupplyStateBlock', '1');
+
+    assert.fieldEquals('Token', nativeAddress.toHex(), 'decimals', '18');
+    assert.fieldEquals('Token', nativeAddress.toHex(), 'name', 'BNB');
+    assert.fieldEquals('Token', nativeAddress.toHex(), 'symbol', 'BNB');
   });
 
   test('unlist vBNB market correctly', () => {

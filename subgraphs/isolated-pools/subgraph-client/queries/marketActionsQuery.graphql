@@ -1,7 +1,9 @@
 query MarketActions {
   marketActions {
     id
-    vToken
+    market {
+      address
+    }
     action
     pauseState
   }

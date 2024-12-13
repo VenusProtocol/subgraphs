@@ -14,13 +14,13 @@ const subgraphClient = createSubgraphClient(
 );
 
 const checkSupply = async (account: string, vToken: Contract) => {
-  const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+  const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
     marketId: vToken.address.toLowerCase(),
     accountId: account,
   });
   const accountContractBalance = await vToken.balanceOf(account);
 
-  expect(accountVToken?.vTokenBalanceMantissa || '0').to.equal(accountContractBalance.toString());
+  expect(marketPosition?.vTokenBalanceMantissa || '0').to.equal(accountContractBalance.toString());
   // on market
   const accrualBlockNumber = await vToken.accrualBlockNumber();
   const { market } = await subgraphClient.getMarketById(vToken.address.toLowerCase());
@@ -28,17 +28,17 @@ const checkSupply = async (account: string, vToken: Contract) => {
 };
 
 const checkBorrows = async (account: string, vToken: Contract) => {
-  const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+  const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
     marketId: vToken.address.toLowerCase(),
     accountId: account,
   });
   const accountContractBalance = await vToken.borrowBalanceStored(account);
   const borrowIndex = await vToken.borrowIndex();
-  expect(accountVToken?.storedBorrowBalanceMantissa || '0').to.equal(
+  expect(marketPosition?.storedBorrowBalanceMantissa || '0').to.equal(
     accountContractBalance.toString(),
   );
-  expect(accountVToken?.borrowIndex || '0').to.equal(borrowIndex);
-  expect(accountVToken.account.hasBorrowed).to.equal(true);
+  expect(marketPosition?.borrowIndex || '0').to.equal(borrowIndex);
+  expect(marketPosition.account.hasBorrowed).to.equal(true);
   // on market
   const accrualBlockNumber = await vToken.accrualBlockNumber();
   const { market } = await subgraphClient.getMarketById(vToken.address.toLowerCase());
@@ -340,11 +340,11 @@ describe('VToken events', function () {
         const supplyState = await comptroller.venusSupplyState(vToken.address);
         expect(market?.xvsSupplyStateIndex).to.equal(supplyState.index.toString());
         expect(market?.xvsSupplyStateBlock).to.equal(supplyState.block.toString());
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vToken.address.toLowerCase(),
           accountId: supplier2Signer._address,
         });
-        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(
+        expect(marketPosition.totalUnderlyingRedeemedMantissa).to.equal(
           formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0],
         ); // remove decimals
       }
@@ -380,27 +380,27 @@ describe('VToken events', function () {
       await waitForSubgraphToBeSynced(syncDelay);
 
       for (const vTokenAddress of [vFdusdToken.address, vUsdtToken.address, vDogeToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower1Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
 
       for (const vTokenAddress of [vFdusdToken.address, vUsdtToken.address, vDogeToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower2Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
 
       for (const vTokenAddress of [vFdusdToken.address, vUsdtToken.address, vDogeToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower3Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
     });
 
@@ -411,26 +411,26 @@ describe('VToken events', function () {
 
       await waitForSubgraphToBeSynced(syncDelay);
 
-      const { accountVToken: accountVTokenVUsdt } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVUsdt } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vUsdtToken.address.toLowerCase(),
           accountId: borrower1Signer._address,
         });
-      expect(accountVTokenVUsdt?.enteredMarket).to.equal(false);
+      expect(marketPositionVUsdt?.enteredMarket).to.equal(false);
 
-      const { accountVToken: accountVTokenVDoge } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVDoge } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vDogeToken.address.toLowerCase(),
           accountId: borrower2Signer._address,
         });
-      expect(accountVTokenVDoge?.enteredMarket).to.equal(false);
+      expect(marketPositionVDoge?.enteredMarket).to.equal(false);
 
-      const { accountVToken: accountVTokenVFusd } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVFusd } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vFdusdToken.address.toLowerCase(),
           accountId: borrower3Signer._address,
         });
-      expect(accountVTokenVFusd?.enteredMarket).to.equal(false);
+      expect(marketPositionVFusd?.enteredMarket).to.equal(false);
     });
 
     it('should update the borrower count on the market for new borrows', async function () {
@@ -496,11 +496,11 @@ describe('VToken events', function () {
       expect(market?.borrowerCount).to.equal('1');
       expect(market?.totalBorrowsMantissa).to.equal((await vDogeToken.totalBorrows()).toString());
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vDogeToken.address.toLowerCase(),
         accountId: borrower2Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.equal(doge20Usd.toString());
+      expect(marketPosition.totalUnderlyingRepaidMantissa).to.equal(doge20Usd.toString());
     });
 
     it('should handle accrue interest event', async function () {
@@ -559,7 +559,7 @@ describe('VToken events', function () {
 
       await waitForSubgraphToBeSynced(syncDelay);
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vDogeToken.address.toLowerCase(),
         accountId: borrower2Signer._address,
       });
@@ -570,13 +570,13 @@ describe('VToken events', function () {
       expect(market?.xvsBorrowStateIndex).to.equal(borrowState.index.toString());
       expect(market?.xvsBorrowStateBlock).to.equal(borrowState.block.toString());
 
-      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(
+      expect(marketPosition.storedBorrowBalanceMantissa).to.be.approximately(
         ethers.BigNumber.from(
           await vDogeToken.callStatic.borrowBalanceCurrent(borrower2Signer._address),
         ),
         1e11,
       );
-      expect(accountVToken?.borrowIndex || '0').to.equal(await vDogeToken.borrowIndex());
+      expect(marketPosition?.borrowIndex || '0').to.equal(await vDogeToken.borrowIndex());
 
       const { account: accountBorrower } = await subgraphClient.getAccountById(
         borrower2Signer._address,
@@ -594,13 +594,13 @@ describe('VToken events', function () {
       );
       expect(marketUpdated?.supplierCount).to.equal('6');
 
-      const { accountVToken: liquidatorAccountVToken } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: liquidatorMarketPosition } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           accountId: liquidator1Signer._address.toLowerCase(),
           marketId: vFdusdToken.address.toLowerCase(),
         });
 
-      expect(liquidatorAccountVToken.vTokenBalanceMantissa).to.be.approximately(
+      expect(liquidatorMarketPosition.vTokenBalanceMantissa).to.be.approximately(
         ethers.BigNumber.from(await vFdusdToken.balanceOf(liquidator1Signer._address)),
         1e11,
       );
@@ -611,8 +611,8 @@ describe('VToken events', function () {
     });
 
     it('should update the borrower count on the market for full repayment of borrow', async function () {
-      const { accountVToken: accountVTokenPrev } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: MarketPositionPrev } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vDogeToken.address.toLowerCase(),
           accountId: borrower2Signer._address,
         });
@@ -637,12 +637,12 @@ describe('VToken events', function () {
       expect(market?.xvsBorrowStateIndex).to.equal(borrowState.index.toString());
       expect(market?.xvsBorrowStateBlock).to.equal(borrowState.block.toString());
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vDogeToken.address.toLowerCase(),
         accountId: borrower2Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(
-        ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
+      expect(marketPosition.totalUnderlyingRepaidMantissa).to.be.approximately(
+        ethers.BigNumber.from(MarketPositionPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
         1e10,
       );
     });
@@ -662,19 +662,19 @@ describe('VToken events', function () {
 
         await waitForSubgraphToBeSynced(syncDelay);
 
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vToken.address.toLowerCase(),
           accountId: supplier._address,
         });
 
-        expect(accountVToken.vTokenBalanceMantissa).to.equal(supplierBalance.toString());
+        expect(marketPosition.vTokenBalanceMantissa).to.equal(supplierBalance.toString());
 
-        const { accountVToken: accountVTokenLiquidator } =
-          await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition: marketPositionLiquidator } =
+          await subgraphClient.getMarketPositionByAccountAndMarket({
             marketId: vToken.address.toLowerCase(),
             accountId: liquidator1Signer._address,
           });
-        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(
+        expect(marketPositionLiquidator.vTokenBalanceMantissa).to.equal(
           liquidatorBalance.add(supplierBalance).toString(),
         );
 
@@ -807,11 +807,11 @@ describe('VToken events', function () {
         const supplyState = await comptroller.venusSupplyState(vToken.address);
         expect(market?.xvsSupplyStateIndex).to.equal(supplyState.index.toString());
         expect(market?.xvsSupplyStateBlock).to.equal(supplyState.block.toString());
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vToken.address.toLowerCase(),
           accountId: supplier2Signer._address,
         });
-        expect(accountVToken.totalUnderlyingRedeemedMantissa).to.equal(
+        expect(marketPosition.totalUnderlyingRedeemedMantissa).to.equal(
           formatUnits(redeemAmount.mul(exchangeRate), 18).split('.')[0],
         ); // remove decimals
       }
@@ -844,27 +844,27 @@ describe('VToken events', function () {
       await waitForSubgraphToBeSynced(syncDelay);
 
       for (const vTokenAddress of [vUsdcToken.address, vWBnbToken.address, vEthToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower1Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
 
       for (const vTokenAddress of [vUsdcToken.address, vWBnbToken.address, vEthToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower2Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
 
       for (const vTokenAddress of [vUsdcToken.address, vWBnbToken.address, vEthToken.address]) {
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vTokenAddress.toLowerCase(),
           accountId: borrower3Signer._address,
         });
-        expect(accountVToken?.enteredMarket).to.equal(true);
+        expect(marketPosition?.enteredMarket).to.equal(true);
       }
     });
 
@@ -875,26 +875,26 @@ describe('VToken events', function () {
 
       await waitForSubgraphToBeSynced(syncDelay);
 
-      const { accountVToken: accountVTokenVWbnb } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVWbnb } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vWBnbToken.address.toLowerCase(),
           accountId: borrower1Signer._address,
         });
-      expect(accountVTokenVWbnb?.enteredMarket).to.equal(false);
+      expect(marketPositionVWbnb?.enteredMarket).to.equal(false);
 
-      const { accountVToken: accountVTokenVEth } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVEth } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vEthToken.address.toLowerCase(),
           accountId: borrower2Signer._address,
         });
-      expect(accountVTokenVEth?.enteredMarket).to.equal(false);
+      expect(marketPositionVEth?.enteredMarket).to.equal(false);
 
-      const { accountVToken: accountVTokenVUsdc } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: marketPositionVUsdc } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vUsdcToken.address.toLowerCase(),
           accountId: borrower3Signer._address,
         });
-      expect(accountVTokenVUsdc?.enteredMarket).to.equal(false);
+      expect(marketPositionVUsdc?.enteredMarket).to.equal(false);
     });
 
     it('should update the borrower count on the market for new borrows', async function () {
@@ -964,11 +964,11 @@ describe('VToken events', function () {
       expect(market?.xvsBorrowStateIndex).to.equal(borrowState.index.toString());
       expect(market?.xvsBorrowStateBlock).to.equal(borrowState.block.toString());
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vEthToken.address.toLowerCase(),
         accountId: borrower1Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.equal(eth20Usd.toString());
+      expect(marketPosition.totalUnderlyingRepaidMantissa).to.equal(eth20Usd.toString());
     });
 
     it('should handle accrue interest event', async function () {
@@ -1021,18 +1021,18 @@ describe('VToken events', function () {
         .liquidateBorrow(borrower1Signer._address, eth200Usd.toString(), vUsdcToken.address);
       await waitForSubgraphToBeSynced(syncDelay);
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vEthToken.address.toLowerCase(),
         accountId: borrower1Signer._address,
       });
 
-      expect(accountVToken.storedBorrowBalanceMantissa).to.be.approximately(
+      expect(marketPosition.storedBorrowBalanceMantissa).to.be.approximately(
         ethers.BigNumber.from(
           await vEthToken.callStatic.borrowBalanceCurrent(borrower1Signer._address),
         ),
         1e11,
       );
-      expect(accountVToken?.borrowIndex || '0').to.equal(await vEthToken.borrowIndex());
+      expect(marketPosition?.borrowIndex || '0').to.equal(await vEthToken.borrowIndex());
 
       const { account: accountBorrower } = await subgraphClient.getAccountById(
         borrower1Signer._address,
@@ -1055,8 +1055,8 @@ describe('VToken events', function () {
     });
 
     it('should update the borrower count on the market for full repayment of borrow', async function () {
-      const { accountVToken: accountVTokenPrev } =
-        await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition: MarketPositionPrev } =
+        await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vEthToken.address.toLowerCase(),
           accountId: borrower1Signer._address,
         });
@@ -1082,12 +1082,12 @@ describe('VToken events', function () {
       expect(market?.xvsBorrowStateIndex).to.equal(borrowState.index.toString());
       expect(market?.xvsBorrowStateBlock).to.equal(borrowState.block.toString());
 
-      const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+      const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
         marketId: vEthToken.address.toLowerCase(),
         accountId: borrower1Signer._address,
       });
-      expect(accountVToken.totalUnderlyingRepaidMantissa).to.be.approximately(
-        ethers.BigNumber.from(accountVTokenPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
+      expect(marketPosition.totalUnderlyingRepaidMantissa).to.be.approximately(
+        ethers.BigNumber.from(MarketPositionPrev.totalUnderlyingRepaidMantissa).add(repayAmount),
         1e10,
       );
     });
@@ -1113,19 +1113,19 @@ describe('VToken events', function () {
         expect(market?.xvsSupplyStateIndex).to.equal(supplyState.index.toString());
         expect(market?.xvsSupplyStateBlock).to.equal(supplyState.block.toString());
 
-        const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
           marketId: vToken.address.toLowerCase(),
           accountId: supplier._address,
         });
 
-        expect(accountVToken.vTokenBalanceMantissa).to.equal(supplierBalance.toString());
+        expect(marketPosition.vTokenBalanceMantissa).to.equal(supplierBalance.toString());
 
-        const { accountVToken: accountVTokenLiquidator } =
-          await subgraphClient.getAccountVTokenByAccountAndMarket({
+        const { marketPosition: marketPositionLiquidator } =
+          await subgraphClient.getMarketPositionByAccountAndMarket({
             marketId: vToken.address.toLowerCase(),
             accountId: liquidator1Signer._address,
           });
-        expect(accountVTokenLiquidator.vTokenBalanceMantissa).to.equal(
+        expect(marketPositionLiquidator.vTokenBalanceMantissa).to.equal(
           liquidatorBalance.add(supplierBalance).toString(),
         );
       }

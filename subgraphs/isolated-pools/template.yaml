@@ -172,7 +172,21 @@ templates:
         - name: RewardsDistributor
           file: ../../node_modules/@venusprotocol/isolated-pools/artifacts/contracts/Rewards/RewardsDistributor.sol/RewardsDistributor.json
       eventHandlers:
+        - event: MarketInitialized(indexed address)
+          handler: handleMarketInitialized
         - event: RewardTokenBorrowSpeedUpdated(indexed address,uint256)
           handler: handleRewardTokenBorrowSpeedUpdated
         - event: RewardTokenSupplySpeedUpdated(indexed address,uint256)
           handler: handleRewardTokenSupplySpeedUpdated
+        - event: RewardTokenSupplyIndexUpdated(indexed address)
+          handler: handleRewardTokenSupplyIndexUpdated
+        - event: RewardTokenBorrowIndexUpdated(indexed address,(uint256))
+          handler: handleRewardTokenBorrowIndexUpdated
+        - event: SupplyLastRewardingBlockUpdated(indexed address,uint32)
+          handler: handleSupplyLastRewardingBlockUpdated
+        - event: BorrowLastRewardingBlockUpdated(indexed address,uint32)
+          handler: handleBorrowLastRewardingBlockUpdated
+        - event: SupplyLastRewardingBlockTimestampUpdated(indexed address,uint256)
+          handler: handleSupplyLastRewardingBlockTimestampUpdated
+        - event: BorrowLastRewardingBlockTimestampUpdated(indexed address,uint256)
+          handler: handleBorrowLastRewardingBlockTimestampUpdated

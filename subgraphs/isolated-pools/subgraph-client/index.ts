@@ -5,15 +5,15 @@ import {
   AccountByIdDocument,
   AccountFromMarketDocument,
   AccountPositionsDocument,
-  AccountVTokenByAccountAndMarketDocument,
-  AccountVTokenByAccountAndMarketQuery,
-  AccountVTokenByAccountIdDocument,
-  AccountVTokensDocument,
-  AccountVTokensQuery,
-  AccountVTokensWithBorrowByMarketIdDocument,
-  AccountVTokensWithBorrowByMarketIdQuery,
-  AccountVTokensWithSupplyByMarketIdDocument,
-  AccountVTokensWithSupplyByMarketIdQuery,
+  MarketPositionByAccountAndMarketDocument,
+  MarketPositionByAccountAndMarketQuery,
+  MarketPositionByAccountIdDocument,
+  MarketPositionsDocument,
+  MarketPositionsQuery,
+  MarketPositionsWithBorrowByMarketIdDocument,
+  MarketPositionsWithBorrowByMarketIdQuery,
+  MarketPositionsWithSupplyByMarketIdDocument,
+  MarketPositionsWithSupplyByMarketIdQuery,
   MarketActionsDocument,
   MarketByIdDocument,
   MarketByIdQuery,
@@ -21,6 +21,7 @@ import {
   PoolByIdDocument,
   PoolsDocument,
   PoolsQuery,
+  RewardsDistributorsDocument,
 } from './.graphclient';
 
 class SubgraphClient {
@@ -66,14 +67,14 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokens({
+  async getMarketPositions({
     first = 100,
     skip = 0,
   }: {
     first: number;
     skip: number;
-  }): Promise<AccountVTokensQuery> {
-    const result = await this.query(AccountVTokensDocument, { first, skip } as unknown as {
+  }): Promise<MarketPositionsQuery> {
+    const result = await this.query(MarketPositionsDocument, { first, skip } as unknown as {
       first: string;
       skip: string;
     });
@@ -90,17 +91,17 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokensByAccountId(accountId: string) {
-    const result = await this.query(AccountVTokenByAccountIdDocument, { accountId });
+  async getMarketPositionsByAccountId(accountId: string) {
+    const result = await this.query(MarketPositionByAccountIdDocument, { accountId });
     return result;
   }
 
-  async getAccountVTokensWithSupplyByMarketId(
+  async getMarketPositionsWithSupplyByMarketId(
     marketId: string,
     page: number,
-  ): Promise<AccountVTokensWithSupplyByMarketIdQuery> {
+  ): Promise<MarketPositionsWithSupplyByMarketIdQuery> {
     const first = 100;
-    const result = await this.query(AccountVTokensWithSupplyByMarketIdDocument, {
+    const result = await this.query(MarketPositionsWithSupplyByMarketIdDocument, {
       marketId,
       first,
       skip: first * page,
@@ -112,12 +113,12 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokensWithBorrowByMarketId(
+  async getMarketPositionsWithBorrowByMarketId(
     marketId: string,
     page: number,
-  ): Promise<AccountVTokensWithBorrowByMarketIdQuery> {
+  ): Promise<MarketPositionsWithBorrowByMarketIdQuery> {
     const first = 100;
-    const result = await this.query(AccountVTokensWithBorrowByMarketIdDocument, {
+    const result = await this.query(MarketPositionsWithBorrowByMarketIdDocument, {
       marketId,
       first,
       skip: first * page,
@@ -129,21 +130,25 @@ class SubgraphClient {
     return result;
   }
 
-  async getAccountVTokenByAccountAndMarket({
+  async getMarketPositionByAccountAndMarket({
     accountId,
     marketId,
   }: {
     accountId: string;
     marketId: string;
-  }): Promise<AccountVTokenByAccountAndMarketQuery> {
-    const result = await this.query(AccountVTokenByAccountAndMarketDocument, {
+  }): Promise<MarketPositionByAccountAndMarketQuery> {
+    const result = await this.query(MarketPositionByAccountAndMarketDocument, {
       id: `${accountId}${marketId.replace('0x', '')}`,
     });
-    return result || { accountVToken: null };
+    return result || { MarketPosition: null };
   }
 
   async getAccountPositions(id: string) {
     const result = await this.query(AccountPositionsDocument, { id });
+    return result;
+  }
+  async getRewardsDistributors() {
+    const result = await this.query(RewardsDistributorsDocument, {});
     return result;
   }
 }
