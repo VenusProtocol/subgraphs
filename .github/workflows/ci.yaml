@@ -179,7 +179,7 @@ jobs:
 
   release-etherfi-promo:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint]
+    needs: [unit-test, lint, release-cross-chain-governance]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -211,7 +211,7 @@ jobs:
 
   release-isolated-pools:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint, integration-test-isolated-pools]
+    needs: [unit-test, lint, integration-test-isolated-pools, release-etherfi-promo]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -243,7 +243,7 @@ jobs:
 
   release-protocol-reserve:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint]
+    needs: [unit-test, lint, release-isolated-pools]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -275,7 +275,7 @@ jobs:
 
   release-core-pool:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint, integration-test-core-pool]
+    needs: [unit-test, lint, integration-test-core-pool, release-protocol-reserve]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -307,7 +307,7 @@ jobs:
 
   release-governance:
     runs-on: ubuntu-20.04
-    needs: [unit-test, lint, integration-test-governance]
+    needs: [unit-test, lint, integration-test-governance, release-core-pool]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
