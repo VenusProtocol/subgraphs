@@ -61,6 +61,10 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       tokenEntity.decimals = 18;
       tokenEntity.save();
       market.underlyingToken = tokenEntity.id;
+    } else if (marketAddress.equals(vwbETHAddress)) {
+      market.underlyingToken = getOrCreateToken(
+        Address.fromBytes(Bytes.fromHexString('0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f')),
+      ).id;
     } else {
       market.underlyingToken = getOrCreateToken(vTokenContract.underlying()).id;
     }
@@ -92,12 +96,6 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     );
     market.totalBorrowsMantissa = zeroBigInt32;
     market.reservesMantissa = zeroBigInt32;
-
-    if (marketAddress.equals(vwbETHAddress)) {
-      market.underlyingToken = getOrCreateToken(
-        Address.fromBytes(Bytes.fromHexString('0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f')),
-      ).id;
-    }
 
     if (marketAddress.equals(vTRXAddressAddress)) {
       market.symbol = 'vTRXOLD';
