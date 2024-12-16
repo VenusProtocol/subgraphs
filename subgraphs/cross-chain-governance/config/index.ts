@@ -25,6 +25,7 @@ export const getNetwork = () => {
     'optimismSepolia',
     'optimism',
     'baseSepolia',
+    'base',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -151,6 +152,16 @@ const main = () => {
       startBlockOmnichainGovernanceExecutor: '18470846',
       accessControlManagerAddress: baseSepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '16737038',
+    },
+    base: {
+      network: 'base',
+      layerZeroChainId: 184,
+      omnichainGovernanceOwnerAddress: '0x8BA591f72a90fb379b9a82087b190d51b226F0a9',
+      startBlockOmnichainGovernanceOwner: '23531514',
+      omnichainGovernanceExecutorAddress: '0xE7C56EaA4b6eafCe787B3E1AB8BCa0BC6CBDDb9e',
+      startBlockOmnichainGovernanceExecutor: '23531230',
+      accessControlManagerAddress: '0x9E6CeEfDC6183e4D0DF8092A9B90cDF659687daB',
+      accessControlManagerStartBlock: '23212000',
     },
   };
 
