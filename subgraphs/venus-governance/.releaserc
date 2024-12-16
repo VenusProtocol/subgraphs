@@ -87,7 +87,7 @@
     },
     {
       "name": "testnet",
-      "prerelease": "testnet"
+      "prerelease": true
     }
   ]
 }
