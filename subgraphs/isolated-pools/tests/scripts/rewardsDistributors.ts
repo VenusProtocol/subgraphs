@@ -20,7 +20,7 @@ const checkRewardsDistributors = async (
       console.log('failed to query isTimeBased');
     }
     assertEqual(rd, isTimeBased, 'isTimeBased');
-    assertEqual(rd, await rewardDistributor.rewardToken(), 'rewardTokenAddress', getAddress);
+    assertEqual(rd.rewardToken, await rewardDistributor.rewardToken(), 'address', getAddress);
 
     for (const marketReward of rd.marketRewards) {
       const [borrowSpeedPerBlockMantissa, supplySpeedPerBlockMantissa] = await Promise.all([
