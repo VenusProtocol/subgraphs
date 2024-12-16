@@ -30,16 +30,17 @@ import {
 } from './create';
 import { getMarketPosition, getMarket } from './get';
 
+// BIFI was delisted before it was listed. Creation ignores this market.
 export const getOrCreateMarket = (
   vTokenAddress: Address,
   comptrollerAddress: Address,
   blockNumber: BigInt,
-): Market => {
+): Market | null => {
   let market = getMarket(vTokenAddress);
   if (!market) {
     market = createMarket(vTokenAddress, comptrollerAddress, blockNumber);
   }
-  return market as Market;
+  return market;
 };
 
 export const getOrCreatePool = (comptroller: Address): Pool => {
