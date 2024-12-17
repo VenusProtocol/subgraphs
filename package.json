@@ -100,7 +100,7 @@
   },
   "dependencies": {
     "@0xsequence/multicall": "^1.10.15",
-    "dotenv": "^16.4.5",
-    "semantic-release-yarn": "^3.0.2"
+    "@semantic-release/npm": "^12.0.1",
+    "dotenv": "^16.4.5"
   }
 }
