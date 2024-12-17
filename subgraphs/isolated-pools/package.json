@@ -51,7 +51,7 @@
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
-    "@venusprotocol/subgraph-utils": "workspace:^",
+    "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "semantic-release": "^23.1.1",

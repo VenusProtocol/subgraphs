@@ -5706,7 +5706,7 @@ __metadata:
     "@graphprotocol/graph-cli": ^0.80.0
     "@layerzerolabs/solidity-examples": ^1.0.0
     "@venusprotocol/governance-contracts": 2.5.0-dev.6
-    "@venusprotocol/subgraph-utils": "workspace:^"
+    "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     semantic-release: ^23.1.1
@@ -5747,7 +5747,7 @@ __metadata:
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.80.0
     "@venusprotocol/governance-contracts": 2.5.0-dev.3
-    "@venusprotocol/subgraph-utils": "workspace:^"
+    "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     semantic-release: ^23.1.1
@@ -5764,7 +5764,7 @@ __metadata:
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.80.0
     "@venusprotocol/isolated-pools": 3.7.0-dev.6
-    "@venusprotocol/subgraph-utils": "workspace:^"
+    "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
     semantic-release: ^23.1.1
@@ -5835,7 +5835,7 @@ __metadata:
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.80.0
-    "@venusprotocol/subgraph-utils": "workspace:^"
+    "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     semantic-release: ^23.1.1
     semantic-release-monorepo: ^8.0.2
@@ -5894,7 +5894,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@venusprotocol/subgraph-utils@workspace:^, @venusprotocol/subgraph-utils@workspace:packages/utils":
+"@venusprotocol/subgraph-utils@0.0.0, @venusprotocol/subgraph-utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@venusprotocol/subgraph-utils@workspace:packages/utils"
   dependencies:
