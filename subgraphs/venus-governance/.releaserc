@@ -58,7 +58,7 @@
       }
     ],
     [
-      "semantic-release-yarn",
+      "@semantic-release/npm",
       {
         "npmPublish": false
       }
