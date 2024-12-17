@@ -61,7 +61,7 @@ enum MarketPauseGuardianAction {
 type MarketAction @entity {
     "Concatentation of address and action"
     id: Bytes!
-    "vToken Address affected"
+    "Market affected"
     market: Market!
     "Action (Borrow, Mint)"
     action: String!
