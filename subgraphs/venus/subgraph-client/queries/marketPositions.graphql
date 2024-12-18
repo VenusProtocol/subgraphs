@@ -1,5 +1,5 @@
-query AccountVTokens($first: Int, $skip: Int)  {
-  accountVTokens(first: $first, skip: $skip) {
+query MarketPositions($first: Int, $skip: Int)  {
+  marketPositions(first: $first, skip: $skip) {
     id
     market {
       id

@@ -1,0 +1,24 @@
+query RewardsDistributors {
+  rewardsDistributors {
+    id
+    address
+    rewardToken {
+      address
+    }
+    isTimeBased
+    marketRewards {
+      id
+      market {
+        address
+      }
+      borrowSpeedPerBlockMantissa
+      supplySpeedPerBlockMantissa
+      supplyStateIndex
+      supplyStateBlockNumberOrTimestamp
+      borrowStateIndex
+      borrowStateBlockNumberOrTimestamp
+      supplyLastRewardingBlockTimestamp
+      borrowLastRewardingBlockTimestamp
+    }
+  }
+}

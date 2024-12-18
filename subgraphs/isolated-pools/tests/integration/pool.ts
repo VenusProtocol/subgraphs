@@ -131,7 +131,7 @@ describe('Pools', function () {
 
     expect(marketActions.length).to.be.equal(1);
     marketActions.forEach(ma => {
-      expect(ma.vToken).to.be.equal(markets[1].id);
+      expect(ma.market.address).to.be.equal(markets[1].id);
       expect(ma.action).to.be.equal('REDEEM');
       expect(ma.pauseState).to.be.equal(true);
     });

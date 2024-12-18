@@ -24,13 +24,13 @@ const countSuppliers = async (
   let supplierCount = 0;
   let page = 0;
   while (page >= 0) {
-    const { accountVTokens } = await subgraphClient.getAccountVTokensWithSupplyByMarketId({
+    const { marketPositions } = await subgraphClient.getMarketPositionsWithSupplyByMarketId({
       marketId: marketAddress,
       page,
     });
-    supplierCount += accountVTokens.length;
+    supplierCount += marketPositions.length;
 
-    if (accountVTokens.length == 0) {
+    if (marketPositions.length == 0) {
       page = -1;
     } else {
       page += 1;
@@ -47,14 +47,14 @@ const countBorrower = async (
   let borrowerCount = 0;
   let page = 0;
   while (page >= 0) {
-    const { accountVTokens } = await subgraphClient.getAccountVTokensWithBorrowByMarketId({
+    const { marketPositions } = await subgraphClient.getMarketPositionsWithBorrowByMarketId({
       marketId: marketAddress,
       page,
     });
 
-    borrowerCount += accountVTokens.length;
+    borrowerCount += marketPositions.length;
 
-    if (accountVTokens.length == 0) {
+    if (marketPositions.length == 0) {
       page = -1;
     } else {
       page += 1;
@@ -155,10 +155,10 @@ const checkMarkets = async (
     assertEqual(market, name, 'name');
     assertEqual(market, symbol, 'symbol');
     assertEqual(market, decimals, 'vTokenDecimals');
-    assertEqual(market, underlyingAddress, 'underlyingAddress', getAddress);
-    assertEqual(market, underlyingName, 'underlyingName');
-    assertEqual(market, underlyingSymbol, 'underlyingSymbol');
-    assertEqual(market, underlyingDecimals, 'underlyingDecimals');
+    assertEqual(market.underlyingToken, underlyingAddress, 'address', getAddress);
+    assertEqual(market.underlyingToken, underlyingName, 'name');
+    assertEqual(market.underlyingToken, underlyingSymbol, 'symbol');
+    assertEqual(market.underlyingToken, underlyingDecimals, 'decimals');
 
     assertEqual(market, marketStorage.isListed, 'isListed');
     assertEqual(market, marketStorage.collateralFactorMantissa, 'collateralFactorMantissa');

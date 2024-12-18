@@ -8,7 +8,7 @@ import { valueOrNotAvailableIntIfReverted } from '../utilities';
   - If you call the vUSDC contract on bscscan it comes back (2.0 * 10^14)
   - The real value is ~0.02. So vDAI is off by 10^28, and vUSDC 10^16
   How to calculate for tokens with different decimals
-  - Must div by tokenDecimals, 10^market.underlyingDecimals
+  - Must div by tokenDecimals, 10^market.underlyingToken.decimals
   - Must multiply by vtokenDecimals, 10^8
   - Must div by mantissa, 10^18
 */

@@ -29,7 +29,7 @@ dataSources:
     name: OmnichainGovernanceExecutor
     network: {{ network }}
     source:
-      address: "{{ omnichainExecutorOwnerAddress }}"
+      address: "{{ omnichainGovernanceExecutorAddress }}"
       abi: OmnichainGovernanceExecutor
       startBlock: {{ startBlockOmnichainGovernanceExecutor }}
     mapping:

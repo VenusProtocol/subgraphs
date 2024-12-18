@@ -58,7 +58,7 @@
       }
     ],
     [
-      "semantic-release-yarn",
+      "@semantic-release/npm",
       {
         "npmPublish": false
       }
@@ -76,7 +76,8 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "./prepare.sh"
+        "prepareCmd": "./prepare.sh",
+        "successCmd": "./deploy.sh"
       }
     ]
   ],
@@ -85,8 +86,8 @@
       "name": "main"
     },
     {
-      "name": "pre-*",
-      "prerelease": "pre"
+      "name": "testnet",
+      "prerelease": true
     }
   ]
 }

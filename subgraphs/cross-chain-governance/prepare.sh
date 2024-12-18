@@ -1,4 +1,7 @@
 #!/bin/bash
 # Install from root
 cd ../..
-yarn
+
+git pull
+
+YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn

@@ -11,7 +11,7 @@ import {
 } from '../../generated/schema';
 import { BIGINT_ZERO, indexProposalTypeConstant } from '../constants';
 import {
-  omnichainExecutorOwnerAddress,
+  omnichainGovernanceExecutorAddress,
   omnichainGovernanceOwnerAddress,
 } from '../constants/addresses';
 import { layerZeroChainId } from '../constants/config';
@@ -29,11 +29,11 @@ export const getOrCreateFunctionRegistry = (signature: Bytes): FunctionRegistry 
 
 export const getOrCreateGovernance = (): Governance => {
   let governance = Governance.load(getGovernanceId());
-  const governanceContract = OmnichainGovernanceExecutor.bind(omnichainExecutorOwnerAddress);
+  const governanceContract = OmnichainGovernanceExecutor.bind(omnichainGovernanceExecutorAddress);
   if (!governance) {
     governance = new Governance(getGovernanceId());
     governance.address = omnichainGovernanceOwnerAddress;
-    governance.executor = omnichainExecutorOwnerAddress;
+    governance.executor = omnichainGovernanceExecutorAddress;
     governance.guardian = governanceContract.guardian();
     governance.srcChainId = governanceContract.srcChainId();
     governance.layerZeroChainId = layerZeroChainId;

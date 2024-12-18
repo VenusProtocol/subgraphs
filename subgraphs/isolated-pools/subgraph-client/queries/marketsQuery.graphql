@@ -15,9 +15,12 @@ query Markets {
     reservesMantissa
     supplyRateMantissa
     symbol
-    underlyingAddress
-    underlyingName
-    underlyingSymbol
+    underlyingToken {
+      address
+      name
+      symbol
+      decimals
+    }
     vTokenDecimals
     borrowCapMantissa
     accrualBlockNumber
@@ -26,7 +29,6 @@ query Markets {
     reserveFactorMantissa
     lastUnderlyingPriceCents
     lastUnderlyingPriceBlockNumber
-    underlyingDecimals
     supplyCapMantissa
     accessControlManagerAddress
     supplierCount

@@ -1,5 +1,5 @@
 import { TokenConverterConfig } from '../../generated/schema';
-import { Transfer } from '../../generated/templates/Token/ERC20';
+import { Transfer } from '../../generated/templates/ERC20/ERC20';
 import { getTokenConverter } from '../operations/get';
 
 export function handleTransferIn(event: Transfer): void {

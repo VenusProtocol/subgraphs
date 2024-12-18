@@ -13,13 +13,13 @@ const subgraphClient = createSubgraphClient(
 export const checkMarket = async (marketAddress: string) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
   const comptroller = await ethers.getContractAt('Comptroller', await vToken.comptroller());
-  const { accountVTokens: accountVTokensSupply } =
-    await subgraphClient.getAccountVTokensWithSupplyByMarketId(marketAddress.toLowerCase(), 0);
-  const { accountVTokens: accountVTokensBorrow } =
-    await subgraphClient.getAccountVTokensWithBorrowByMarketId(marketAddress.toLowerCase(), 0);
+  const { marketPositions: marketPositionsSupply } =
+    await subgraphClient.getMarketPositionsWithSupplyByMarketId(marketAddress.toLowerCase(), 0);
+  const { marketPositions: marketPositionsBorrow } =
+    await subgraphClient.getMarketPositionsWithBorrowByMarketId(marketAddress.toLowerCase(), 0);
   const { market } = await subgraphClient.getMarketById(marketAddress.toLowerCase());
-  expect(market?.supplierCount).to.equal(accountVTokensSupply.length.toString());
-  expect(market?.borrowerCount).to.equal(accountVTokensBorrow.length.toString());
+  expect(market?.supplierCount).to.equal(marketPositionsSupply.length.toString());
+  expect(market?.borrowerCount).to.equal(marketPositionsBorrow.length.toString());
 
   expect(market?.totalBorrowsMantissa).to.equal(await vToken.totalBorrows());
   expect(market?.totalSupplyVTokenMantissa).to.equal(await vToken.totalSupply());
@@ -41,7 +41,7 @@ export const checkMarket = async (marketAddress: string) => {
   expect(market?.reservesMantissa).to.equal(await vToken.totalReserves());
   expect(market?.supplyRateMantissa).to.equal(await vToken.supplyRatePerBlock());
   expect(market?.symbol).to.equal(await vToken.symbol());
-  expect(getAddress(market?.underlyingAddress)).to.equal(await vToken.underlying());
+  expect(getAddress(market?.underlyingToken.address)).to.equal(await vToken.underlying());
   expect(market?.borrowCapMantissa).to.equal(await comptroller.borrowCaps(marketAddress));
   expect(market?.supplyCapMantissa).to.equal(await comptroller.supplyCaps(marketAddress));
   expect(market?.accrualBlockNumber).to.equal(await vToken.accrualBlockNumber());
@@ -50,22 +50,22 @@ export const checkMarket = async (marketAddress: string) => {
   return market;
 };
 
-export const checkAccountVToken = async (
+export const checkMarketPosition = async (
   accountAddress: string,
   marketAddress: string,
   transaction: TransactionResponse,
 ) => {
   const vToken = await ethers.getContractAt('VToken', marketAddress);
 
-  const { accountVToken } = await subgraphClient.getAccountVTokenByAccountAndMarket({
+  const { marketPosition } = await subgraphClient.getMarketPositionByAccountAndMarket({
     accountId: accountAddress.toLowerCase(),
     marketId: marketAddress.toLowerCase(),
   });
-  expect(accountVToken!.accrualBlockNumber).to.equal(transaction.blockNumber);
-  expect(accountVToken!.vTokenBalanceMantissa).to.equal(await vToken.balanceOf(accountAddress));
-  expect(accountVToken!.storedBorrowBalanceMantissa).to.equal(
+  expect(marketPosition!.accrualBlockNumber).to.equal(transaction.blockNumber);
+  expect(marketPosition!.vTokenBalanceMantissa).to.equal(await vToken.balanceOf(accountAddress));
+  expect(marketPosition!.storedBorrowBalanceMantissa).to.equal(
     await vToken.borrowBalanceStored(accountAddress),
   );
-  expect(accountVToken!.borrowIndex).to.equal(await vToken.borrowIndex());
-  expect(accountVToken!.enteredMarket).to.equal(await vToken.checkMembership(accountAddress));
+  expect(marketPosition!.borrowIndex).to.equal(await vToken.borrowIndex());
+  expect(marketPosition!.enteredMarket).to.equal(await vToken.checkMembership(accountAddress));
 };

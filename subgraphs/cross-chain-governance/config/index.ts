@@ -25,6 +25,7 @@ export const getNetwork = () => {
     'optimismSepolia',
     'optimism',
     'baseSepolia',
+    'base',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -42,7 +43,7 @@ const main = () => {
       layerZeroChainId: 10102,
       omnichainGovernanceOwnerAddress: '0xd9fEc8238711935D6c8d79Bef2B9546ef23FC046',
       startBlockOmnichainGovernanceOwner: '0',
-      omnichainExecutorOwnerAddress: '0xeAd789bd8Ce8b9E94F5D0FCa99F8787c7e758817',
+      omnichainGovernanceExecutorAddress: '0xeAd789bd8Ce8b9E94F5D0FCa99F8787c7e758817',
       startBlockOmnichainGovernanceExecutor: '0',
       accessControlManagerAddress: '0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9',
       accessControlManagerStartBlock: '0',
@@ -52,7 +53,7 @@ const main = () => {
       layerZeroChainId: 10161,
       omnichainGovernanceOwnerAddress: sepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '6049722',
-      omnichainExecutorOwnerAddress: sepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress: sepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '6049686',
       accessControlManagerAddress: sepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '4204345',
@@ -62,7 +63,7 @@ const main = () => {
       layerZeroChainId: 101,
       omnichainGovernanceOwnerAddress: ethereumDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '20037893',
-      omnichainExecutorOwnerAddress: ethereumDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress: ethereumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '20032813',
       accessControlManagerAddress: ethereumDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '18641314',
@@ -72,7 +73,8 @@ const main = () => {
       layerZeroChainId: 202,
       omnichainGovernanceOwnerAddress: opBnBMainnetDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '26957477',
-      omnichainExecutorOwnerAddress: opBnBMainnetDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress:
+        opBnBMainnetDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '26952944',
       accessControlManagerAddress: opBnBMainnetDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '10895878',
@@ -82,7 +84,7 @@ const main = () => {
       layerZeroChainId: 10231,
       omnichainGovernanceOwnerAddress: arbitrumSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '54236728',
-      omnichainExecutorOwnerAddress:
+      omnichainGovernanceExecutorAddress:
         arbitrumSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '54235048',
       accessControlManagerAddress: arbitrumSepoliaDeployments.addresses.AccessControlManager,
@@ -93,7 +95,7 @@ const main = () => {
       layerZeroChainId: 110,
       omnichainGovernanceOwnerAddress: arbitrumDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '221744426',
-      omnichainExecutorOwnerAddress: arbitrumDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress: arbitrumDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '221743592',
       accessControlManagerAddress: arbitrumDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '201597544',
@@ -103,7 +105,8 @@ const main = () => {
       layerZeroChainId: 10248,
       omnichainGovernanceOwnerAddress: zkSyncSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '3771652',
-      omnichainExecutorOwnerAddress: zkSyncSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress:
+        zkSyncSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '3771603',
       accessControlManagerAddress: zkSyncSepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '3445364',
@@ -113,7 +116,7 @@ const main = () => {
       layerZeroChainId: 165,
       omnichainGovernanceOwnerAddress: zkSyncDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '48278537',
-      omnichainExecutorOwnerAddress: zkSyncDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress: zkSyncDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '48277850',
       accessControlManagerAddress: zkSyncDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '42301361',
@@ -123,7 +126,7 @@ const main = () => {
       layerZeroChainId: 10232,
       omnichainGovernanceOwnerAddress: optimismSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '18679072',
-      omnichainExecutorOwnerAddress:
+      omnichainGovernanceExecutorAddress:
         optimismSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '18676643',
       accessControlManagerAddress: optimismSepoliaDeployments.addresses.AccessControlManager,
@@ -134,7 +137,7 @@ const main = () => {
       layerZeroChainId: 111,
       omnichainGovernanceOwnerAddress: optimismDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '127723947',
-      omnichainExecutorOwnerAddress: optimismDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress: optimismDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '127723676',
       accessControlManagerAddress: optimismDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '125490536',
@@ -144,10 +147,21 @@ const main = () => {
       layerZeroChainId: 10245,
       omnichainGovernanceOwnerAddress: baseSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '18475319',
-      omnichainExecutorOwnerAddress: baseSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress:
+        baseSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '18470846',
       accessControlManagerAddress: baseSepoliaDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '16737038',
+    },
+    base: {
+      network: 'base',
+      layerZeroChainId: 184,
+      omnichainGovernanceOwnerAddress: '0x8BA591f72a90fb379b9a82087b190d51b226F0a9',
+      startBlockOmnichainGovernanceOwner: '23531514',
+      omnichainGovernanceExecutorAddress: '0xE7C56EaA4b6eafCe787B3E1AB8BCa0BC6CBDDb9e',
+      startBlockOmnichainGovernanceExecutor: '23531230',
+      accessControlManagerAddress: '0x9E6CeEfDC6183e4D0DF8092A9B90cDF659687daB',
+      accessControlManagerStartBlock: '23212000',
     },
   };
 
