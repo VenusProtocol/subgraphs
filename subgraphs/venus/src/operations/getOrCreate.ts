@@ -61,10 +61,6 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       tokenEntity.decimals = 18;
       tokenEntity.save();
       market.underlyingToken = tokenEntity.id;
-    } else if (marketAddress.equals(vwbETHAddress)) {
-      market.underlyingToken = getOrCreateToken(
-        Address.fromBytes(Bytes.fromHexString('0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f')),
-      ).id;
     } else {
       market.underlyingToken = getOrCreateToken(vTokenContract.underlying()).id;
     }
@@ -167,6 +163,19 @@ export function getOrCreateMarketPosition(
   return { entity: marketPosition, created };
 }
 
+function getOrCreateWrappedEthToken(): Token {
+  const underlyingTokenAddress = Address.fromBytes(
+    Bytes.fromHexString('0x9c37E59Ba22c4320547F00D4f1857AF1abd1Dd6f'),
+  );
+  const tokenEntity = new Token(getTokenId(underlyingTokenAddress));
+  tokenEntity.address = underlyingTokenAddress;
+  tokenEntity.name = 'Wrapped Binance Beacon ETH';
+  tokenEntity.symbol = 'wBETH';
+  tokenEntity.decimals = 18;
+  tokenEntity.save();
+  return tokenEntity;
+}
+
 /**
  * Creates and Token object with symbol and address
  *
@@ -177,13 +186,17 @@ export function getOrCreateToken(asset: Address): Token {
   let tokenEntity = Token.load(getTokenId(asset));
 
   if (!tokenEntity) {
-    const erc20 = BEP20.bind(asset);
-    tokenEntity = new Token(getTokenId(asset));
-    tokenEntity.address = asset;
-    tokenEntity.name = erc20.name();
-    tokenEntity.symbol = erc20.symbol();
-    tokenEntity.decimals = erc20.decimals();
-    tokenEntity.save();
+    if (asset.equals(vwbETHAddress)) {
+      return getOrCreateWrappedEthToken();
+    } else {
+      const erc20 = BEP20.bind(asset);
+      tokenEntity = new Token(getTokenId(asset));
+      tokenEntity.address = asset;
+      tokenEntity.name = erc20.name();
+      tokenEntity.symbol = erc20.symbol();
+      tokenEntity.decimals = erc20.decimals();
+      tokenEntity.save();
+    }
   }
   return tokenEntity;
 }
