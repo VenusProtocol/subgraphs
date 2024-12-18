@@ -29,6 +29,7 @@ import {
   createRewardDistributor,
 } from './create';
 import { getMarketPosition, getMarket } from './get';
+import { vBifiAddress } from '../constants/addresses';
 
 // BIFI was delisted before it was listed. Creation ignores this market.
 export const getOrCreateMarket = (
@@ -81,31 +82,34 @@ export const getOrCreateMarketPosition = (
   marketAddress: Address,
   poolAddress: Address,
   enteredMarket: boolean = false, // eslint-disable-line @typescript-eslint/no-inferrable-types
-): GetOrCreateMarketPositionReturn => {
-  let marketPosition = getMarketPosition(accountAddress, marketAddress);
-  let created = false;
-  if (!marketPosition) {
-    created = true;
-    const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
-    marketPosition = new MarketPosition(marketPositionId);
-    marketPosition.account = accountAddress;
-    marketPosition.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
-    marketPosition.market = marketAddress;
-    marketPosition.enteredMarket = enteredMarket;
-    marketPosition.accrualBlockNumber = zeroBigInt32;
+): GetOrCreateMarketPositionReturn | null => {
+  if (marketAddress.notEqual(vBifiAddress)) {
+    let marketPosition = getMarketPosition(accountAddress, marketAddress);
+    let created = false;
+    if (!marketPosition) {
+      created = true;
+      const marketPositionId = getMarketPositionId(accountAddress, marketAddress);
+      marketPosition = new MarketPosition(marketPositionId);
+      marketPosition.account = accountAddress;
+      marketPosition.accountPool = getOrCreateAccountPool(accountAddress, poolAddress).id;
+      marketPosition.market = marketAddress;
+      marketPosition.enteredMarket = enteredMarket;
+      marketPosition.accrualBlockNumber = zeroBigInt32;
 
-    const vTokenContract = VTokenContract.bind(marketAddress);
+      const vTokenContract = VTokenContract.bind(marketAddress);
 
-    marketPosition.vTokenBalanceMantissa = zeroBigInt32;
-    marketPosition.storedBorrowBalanceMantissa = zeroBigInt32;
-    marketPosition.borrowIndex = vTokenContract.borrowIndex();
+      marketPosition.vTokenBalanceMantissa = zeroBigInt32;
+      marketPosition.storedBorrowBalanceMantissa = zeroBigInt32;
+      marketPosition.borrowIndex = vTokenContract.borrowIndex();
 
-    marketPosition.totalUnderlyingRedeemedMantissa = zeroBigInt32;
-    marketPosition.totalUnderlyingRepaidMantissa = zeroBigInt32;
-    marketPosition.enteredMarket = false;
-    marketPosition.save();
+      marketPosition.totalUnderlyingRedeemedMantissa = zeroBigInt32;
+      marketPosition.totalUnderlyingRepaidMantissa = zeroBigInt32;
+      marketPosition.enteredMarket = false;
+      marketPosition.save();
+    }
+    return { entity: marketPosition, created };
   }
-  return { entity: marketPosition, created };
+  return null;
 };
 
 export function getOrCreateMarketReward(
@@ -153,8 +157,8 @@ export function getOrCreateAnkrStakedBNBToken(): Token {
   if (!tokenEntity) {
     tokenEntity = new Token(getTokenId(underlyingTokenAddress));
     tokenEntity.address = underlyingTokenAddress;
-    tokenEntity.name = 'Ankr Staked BNB';
-    tokenEntity.symbol = 'ankrBNB ';
+    tokenEntity.name = 'Ankr Staked BNB ';
+    tokenEntity.symbol = 'ankrBNB';
     tokenEntity.decimals = 18;
     tokenEntity.save();
   }

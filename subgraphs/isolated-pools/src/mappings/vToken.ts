@@ -60,9 +60,11 @@ export function handleMint(event: Mint): void {
 
   // and finally we update the market total supply
   const vTokenContract = VTokenContract.bind(vTokenAddress);
-  const market = getMarket(vTokenAddress)!;
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+    market.save();
+  }
 }
 
 /*  Account supplies vTokens into market and receives underlying asset in exchange
@@ -86,13 +88,17 @@ export function handleRedeem(event: Redeem): void {
     event.block.number,
     currentBalance,
   );
-  marketPosition.totalUnderlyingRedeemedMantissa =
-    marketPosition.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
-  // and finally we update the market total supply
-  const vTokenContract = VTokenContract.bind(vTokenAddress);
-  const market = getMarket(vTokenAddress)!;
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-  market.save();
+  if (marketPosition) {
+    marketPosition.totalUnderlyingRedeemedMantissa =
+      marketPosition.totalUnderlyingRedeemedMantissa.plus(event.params.redeemAmount);
+    // and finally we update the market total supply
+    const vTokenContract = VTokenContract.bind(vTokenAddress);
+    const market = getMarket(vTokenAddress);
+    if (market) {
+      market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+      market.save();
+    }
+  }
 }
 
 /* Borrow assets from the protocol. All values either BNB or BEP20
@@ -116,10 +122,11 @@ export function handleBorrow(event: Borrow): void {
 
   createBorrowTransaction(event);
 
-  const market = getMarket(vTokenAddress)!;
-
-  market.totalBorrowsMantissa = event.params.totalBorrows;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.totalBorrowsMantissa = event.params.totalBorrows;
+    market.save();
+  }
 }
 
 /* Repay some amount borrowed. Anyone can repay anyones balance
@@ -145,14 +152,15 @@ export function handleRepayBorrow(event: RepayBorrow): void {
     event.block.number,
     event.params.accountBorrows,
   );
-  const market = getMarket(vTokenAddress)!;
-  market.totalBorrowsMantissa = event.params.totalBorrows;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market && marketPosition) {
+    market.totalBorrowsMantissa = event.params.totalBorrows;
+    market.save();
 
-  marketPosition.totalUnderlyingRepaidMantissa = marketPosition.totalUnderlyingRepaidMantissa.plus(
-    event.params.repayAmount,
-  );
-  createRepayBorrowTransaction(event);
+    marketPosition.totalUnderlyingRepaidMantissa =
+      marketPosition.totalUnderlyingRepaidMantissa.plus(event.params.repayAmount);
+    createRepayBorrowTransaction(event);
+  }
 }
 
 /*
@@ -173,42 +181,50 @@ export function handleRepayBorrow(event: RepayBorrow): void {
  */
 export function handleLiquidateBorrow(event: LiquidateBorrow): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  const vTokenContract = VTokenContract.bind(vTokenAddress);
-  const liquidator = getOrCreateAccount(event.params.liquidator);
-  liquidator.countLiquidator = liquidator.countLiquidator + 1;
-  liquidator.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    const vTokenContract = VTokenContract.bind(vTokenAddress);
+    const liquidator = getOrCreateAccount(event.params.liquidator);
+    liquidator.countLiquidator = liquidator.countLiquidator + 1;
+    liquidator.save();
 
-  const borrower = getOrCreateAccount(event.params.borrower);
-  borrower.countLiquidated = borrower.countLiquidated + 1;
-  borrower.save();
+    const borrower = getOrCreateAccount(event.params.borrower);
+    borrower.countLiquidated = borrower.countLiquidated + 1;
+    borrower.save();
 
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-  market.save();
+    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+    market.save();
 
-  createLiquidateBorrowTransaction(event);
+    createLiquidateBorrowTransaction(event);
+  }
 }
 
 export function handleProtocolSeize(event: ProtocolSeize): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  const vTokenContract = VTokenContract.bind(vTokenAddress);
-  market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    const vTokenContract = VTokenContract.bind(vTokenAddress);
+    market.totalSupplyVTokenMantissa = vTokenContract.totalSupply();
+    market.save();
+  }
 }
 
 export function handleAccrueInterest(event: AccrueInterest): void {
   const market = updateMarket(event.address, event.block.number);
-  market.totalBorrowsMantissa = event.params.totalBorrows;
-  market.borrowIndex = event.params.borrowIndex;
-  market.save();
+  if (market) {
+    market.totalBorrowsMantissa = event.params.totalBorrows;
+    market.borrowIndex = event.params.borrowIndex;
+    market.save();
+  }
 }
 
 export function handleNewReserveFactor(event: NewReserveFactor): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.reserveFactorMantissa = event.params.newReserveFactorMantissa;
+    market.save();
+  }
 }
 
 /* Transferring of vTokens
@@ -272,46 +288,58 @@ export function handleTransfer(event: Transfer): void {
 
 export function handleNewMarketInterestRateModel(event: NewMarketInterestRateModel): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.interestRateModelAddress = event.params.newInterestRateModel;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.interestRateModelAddress = event.params.newInterestRateModel;
+    market.save();
+  }
 }
 
 export function handleBadDebtIncreased(event: BadDebtIncreased): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.badDebtMantissa = event.params.badDebtNew;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.badDebtMantissa = event.params.badDebtNew;
+    market.save();
+  }
 
   createMarketPositionBadDebt(vTokenAddress, event);
 }
 
 export function handleBadDebtRecovered(event: BadDebtRecovered): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.badDebtMantissa = event.params.badDebtNew;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.badDebtMantissa = event.params.badDebtNew;
+    market.save();
+  }
 }
 
 export function handleNewAccessControlManager(event: NewAccessControlManager): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.accessControlManagerAddress = event.params.newAccessControlManager;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.accessControlManagerAddress = event.params.newAccessControlManager;
+    market.save();
+  }
 }
 
 export function handleReservesAdded(event: ReservesAdded): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.reservesMantissa = event.params.newTotalReserves;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.reservesMantissa = event.params.newTotalReserves;
+    market.save();
+  }
 }
 
 export function handleSpreadReservesReduced(event: SpreadReservesReduced): void {
   const vTokenAddress = event.address;
-  const market = getMarket(vTokenAddress)!;
-  market.reservesMantissa = event.params.newTotalReserves;
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.reservesMantissa = event.params.newTotalReserves;
+    market.save();
+  }
 }
 
 export function handleHealBorrow(event: HealBorrow): void {
@@ -323,7 +351,9 @@ export function handleHealBorrow(event: HealBorrow): void {
     zeroBigInt32,
   );
   const vTokenContract = VTokenContract.bind(vTokenAddress);
-  const market = getMarket(vTokenAddress)!;
-  market.totalBorrowsMantissa = vTokenContract.totalBorrows();
-  market.save();
+  const market = getMarket(vTokenAddress);
+  if (market) {
+    market.totalBorrowsMantissa = vTokenContract.totalBorrows();
+    market.save();
+  }
 }

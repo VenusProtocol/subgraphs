@@ -19,7 +19,7 @@ export const updateMarketPositionAccrualBlockNumber = (
   marketAddress: Address,
   poolAddress: Address,
   blockNumber: BigInt,
-): MarketPosition => {
+): MarketPosition | null => {
   getOrCreateAccount(accountAddress);
   const marketPosition = getOrCreateMarketPosition(
     accountAddress,
@@ -27,9 +27,12 @@ export const updateMarketPositionAccrualBlockNumber = (
     poolAddress,
     false,
   );
-  marketPosition.entity.accrualBlockNumber = blockNumber;
-  marketPosition.entity.save();
-  return marketPosition.entity as MarketPosition;
+  if (marketPosition) {
+    marketPosition.entity.accrualBlockNumber = blockNumber;
+    marketPosition.entity.save();
+    return marketPosition.entity;
+  }
+  return null;
 };
 
 export const updateMarketPositionSupply = (
@@ -37,31 +40,36 @@ export const updateMarketPositionSupply = (
   marketAddress: Address,
   blockNumber: BigInt,
   accountSupplyBalanceMantissa: BigInt,
-): MarketPosition => {
-  const market = getMarket(marketAddress)!;
-  const marketPosition = updateMarketPositionAccrualBlockNumber(
-    accountAddress,
-    marketAddress,
-    Address.fromBytes(market.pool),
-    blockNumber,
-  );
-  const _vTokenBalanceMantissa = marketPosition.vTokenBalanceMantissa;
-  marketPosition.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
-  marketPosition.save();
+): MarketPosition | null => {
+  const market = getMarket(marketAddress);
+  if (market) {
+    const marketPosition = updateMarketPositionAccrualBlockNumber(
+      accountAddress,
+      marketAddress,
+      Address.fromBytes(market.pool),
+      blockNumber,
+    );
+    if (marketPosition) {
+      const _vTokenBalanceMantissa = marketPosition.vTokenBalanceMantissa;
+      marketPosition.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
+      marketPosition.save();
 
-  if (
-    _vTokenBalanceMantissa.equals(zeroBigInt32) &&
-    accountSupplyBalanceMantissa.notEqual(zeroBigInt32)
-  ) {
-    market.supplierCount = market.supplierCount.plus(oneBigInt);
-  } else if (
-    accountSupplyBalanceMantissa.equals(zeroBigInt32) &&
-    _vTokenBalanceMantissa.notEqual(zeroBigInt32)
-  ) {
-    market.supplierCount = market.supplierCount.minus(oneBigInt);
+      if (
+        _vTokenBalanceMantissa.equals(zeroBigInt32) &&
+        accountSupplyBalanceMantissa.notEqual(zeroBigInt32)
+      ) {
+        market.supplierCount = market.supplierCount.plus(oneBigInt);
+      } else if (
+        accountSupplyBalanceMantissa.equals(zeroBigInt32) &&
+        _vTokenBalanceMantissa.notEqual(zeroBigInt32)
+      ) {
+        market.supplierCount = market.supplierCount.minus(oneBigInt);
+      }
+      market.save();
+    }
+    return marketPosition;
   }
-  market.save();
-  return marketPosition as MarketPosition;
+  return null;
 };
 
 export const updateMarketPositionBorrow = (
@@ -69,35 +77,45 @@ export const updateMarketPositionBorrow = (
   marketAddress: Address,
   blockNumber: BigInt,
   accountBorrows: BigInt,
-): MarketPosition => {
-  const market = getMarket(marketAddress)!;
-  const marketPosition = updateMarketPositionAccrualBlockNumber(
-    accountAddress,
-    marketAddress,
-    Address.fromBytes(market.pool),
-    blockNumber,
-  );
-  const _storedBorrowBalanceMantissa = marketPosition.storedBorrowBalanceMantissa;
-  marketPosition.storedBorrowBalanceMantissa = accountBorrows;
-  const vTokenContract = VToken.bind(marketAddress);
-  marketPosition.borrowIndex = vTokenContract.borrowIndex();
-  marketPosition.save();
+): MarketPosition | null => {
+  const market = getMarket(marketAddress);
+  if (market) {
+    const marketPosition = updateMarketPositionAccrualBlockNumber(
+      accountAddress,
+      marketAddress,
+      Address.fromBytes(market.pool),
+      blockNumber,
+    );
+    if (marketPosition) {
+      const _storedBorrowBalanceMantissa = marketPosition.storedBorrowBalanceMantissa;
+      marketPosition.storedBorrowBalanceMantissa = accountBorrows;
+      const vTokenContract = VToken.bind(marketAddress);
+      marketPosition.borrowIndex = vTokenContract.borrowIndex();
+      marketPosition.save();
 
-  if (_storedBorrowBalanceMantissa.equals(zeroBigInt32) && accountBorrows.notEqual(zeroBigInt32)) {
-    market.borrowerCount = market.borrowerCount.plus(oneBigInt);
-  } else if (
-    accountBorrows.equals(zeroBigInt32) &&
-    _storedBorrowBalanceMantissa.notEqual(zeroBigInt32)
-  ) {
-    market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+      if (
+        _storedBorrowBalanceMantissa.equals(zeroBigInt32) &&
+        accountBorrows.notEqual(zeroBigInt32)
+      ) {
+        market.borrowerCount = market.borrowerCount.plus(oneBigInt);
+      } else if (
+        accountBorrows.equals(zeroBigInt32) &&
+        _storedBorrowBalanceMantissa.notEqual(zeroBigInt32)
+      ) {
+        market.borrowerCount = market.borrowerCount.minus(oneBigInt);
+      }
+      market.save();
+      return marketPosition;
+    }
   }
-  market.save();
-  return marketPosition as MarketPosition;
+  return null;
 };
 
-export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Market => {
-  const market = getMarket(vTokenAddress)!;
-
+export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Market | null => {
+  const market = getMarket(vTokenAddress);
+  if (!market) {
+    return null;
+  }
   // Only updateMarket if it has not been updated this block
   if (market.accrualBlockNumber.equals(blockNumber)) {
     return market as Market;
@@ -135,7 +153,7 @@ export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Marke
   );
 
   market.save();
-  return market as Market;
+  return market;
 };
 
 export function updatePoolMetadata(
