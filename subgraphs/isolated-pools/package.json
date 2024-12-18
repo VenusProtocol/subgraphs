@@ -27,6 +27,7 @@
     "deploy:optimismSepolia": "yarn prepare:optimismSepolia  && yarn codegen && yarn graph deploy --studio venus-il-optimism-sepolia",
     "deploy:optimism": "yarn prepare:optimism  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-optimism",
     "deploy:baseSepolia": "yarn prepare:baseSepolia  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-base-sepolia",
+    "deploy:base": "yarn prepare:base  && yarn codegen && yarn graph deploy --studio venus-isolated-pools-base",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
@@ -40,13 +41,14 @@
     "prepare:optimismSepolia": "NETWORK=optimismSepolia yarn ts-node config/index.ts",
     "prepare:optimism": "NETWORK=optimism yarn ts-node config/index.ts",
     "prepare:baseSepolia": "NETWORK=baseSepolia yarn ts-node config/index.ts",
+    "prepare:base": "NETWORK=base yarn ts-node config/index.ts",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && yarn graphclient build --dir ./subgraph-client",
     "pretty": "prettier —-write '**/*.ts'",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "yarn hardhat test tests/integration/index.ts --network localhost"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.7.0-dev.6"
+    "@venusprotocol/isolated-pools": "3.7.1-dev.1"
   },
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
