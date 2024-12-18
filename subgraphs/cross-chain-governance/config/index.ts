@@ -9,6 +9,7 @@ import sepoliaDeployments from '@venusprotocol/governance-contracts/deployments/
 import zkSyncDeployments from '@venusprotocol/governance-contracts/deployments/zksyncmainnet_addresses.json';
 import zkSyncSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/zksyncsepolia_addresses.json';
 import baseSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/basesepolia_addresses.json';
+import baseMainnetDeployments from '@venusprotocol/governance-contracts/deployments/basemainnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -156,11 +157,11 @@ const main = () => {
     base: {
       network: 'base',
       layerZeroChainId: 184,
-      omnichainGovernanceOwnerAddress: '0x8BA591f72a90fb379b9a82087b190d51b226F0a9',
+      omnichainGovernanceOwnerAddress: baseMainnetDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '23531514',
-      omnichainGovernanceExecutorAddress: '0xE7C56EaA4b6eafCe787B3E1AB8BCa0BC6CBDDb9e',
+      omnichainGovernanceExecutorAddress: baseMainnetDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '23531230',
-      accessControlManagerAddress: '0x9E6CeEfDC6183e4D0DF8092A9B90cDF659687daB',
+      accessControlManagerAddress: baseMainnetDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '23212000',
     },
   };
