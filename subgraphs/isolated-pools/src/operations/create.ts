@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
@@ -33,8 +33,15 @@ import {
   vagEURAddress,
   vankrBNBDeFiAddress,
   vankrBNBLiquidStakedBNBAddress,
+  vWETHLiquidStakedETHAddress,
+  vWETHCoreAddress,
 } from '../constants/addresses';
-import { getOrCreateMarketReward, getOrCreateToken } from './getOrCreate';
+import {
+  getOrCreateMarketReward,
+  getOrCreateToken,
+  getOrCreateWrappedEthToken,
+  getOrCreateAnkrStakedBNBToken,
+} from './getOrCreate';
 import { getTokenPriceInCents, valueOrNotAvailableIntIfReverted } from '../utilities';
 import {
   getAccountId,
@@ -175,22 +182,22 @@ export function createMarket(
   }
 
   if (vTokenAddress.equals(vankrBNBLiquidStakedBNBAddress)) {
-    market.underlyingToken = getOrCreateToken(
-      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
-    ).id;
+    market.underlyingToken = getOrCreateAnkrStakedBNBToken().id;
     market.symbol = 'vankrBNB_LiquidStakedBNB';
   }
 
   if (vTokenAddress.equals(vankrBNBDeFiAddress)) {
-    market.underlyingToken = getOrCreateToken(
-      Address.fromBytes(Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9')),
-    ).id;
+    market.underlyingToken = getOrCreateAnkrStakedBNBToken().id;
     market.symbol = 'vankrBNB_DeFi';
   }
 
   if (vTokenAddress.equals(vSnBNBAddress)) {
     market.name = 'Venus slisBNB (Liquid Staked BNB)';
     market.symbol = 'vslisBNB_LiquidStakedBNB';
+  }
+
+  if (vTokenAddress.equals(vWETHLiquidStakedETHAddress) || vTokenAddress.equals(vWETHCoreAddress)) {
+    market.underlyingToken = getOrCreateWrappedEthToken().id;
   }
 
   market.save();
