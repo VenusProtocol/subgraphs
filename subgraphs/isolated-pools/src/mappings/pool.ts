@@ -41,9 +41,11 @@ export function handleMarketSupported(event: MarketSupported): void {
 }
 
 export function handleMarketUnlisted(event: MarketUnlisted): void {
-  const market = getMarket(event.params.vToken)!;
-  market.isListed = false;
-  market.save();
+  const market = getMarket(event.params.vToken);
+  if (market) {
+    market.isListed = false;
+    market.save();
+  }
 }
 
 export function handleMarketEntered(event: MarketEntered): void {
