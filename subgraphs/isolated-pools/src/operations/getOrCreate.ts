@@ -28,7 +28,6 @@ import {
   createPool,
   createRewardDistributor,
 } from './create';
-import { vWETHLiquidStakedETHAddress, vWETHCoreAddress } from '../constants/addresses';
 import { getMarketPosition, getMarket } from './get';
 
 // BIFI was delisted before it was listed. Creation ignores this market.
@@ -146,7 +145,23 @@ export const getOrCreateRewardDistributor = (
   return rewardsDistributor as RewardsDistributor;
 };
 
-function getOrCreateWrappedEthToken(): Token {
+export function getOrCreateAnkrStakedBNBToken(): Token {
+  const underlyingTokenAddress = Address.fromBytes(
+    Bytes.fromHexString('0x5269b7558D3d5E113010Ef1cFF0901c367849CC9'),
+  );
+  let tokenEntity = Token.load(getTokenId(underlyingTokenAddress));
+  if (!tokenEntity) {
+    tokenEntity = new Token(getTokenId(underlyingTokenAddress));
+    tokenEntity.address = underlyingTokenAddress;
+    tokenEntity.name = 'Ankr Staked BNB';
+    tokenEntity.symbol = 'ankrBNB ';
+    tokenEntity.decimals = 18;
+    tokenEntity.save();
+  }
+  return tokenEntity;
+}
+
+export function getOrCreateWrappedEthToken(): Token {
   const underlyingTokenAddress = Address.fromBytes(
     Bytes.fromHexString('0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9'),
   );
@@ -161,7 +176,6 @@ function getOrCreateWrappedEthToken(): Token {
   }
   return tokenEntity;
 }
-
 /**
  * Creates and Token object with symbol and address
  *
@@ -170,9 +184,6 @@ function getOrCreateWrappedEthToken(): Token {
  */
 export function getOrCreateToken(asset: Address): Token {
   let tokenEntity = Token.load(getTokenId(asset));
-  if (asset.equals(vWETHCoreAddress) || asset.equals(vWETHLiquidStakedETHAddress)) {
-    return getOrCreateWrappedEthToken();
-  }
 
   if (!tokenEntity) {
     const erc20 = BEP20.bind(asset);
