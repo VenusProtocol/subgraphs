@@ -28,7 +28,6 @@ import {
   createPool,
   createRewardDistributor,
 } from './create';
-import { vWETHLiquidStakedETHAddress, vWETHCoreAddress } from '../constants/addresses';
 import { getMarketPosition, getMarket } from './get';
 import { vBifiAddress } from '../constants/addresses';
 
@@ -189,9 +188,6 @@ export function getOrCreateWrappedEthToken(): Token {
  */
 export function getOrCreateToken(asset: Address): Token {
   let tokenEntity = Token.load(getTokenId(asset));
-  if (asset.equals(vWETHCoreAddress) || asset.equals(vWETHLiquidStakedETHAddress)) {
-    return getOrCreateWrappedEthToken();
-  }
 
   if (!tokenEntity) {
     const erc20 = BEP20.bind(asset);
