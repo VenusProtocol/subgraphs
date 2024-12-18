@@ -33,8 +33,6 @@ import {
   vagEURAddress,
   vankrBNBDeFiAddress,
   vankrBNBLiquidStakedBNBAddress,
-  vWETHLiquidStakedETHAddress,
-  vWETHCoreAddress,
 } from '../constants/addresses';
 import {
   getOrCreateMarketReward,
@@ -194,10 +192,6 @@ export function createMarket(
   if (vTokenAddress.equals(vSnBNBAddress)) {
     market.name = 'Venus slisBNB (Liquid Staked BNB)';
     market.symbol = 'vslisBNB_LiquidStakedBNB';
-  }
-
-  if (vTokenAddress.equals(vWETHLiquidStakedETHAddress) || vTokenAddress.equals(vWETHCoreAddress)) {
-    market.underlyingToken = getOrCreateWrappedEthToken().id;
   }
 
   market.save();
