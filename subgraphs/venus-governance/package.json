@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/governance-subgraph",
-  "version": "1.0.2",
+  "version": "1.1.0-testnet.2",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -28,13 +28,14 @@
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
-    "@venusprotocol/governance-contracts": "2.5.0-dev.3",
-    "@venusprotocol/subgraph-utils": "workspace:^",
+    "@venusprotocol/governance-contracts": "2.7.0",
+    "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
     "urql": "^3.0.3"
-  }
+  },
+  "stableVersion": "1.0.2"
 }

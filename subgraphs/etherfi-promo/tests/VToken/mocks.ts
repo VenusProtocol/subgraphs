@@ -39,7 +39,7 @@ export const createBep20Mock = (
   ]);
 };
 
-export const createAccountVTokenBalanceOfMock = (
+export const createMarketPositionBalanceOfMock = (
   vTokenAddress: Address,
   underlyingAddress: Address,
   accountAddress: Address,

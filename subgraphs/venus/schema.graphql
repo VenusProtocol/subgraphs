@@ -4,6 +4,8 @@ The Comptroller type has protocol level variables stored
 type Comptroller @entity {
     "ID is set to comptroller address"
     id: Bytes!
+    "Comptroller Address"
+    address: Bytes!
     "Address of price oracle the comptroller uses"
     priceOracle: Bytes!
     "Factor used to determine repayAmount for liquidating"
@@ -15,13 +17,30 @@ type Comptroller @entity {
 }
 
 """
+ERC20 Token
+"""
+type Token @entity(immutable: true) {
+    "Address of the asset"
+    id: Bytes!
+    "Address of the asset"
+    address: Bytes!
+    "Name of the asset"
+    name: String!
+    "Symbol of the asset"
+    symbol: String
+    "Decimals of the asset"
+    decimals: Int!
+}
+
+"""
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
     "VToken address"
     id: Bytes!
+    "Vtoken Address"
+    address: Bytes!
     "vToken decimal length"
-    #Fields that match Venus API
     vTokenDecimals: Int!
     "Name of the vToken"
     name: String!
@@ -47,14 +66,8 @@ type Market @entity {
     totalBorrowsMantissa: BigInt!
     "Total vToken supplied"
     totalSupplyVTokenMantissa: BigInt!
-    "Underlying token address"
-    underlyingAddress: Bytes!
-    "Underlying token name"
-    underlyingName: String!
-    "Underlying token symbol"
-    underlyingSymbol: String!
-    "Underlying token decimal length"
-    underlyingDecimals: Int!
+    "Underlying Token"
+    underlyingToken: Token!
     "XVS Supply Distribution Block"
     xvsSupplyStateBlock:  BigInt!
     "XVS Supply Distribution Index"
@@ -68,7 +81,6 @@ type Market @entity {
     "The rate at which XVS is distributed to the corresponding borrow market (per block)"
     xvsBorrowSpeed: BigInt!
 
-    # Fields that are not in Venus api
     "Block the market is updated to"
     accrualBlockNumber: BigInt!
     "The history of the markets borrow index return (Think S&P 500)"
@@ -89,7 +101,7 @@ type Market @entity {
     borrowerCount: BigInt!
 
     "Accounts who participate in this market"
-    accounts: [AccountVToken!]! @derivedFrom(field:"market")
+    accounts: [MarketPosition!]! @derivedFrom(field:"market")
 }
 
 """
@@ -97,10 +109,12 @@ Account is an BNB address, with a list of all vToken markets the account has
 participated in, along with liquidation information.
 """
 type Account @entity {
-    "User BNB address"
+    "Account address"
     id: Bytes!
+    "Account address"
+    address: Bytes!
     "Array of VTokens user is in"
-    tokens: [AccountVToken!]! @derivedFrom(field: "account")
+    tokens: [MarketPosition!]! @derivedFrom(field: "account")
     "Count user has been liquidated"
     countLiquidated: Int!
     "Count user has liquidated others"
@@ -110,10 +124,9 @@ type Account @entity {
 }
 
 """
-AccountVToken is a single account within a single vToken market, with data such
-as interest earned or paid
+MarketPosition is a single account within a single vToken market
 """
-type AccountVToken @entity {
+type MarketPosition @entity {
     "Concatenation of VToken address and user address"
     id: Bytes!
     "Relation to market"

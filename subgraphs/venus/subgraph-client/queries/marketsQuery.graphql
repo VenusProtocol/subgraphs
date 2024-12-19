@@ -4,10 +4,12 @@ query Markets {
     name
     symbol
     vTokenDecimals
-    underlyingAddress
-    underlyingName
-    underlyingSymbol
-    underlyingDecimals
+    underlyingToken {
+      name
+      symbol
+      address
+      decimals
+    }
     isListed
     borrowRateMantissa
     cashMantissa

@@ -1,0 +1,9 @@
+query MarketPositionsWithSupplyByMarketId($first: Int, $skip: Int, $marketId: String!) {
+  marketPositions(first: $first, skip: $skip, where: { market: $marketId, vTokenBalanceMantissa_gt: 0 }) {
+    id
+    account {
+      id
+    }
+    vTokenBalanceMantissa
+  }
+}

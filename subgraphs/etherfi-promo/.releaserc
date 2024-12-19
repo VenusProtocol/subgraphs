@@ -58,7 +58,7 @@
       }
     ],
     [
-      "semantic-release-yarn",
+      "@semantic-release/npm",
       {
         "npmPublish": false
       }
@@ -72,6 +72,13 @@
         ],
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "./prepare.sh",
+        "successCmd": "./deploy.sh"
+      }
     ]
   ],
   "branches": [
@@ -79,8 +86,8 @@
       "name": "main"
     },
     {
-      "name": "pre-*",
-      "prerelease": "pre"
+      "name": "testnet",
+      "prerelease": true
     }
   ]
 }

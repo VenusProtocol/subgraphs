@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/protocol-reserve-subgraph",
-  "version": "1.1.0",
+  "version": "1.2.0-testnet.6",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -33,11 +33,12 @@
   "devDependencies": {
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
-    "@venusprotocol/subgraph-utils": "workspace:^",
+    "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "semantic-release": "^23.1.1",
     "semantic-release-monorepo": "^8.0.2",
     "ts-node": "^10.9.2",
     "urql": "^3.0.3"
-  }
+  },
+  "stableVersion": "1.1.0"
 }

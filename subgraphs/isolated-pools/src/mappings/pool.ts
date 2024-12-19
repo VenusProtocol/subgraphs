@@ -24,7 +24,7 @@ import {
   getOrCreateRewardDistributor,
 } from '../operations/getOrCreate';
 import {
-  updateOrCreateAccountVToken,
+  updateOrCreateMarketPosition,
   updateOrCreateMarketAction,
 } from '../operations/updateOrCreate';
 import Box from '../utilities/box';
@@ -41,9 +41,11 @@ export function handleMarketSupported(event: MarketSupported): void {
 }
 
 export function handleMarketUnlisted(event: MarketUnlisted): void {
-  const market = getMarket(event.params.vToken)!;
-  market.isListed = false;
-  market.save();
+  const market = getMarket(event.params.vToken);
+  if (market) {
+    market.isListed = false;
+    market.save();
+  }
 }
 
 export function handleMarketEntered(event: MarketEntered): void {
@@ -53,7 +55,7 @@ export function handleMarketEntered(event: MarketEntered): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
+  updateOrCreateMarketPosition(
     accountAddress,
     vTokenAddress,
     poolAddress,
@@ -69,7 +71,7 @@ export function handleMarketExited(event: MarketExited): void {
 
   getOrCreateAccount(accountAddress);
 
-  updateOrCreateAccountVToken(
+  updateOrCreateMarketPosition(
     accountAddress,
     vTokenAddress,
     poolAddress,
