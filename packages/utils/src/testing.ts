@@ -13,7 +13,7 @@ export const assertEqual = (
       subgraphValue,
       `
       ${key} incorrect on ${
-        entity.id
+        entity.address
       } Contract: ${contractValue?.toString()}; Subgraph: ${subgraphValue};`,
     );
   } catch (e) {
