@@ -155,6 +155,24 @@ templates:
           handler: handleBadDebtRecovered
         - event: HealBorrow(indexed address,indexed address,uint256)
           handler: handleHealBorrow
+  - name: Underlying
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: BEP20
+    mapping:
+      abis:
+        - name: BEP20
+          file: ../../packages/isolated-pools-abis/Bep20.json
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/underlying.ts
+      entities:
+        - Token
+      eventHandlers:
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
   - name: RewardsDistributor
     kind: ethereum/contract
     network: {{ network }}
