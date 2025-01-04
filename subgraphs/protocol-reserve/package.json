@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/protocol-reserve-subgraph",
-  "version": "1.1.1-testnet.1",
+  "version": "1.1.1-testnet.2",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
