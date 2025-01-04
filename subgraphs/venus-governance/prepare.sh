@@ -4,4 +4,4 @@ cd ../..
 
 git pull
 
-YARN_ENABLE_IMMUTABLE_INSTALLS=true yarn
+YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
