@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/etherfi-promo-subgraph",
-  "version": "1.0.2",
+  "version": "1.0.3-testnet.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
