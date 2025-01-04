@@ -38,7 +38,7 @@ type Pool @entity {
 """
 ERC20 Token
 """
-type Token @entity(immutable: true) {
+type Token @entity {
     "Address of the asset"
     id: Bytes!
     "Address of the asset"
