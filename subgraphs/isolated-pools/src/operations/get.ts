@@ -11,7 +11,7 @@ import {
 export const getPool = (comptroller: Address): Pool | null => {
   const pool = Pool.load(getPoolId(comptroller));
   if (!pool) {
-    log.error('Pool {} not found', [comptroller.toString()]);
+    log.error('Pool {} not found', [comptroller.toHexString()]);
   }
   return pool as Pool;
 };

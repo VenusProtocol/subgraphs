@@ -2,7 +2,10 @@ import { Address, BigInt } from '@graphprotocol/graph-ts';
 
 import { Comptroller as ComptrollerContract } from '../../generated/PoolRegistry/Comptroller';
 import { PoolRegistry as PoolRegistryContract } from '../../generated/PoolRegistry/PoolRegistry';
-import { VToken as VTokenDataSource } from '../../generated/templates';
+import {
+  Underlying as UnderlyingDataSource,
+  VToken as VTokenDataSource,
+} from '../../generated/templates';
 import {
   BadDebtIncreased,
   Borrow,
@@ -111,6 +114,7 @@ export function createMarket(
   const vTokenContract = VTokenContract.bind(vTokenAddress);
   const poolComptroller = Comptroller.bind(comptroller);
   const underlyingAddress = vTokenContract.underlying();
+  UnderlyingDataSource.create(underlyingAddress);
 
   const market = new Market(vTokenAddress);
 
