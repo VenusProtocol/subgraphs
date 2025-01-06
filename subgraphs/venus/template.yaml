@@ -131,6 +131,12 @@ templates:
           handler: handleLiquidateBorrow
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
+          calls:
+            getCash: VToken[event.address].getCash()
+            borrowRatePerBlock: VToken[event.address].borrowRatePerBlock()
+            supplyRatePerBlock: VToken[event.address].supplyRatePerBlock()
+            exchangeRateStored: VToken[event.address].exchangeRateStored()
+            totalReserves: VToken[event.address].totalReserves()
         - event: NewReserveFactor(uint256,uint256)
           handler: handleNewReserveFactor
         - event: Transfer(indexed address,indexed address,uint256)
@@ -139,8 +145,16 @@ templates:
           handler: handleNewMarketInterestRateModel
         - event: ReservesAdded(address,uint256,uint256)
           handler: handleReservesAdded
+          calls:
+            borrowRatePerBlock: VToken[event.address].borrowRatePerBlock()
+            supplyRatePerBlock: VToken[event.address].supplyRatePerBlock()
+            exchangeRateStored: VToken[event.address].exchangeRateStored()
         - event: ReservesReduced(address,uint256,uint256)
           handler: handleReservesReduced
+          calls:
+            borrowRatePerBlock: VToken[event.address].borrowRatePerBlock()
+            supplyRatePerBlock: VToken[event.address].supplyRatePerBlock()
+            exchangeRateStored: VToken[event.address].exchangeRateStored()
   - name: VTokenUpdatedEvents
     kind: ethereum/contract
     network: {{ network }}
