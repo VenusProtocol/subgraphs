@@ -2,7 +2,7 @@
 
 export const comptrollerAddress = '{{ comptrollerAddress }}';
 
-export const vwbETHAddress = '{{ vwbETHAddress }}';
+export const wbETHAddress = '{{ wbETHAddress }}';
 
 export const vTRXAddress = '{{ vTRXAddress }}';
 

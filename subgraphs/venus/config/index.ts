@@ -26,7 +26,7 @@ const main = () => {
       network: 'chapel',
       comptrollerAddress: bscTestnetCoreDeployments.addresses.Unitroller,
       startBlock: '2802485',
-      vwbETHAddress: bscTestnetCoreDeployments.addresses.vWBETH,
+      wbETHAddress: '0xf9f98365566f4d55234f24b99caa1afbe6428d44',
       vTRXAddress: '0x369fea97f6fb7510755dca389088d9e2e2819278',
       vTUSDOldAddress: '0x3a00d9b02781f47d033bad62edc55fbf8d083fb0',
     },
