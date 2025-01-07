@@ -17,4 +17,5 @@ else
   yarn deploy:arbitrum --version-label $version
   yarn deploy:zksync --version-label $version
   yarn deploy:optimism --version-label $version
+  yarn deploy:base --version-label $version
 fi
