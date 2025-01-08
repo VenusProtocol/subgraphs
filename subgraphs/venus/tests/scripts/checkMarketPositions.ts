@@ -23,7 +23,7 @@ const checkMarketPositions = async (
         assert.equal(
           marketPosition.vTokenBalanceMantissa,
           accountBalance.toString(),
-          `incorrect supply balance for account ${marketPosition.account.id} in market ${MarketPosition.market.symbol} ${MarketPosition.market.id}. Subgraph Value: ${
+          `incorrect supply balance for account ${marketPosition.account.id} in market ${marketPosition.market.symbol} ${marketPosition.market.id}. Subgraph Value: ${
             marketPosition.vTokenBalanceMantissa
           }, contractValue: ${accountBalance.toString()}`,
         );
@@ -45,7 +45,7 @@ const checkMarketPositions = async (
           updatedSubgraphValue,
           borrowBalanceStored.toString(),
           `
-        incorrect borrow balance on account ${marketPosition.account.id} on market ${MarketPosition.market.symbol} ${MarketPosition.market.id}, accountBorrowIndex: ${MarketPosition.borrowIndex}, marketBorrowIndex ${MarketPosition.market.borrowIndex} subgraphValue: ${MarketPosition.storedBorrowBalanceMantissa} contractValue: ${borrowBalanceStored}`,
+        incorrect borrow balance on account ${marketPosition.account.id} on market ${marketPosition.market.symbol} ${marketPosition.market.id}, accountBorrowIndex: ${marketPosition.borrowIndex}, marketBorrowIndex ${marketPosition.market.borrowIndex} subgraphValue: ${marketPosition.storedBorrowBalanceMantissa} contractValue: ${borrowBalanceStored}`,
         );
       } catch (e) {
         console.log(e.message);
