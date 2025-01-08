@@ -11,7 +11,7 @@ import { VToken } from '../../generated/templates/VToken/VToken';
 import { zeroBigInt32 } from '../constants';
 import {
   nativeAddress,
-  vwbETHAddress,
+  wbETHAddress,
   vTRXAddressAddress,
   vTUSDOldAddress,
 } from '../constants/addresses';
@@ -186,7 +186,7 @@ export function getOrCreateToken(asset: Address): Token {
   let tokenEntity = Token.load(getTokenId(asset));
 
   if (!tokenEntity) {
-    if (asset.equals(vwbETHAddress)) {
+    if (asset.equals(wbETHAddress)) {
       return getOrCreateWrappedEthToken();
     } else {
       const erc20 = BEP20.bind(asset);

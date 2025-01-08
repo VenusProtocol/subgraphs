@@ -2,7 +2,7 @@ import { Address } from '@graphprotocol/graph-ts';
 
 import {
   comptrollerAddress as comptrollerAddressString,
-  vwbETHAddress as vwbETHAddressString,
+  wbETHAddress as wbETHAddressString,
   vTRXAddress as vTRXAddressString,
   vTUSDOldAddress as vTUSDOldAddressString,
 } from './config';
@@ -14,8 +14,8 @@ export const nullAddress = Address.fromString(nullAddressString);
 
 export const nativeAddress = Address.fromString('0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE');
 
-export const vwbETHAddress = Address.fromString(
-  vwbETHAddressString.length > 0 ? vwbETHAddressString : nullAddressString,
+export const wbETHAddress = Address.fromString(
+  wbETHAddressString.length > 0 ? wbETHAddressString : nullAddressString,
 );
 
 export const vTRXAddressAddress = Address.fromString(
