@@ -193,10 +193,6 @@ export const createComptrollerMock = (vTokens: Address[]): void => {
     'liquidationIncentiveMantissa():(uint256)',
   ).returns([ethereum.Value.fromI32(1)]);
 
-  createMockedFunction(comptrollerAddress, 'maxAssets', 'maxAssets():(uint256)').returns([
-    ethereum.Value.fromI32(10),
-  ]);
-
   createMockedFunction(comptrollerAddress, 'oracle', 'oracle():(address)').returns([
     ethereum.Value.fromAddress(priceOracleAddress),
   ]);
@@ -220,10 +216,6 @@ export const createComptrollerMock = (vTokens: Address[]): void => {
     'liquidationIncentiveMantissa',
     'liquidationIncentiveMantissa():(uint256)',
   ).returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString('1000000000000000'))]);
-
-  createMockedFunction(comptrollerAddress, 'maxAssets', 'maxAssets():(uint256)').returns([
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromString('999')),
-  ]);
 
   vTokens.forEach(vToken => {
     createMockedFunction(comptrollerAddress, 'supplyCaps', 'supplyCaps(address):(uint256)')

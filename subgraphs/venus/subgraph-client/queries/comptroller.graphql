@@ -5,6 +5,5 @@ query Comptrollers {
     priceOracle
     closeFactorMantissa
     liquidationIncentive
-    maxAssets
   }
 }
