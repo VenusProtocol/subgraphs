@@ -3,9 +3,11 @@ query MarketPositionByAccountId($accountId: String!) {
     id
     market {
       id
+      address
     }
     account {
       id
+      address
     }
     enteredMarket
     totalUnderlyingRedeemedMantissa

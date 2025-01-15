@@ -3,9 +3,11 @@ query MarketPositionByAccountAndMarketQuery($id: ID!) {
     id
     market {
       id
+      address
     }
     account {
       id
+      address
       hasBorrowed
     }
     enteredMarket

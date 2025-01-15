@@ -1,6 +1,7 @@
 query Accounts {
   accounts {
     id
+    address
     tokens {
       id
     }

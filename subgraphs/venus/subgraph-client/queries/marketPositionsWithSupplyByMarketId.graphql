@@ -3,6 +3,7 @@ query MarketPositionsWithSupplyByMarketId($first: Int, $skip: Int, $marketId: St
     id
     account {
       id
+      address
     }
     vTokenBalanceMantissa
   }

@@ -4,10 +4,12 @@ query MarketPositions($first: Int, $skip: Int)  {
     market {
       id
       symbol
+      address
       borrowIndex
     }
     account {
       id
+      address
     }
     enteredMarket
     totalUnderlyingRedeemedMantissa

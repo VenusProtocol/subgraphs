@@ -13,17 +13,15 @@ const checkComptroller = async (
 ) => {
   const { comptroller } = await subgraphClient.getComptroller();
   const comptrollerContract = new ethers.Contract(comptroller.id, ComptrollerAbi, provider);
-  const [priceOracle, closeFactorMantissa, liquidationIncentive, maxAssets] = await Promise.all([
+  const [priceOracle, closeFactorMantissa, liquidationIncentive] = await Promise.all([
     comptrollerContract.oracle(),
     comptrollerContract.closeFactorMantissa(),
     comptrollerContract.liquidationIncentiveMantissa(),
-    comptrollerContract.maxAssets(),
   ]);
   try {
     assertEqual(comptroller, priceOracle, 'priceOracle', getAddress);
     assertEqual(comptroller, closeFactorMantissa, 'closeFactorMantissa');
     assertEqual(comptroller, liquidationIncentive, 'liquidationIncentive');
-    assertEqual(comptroller, maxAssets, 'maxAssets');
     console.log(`correct values on comptroller entity - ${comptroller.id}`);
   } catch (e) {
     console.log(e.message);

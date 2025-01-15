@@ -1,9 +1,9 @@
 query Comptrollers {
   comptrollers {
     id
+    address
     priceOracle
     closeFactorMantissa
     liquidationIncentive
-    maxAssets
   }
 }
