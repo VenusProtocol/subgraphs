@@ -3,6 +3,7 @@ query MarketPositionsWithBorrowByMarketId($first: Int, $skip: Int, $marketId: St
     id
     account {
       id
+      address
     }
     storedBorrowBalanceMantissa
     borrowIndex

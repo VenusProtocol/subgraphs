@@ -1,6 +1,7 @@
 query MarketById($id: ID!) {
   market(id: $id) {
     id
+    address
     isListed
     borrowRateMantissa
     cashMantissa

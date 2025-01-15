@@ -1,6 +1,7 @@
 query AccountById($id: ID!) {
   account(id: $id) {
     id
+    address
     tokens {
       id
       vTokenBalanceMantissa

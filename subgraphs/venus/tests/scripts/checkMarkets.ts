@@ -23,7 +23,7 @@ const countSuppliers = async (
 ) => {
   let supplierCount = 0;
   let page = 0;
-  while (page >= 0) {
+  while (page >= 0 && page <= 50) {
     const { marketPositions } = await subgraphClient.getMarketPositionsWithSupplyByMarketId({
       marketId: marketAddress,
       page,
@@ -46,7 +46,7 @@ const countBorrower = async (
 ) => {
   let borrowerCount = 0;
   let page = 0;
-  while (page >= 0) {
+  while (page >= 0 && page <= 50) {
     const { marketPositions } = await subgraphClient.getMarketPositionsWithBorrowByMarketId({
       marketId: marketAddress,
       page,
@@ -69,7 +69,7 @@ const checkMarkets = async (
 ) => {
   const { markets } = await subgraphClient.getMarkets();
   for (const market of markets) {
-    const vTokenContract = new ethers.Contract(market.id, VBep20Abi, provider);
+    const vTokenContract = new ethers.Contract(market.address, VBep20Abi, provider);
     const [comptrollerAddress, underlyingAddress] = await Promise.all([
       vTokenContract.comptroller(),
       tryCall(async () => await vTokenContract.underlying(), ''),
@@ -105,7 +105,7 @@ const checkMarkets = async (
       vTokenContract.name(),
       vTokenContract.symbol(),
       vTokenContract.decimals(),
-      comptrollerContract.markets(market.id),
+      comptrollerContract.markets(market.address),
       vTokenContract.getCash(),
       vTokenContract.exchangeRateStored(),
       vTokenContract.interestRateModel(),
@@ -118,21 +118,21 @@ const checkMarkets = async (
     ]);
 
     const supplyState = await tryCall(
-      async () => await comptrollerContract.venusSupplyState(market.id),
+      async () => await comptrollerContract.venusSupplyState(market.address),
       { block: BigNumber.from(0), index: BigNumber.from(0) },
     );
 
     const borrowState = await tryCall(
-      async () => await comptrollerContract.venusBorrowState(market.id),
+      async () => await comptrollerContract.venusBorrowState(market.address),
       { block: BigNumber.from(0), index: BigNumber.from(0) },
     );
 
     const xvsSupplySpeeds = await tryCall(
-      async () => await comptrollerContract.venusSupplySpeeds(market.id),
+      async () => await comptrollerContract.venusSupplySpeeds(market.address),
       BigNumber.from(0),
     );
     const xvsBorrowSpeeds = await await tryCall(
-      async () => comptrollerContract.venusBorrowSpeeds(market.id),
+      async () => comptrollerContract.venusBorrowSpeeds(market.address),
       BigNumber.from(0),
     );
 
@@ -147,7 +147,7 @@ const checkMarkets = async (
 
     const underlyingPrice = await tryCall(
       async () =>
-        await priceOracleContract.getUnderlyingPrice(market.id, {
+        await priceOracleContract.getUnderlyingPrice(market.address, {
           blockTag: +market.lastUnderlyingPriceBlockNumber,
         }),
       BigNumber.from(0),
@@ -183,8 +183,8 @@ const checkMarkets = async (
     const underlyingPriceInCents = underlyingPrice.div(10n ** BigInt(bdFactor));
     assertEqual(market, underlyingPriceInCents, 'lastUnderlyingPriceCents');
 
-    const totalSuppliers = await countSuppliers(subgraphClient, market.id);
-    const totalBorrowers = await countBorrower(subgraphClient, market.id);
+    const totalSuppliers = await countSuppliers(subgraphClient, market.address);
+    const totalBorrowers = await countBorrower(subgraphClient, market.address);
     assertEqual(market, totalSuppliers, 'supplierCount');
     assertEqual(market, totalBorrowers, 'borrowerCount');
 
@@ -195,7 +195,7 @@ const checkMarkets = async (
         market.totalSupplyVTokenMantissa,
         `
       incorrect total supply market ${market.symbol} ${
-        market.id
+        market.address
       } contract ${totalSupply.toString()} subgraph ${market.totalSupplyVTokenMantissa.toString()}`,
       );
       console.log(`correct supply for ${market.symbol}`);
@@ -213,7 +213,7 @@ const checkMarkets = async (
         market.totalBorrowsMantissa.toString(),
         `
     incorrect total borrow on market ${market.symbol} ${
-      market.id
+      market.address
     } contract ${totalBorrows.toString()} subgraph ${market.totalBorrowsMantissa.toString()}`,
       );
       console.log(`correct borrow for ${market.symbol}`);

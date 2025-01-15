@@ -10,20 +10,24 @@ const checkMarketPositions = async (
   subgraphClient: ReturnType<typeof createSubgraphClient>,
 ) => {
   let skip = 0;
-  while (skip >= 0) {
+  while (skip >= 0 && skip <= 5000) {
     console.log(`processed ${skip * 25}...`);
     const { marketPositions } = await subgraphClient.getMarketPositions({
       first: 25,
       skip: skip * 25,
     });
     for (const marketPosition of marketPositions) {
-      const vTokenContract = new ethers.Contract(marketPosition.market.id, VBep20Abi.abi, provider);
-      const accountBalance = await vTokenContract.balanceOf(marketPosition.account.id);
+      const vTokenContract = new ethers.Contract(
+        marketPosition.market.address,
+        VBep20Abi.abi,
+        provider,
+      );
+      const accountBalance = await vTokenContract.balanceOf(marketPosition.account.address);
       try {
         assert.equal(
           marketPosition.vTokenBalanceMantissa,
           accountBalance.toString(),
-          `incorrect supply balance for account ${marketPosition.account.id} in market ${marketPosition.market.symbol} ${marketPosition.market.id}. Subgraph Value: ${
+          `incorrect supply balance for account ${marketPosition.account.address} in market ${marketPosition.market.symbol} ${marketPosition.market.address}. Subgraph Value: ${
             marketPosition.vTokenBalanceMantissa
           }, contractValue: ${accountBalance.toString()}`,
         );
@@ -31,7 +35,7 @@ const checkMarketPositions = async (
         console.log(e.message);
       }
       const borrowBalanceStored = await vTokenContract.borrowBalanceStored(
-        marketPosition.account.id,
+        marketPosition.account.address,
       );
 
       const updatedSubgraphValue = BigNumber.from(marketPosition.storedBorrowBalanceMantissa)
@@ -45,7 +49,7 @@ const checkMarketPositions = async (
           updatedSubgraphValue,
           borrowBalanceStored.toString(),
           `
-        incorrect borrow balance on account ${marketPosition.account.id} on market ${marketPosition.market.symbol} ${marketPosition.market.id}, accountBorrowIndex: ${marketPosition.borrowIndex}, marketBorrowIndex ${marketPosition.market.borrowIndex} subgraphValue: ${marketPosition.storedBorrowBalanceMantissa} contractValue: ${borrowBalanceStored}`,
+        incorrect borrow balance on account ${marketPosition.account.address} on market ${marketPosition.market.symbol} ${marketPosition.market.address}, accountBorrowIndex: ${marketPosition.borrowIndex}, marketBorrowIndex ${marketPosition.market.borrowIndex} subgraphValue: ${marketPosition.storedBorrowBalanceMantissa} contractValue: ${borrowBalanceStored}`,
         );
       } catch (e) {
         console.log(e.message);

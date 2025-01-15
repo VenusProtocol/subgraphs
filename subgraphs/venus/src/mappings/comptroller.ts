@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { Comptroller as ComptrollerContract } from '../../generated/templates/VToken/Comptroller';
 import {
   DistributedBorrowerVenus,
@@ -31,7 +31,6 @@ export function handleInitialization(block: ethereum.Block): void {
   comptroller.priceOracle = nullAddress;
   comptroller.closeFactorMantissa = zeroBigInt32;
   comptroller.liquidationIncentive = zeroBigInt32;
-  comptroller.maxAssets = BigInt.fromI32(20);
   comptroller.save();
 }
 

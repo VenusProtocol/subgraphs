@@ -12,8 +12,6 @@ type Comptroller @entity {
     closeFactorMantissa: BigInt!
     "The percent bonus liquidators get for liquidating"
     liquidationIncentive: BigInt!
-    "Max assets a single user can enter (not used in comptroller logic)"
-    maxAssets: BigInt!
 }
 
 """
