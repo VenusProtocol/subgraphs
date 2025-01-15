@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 // to satisfy AS compiler
-import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
+import { Address, ethereum } from '@graphprotocol/graph-ts';
 import { Comptroller as ComptrollerContract } from '../../generated/templates/VToken/Comptroller';
 import {
   DistributedBorrowerVenus,
@@ -27,11 +27,12 @@ import { updateXvsSupplyState } from '../operations/updateXvsSupplyState';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitialization(block: ethereum.Block): void {
   const comptroller = new Comptroller(comptrollerAddress);
+  const comptrollerContract = ComptrollerContract.bind(comptrollerAddress);
   comptroller.address = comptrollerAddress;
   comptroller.priceOracle = nullAddress;
   comptroller.closeFactorMantissa = zeroBigInt32;
   comptroller.liquidationIncentive = zeroBigInt32;
-  comptroller.maxAssets = BigInt.fromI32(20);
+  comptroller.maxAssets = comptrollerContract.maxAssets();
   comptroller.save();
 }
 
