@@ -11,9 +11,9 @@ import zksyncDeployments from '@venusprotocol/isolated-pools/deployments/zksyncm
 import zksyncSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/zksyncsepolia_addresses.json';
 import baseSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/basesepolia_addresses.json';
 import baseMainnetDeployments from '@venusprotocol/isolated-pools/deployments/basemainnet_addresses.json';
+import unichainSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/unichainsepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
-
 export const getNetwork = () => {
   const supportedNetworks = [
     'ethereum',
@@ -30,6 +30,7 @@ export const getNetwork = () => {
     'optimism',
     'baseSepolia',
     'base',
+    'unichainSepolia',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -123,6 +124,11 @@ const main = () => {
       network: 'base',
       poolRegistryAddress: baseMainnetDeployments.addresses.PoolRegistry,
       startBlock: '23344365',
+    },
+    unichainSepolia: {
+      network: 'unichain-testnet',
+      poolRegistryAddress: unichainSepoliaDeployments.addresses.PoolRegistry,
+      startBlock: '4630912',
     },
   };
 
