@@ -3,11 +3,11 @@ import { Address } from '@graphprotocol/graph-ts';
 import {
   poolRegistryAddress as poolRegistryAddressString,
   vBifiAddress as vBifiAddressString,
-  vLisUsdAddress as vLisUsdAddressString,
-  vagEURAddress as vagEURAddressString,
+  vHAYAddress as vHAYAddressString,
+  vEURAAddress as vEURAAddressString,
   vankrBNBLiquidStakedBNBAddress as vankrBNBLiquidStakedBNBAddressString,
   vankrBNBDeFiAddress as vankrBNBDeFiAddressString,
-  vSnBNBAddress as vSnBNBAddressString,
+  vslisBNBAddress as vslisBNBAddressString,
   vWETHLiquidStakedETHAddress as vWETHLiquidStakedETHAddressString,
   vWETHCoreAddress as vWETHCoreAddressString,
 } from './config';
@@ -19,11 +19,11 @@ export const nullAddress = Address.fromString(nullAddressString);
 export const vBifiAddress = Address.fromString(
   vBifiAddressString.length > 0 ? vBifiAddressString : nullAddressString,
 );
-export const vLisUsdAddress = Address.fromString(
-  vLisUsdAddressString.length > 0 ? vLisUsdAddressString : nullAddressString,
+export const vHAYAddress = Address.fromString(
+  vHAYAddressString.length > 0 ? vHAYAddressString : nullAddressString,
 );
-export const vagEURAddress = Address.fromString(
-  vagEURAddressString.length > 0 ? vagEURAddressString : nullAddressString,
+export const vEURAAddress = Address.fromString(
+  vEURAAddressString.length > 0 ? vEURAAddressString : nullAddressString,
 );
 export const vankrBNBLiquidStakedBNBAddress = Address.fromString(
   vankrBNBLiquidStakedBNBAddressString.length > 0
@@ -33,8 +33,8 @@ export const vankrBNBLiquidStakedBNBAddress = Address.fromString(
 export const vankrBNBDeFiAddress = Address.fromString(
   vankrBNBDeFiAddressString.length > 0 ? vankrBNBDeFiAddressString : nullAddressString,
 );
-export const vSnBNBAddress = Address.fromString(
-  vSnBNBAddressString.length > 0 ? vSnBNBAddressString : nullAddressString,
+export const vslisBNBAddress = Address.fromString(
+  vslisBNBAddressString.length > 0 ? vslisBNBAddressString : nullAddressString,
 );
 export const vWETHLiquidStakedETHAddress = Address.fromString(
   vWETHLiquidStakedETHAddressString.length > 0
