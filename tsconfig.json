@@ -10,5 +10,5 @@
     "esModuleInterop": true,
     "resolveJsonModule": true
   },
-  "include": ["subgraphs", "hardhat.config.ts"]
+  "include": ["subgraphs", "hardhat.config.ts", "type-extensions.ts"]
 }

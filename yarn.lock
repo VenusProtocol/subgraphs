@@ -5742,6 +5742,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@venusprotocol/isolated-pools@npm:4.0.0-dev.3":
+  version: 4.0.0-dev.3
+  resolution: "@venusprotocol/isolated-pools@npm:4.0.0-dev.3"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": 2.0.3
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: 2a3b8cc2569e467ee10ac3a44777ca52fafd44aff0c960a85f5b5bd4ebc68667f7162e63482f1a137c9718fd1ac89cf598b5a5e44fab60e2dbaf88de920c24a1
+  languageName: node
+  linkType: hard
+
 "@venusprotocol/isolated-pools@npm:^3.4.0":
   version: 3.7.0
   resolution: "@venusprotocol/isolated-pools@npm:3.7.0"
@@ -5866,7 +5883,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.7.0
-    "@venusprotocol/isolated-pools": 3.7.1-dev.1
+    "@venusprotocol/isolated-pools": 4.0.0-dev.3
     "@venusprotocol/oracle": 2.7.0
     "@venusprotocol/protocol-reserve": 3.0.1
     "@venusprotocol/solidity-utilities": ^2.0.3

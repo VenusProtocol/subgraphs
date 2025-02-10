@@ -57,7 +57,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
     "@venusprotocol/governance-contracts": "2.7.0",
-    "@venusprotocol/isolated-pools": "3.7.1-dev.1",
+    "@venusprotocol/isolated-pools": "4.0.0-dev.3",
     "@venusprotocol/oracle": "2.7.0",
     "@venusprotocol/protocol-reserve": "3.0.1",
     "@venusprotocol/solidity-utilities": "^2.0.3",
