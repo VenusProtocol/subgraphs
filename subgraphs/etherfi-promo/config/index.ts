@@ -43,7 +43,7 @@ const main = () => {
       vWeEthStartBlock: '19638180',
       vWeEthsAddress: ethereumILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
       vWeEthsStartBlock: '20583508',
-      veBTCAddress: ethereumILDeployments.addresses.VToken_veBTC,
+      veBTCAddress: ethereumILDeployments.addresses.VToken_veBTC_Core,
       veBTCStartBlock: '21079720',
       template: 'template.yaml',
     },

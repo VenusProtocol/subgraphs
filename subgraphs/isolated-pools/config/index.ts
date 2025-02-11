@@ -14,6 +14,7 @@ import baseMainnetDeployments from '@venusprotocol/isolated-pools/deployments/ba
 import unichainSepoliaDeployments from '@venusprotocol/isolated-pools/deployments/unichainsepolia_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
+
 export const getNetwork = () => {
   const supportedNetworks = [
     'ethereum',
@@ -31,6 +32,7 @@ export const getNetwork = () => {
     'baseSepolia',
     'base',
     'unichainSepolia',
+    'unichain',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -64,20 +66,20 @@ const main = () => {
       network: 'chapel',
       poolRegistryAddress: chapelDeployments.addresses.PoolRegistry,
       vBifiAddress: '0xEF949287834Be010C1A5EDd757c385FB9b644E4A',
-      vLisUsdAddress: chapelDeployments.addresses.VToken_vHAY_StableCoins,
-      vagEURAddress: chapelDeployments.addresses.VToken_vagEUR_Stablecoins,
+      vHAYAddress: chapelDeployments.addresses.VToken_vHAY_Stablecoins,
+      vEURAAddress: chapelDeployments.addresses.VToken_vEURA_Stablecoins,
       vankrBNBLiquidStakedBNBAddress: chapelDeployments.addresses.VToken_vankrBNB_LiquidStakedBNB,
       vankrBNBDeFiAddress: chapelDeployments.addresses.VToken_vankrBNB_DeFi,
-      vSnBNBAddress: chapelDeployments.addresses.VToken_vSnBNB_LiquidStakedBNB,
+      vslisBNBAddress: chapelDeployments.addresses.VToken_vslisBNB_LiquidStakedBNB,
       startBlock: '30870000',
     },
     bsc: {
       network: 'bsc',
       poolRegistryAddress: bscMainnetDeployments.addresses.PoolRegistry,
       vBifiAddress: '0xC718c51958d3fd44f5F9580c9fFAC2F89815C909',
-      vLisUsdAddress: bscMainnetDeployments.addresses.VToken_vHAY_Stablecoins,
-      vagEURAddress: bscMainnetDeployments.addresses.VToken_vagEUR_Stablecoins,
-      vSnBNBAddress: bscMainnetDeployments.addresses.VToken_vSnBNB_LiquidStakedBNB,
+      vHAYAddress: bscMainnetDeployments.addresses.VToken_vHAY_Stablecoins,
+      vEURAAddress: bscMainnetDeployments.addresses.VToken_vEURA_Stablecoins,
+      vslisBNBAddress: bscMainnetDeployments.addresses.VToken_vslisBNB_LiquidStakedBNB,
       startBlock: '29300000',
     },
     opbnbMainnet: {
@@ -129,6 +131,11 @@ const main = () => {
       network: 'unichain-testnet',
       poolRegistryAddress: unichainSepoliaDeployments.addresses.PoolRegistry,
       startBlock: '4630912',
+    },
+    unichain: {
+      network: 'unichain',
+      poolRegistryAddress: '0x0C52403E16BcB8007C1e54887E1dFC1eC9765D7C',
+      startBlock: '8199043',
     },
   };
 
