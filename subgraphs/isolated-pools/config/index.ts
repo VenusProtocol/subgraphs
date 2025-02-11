@@ -32,6 +32,7 @@ export const getNetwork = () => {
     'baseSepolia',
     'base',
     'unichainSepolia',
+    'unichain',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -130,6 +131,11 @@ const main = () => {
       network: 'unichain-testnet',
       poolRegistryAddress: unichainSepoliaDeployments.addresses.PoolRegistry,
       startBlock: '4630912',
+    },
+    unichain: {
+      network: 'unichain',
+      poolRegistryAddress: '0x0C52403E16BcB8007C1e54887E1dFC1eC9765D7C',
+      startBlock: '8199043',
     },
   };
 
