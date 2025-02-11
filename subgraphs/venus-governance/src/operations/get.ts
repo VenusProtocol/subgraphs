@@ -67,7 +67,10 @@ export const getRemoteProposal = (layerZeroChainId: i32, proposalId: BigInt): Re
   const id = getRemoteProposalId(layerZeroChainId, proposalId);
   const remoteProposal = RemoteProposal.load(id);
   if (!remoteProposal) {
-    log.critical('RemoteProposal {} not found', [proposalId.toString()]);
+    log.critical('RemoteProposal  (layerZeroChainId:{} proposal Id:{}) not found', [
+      layerZeroChainId.toString(),
+      proposalId.toString(),
+    ]);
   }
   return remoteProposal as RemoteProposal;
 };
@@ -78,7 +81,7 @@ export const getRemoteProposalStateTransaction = (
   const id = getRemoteProposalStateTransactionId(proposalId);
   const remoteProposalStateTransaction = RemoteProposalStateTransaction.load(id);
   if (!remoteProposalStateTransaction) {
-    log.critical('RemoteProposalStateTransaction {} not found', [proposalId.toString()]);
+    log.critical('RemoteProposalStateTransaction {} not found', [id]);
   }
   return remoteProposalStateTransaction as RemoteProposalStateTransaction;
 };
