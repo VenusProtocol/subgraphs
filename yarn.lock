@@ -5656,7 +5656,7 @@ __metadata:
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.80.0
     "@layerzerolabs/solidity-examples": ^1.0.0
-    "@venusprotocol/governance-contracts": 2.7.0
+    "@venusprotocol/governance-contracts": 2.10.0
     "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
@@ -5680,14 +5680,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@venusprotocol/governance-contracts@npm:2.8.0":
-  version: 2.8.0
-  resolution: "@venusprotocol/governance-contracts@npm:2.8.0"
+"@venusprotocol/governance-contracts@npm:2.10.0":
+  version: 2.10.0
+  resolution: "@venusprotocol/governance-contracts@npm:2.10.0"
   dependencies:
     "@venusprotocol/solidity-utilities": 2.0.0
     hardhat-deploy-ethers: ^0.3.0-beta.13
     module-alias: ^2.2.2
-  checksum: 5e6b1bf7d0a705ee6e218f9d55a1a73acaf92147f8765a791b251f734782f1d395cabed7a3c72ed6c4f98b4bbd1af097e8b5f105ece95a3d9cd65681ca7ec3d6
+  checksum: cbcb9503402009cdf9eafc740e66e49d66ca4e0aee19526d42aa08ee7e7d2ae1f7251579ea0005a8b87fcdfe86c27170d75f08acf008fa24df03087371a24800
   languageName: node
   linkType: hard
 
@@ -5869,7 +5869,7 @@ __metadata:
     "@types/node": ^20.5.9
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
-    "@venusprotocol/governance-contracts": 2.8.0
+    "@venusprotocol/governance-contracts": 2.10.0
     "@venusprotocol/isolated-pools": 4.0.0
     "@venusprotocol/oracle": 2.9.0
     "@venusprotocol/protocol-reserve": 3.1.0
