@@ -5667,12 +5667,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@venusprotocol/etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo":
+"@venusprotocol/external-promos-subgraph@workspace:subgraphs/external-promos":
   version: 0.0.0-use.local
-  resolution: "@venusprotocol/etherfi-promo-subgraph@workspace:subgraphs/etherfi-promo"
+  resolution: "@venusprotocol/external-promos-subgraph@workspace:subgraphs/external-promos"
   dependencies:
     "@graphprotocol/graph-cli": ^0.80.0
-    "@venusprotocol/isolated-pools": 3.7.1-dev.1
+    "@venusprotocol/isolated-pools": 4.2.0-dev.9
     semantic-release: ^23.1.1
     semantic-release-monorepo: ^8.0.2
     ts-node: ^10.9.2
@@ -5725,9 +5725,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@venusprotocol/isolated-pools@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@venusprotocol/isolated-pools@npm:4.0.0"
+"@venusprotocol/isolated-pools@npm:3.7.1-dev.1":
+  version: 3.7.1-dev.1
+  resolution: "@venusprotocol/isolated-pools@npm:3.7.1-dev.1"
   dependencies:
     "@nomiclabs/hardhat-ethers": ^2.2.3
     "@openzeppelin/contracts": ^4.8.3
@@ -5738,7 +5738,41 @@ __metadata:
     ethers: ^5.7.0
     hardhat-deploy: ^0.11.14
     module-alias: ^2.2.2
-  checksum: 084e070ea60018a5e8a3d7d98cff8f611df9ad4e6814077aac15a6d953a42ac3c0747afc86a9bd133d8b588d65e6151ee5bc3e883e8f1de94a5f67983ca79458
+  checksum: 272128815137c950456eb5998978a36ff96b64b24589c19025f450ce86aa113883f89f46272ce9093776d5d38dc9662b58431f21b96228eb2e20703054be4e4d
+  languageName: node
+  linkType: hard
+
+"@venusprotocol/isolated-pools@npm:4.2.0-dev.9":
+  version: 4.2.0-dev.9
+  resolution: "@venusprotocol/isolated-pools@npm:4.2.0-dev.9"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": 2.0.3
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: d24e747313a6dbaf9d00bc09f4644f35520360bf86841aaa3e9249b340d0da93835e93f3f5c581763faf0f0e5de85aae5a5598904a205d785db64429a7ad5324
+  languageName: node
+  linkType: hard
+
+"@venusprotocol/isolated-pools@npm:^3.4.0":
+  version: 3.9.0
+  resolution: "@venusprotocol/isolated-pools@npm:3.9.0"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": 2.0.3
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: f72d664e73667aff1ad773bf7464f07110f1a7a150efe31e59805ef92c58c94405cfcefef15983182c339f3812365b72f9ac8fdd13ddd6876e1c0ef9739cc4d2
   languageName: node
   linkType: hard
 
@@ -5870,7 +5904,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.10.0
-    "@venusprotocol/isolated-pools": 4.0.0
+    "@venusprotocol/isolated-pools": 4.2.0-dev.9
     "@venusprotocol/oracle": 2.9.0
     "@venusprotocol/protocol-reserve": 3.1.0
     "@venusprotocol/solidity-utilities": ^2.0.3
