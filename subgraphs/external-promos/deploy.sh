@@ -3,13 +3,11 @@
 version=($(jq -r '.version' package.json))
 
 if [[ $version == *"testnet"* ]]; then
-  yarn graph auth --studio $TESTNET_GRAPH_CLI_API_KEY
-  yarn deploy:sepolia --version-label $version
+  yarn deploy:sepolia --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $TESTNET_GRAPH_CLI_ALCHEMY_KEY
 else
-  yarn graph auth --studio $MAINNET_GRAPH_CLI_API_KEY
-  yarn deploy:bsc --version-label $version
-  yarn deploy:ethereum --version-label $version
-  yarn deploy:arbitrum --version-label $version
+  yarn deploy:bsc --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
+  yarn deploy:ethereum --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
+  yarn deploy:arbitrum --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
 fi
 
 
