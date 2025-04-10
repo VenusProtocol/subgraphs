@@ -5714,7 +5714,7 @@ __metadata:
   dependencies:
     "@graphprotocol/client-cli": 3.0.0
     "@graphprotocol/graph-cli": ^0.80.0
-    "@venusprotocol/isolated-pools": 3.7.1-dev.1
+    "@venusprotocol/isolated-pools": 4.2.0-dev.9
     "@venusprotocol/subgraph-utils": 0.0.0
     apollo-fetch: ^0.7.0
     hardhat: ^2.10.2
@@ -5724,23 +5724,6 @@ __metadata:
     urql: ^3.0.3
   languageName: unknown
   linkType: soft
-
-"@venusprotocol/isolated-pools@npm:3.7.1-dev.1":
-  version: 3.7.1-dev.1
-  resolution: "@venusprotocol/isolated-pools@npm:3.7.1-dev.1"
-  dependencies:
-    "@nomiclabs/hardhat-ethers": ^2.2.3
-    "@openzeppelin/contracts": ^4.8.3
-    "@openzeppelin/contracts-upgradeable": ^4.8.3
-    "@openzeppelin/hardhat-upgrades": ^1.21.0
-    "@solidity-parser/parser": ^0.13.2
-    "@venusprotocol/solidity-utilities": 2.0.3
-    ethers: ^5.7.0
-    hardhat-deploy: ^0.11.14
-    module-alias: ^2.2.2
-  checksum: 272128815137c950456eb5998978a36ff96b64b24589c19025f450ce86aa113883f89f46272ce9093776d5d38dc9662b58431f21b96228eb2e20703054be4e4d
-  languageName: node
-  linkType: hard
 
 "@venusprotocol/isolated-pools@npm:4.2.0-dev.9":
   version: 4.2.0-dev.9
