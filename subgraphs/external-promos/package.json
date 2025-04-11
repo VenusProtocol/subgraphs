@@ -1,25 +1,25 @@
 {
-  "name": "@venusprotocol/etherfi-promo-subgraph",
+  "name": "@venusprotocol/external-promos-subgraph",
   "version": "1.0.4",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
-    "directory": "subgraphs/etherfi-promo"
+    "directory": "subgraphs/external-promos"
   },
   "files": [
     "generated"
   ],
   "scripts": {
     "codegen": "yarn graph codegen",
-    "create:docker": "yarn graph create venusprotocol/etherfi-promo  --node http://graph-node:8020/",
+    "create:docker": "yarn graph create venusprotocol/external-promos  --node http://graph-node:8020/",
     "build:docker": "yarn graph build --ipfs http://ipfs:5001",
     "build:ethereum": "yarn graph build --ipfs https://api.thegraph.com/ipfs/ ",
-    "deploy:integration": "graph deploy venusprotocol/etherfi-promo  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
-    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/etherfi-promo --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:sepolia": "yarn prepare:sepolia && graph deploy --studio etherfi-promo-sepolia",
-    "deploy:ethereum": "yarn prepare:ethereum && graph deploy --studio etherfi-promo",
-    "deploy:bsc": "yarn prepare:bsc && graph deploy --studio etherfi-promo-bnb",
-    "deploy:arbitrum": "yarn prepare:arbitrum && graph deploy --studio etherfi-promo-arbitrum",
+    "deploy:integration": "graph deploy venusprotocol/external-promos  --debug --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
+    "deploy:docker": "yarn prepare:docker && npx graph deploy venusprotocol/external-promos --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
+    "deploy:sepolia": "yarn prepare:sepolia && graph deploy external-promos-sepolia",
+    "deploy:ethereum": "yarn prepare:ethereum && graph deploy external-promos-ethereum",
+    "deploy:bsc": "yarn prepare:bsc && graph deploy external-promos-bnb",
+    "deploy:arbitrum": "yarn prepare:arbitrum && graph deploy external-promos-arbitrum",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
@@ -30,7 +30,7 @@
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "3.7.1-dev.1"
+    "@venusprotocol/isolated-pools": "4.2.0-dev.9"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.80.0",
