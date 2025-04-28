@@ -34,12 +34,12 @@ dataSources:
         - event: AccrueInterest(uint256,uint256,uint256,uint256)
           handler: handleAccrueInterest
   - kind: ethereum/contract
-    name: vWeETHs
+    name: vWeETHsLSEth
     network: {{ network }}
     source:
-      address: "{{ vWeEthsAddress }}"
+      address: "{{ vWeEthsLSEthAddress }}"
       abi: VToken
-      startBlock: {{ vWeEthsStartBlock }}
+      startBlock: {{ vWeEthsLSEthStartBlock }}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
