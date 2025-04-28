@@ -47,7 +47,7 @@ jobs:
         run: yarn test
 
   integration-test-core-pool:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: unit-test
     steps:
       - name: Checkout
@@ -80,7 +80,7 @@ jobs:
           docker system prune -f -a --volumes
 
   integration-test-isolated-pools:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: unit-test
     steps:
       - name: Checkout
@@ -113,7 +113,7 @@ jobs:
           docker system prune -f -a --volumes
 
   integration-test-governance:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: unit-test
     steps:
       - name: Checkout
@@ -146,7 +146,7 @@ jobs:
           docker system prune -f -a --volumes
 
   release-cross-chain-governance:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint]
     steps:
       - name: Checkout
@@ -180,7 +180,7 @@ jobs:
           yarn workspace @venusprotocol/cross-chain-governance-subgraph run semantic-release
 
   release-external-promos:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-cross-chain-governance]
     steps:
       - name: Checkout
@@ -214,7 +214,7 @@ jobs:
           yarn workspace @venusprotocol/external-promos-subgraph run semantic-release
 
   release-isolated-pools:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-isolated-pools, release-external-promos]
     steps:
       - name: Checkout
@@ -248,7 +248,7 @@ jobs:
           yarn workspace @venusprotocol/isolated-pools-subgraph run semantic-release
 
   release-protocol-reserve:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-isolated-pools]
     steps:
       - name: Checkout
@@ -282,7 +282,7 @@ jobs:
           yarn workspace @venusprotocol/protocol-reserve-subgraph run semantic-release
 
   release-core-pool:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-core-pool, release-protocol-reserve]
     steps:
       - name: Checkout
@@ -316,7 +316,7 @@ jobs:
           yarn workspace @venusprotocol/core-pool-subgraph run semantic-release
 
   release-governance:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-governance, release-core-pool]
     steps:
       - name: Checkout
