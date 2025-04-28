@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/external-promos-subgraph",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
