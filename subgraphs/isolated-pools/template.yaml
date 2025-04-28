@@ -3,6 +3,8 @@ description: Venus is an open-source protocol for algorithmic, efficient Money M
 repository: https://github.com/VenusProtocol/subgraphs
 schema:
   file: ./schema.graphql
+indexerHints:
+  prune: never
 dataSources:
   - kind: ethereum/contract
     name: PoolRegistry
