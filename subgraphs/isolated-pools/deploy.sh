@@ -20,6 +20,7 @@ if [[ $version == *"testnet"* ]]; then
   # ZKsync is deprecated in The Graph
   yarn deploy:optimismSepolia --studio --version-label $version
   yarn deploy:baseSepolia --studio --version-label $version
+  yarn deploy:unichainSepolia --studio --version-label $version
 else
   # Alchemy backups
   yarn deploy:bsc --node $alchemy_node --ipfs $alchemy_ipfs --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
@@ -36,4 +37,5 @@ else
   # ZKsync is deprecated in The Graph
   yarn deploy:optimism --studio --version-label $version
   yarn deploy:base --studio --version-label $version
+  yarn deploy:unichain --studio --version-label $version
 fi
