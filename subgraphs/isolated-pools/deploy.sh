@@ -12,6 +12,7 @@ if [[ $version == *"testnet"* ]]; then
   yarn deploy:zksyncSepolia --node $alchemy_node --ipfs $alchemy_ipfs --version-label $version --deploy-key $TESTNET_GRAPH_CLI_ALCHEMY_KEY
   yarn deploy:optimismSepolia --node $alchemy_node --ipfs $alchemy_ipfs --version-label $version --deploy-key $TESTNET_GRAPH_CLI_ALCHEMY_KEY
   yarn deploy:baseSepolia --node $alchemy_node --ipfs $alchemy_ipfs --version-label $version --deploy-key $TESTNET_GRAPH_CLI_ALCHEMY_KEY
+  yarn deploy:unichainSepolia --node $alchemy_node --ipfs $alchemy_ipfs --version-label $version --deploy-key $TESTNET_GRAPH_CLI_ALCHEMY_KEY
   # The Graph
   yarn graph auth --studio $TESTNET_GRAPH_CLI_API_KEY
   yarn deploy:chapel --studio --version-label $version
