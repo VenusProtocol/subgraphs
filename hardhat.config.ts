@@ -3,7 +3,11 @@ import 'hardhat-deploy';
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomiclabs/hardhat-ethers";
 import 'hardhat-dependency-compiler';
-import { HardhatUserConfig } from 'hardhat/config';
+import { HardhatUserConfig, extendEnvironment } from "hardhat/config";
+
+extendEnvironment(hre => {
+  hre.getNetworkName = () => process.env.HARDHAT_FORK_NETWORK || hre.network.name;
+});
 
 const compilers = {
   compilers: [

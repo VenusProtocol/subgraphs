@@ -4,15 +4,15 @@ export const poolRegistryAddress = '{{ poolRegistryAddress }}';
 
 export const vBifiAddress = '{{ vBifiAddress }}'
 
-export const vLisUsdAddress = '{{ vLisUsdAddress }}'
+export const vHAYAddress = '{{ vHAYAddress }}'
 
-export const vagEURAddress = '{{ vagEURAddress }}'
+export const vEURAAddress = '{{ vEURAAddress }}'
 
 export const vankrBNBLiquidStakedBNBAddress = '{{ vankrBNBLiquidStakedBNBAddress }}'
 
 export const vankrBNBDeFiAddress = '{{ vankrBNBDeFiAddress }}'
 
-export const vSnBNBAddress = '{{ vSnBNBAddress }}'
+export const vslisBNBAddress = '{{ vslisBNBAddress }}'
 
 export const vWETHLiquidStakedETHAddress = '{{ vWETHLiquidStakedETHAddress }}'
 
