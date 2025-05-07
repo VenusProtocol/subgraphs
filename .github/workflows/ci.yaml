@@ -225,7 +225,7 @@ jobs:
 
   release-isolated-pools:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, integration-test-isolated-pools, release-etherfi-promo]
+    needs: [unit-test, lint, integration-test-isolated-pools, release-external-promos]
     if:
       contains('
         refs/heads/main
