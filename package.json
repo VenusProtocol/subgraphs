@@ -56,12 +56,12 @@
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^5.40.1",
     "@typescript-eslint/parser": "^5.40.1",
-    "@venusprotocol/governance-contracts": "2.7.0",
-    "@venusprotocol/isolated-pools": "3.7.1-dev.1",
-    "@venusprotocol/oracle": "2.7.0",
-    "@venusprotocol/protocol-reserve": "3.0.1",
+    "@venusprotocol/governance-contracts": "2.10.0",
+    "@venusprotocol/isolated-pools": "4.2.0-dev.9",
+    "@venusprotocol/oracle": "2.9.0",
+    "@venusprotocol/protocol-reserve": "3.1.0",
     "@venusprotocol/solidity-utilities": "^2.0.3",
-    "@venusprotocol/venus-protocol": "9.4.0",
+    "@venusprotocol/venus-protocol": "9.6.0",
     "assemblyscript": "0.19.23",
     "chai": "^4.3.6",
     "dotenv": "^16.4.5",
@@ -88,9 +88,9 @@
     "typescript": "^4.8.4"
   },
   "resolutions": {
-    "@venusprotocol/governance-contracts": "2.7.0",
-    "@venusprotocol/venus-protocol": "9.4.0",
-    "@venusprotocol/protocol-reserve": "3.0.1",
+    "@venusprotocol/governance-contracts": "2.10.0",
+    "@venusprotocol/venus-protocol": "9.6.0",
+    "@venusprotocol/protocol-reserve": "3.1.0",
     "prettier": "^3.0.3"
   },
   "husky": {

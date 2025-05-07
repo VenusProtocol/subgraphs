@@ -31,9 +31,9 @@ import { BORROW, LIQUIDATE, MINT, REDEEM, REPAY, TRANSFER, zeroBigInt32 } from '
 import {
   poolRegistryAddress,
   vBifiAddress,
-  vLisUsdAddress,
-  vSnBNBAddress,
-  vagEURAddress,
+  vHAYAddress,
+  vslisBNBAddress,
+  vEURAAddress,
   vankrBNBDeFiAddress,
   vankrBNBLiquidStakedBNBAddress,
   vWETHLiquidStakedETHAddress,
@@ -175,12 +175,12 @@ export function createMarket(
     .markets(vTokenAddress)
     .getLiquidationThresholdMantissa();
 
-  if (vTokenAddress.equals(vLisUsdAddress)) {
+  if (vTokenAddress.equals(vHAYAddress)) {
     market.name = 'Venus lisUSD (Stablecoins)';
     market.symbol = 'vlisUSD_Stablecoins';
   }
 
-  if (vTokenAddress.equals(vagEURAddress)) {
+  if (vTokenAddress.equals(vEURAAddress)) {
     market.name = 'Venus EURA (Stablecoins)';
     market.symbol = 'vEURA_Stablecoins';
   }
@@ -195,7 +195,7 @@ export function createMarket(
     market.symbol = 'vankrBNB_DeFi';
   }
 
-  if (vTokenAddress.equals(vSnBNBAddress)) {
+  if (vTokenAddress.equals(vslisBNBAddress)) {
     market.name = 'Venus slisBNB (Liquid Staked BNB)';
     market.symbol = 'vslisBNB_LiquidStakedBNB';
   }

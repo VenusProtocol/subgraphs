@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/cross-chain-governance-subgraph",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -25,6 +25,8 @@
     "deploy:zkSync": "yarn prepare:zkSync && yarn graph deploy --studio venus-governance-zksync",
     "deploy:baseSepolia": "yarn prepare:baseSepolia && yarn graph deploy --studio venus-governance-base-sepolia",
     "deploy:base": "yarn prepare:base && yarn graph deploy --studio venus-governance-base-mainnet",
+    "deploy:unichainSepolia": "yarn prepare:unichainSepolia && yarn graph deploy --studio venus-governance-unichain-sepolia",
+    "deploy:unichain": "yarn prepare:unichain && yarn graph deploy --studio venus-governance-unichain",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
@@ -37,6 +39,8 @@
     "prepare:zkSync": "NETWORK=zkSync yarn ts-node config/index.ts",
     "prepare:baseSepolia": "NETWORK=baseSepolia yarn ts-node config/index.ts",
     "prepare:base": "NETWORK=base yarn ts-node config/index.ts",
+    "prepare:unichainSepolia": "NETWORK=unichainSepolia yarn ts-node config/index.ts",
+    "prepare:unichain": "NETWORK=unichain yarn ts-node config/index.ts",
     "test": "yarn prepare:docker && graph test",
     "test:integration": "true"
   },
@@ -44,7 +48,7 @@
     "@graphprotocol/client-cli": "3.0.0",
     "@graphprotocol/graph-cli": "^0.80.0",
     "@layerzerolabs/solidity-examples": "^1.0.0",
-    "@venusprotocol/governance-contracts": "2.7.0",
+    "@venusprotocol/governance-contracts": "2.10.0",
     "@venusprotocol/subgraph-utils": "0.0.0",
     "apollo-fetch": "^0.7.0",
     "hardhat": "^2.10.2",

@@ -1,5 +1,6 @@
 #!/usr/bin/env ts-node
 import arbitrumILDeployments from '@venusprotocol/isolated-pools/deployments/arbitrumone_addresses.json';
+import bscILDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet_addresses.json';
 import ethereumILDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import sepoliaILDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
 import fs from 'fs';
@@ -21,43 +22,51 @@ const main = () => {
       network: 'hardhat',
       vWeEthAddress: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '0',
-      vWeEthsAddress: sepoliaILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
-      vWeEthsStartBlock: '0',
+      vWeEthsLSEthAddress: sepoliaILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
+      vWeEthsLSEthStartBlock: '0',
+      vWeEthsCoreAddress: sepoliaILDeployments.addresses.VToken_vweETHs_Core,
+      vWeEthsCoreStartBlock: '0',
       veBTCAddress: sepoliaILDeployments.addresses.VToken_veBTC,
       veBTCStartBlock: '0',
-      template: 'template.yaml',
+      template: 'template-eth.yaml',
     },
     sepolia: {
       network: 'sepolia',
       vWeEthAddress: sepoliaILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '5659827',
-      vWeEthsAddress: sepoliaILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
-      vWeEthsStartBlock: '6536644',
+      vWeEthsLSEthAddress: sepoliaILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
+      vWeEthsLSEthStartBlock: '6536644',
+      vWeEthsCoreAddress: sepoliaILDeployments.addresses.VToken_vweETHs_Core,
+      vWeEthsCoreStartBlock: '7650833',
       veBTCAddress: sepoliaILDeployments.addresses.VToken_veBTC,
       veBTCStartBlock: '0',
-      template: 'template.yaml',
+      template: 'template-eth.yaml',
     },
     ethereum: {
       network: 'mainnet',
       vWeEthAddress: ethereumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '19638180',
-      vWeEthsAddress: ethereumILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
-      vWeEthsStartBlock: '20583508',
-      veBTCAddress: ethereumILDeployments.addresses.VToken_veBTC,
+      vWeEthsLSEthAddress: ethereumILDeployments.addresses.VToken_vweETHs_LiquidStakedETH,
+      vWeEthsLSEthStartBlock: '20583508',
+      vWeEthsCoreAddress: ethereumILDeployments.addresses.VToken_vweETHs_Core,
+      vWeEthsCoreStartBlock: '21786620',
+      veBTCAddress: ethereumILDeployments.addresses.VToken_veBTC_Core,
       veBTCStartBlock: '21079720',
-      template: 'template.yaml',
+      template: 'template-eth.yaml',
     },
     bsc: {
       network: 'bsc',
-      vWeEthAddress: '0xc5b24f347254bD8cF8988913d1fd0F795274900F',
+      vWeEthAddress: bscILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '41956130',
+      vAsBnbAddress: bscILDeployments.addresses.VToken_vasBNB_LiquidStakedBNB,
+      vAsBnbStartBlock: '47620796',
       template: 'template-bsc.yaml',
     },
     arbitrum: {
       network: 'arbitrum-one',
       vWeEthAddress: arbitrumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '245908467',
-      template: 'template-bsc.yaml',
+      template: 'template-arb.yaml',
     },
   };
   const yamlTemplate = fs.readFileSync(config[network].template, 'utf8');

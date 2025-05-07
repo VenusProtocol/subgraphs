@@ -56,13 +56,13 @@ export function handleClearPayload(event: ClearPayload): void {
       );
       remoteProposalStateTransaction.withdrawn = transaction.id;
       remoteProposalStateTransaction.save();
+    } else {
+      const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
+        event.params.proposalId,
+      );
+      remoteProposalStateTransaction.executed = transaction.id;
+      remoteProposalStateTransaction.save();
     }
-  } else {
-    const remoteProposalStateTransaction = getRemoteProposalStateTransaction(
-      event.params.proposalId,
-    );
-    remoteProposalStateTransaction.executed = transaction.id;
-    remoteProposalStateTransaction.save();
   }
 }
 

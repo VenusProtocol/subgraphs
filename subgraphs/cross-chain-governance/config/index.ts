@@ -10,6 +10,8 @@ import zkSyncDeployments from '@venusprotocol/governance-contracts/deployments/z
 import zkSyncSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/zksyncsepolia_addresses.json';
 import baseSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/basesepolia_addresses.json';
 import baseMainnetDeployments from '@venusprotocol/governance-contracts/deployments/basemainnet_addresses.json';
+import unichainSepoliaDeployments from '@venusprotocol/governance-contracts/deployments/unichainsepolia_addresses.json';
+import unichainMainnetDeployments from '@venusprotocol/governance-contracts/deployments/unichainmainnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
@@ -27,6 +29,8 @@ export const getNetwork = () => {
     'optimism',
     'baseSepolia',
     'base',
+    'unichainSepolia',
+    'unichain',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -159,10 +163,33 @@ const main = () => {
       layerZeroChainId: 184,
       omnichainGovernanceOwnerAddress: baseMainnetDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '23531514',
-      omnichainGovernanceExecutorAddress: baseMainnetDeployments.addresses.OmnichainGovernanceExecutor,
+      omnichainGovernanceExecutorAddress:
+        baseMainnetDeployments.addresses.OmnichainGovernanceExecutor,
       startBlockOmnichainGovernanceExecutor: '23531230',
       accessControlManagerAddress: baseMainnetDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '23212000',
+    },
+    unichainSepolia: {
+      network: 'unichain-testnet',
+      layerZeroChainId: 10333,
+      omnichainGovernanceOwnerAddress: unichainSepoliaDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '12506108',
+      omnichainGovernanceExecutorAddress:
+        unichainSepoliaDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '12504577',
+      accessControlManagerAddress: unichainSepoliaDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '3358050',
+    },
+    unichain: {
+      network: 'unichain',
+      layerZeroChainId: 320,
+      omnichainGovernanceOwnerAddress: unichainMainnetDeployments.addresses.OmnichainExecutorOwner,
+      startBlockOmnichainGovernanceOwner: '9143903 ',
+      omnichainGovernanceExecutorAddress:
+        unichainMainnetDeployments.addresses.OmnichainGovernanceExecutor,
+      startBlockOmnichainGovernanceExecutor: '9143169 ',
+      accessControlManagerAddress: unichainMainnetDeployments.addresses.AccessControlManager,
+      accessControlManagerStartBlock: '8095093',
     },
   };
 
