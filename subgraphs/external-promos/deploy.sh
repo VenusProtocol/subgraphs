@@ -8,7 +8,5 @@ else
   yarn deploy:bsc --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
   yarn deploy:ethereum --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
   yarn deploy:arbitrum --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
+  yarn deploy:unichain --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz --version-label $version --deploy-key $MAINNET_GRAPH_CLI_ALCHEMY_KEY
 fi
-
-
-

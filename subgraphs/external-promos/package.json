@@ -20,17 +20,19 @@
     "deploy:ethereum": "yarn prepare:ethereum && graph deploy external-promos-ethereum",
     "deploy:bsc": "yarn prepare:bsc && graph deploy external-promos-bnb",
     "deploy:arbitrum": "yarn prepare:arbitrum && graph deploy external-promos-arbitrum",
+    "deploy:unichain": "yarn prepare:unichain && graph deploy external-promos-unichain",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:sepolia": "NETWORK=sepolia yarn ts-node config/index.ts",
     "prepare:ethereum": "NETWORK=ethereum yarn ts-node config/index.ts",
     "prepare:bsc": "NETWORK=bsc yarn ts-node config/index.ts",
     "prepare:arbitrum": "NETWORK=arbitrum yarn ts-node config/index.ts",
+    "prepare:unichain": "NETWORK=unichain yarn ts-node config/index.ts",
     "generate-subgraph-types": "rm -rf /subgraph-client/.graphclient && npx graphclient build --dir ./subgraph-client",
     "test": "graph test",
     "test:integration": "true"
   },
   "dependencies": {
-    "@venusprotocol/isolated-pools": "4.2.0-dev.9"
+    "@venusprotocol/isolated-pools": "4.2.0-dev.13"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.80.0",

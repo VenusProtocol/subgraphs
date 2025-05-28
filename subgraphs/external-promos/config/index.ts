@@ -3,11 +3,19 @@ import arbitrumILDeployments from '@venusprotocol/isolated-pools/deployments/arb
 import bscILDeployments from '@venusprotocol/isolated-pools/deployments/bscmainnet_addresses.json';
 import ethereumILDeployments from '@venusprotocol/isolated-pools/deployments/ethereum_addresses.json';
 import sepoliaILDeployments from '@venusprotocol/isolated-pools/deployments/sepolia_addresses.json';
+import unichainILDeployments from '@venusprotocol/isolated-pools/deployments/unichainmainnet_addresses.json';
 import fs from 'fs';
 import Mustache from 'mustache';
 
 export const getNetwork = () => {
-  const supportedNetworks = ['sepolia', 'ethereum', 'docker', 'bsc', 'arbitrum'] as const;
+  const supportedNetworks = [
+    'sepolia',
+    'ethereum',
+    'docker',
+    'bsc',
+    'arbitrum',
+    'unichain',
+  ] as const;
   const network = process.env.NETWORK as (typeof supportedNetworks)[number];
   if (!supportedNetworks.includes(network)) {
     throw new Error(`NETWORK env var must be set to one of ${supportedNetworks}`);
@@ -66,6 +74,12 @@ const main = () => {
       network: 'arbitrum-one',
       vWeEthAddress: arbitrumILDeployments.addresses.VToken_vweETH_LiquidStakedETH,
       vWeEthStartBlock: '245908467',
+      template: 'template-arb.yaml',
+    },
+    unichain: {
+      network: 'unichain-mainnet',
+      vWeEthAddress: unichainILDeployments.addresses.VToken_vweETH_Core,
+      vWeEthStartBlock: '16899141',
       template: 'template-arb.yaml',
     },
   };

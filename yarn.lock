@@ -5672,7 +5672,7 @@ __metadata:
   resolution: "@venusprotocol/external-promos-subgraph@workspace:subgraphs/external-promos"
   dependencies:
     "@graphprotocol/graph-cli": ^0.80.0
-    "@venusprotocol/isolated-pools": 4.2.0-dev.9
+    "@venusprotocol/isolated-pools": 4.2.0-dev.13
     semantic-release: ^23.1.1
     semantic-release-monorepo: ^8.0.2
     ts-node: ^10.9.2
@@ -5724,6 +5724,23 @@ __metadata:
     urql: ^3.0.3
   languageName: unknown
   linkType: soft
+
+"@venusprotocol/isolated-pools@npm:4.2.0-dev.13":
+  version: 4.2.0-dev.13
+  resolution: "@venusprotocol/isolated-pools@npm:4.2.0-dev.13"
+  dependencies:
+    "@nomiclabs/hardhat-ethers": ^2.2.3
+    "@openzeppelin/contracts": ^4.8.3
+    "@openzeppelin/contracts-upgradeable": ^4.8.3
+    "@openzeppelin/hardhat-upgrades": ^1.21.0
+    "@solidity-parser/parser": ^0.13.2
+    "@venusprotocol/solidity-utilities": 2.0.3
+    ethers: ^5.7.0
+    hardhat-deploy: ^0.11.14
+    module-alias: ^2.2.2
+  checksum: a6ebfa79ff208376f7314262e25e76480053b34163ba2dae12ea4f521235f4ce57c761fba359fd9366cf999e4a2192084d48c3fac7754e8818ea39e41dbcd0dd
+  languageName: node
+  linkType: hard
 
 "@venusprotocol/isolated-pools@npm:4.2.0-dev.9":
   version: 4.2.0-dev.9
@@ -5887,7 +5904,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.40.1
     "@typescript-eslint/parser": ^5.40.1
     "@venusprotocol/governance-contracts": 2.10.0
-    "@venusprotocol/isolated-pools": 4.2.0-dev.9
+    "@venusprotocol/isolated-pools": 4.2.0-dev.13
     "@venusprotocol/oracle": 2.9.0
     "@venusprotocol/protocol-reserve": 3.1.0
     "@venusprotocol/solidity-utilities": ^2.0.3
