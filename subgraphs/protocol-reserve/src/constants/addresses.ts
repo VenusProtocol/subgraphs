@@ -11,6 +11,7 @@ import {
   wbtcPrimeConverterAddress as wbtcPrimeConverterAddressString,
   wethPrimeConverterAddress as wethPrimeConverterAddressString,
   xvsVaultConverterAddress as xvsVaultConverterAddressString,
+  wBnbBurnConverterAddress as wBnbBurnConverterAddressString,
 } from './config';
 
 export const nullAddress = Address.fromString('0x0000000000000000000000000000000000000000');
@@ -31,5 +32,6 @@ export const usdtPrimeConverterAddress = addressFromCleanString(usdtPrimeConvert
 export const xvsVaultConverterAddress = addressFromCleanString(xvsVaultConverterAddressString);
 export const wbtcPrimeConverterAddress = addressFromCleanString(wbtcPrimeConverterAddressString);
 export const wethPrimeConverterAddress = addressFromCleanString(wethPrimeConverterAddressString);
+export const wBnbBurnConverterAddress = addressFromCleanString(wBnbBurnConverterAddressString);
 
 export const riskFundAddress = addressFromCleanString(riskFundAddressString);

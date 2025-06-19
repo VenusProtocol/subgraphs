@@ -270,6 +270,46 @@ dataSources:
         - handler: handleInitializationXvsVaultConverter
           filter:
             kind: once
+  - name: WBNBBurnConverter
+    kind: ethereum/contract
+    network: {{ network }}
+    source:
+      abi: TokenConverter
+      address: "{{ wBnbBurnConverterAddress }}"
+      startBlock: {{ wBnbBurnConverterStartBlock }}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/mappings/tokenConverter.ts
+      entities:
+        - TokenConverter
+      abis:
+        - name: TokenConverter
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/TokenConverter/SingleTokenConverter.sol/SingleTokenConverter.json
+        - name: RiskFund
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/contracts/Interfaces/IRiskFund.sol/IRiskFundGetters.json
+        - name: ERC20
+          file: ../../node_modules/@venusprotocol/protocol-reserve/artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json
+      eventHandlers:
+        - event: ConversionConfigUpdated(indexed address,indexed address,uint256,uint256,uint8,uint8)
+          handler: handleConversionConfigUpdated
+        - event:  ConversionPaused(indexed address)
+          handler: handleConversionPaused
+        - event: ConversionResumed(indexed address)
+          handler: handleConversionResumed
+        - event: ConverterNetworkAddressUpdated(indexed address,indexed address)
+          handler: handleConverterNetworkAddressUpdated
+        - event: DestinationAddressUpdated(indexed address,indexed address)
+          handler: handleDestinationAddressUpdated
+        - event: BaseAssetUpdated(indexed address,indexed address)
+          handler: handleBaseAssetUpdated
+        - event: PriceOracleUpdated(indexed address,indexed address)
+          handler: handlePriceOracleUpdated
+      blockHandlers:
+        - handler: handleInitializationXvsVaultConverter
+          filter:
+            kind: once
 templates:
   - name: ERC20
     kind: ethereum/contract
@@ -290,7 +330,7 @@ templates:
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransferOut
-          topic1: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}"]
+          topic1: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}", "{{ wBnbBurnConverterAddress}}"]
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTransferIn
-          topic2: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}"]
+          topic2: ["{{ xvsVaultConverterAddress }}", "{{ btcbPrimeConverterAddress }}", "{{ ethPrimeConverterAddress }}", "{{ riskFundConverterAddress }}", "{{ usdcPrimeConverterAddress }}", "{{ usdtPrimeConverterAddress }}", "{{ wBnbBurnConverterAddress}}"]
