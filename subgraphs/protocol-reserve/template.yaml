@@ -76,6 +76,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationBtcbPrimeConverter
           filter:
@@ -124,6 +126,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationEthPrimeConverter
           filter:
@@ -170,6 +174,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationRiskFundConverter
           filter:
@@ -218,6 +224,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationUsdcPrimeConverter
           filter:
@@ -266,6 +274,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationUsdtPrimeConverter
           filter:
@@ -314,6 +324,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationXvsVaultConverter
           filter:
@@ -362,6 +374,8 @@ dataSources:
           handler: handleConversionEvent
         - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
+        - event: AssetTransferredToDestination(indexed address,indexed address,indexed address,uint256)
+          handler: handleAssetTransferredToDestination
       blockHandlers:
         - handler: handleInitializationWBnbBurnConverter
           filter:
