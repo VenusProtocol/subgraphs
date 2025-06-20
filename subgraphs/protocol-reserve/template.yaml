@@ -69,7 +69,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -119,7 +119,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -167,7 +167,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -217,7 +217,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -267,7 +267,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -317,7 +317,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
@@ -367,7 +367,7 @@ dataSources:
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
         - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
-          handler: handleConversionEvent
+          handler: handleConvertedExactTokens
         - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
           handler: handleConversionEvent
         - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)

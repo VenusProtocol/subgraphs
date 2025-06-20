@@ -108,6 +108,30 @@ export function handlePriceOracleUpdated(event: PriceOracleUpdated): void {
   tokenConverter.save();
 }
 
+export function handleConvertedExactTokens(event: ConvertedExactTokens): void {
+  const tokenConverter = getTokenConverter(event.address)!;
+
+  // handle private conversions (conversions between converters)
+  const senderConverter = getTokenConverter(event.params.sender);
+  if (!!senderConverter && senderConverter.address !== riskFundConverterAddress) {
+    const senderDestinationAmount = getOrCreateDestinationAmount(
+      Address.fromBytes(senderConverter.address),
+      Address.fromBytes(senderConverter.destinationAddress),
+      event.params.tokenAddressOut,
+    );
+    senderDestinationAmount.amount = senderDestinationAmount.amount.plus(event.params.amountOut);
+    senderDestinationAmount.save();
+  }
+
+  const destinationAmountEntity = getOrCreateDestinationAmount(
+    event.address,
+    Address.fromBytes(tokenConverter.destinationAddress),
+    event.params.tokenAddressIn,
+  );
+  destinationAmountEntity.amount = destinationAmountEntity.amount.plus(event.params.amountIn);
+  destinationAmountEntity.save();
+}
+
 export function handleConversionEvent(event: ConvertedExactTokens): void {
   const tokenConverter = getTokenConverter(event.address)!;
   const destinationAmountEntity = getOrCreateDestinationAmount(
@@ -119,7 +143,7 @@ export function handleConversionEvent(event: ConvertedExactTokens): void {
   destinationAmountEntity.save();
 }
 
-export function handleAssetTranferredToDestination(event: AssetTransferredToDestination): void {
+export function handleAssetTransferredToDestination(event: AssetTransferredToDestination): void {
   const destinationAmountEntity = getOrCreateDestinationAmount(
     event.address,
     event.params.receiver,
