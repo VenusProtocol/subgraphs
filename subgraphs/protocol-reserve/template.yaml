@@ -68,6 +68,14 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationBtcbPrimeConverter
           filter:
@@ -108,6 +116,14 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationEthPrimeConverter
           filter:
@@ -146,6 +162,14 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationRiskFundConverter
           filter:
@@ -186,6 +210,14 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationUsdcPrimeConverter
           filter:
@@ -226,6 +258,14 @@ dataSources:
           handler: handleDestinationAddressUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationUsdtPrimeConverter
           filter:
@@ -266,11 +306,19 @@ dataSources:
           handler: handleBaseAssetUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
         - handler: handleInitializationXvsVaultConverter
           filter:
             kind: once
-  - name: WBNBBurnConverter
+  - name: WBnbBurnConverter
     kind: ethereum/contract
     network: {{ network }}
     source:
@@ -306,8 +354,16 @@ dataSources:
           handler: handleBaseAssetUpdated
         - event: PriceOracleUpdated(indexed address,indexed address)
           handler: handlePriceOracleUpdated
+        - event: ConvertedExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
+        - event: ConvertedForExactTokensSupportingFeeOnTransferTokens(indexed address,indexed address,address,indexed address,uint256,uint256)
+          handler: handleConversionEvent
       blockHandlers:
-        - handler: handleInitializationXvsVaultConverter
+        - handler: handleInitializationWBnbBurnConverter
           filter:
             kind: once
 templates:

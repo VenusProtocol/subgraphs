@@ -1,7 +1,9 @@
-import { ethereum } from '@graphprotocol/graph-ts';
+import { Address, ethereum } from '@graphprotocol/graph-ts';
 
 import {
+  AssetTransferredToDestination,
   BaseAssetUpdated,
+  ConvertedExactTokens,
   ConversionConfigUpdated,
   ConversionPaused,
   ConversionResumed,
@@ -18,9 +20,10 @@ import {
   wbtcPrimeConverterAddress,
   wethPrimeConverterAddress,
   xvsVaultConverterAddress,
+  wBnbBurnConverterAddress,
 } from '../constants/addresses';
 import { getTokenConverter } from '../operations/get';
-import { getOrCreateTokenConverter } from '../operations/getOrCreate';
+import { getOrCreateDestinationAmount, getOrCreateTokenConverter } from '../operations/getOrCreate';
 import { updateOrCreateTokenConverterConfig } from '../operations/updateOrCreate';
 import { getConverterNetworkId } from '../utilities/ids';
 
@@ -57,6 +60,11 @@ export function handleInitializationWbtcPrimeConverter(block: ethereum.Block): v
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function handleInitializationWethPrimeConverter(block: ethereum.Block): void {
   getOrCreateTokenConverter(wethPrimeConverterAddress);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function handleInitializationWBnbBurnConverter(block: ethereum.Block): void {
+  getOrCreateTokenConverter(wBnbBurnConverterAddress);
 }
 
 export function handleConversionConfigUpdated(event: ConversionConfigUpdated): void {
@@ -98,4 +106,25 @@ export function handlePriceOracleUpdated(event: PriceOracleUpdated): void {
   const tokenConverter = getTokenConverter(event.address)!;
   tokenConverter.priceOracleAddress = event.params.priceOracle;
   tokenConverter.save();
+}
+
+export function handleConversionEvent(event: ConvertedExactTokens): void {
+  const tokenConverter = getTokenConverter(event.address)!;
+  const destinationAmountEntity = getOrCreateDestinationAmount(
+    event.address,
+    Address.fromBytes(tokenConverter.destinationAddress),
+    event.params.tokenAddressIn,
+  );
+  destinationAmountEntity.amount = destinationAmountEntity.amount.plus(event.params.amountIn);
+  destinationAmountEntity.save();
+}
+
+export function handleAssetTranferredToDestination(event: AssetTransferredToDestination): void {
+  const destinationAmountEntity = getOrCreateDestinationAmount(
+    event.address,
+    event.params.receiver,
+    event.params.asset,
+  );
+  destinationAmountEntity.amount = destinationAmountEntity.amount.plus(event.params.amount);
+  destinationAmountEntity.save();
 }
