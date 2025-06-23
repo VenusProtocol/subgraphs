@@ -34,6 +34,8 @@ const main = () => {
       usdtPrimeConverterStartBlock: '0',
       xvsVaultConverterAddress: '0xa779C1D17bC5230c07afdC51376CAC1cb3Dd5314',
       xvsVaultConverterStartBlock: '0',
+      wBnbBurnConverterAddress: '0xa079C1D17bC5230c07afdC51376CAC1cb3Dd5314',
+      wBnbBurnConverterStartBlock: '0',
       riskFundAddress: '0x8d81a3dcd17030cd5f23ac7370e4efb10d2b3ca4',
       protocolShareReserveAddress: '0x70e0bA845a1A0F2DA3359C97E0285013525FFC49',
       protocolShareReserveStartBlock: '0',

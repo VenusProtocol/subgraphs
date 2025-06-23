@@ -1,10 +1,11 @@
-import { Address } from '@graphprotocol/graph-ts';
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import { assert, beforeAll, describe, test } from 'matchstick-as/assembly/index';
 
 import { TokenConverter } from '../../generated/schema';
 import {
   handleBaseAssetUpdated,
   handleConversionConfigUpdated,
+  handleConversionEvent,
   handleConversionPaused,
   handleConversionResumed,
   handleConverterNetworkAddressUpdated,
@@ -17,6 +18,7 @@ import {
   createConversionPausedEvent,
   createConversionResumedEvent,
   createConverterNetworkAddressUpdatedEvent,
+  createConvertedEvent,
   createDestinationAddressUpdatedEvent,
 } from './events';
 import { createTokenConverterMock, createTokenMock } from './mocks';
@@ -168,6 +170,31 @@ describe('Token Converter', () => {
       tokenConverterId,
       'baseAsset',
       token4Address.toHexString(),
+    );
+  });
+
+  test('should handle a "converted" event', () => {
+    handleConversionEvent(
+      createConvertedEvent(
+        tokenConverter2Address,
+        user,
+        user,
+        token1Address,
+        token2Address,
+        '1',
+        '2',
+      ),
+    );
+
+    const tokenConverter = TokenConverter.load(getTokenConverterId(tokenConverter2Address))!;
+    const destinationAmounts = tokenConverter.destinationAmounts.load();
+    assert.i32Equals(destinationAmounts.length, 1);
+    assert.bigIntEquals(destinationAmounts[0].amount, BigInt.fromString('1'));
+    assert.addressEquals(Address.fromBytes(destinationAmounts[0].token), token1Address);
+    assert.addressEquals(Address.fromBytes(destinationAmounts[0].address), destination2Address);
+    assert.addressEquals(
+      Address.fromBytes(destinationAmounts[0].tokenConverter),
+      tokenConverter2Address,
     );
   });
 });
