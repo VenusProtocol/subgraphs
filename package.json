@@ -58,7 +58,7 @@
     "@typescript-eslint/parser": "^5.40.1",
     "@venusprotocol/governance-contracts": "2.10.0",
     "@venusprotocol/isolated-pools": "4.2.0-dev.13",
-    "@venusprotocol/oracle": "2.9.0",
+    "@venusprotocol/oracle": "2.12.0",
     "@venusprotocol/protocol-reserve": "3.4.0-dev.3",
     "@venusprotocol/solidity-utilities": "^2.0.3",
     "@venusprotocol/venus-protocol": "9.6.0",
@@ -91,6 +91,7 @@
     "@venusprotocol/governance-contracts": "2.10.0",
     "@venusprotocol/venus-protocol": "9.6.0",
     "@venusprotocol/protocol-reserve": "3.4.0-dev.3",
+    "@venusprotocol/oracle": "2.12.0",
     "prettier": "^3.0.3"
   },
   "husky": {
