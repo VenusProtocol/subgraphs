@@ -147,7 +147,7 @@ jobs:
 
   release-cross-chain-governance:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint]
+    needs: [unit-test, lint, integration-test-governance, release-governance]
     if:
       contains('
         refs/heads/main
@@ -186,7 +186,7 @@ jobs:
 
   release-external-promos:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, release-cross-chain-governance]
+    needs: [unit-test, lint, release-protocol-reserve]
     if:
       contains('
         refs/heads/main
@@ -225,7 +225,7 @@ jobs:
 
   release-isolated-pools:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, integration-test-isolated-pools, release-external-promos]
+    needs: [unit-test, lint, integration-test-isolated-pools]
     if:
       contains('
         refs/heads/main
@@ -264,13 +264,12 @@ jobs:
 
   release-protocol-reserve:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, release-isolated-pools]
+    needs: [unit-test, lint]
     if:
       contains('
         refs/heads/main
         refs/heads/testnet
-        refs/heads/fix
-      ', github.ref)
+      ', github.ref) || startsWith(github.ref, 'refs/heads/fix/')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -304,7 +303,7 @@ jobs:
 
   release-core-pool:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, integration-test-core-pool, release-protocol-reserve]
+    needs: [unit-test, lint, integration-test-core-pool]
     if:
       contains('
         refs/heads/main
@@ -343,7 +342,7 @@ jobs:
 
   release-governance:
     runs-on: ubuntu-22.04
-    needs: [unit-test, lint, integration-test-governance, release-core-pool]
+    needs: [unit-test, lint, integration-test-governance]
     if:
       contains('
         refs/heads/main

@@ -86,6 +86,9 @@
       "name": "main"
     },
     {
+      "name": "fix/release-main",
+    },
+    {
       "name": "testnet",
       "prerelease": true
     }
