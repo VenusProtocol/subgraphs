@@ -59,7 +59,7 @@
     "@venusprotocol/governance-contracts": "2.10.0",
     "@venusprotocol/isolated-pools": "4.2.0-dev.13",
     "@venusprotocol/oracle": "2.9.0",
-    "@venusprotocol/protocol-reserve": "3.1.0",
+    "@venusprotocol/protocol-reserve": "3.4.0-dev.3",
     "@venusprotocol/solidity-utilities": "^2.0.3",
     "@venusprotocol/venus-protocol": "9.6.0",
     "assemblyscript": "0.19.23",
@@ -90,7 +90,7 @@
   "resolutions": {
     "@venusprotocol/governance-contracts": "2.10.0",
     "@venusprotocol/venus-protocol": "9.6.0",
-    "@venusprotocol/protocol-reserve": "3.1.0",
+    "@venusprotocol/protocol-reserve": "3.4.0-dev.3",
     "prettier": "^3.0.3"
   },
   "husky": {

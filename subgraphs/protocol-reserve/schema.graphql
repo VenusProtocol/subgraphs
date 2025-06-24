@@ -38,6 +38,7 @@ type TokenConverter @entity {
     destinationAddress: Bytes!
     baseAsset: Token!
     configs: [TokenConverterConfig!]! @derivedFrom(field: "tokenConverter")
+    destinationAmounts: [DestinationAmount!]! @derivedFrom(field: "tokenConverter")
     paused: Boolean!
     priceOracleAddress: Bytes!
 }
@@ -53,4 +54,15 @@ type TokenConverterConfig @entity {
     incentive: BigInt!
     access: ConversionAccessibility!
     tokenOutBalance: BigInt!
+}
+
+"""
+Destination Amounts
+"""
+type DestinationAmount @entity {
+    id: Bytes!
+    address: Bytes!
+    tokenConverter: TokenConverter!
+    token: Token!
+    amount: BigInt!
 }

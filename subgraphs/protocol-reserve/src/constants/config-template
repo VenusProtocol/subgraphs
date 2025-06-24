@@ -8,6 +8,7 @@ export const riskFundConverterAddress = '{{riskFundConverterAddress}}';
 export const usdcPrimeConverterAddress = '{{usdcPrimeConverterAddress}}';
 export const usdtPrimeConverterAddress = '{{usdtPrimeConverterAddress}}';
 export const xvsVaultConverterAddress = '{{xvsVaultConverterAddress}}';
+export const wBnbBurnConverterAddress = '{{wBnbBurnConverterAddress}}';
 export const wbtcPrimeConverterAddress = '{{wbtcPrimeConverterAddress}}';
 export const wethPrimeConverterAddress = '{{wethPrimeConverterAddress}}';
 

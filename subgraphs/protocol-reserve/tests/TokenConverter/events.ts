@@ -2,7 +2,9 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
+  AssetTransferredToDestination,
   BaseAssetUpdated,
+  ConvertedExactTokens,
   ConversionConfigUpdated,
   ConversionPaused,
   ConversionResumed,
@@ -145,6 +147,84 @@ export const createBaseAssetUpdatedEvent = (
     ethereum.Value.fromAddress(newBaseAsset),
   );
   event.parameters.push(newBaseAssetParam);
+
+  return event;
+};
+
+export const createConvertedEvent = (
+  tokenConverterAddress: Address,
+  sender: Address,
+  receiver: Address,
+  tokenAddressIn: Address,
+  tokenAddressOut: Address,
+  amountIn: string,
+  amountOut: string,
+): ConvertedExactTokens => {
+  const event = changetype<ConvertedExactTokens>(newMockEvent());
+  event.address = tokenConverterAddress;
+  event.parameters = [];
+
+  const senderParam = new ethereum.EventParam('sender', ethereum.Value.fromAddress(sender));
+  event.parameters.push(senderParam);
+
+  const receiverParam = new ethereum.EventParam('receiver', ethereum.Value.fromAddress(receiver));
+  event.parameters.push(receiverParam);
+
+  const tokenAddressInParam = new ethereum.EventParam(
+    'tokenAddressIn',
+    ethereum.Value.fromAddress(tokenAddressIn),
+  );
+  event.parameters.push(tokenAddressInParam);
+
+  const tokenAddressOutParam = new ethereum.EventParam(
+    'tokenAddressOut',
+    ethereum.Value.fromAddress(tokenAddressOut),
+  );
+  event.parameters.push(tokenAddressOutParam);
+
+  const amountInParam = new ethereum.EventParam(
+    'amountIn',
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString(amountIn)),
+  );
+  event.parameters.push(amountInParam);
+
+  const amountOutParam = new ethereum.EventParam(
+    'amountOut',
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString(amountOut)),
+  );
+  event.parameters.push(amountOutParam);
+
+  return event;
+};
+
+export const createAssetTransferredToDestinationEvent = (
+  tokenConverterAddress: Address,
+  receiver: Address,
+  comptroller: Address,
+  asset: Address,
+  amount: string,
+): AssetTransferredToDestination => {
+  const event = changetype<AssetTransferredToDestination>(newMockEvent());
+  event.address = tokenConverterAddress;
+  event.parameters = [];
+
+  const receiverParam = new ethereum.EventParam('receiver', ethereum.Value.fromAddress(receiver));
+  event.parameters.push(receiverParam);
+
+  const comptrollerParam = new ethereum.EventParam(
+    'comptroller',
+    ethereum.Value.fromAddress(comptroller),
+  );
+  event.parameters.push(comptrollerParam);
+
+  const assetParam = new ethereum.EventParam('asset', ethereum.Value.fromAddress(asset));
+  event.parameters.push(assetParam);
+
+  const amountParam = new ethereum.EventParam(
+    'amount',
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString(amount)),
+  );
+  event.parameters.push(amountParam);
 
   return event;
 };
