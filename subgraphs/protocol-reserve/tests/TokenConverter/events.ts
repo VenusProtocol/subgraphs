@@ -2,6 +2,7 @@ import { Address, BigInt, ethereum } from '@graphprotocol/graph-ts';
 import { newMockEvent } from 'matchstick-as';
 
 import {
+  AssetTransferredToDestination,
   BaseAssetUpdated,
   ConvertedExactTokens,
   ConversionConfigUpdated,
@@ -192,6 +193,38 @@ export const createConvertedEvent = (
     ethereum.Value.fromUnsignedBigInt(BigInt.fromString(amountOut)),
   );
   event.parameters.push(amountOutParam);
+
+  return event;
+};
+
+export const createAssetTransferredToDestinationEvent = (
+  tokenConverterAddress: Address,
+  receiver: Address,
+  comptroller: Address,
+  asset: Address,
+  amount: string,
+): AssetTransferredToDestination => {
+  const event = changetype<AssetTransferredToDestination>(newMockEvent());
+  event.address = tokenConverterAddress;
+  event.parameters = [];
+
+  const receiverParam = new ethereum.EventParam('receiver', ethereum.Value.fromAddress(receiver));
+  event.parameters.push(receiverParam);
+
+  const comptrollerParam = new ethereum.EventParam(
+    'comptroller',
+    ethereum.Value.fromAddress(comptroller),
+  );
+  event.parameters.push(comptrollerParam);
+
+  const assetParam = new ethereum.EventParam('asset', ethereum.Value.fromAddress(asset));
+  event.parameters.push(assetParam);
+
+  const amountParam = new ethereum.EventParam(
+    'amount',
+    ethereum.Value.fromUnsignedBigInt(BigInt.fromString(amount)),
+  );
+  event.parameters.push(amountParam);
 
   return event;
 };
