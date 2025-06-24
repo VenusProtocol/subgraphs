@@ -31,6 +31,7 @@ export const getNetwork = () => {
     'base',
     'unichainSepolia',
     'unichain',
+    'berachainBepolia',
   ] as const;
   const network = process.env.NETWORK;
   // @ts-expect-error network env var is unknown here
@@ -170,7 +171,7 @@ const main = () => {
       accessControlManagerStartBlock: '23212000',
     },
     unichainSepolia: {
-      network: 'unichain-testnet',
+      network: 'unichain-sepolia',
       layerZeroChainId: 10333,
       omnichainGovernanceOwnerAddress: unichainSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '12506108',
@@ -190,6 +191,17 @@ const main = () => {
       startBlockOmnichainGovernanceExecutor: '9143169 ',
       accessControlManagerAddress: unichainMainnetDeployments.addresses.AccessControlManager,
       accessControlManagerStartBlock: '8095093',
+    },
+    // replace with package entries once it's published
+    berachainBepolia: {
+      network: 'berachain-bepolia',
+      layerZeroChainId: 10371,
+      omnichainGovernanceOwnerAddress: '0x61ed025c4EB50604F367316B8E18dB7eb7283D49',
+      startBlockOmnichainGovernanceOwner: '2922366',
+      omnichainGovernanceExecutorAddress: '0xc80E4112940efF40c8626bAc0D8E79cB7dAbe289',
+      startBlockOmnichainGovernanceExecutor: '2922254',
+      accessControlManagerAddress: '0x243313C1cC198FF80756ed2ef14D9dcd94Ee762b',
+      accessControlManagerStartBlock: '2922351',
     },
   };
 

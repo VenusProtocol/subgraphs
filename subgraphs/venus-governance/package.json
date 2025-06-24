@@ -1,6 +1,6 @@
 {
   "name": "@venusprotocol/governance-subgraph",
-  "version": "1.0.4",
+  "version": "1.1.0-testnet.1",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/VenusProtocol/subgraphs",
@@ -16,7 +16,7 @@
     "build:bsc": "graph build --ipfs https://api.thegraph.com/ipfs/ ",
     "deploy:integration": "graph deploy venusprotocol/venus-governance --ipfs http://localhost:5001 --node http://127.0.0.1:8020/",
     "deploy:docker": "yarn prepare:docker && yarn graph deploy venusprotocol/venus-governance --ipfs http://ipfs:5001 --node http://graph-node:8020/ --version-label ci",
-    "deploy:chapel": "yarn prepare:chapel && graph deploy --studio venus-governance-chapel",
+    "deploy:chapel": "yarn prepare:chapel && graph deploy venus-governance-chapel",
     "deploy:bsc": "yarn prepare:bsc && graph deploy --studio venus-governance",
     "prepare:docker": "NETWORK=docker yarn ts-node config/index.ts",
     "prepare:chapel": "NETWORK=chapel yarn ts-node config/index.ts",

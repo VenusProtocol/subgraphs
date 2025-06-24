@@ -148,6 +148,11 @@ jobs:
   release-cross-chain-governance:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -182,6 +187,11 @@ jobs:
   release-external-promos:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-cross-chain-governance]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -216,6 +226,11 @@ jobs:
   release-isolated-pools:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-isolated-pools, release-external-promos]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -250,6 +265,11 @@ jobs:
   release-protocol-reserve:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-isolated-pools]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -284,6 +304,11 @@ jobs:
   release-core-pool:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-core-pool, release-protocol-reserve]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -318,6 +343,11 @@ jobs:
   release-governance:
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-governance, release-core-pool]
+    if:
+      contains('
+        refs/heads/main
+        refs/heads/testnet
+      ', github.ref)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
