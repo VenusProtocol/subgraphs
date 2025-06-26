@@ -68,6 +68,12 @@ export function handleInitializationWBnbBurnConverter(block: ethereum.Block): vo
 }
 
 export function handleConversionConfigUpdated(event: ConversionConfigUpdated): void {
+  // workaround for Ethereum
+  // some ConversionConfigUpdated events were raised with addresses that don't correspond to real tokens
+  // this is meant to ignore them
+  if (event.transaction.hash.toHexString() == '0xf497402d1f21a8ed6fb49a784c4d9ae570a9721e44cee173a0c60977f02fb104' && event.block.number.toString() == '21836871') {
+    return;
+  }
   getOrCreateTokenConverter(event.address);
   updateOrCreateTokenConverterConfig(event.address, event.params);
 }
