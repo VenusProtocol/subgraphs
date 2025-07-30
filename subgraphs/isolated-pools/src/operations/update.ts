@@ -13,6 +13,8 @@ import {
   getOrCreateToken,
 } from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
+import { updateMarketRates } from './updateMarketRates';
+import { createMarketSupplyPositionData } from './create';
 
 export const updateMarketPositionAccrualBlockNumber = (
   accountAddress: Address,
@@ -49,10 +51,18 @@ export const updateMarketPositionSupply = (
       Address.fromBytes(market.pool),
       blockNumber,
     );
+
     if (marketPosition) {
       const _vTokenBalanceMantissa = marketPosition.vTokenBalanceMantissa;
       marketPosition.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
       marketPosition.save();
+
+      createMarketSupplyPositionData(
+        marketAddress,
+        accountAddress,
+        blockNumber,
+        accountSupplyBalanceMantissa,
+      );
 
       if (
         _vTokenBalanceMantissa.equals(zeroBigInt32) &&
@@ -86,12 +96,15 @@ export const updateMarketPositionBorrow = (
       Address.fromBytes(market.pool),
       blockNumber,
     );
+
     if (marketPosition) {
       const _storedBorrowBalanceMantissa = marketPosition.storedBorrowBalanceMantissa;
       marketPosition.storedBorrowBalanceMantissa = accountBorrows;
       const vTokenContract = VToken.bind(marketAddress);
       marketPosition.borrowIndex = vTokenContract.borrowIndex();
       marketPosition.save();
+
+      updateMarketPositionBorrow(accountAddress, marketAddress, blockNumber, accountBorrows);
 
       if (
         _storedBorrowBalanceMantissa.equals(zeroBigInt32) &&
@@ -134,23 +147,12 @@ export const updateMarket = (vTokenAddress: Address, blockNumber: BigInt): Marke
     marketContract.try_accrualBlockNumber(),
   );
 
-  const exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_exchangeRateStored(),
-  );
-  market.exchangeRateMantissa = exchangeRateMantissa;
-
   market.reservesMantissa = valueOrNotAvailableIntIfReverted(marketContract.try_totalReserves());
 
   const cashBigInt = valueOrNotAvailableIntIfReverted(marketContract.try_getCash());
   market.cashMantissa = cashBigInt;
 
-  // calling supplyRatePerBlock & borrowRatePerBlock can fail due to external reasons, so we fall back to 0 in case of an error
-  market.borrowRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_borrowRatePerBlock(),
-  );
-  market.supplyRateMantissa = valueOrNotAvailableIntIfReverted(
-    marketContract.try_supplyRatePerBlock(),
-  );
+  updateMarketRates(market, marketContract, tokenPriceCents, blockNumber);
 
   market.save();
   return market;

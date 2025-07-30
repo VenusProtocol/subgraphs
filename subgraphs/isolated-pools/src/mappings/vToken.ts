@@ -17,6 +17,7 @@ import {
   ReservesAdded,
   SpreadReservesReduced,
   Transfer,
+  VToken,
 } from '../../generated/PoolRegistry/VToken';
 import { VToken as VTokenContract } from '../../generated/PoolRegistry/VToken';
 import { nullAddress } from '../constants/addresses';
@@ -31,12 +32,14 @@ import {
   createTransferTransaction,
 } from '../operations/create';
 import { getMarket } from '../operations/get';
-import { getOrCreateAccount } from '../operations/getOrCreate';
+import { getOrCreateAccount, getOrCreateToken } from '../operations/getOrCreate';
 import {
   updateMarketPositionBorrow,
   updateMarketPositionSupply,
   updateMarket,
 } from '../operations/update';
+import { updateMarketRates } from '../operations/updateMarketRates';
+import getTokenPriceInCents from '../utilities/getTokenPriceInCents';
 
 /* Account supplies assets into market and receives vTokens in exchange
  *
@@ -329,6 +332,16 @@ export function handleReservesAdded(event: ReservesAdded): void {
   const market = getMarket(vTokenAddress);
   if (market) {
     market.reservesMantissa = event.params.newTotalReserves;
+
+    const marketContract = VToken.bind(vTokenAddress);
+    const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+    const underlyingPriceCents = getTokenPriceInCents(
+      Address.fromBytes(market.pool),
+      vTokenAddress,
+      underlyingToken.decimals,
+    );
+    updateMarketRates(market, marketContract, underlyingPriceCents, event.block.number);
+
     market.save();
   }
 }
@@ -338,6 +351,16 @@ export function handleSpreadReservesReduced(event: SpreadReservesReduced): void 
   const market = getMarket(vTokenAddress);
   if (market) {
     market.reservesMantissa = event.params.newTotalReserves;
+
+    const marketContract = VToken.bind(vTokenAddress);
+    const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+    const underlyingPriceCents = getTokenPriceInCents(
+      Address.fromBytes(market.pool),
+      vTokenAddress,
+      underlyingToken.decimals,
+    );
+    updateMarketRates(market, marketContract, underlyingPriceCents, event.block.number);
+
     market.save();
   }
 }

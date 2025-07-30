@@ -23,6 +23,9 @@ import {
   Pool,
   RewardsDistributor,
   Transaction,
+  MarketRatesData,
+  MarketSupplyPositionData,
+  MarketBorrowPositionData,
 } from '../../generated/schema';
 import { Comptroller } from '../../generated/templates/Pool/Comptroller';
 import { RewardsDistributor as RewardDistributorContract } from '../../generated/templates/RewardsDistributor/RewardsDistributor';
@@ -340,4 +343,50 @@ export function createRewardDistributor(
     }
   }
   return rewardsDistributor;
+}
+
+export function createMarketRatesData(
+  marketAddress: Address,
+  blockNumber: BigInt,
+  exchangeRateMantissa: BigInt,
+  supplyRateMantissa: BigInt,
+  borrowRateMantissa: BigInt,
+  underlyingPriceCents: BigInt,
+): void {
+  const marketRatesEntity = new MarketRatesData('auto');
+  marketRatesEntity.market = marketAddress;
+  marketRatesEntity.exchangeRateMantissa = exchangeRateMantissa;
+  marketRatesEntity.supplyRateMantissa = supplyRateMantissa;
+  marketRatesEntity.borrowRateMantissa = borrowRateMantissa;
+  marketRatesEntity.blockNumber = blockNumber;
+  marketRatesEntity.underlyingPriceCents = underlyingPriceCents;
+  marketRatesEntity.save();
+}
+
+export function createMarketSupplyPositionData(
+  marketAddress: Address,
+  accountAddress: Address,
+  blockNumber: BigInt,
+  vTokenBalanceMantissa: BigInt,
+): void {
+  const marketSupplyPositionEntity = new MarketSupplyPositionData('auto');
+  marketSupplyPositionEntity.market = marketAddress;
+  marketSupplyPositionEntity.account = accountAddress;
+  marketSupplyPositionEntity.blockNumber = blockNumber;
+  marketSupplyPositionEntity.vTokenBalanceMantissa = vTokenBalanceMantissa;
+  marketSupplyPositionEntity.save();
+}
+
+export function createMarketBorrowPositionData(
+  marketAddress: Address,
+  accountAddress: Address,
+  blockNumber: BigInt,
+  borrowBalanceMantissa: BigInt,
+): void {
+  const marketBorrowPositionEntity = new MarketBorrowPositionData('auto');
+  marketBorrowPositionEntity.market = marketAddress;
+  marketBorrowPositionEntity.account = accountAddress;
+  marketBorrowPositionEntity.blockNumber = blockNumber;
+  marketBorrowPositionEntity.borrowBalanceMantissa = borrowBalanceMantissa;
+  marketBorrowPositionEntity.save();
 }
