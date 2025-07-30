@@ -74,7 +74,8 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
       'vBEP20 try_reserveFactorMantissa()',
     );
     const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
-    market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+    const underlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+    market.lastUnderlyingPriceCents = underlyingPriceCents;
     market.lastUnderlyingPriceBlockNumber = event.block.number;
 
     market.accrualBlockNumber = vTokenContract.accrualBlockNumber();
@@ -83,7 +84,7 @@ export function getOrCreateMarket(marketAddress: Address, event: ethereum.Event)
     market.supplierCount = zeroBigInt32;
     market.borrowerCount = zeroBigInt32;
 
-    updateMarketRates(market, vTokenContract);
+    updateMarketRates(market, vTokenContract, underlyingPriceCents, event.block.number);
     updateMarketCashMantissa(market, vTokenContract);
     market.totalSupplyVTokenMantissa = zeroBigInt32;
     market.borrowIndex = valueOrNotAvailableIntIfReverted(

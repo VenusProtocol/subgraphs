@@ -1,3 +1,4 @@
+import { BigInt } from '@graphprotocol/graph-ts';
 import { Market } from '../../generated/schema';
 import { VToken } from '../../generated/templates/VToken/VToken';
 import { valueOrNotAvailableIntIfReverted } from '../utilities';
@@ -12,9 +13,10 @@ import { valueOrNotAvailableIntIfReverted } from '../utilities';
   - Must multiply by vtokenDecimals, 10^8
   - Must div by mantissa, 10^18
 */
-export function updateMarketExchangeRate(market: Market, vTokenContract: VToken): void {
+export function updateMarketExchangeRate(market: Market, vTokenContract: VToken): BigInt {
   market.exchangeRateMantissa = valueOrNotAvailableIntIfReverted(
     vTokenContract.try_exchangeRateStored(),
     'vBEP20 try_exchangeRateStored()',
   );
+  return market.exchangeRateMantissa;
 }

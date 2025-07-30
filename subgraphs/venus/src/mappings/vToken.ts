@@ -283,11 +283,13 @@ export function handleAccrueInterest(event: AccrueInterest): void {
   market.totalBorrowsMantissa = event.params.totalBorrows;
   updateMarketCashMantissa(market, vTokenContract);
   const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
-  market.lastUnderlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+  const underlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+  market.lastUnderlyingPriceCents = underlyingPriceCents;
   market.lastUnderlyingPriceBlockNumber = event.block.number;
-
-  updateMarketRates(market, vTokenContract);
   market.reservesMantissa = vTokenContract.totalReserves();
+
+  updateMarketRates(market, vTokenContract, underlyingPriceCents, event.block.number);
+
   market.save();
 }
 
@@ -370,9 +372,12 @@ export function handleRedeemV1(event: RedeemV1): void {
 export function handleReservesAdded(event: ReservesAdded): void {
   const marketAddress = event.address;
   const market = getOrCreateMarket(event.address, event);
-  const vTokenContract = VToken.bind(marketAddress);
   market.reservesMantissa = event.params.newTotalReserves;
-  updateMarketRates(market, vTokenContract);
+
+  const vTokenContract = VToken.bind(marketAddress);
+  const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+  const underlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+  updateMarketRates(market, vTokenContract, underlyingPriceCents, event.block.number);
 
   market.save();
 }
@@ -383,7 +388,10 @@ export function handleReservesReduced(event: ReservesReduced): void {
   const vTokenContract = VToken.bind(marketAddress);
 
   market.reservesMantissa = event.params.newTotalReserves;
-  updateMarketRates(market, vTokenContract);
+
+  const underlyingToken = getOrCreateToken(Address.fromBytes(market.underlyingToken));
+  const underlyingPriceCents = getUnderlyingPrice(marketAddress, underlyingToken.decimals);
+  updateMarketRates(market, vTokenContract, underlyingPriceCents, event.block.number);
 
   market.save();
 }

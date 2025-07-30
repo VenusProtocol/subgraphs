@@ -2,104 +2,147 @@
 The Comptroller type has protocol level variables stored
 """
 type Comptroller @entity {
-    "ID is set to comptroller address"
-    id: Bytes!
-    "Comptroller Address"
-    address: Bytes!
-    "Address of price oracle the comptroller uses"
-    priceOracle: Bytes!
-    "Factor used to determine repayAmount for liquidating"
-    closeFactorMantissa: BigInt!
-    "The percent bonus liquidators get for liquidating"
-    liquidationIncentive: BigInt!
+  "ID is set to comptroller address"
+  id: Bytes!
+  "Comptroller Address"
+  address: Bytes!
+  "Address of price oracle the comptroller uses"
+  priceOracle: Bytes!
+  "Factor used to determine repayAmount for liquidating"
+  closeFactorMantissa: BigInt!
+  "The percent bonus liquidators get for liquidating"
+  liquidationIncentive: BigInt!
 }
 
 """
 ERC20 Token
 """
 type Token @entity(immutable: true) {
-    "Address of the asset"
-    id: Bytes!
-    "Address of the asset"
-    address: Bytes!
-    "Name of the asset"
-    name: String!
-    "Symbol of the asset"
-    symbol: String
-    "Decimals of the asset"
-    decimals: Int!
+  "Address of the asset"
+  id: Bytes!
+  "Address of the asset"
+  address: Bytes!
+  "Name of the asset"
+  name: String!
+  "Symbol of the asset"
+  symbol: String
+  "Decimals of the asset"
+  decimals: Int!
 }
 
 """
 Market stores all high level variables for a vToken market
 """
 type Market @entity {
-    "VToken address"
-    id: Bytes!
-    "Vtoken Address"
-    address: Bytes!
-    "vToken decimal length"
-    vTokenDecimals: Int!
-    "Name of the vToken"
-    name: String!
-    "VToken symbol"
-    symbol: String!
-    "Flag indicating if the market is listed"
-    isListed: Boolean!
-    "Borrow rate per block"
-    borrowRateMantissa: BigInt!
-    "The vToken contract balance of BEP20 or BNB"
-    cashMantissa: BigInt!
-    "Collateral factor determining how much one can borrow"
-    collateralFactorMantissa: BigInt!
-    "Exchange rate of tokens / vTokens"
-    exchangeRateMantissa:  BigInt!
-    "Address of the interest rate model"
-    interestRateModelAddress: Bytes!
-    "Reserves stored in the contract"
-    reservesMantissa: BigInt!
-    "Supply rate per block"
-    supplyRateMantissa: BigInt!
-    "Borrows in the market"
-    totalBorrowsMantissa: BigInt!
-    "Total vToken supplied"
-    totalSupplyVTokenMantissa: BigInt!
-    "Underlying Token"
-    underlyingToken: Token!
-    "XVS Supply Distribution Block"
-    xvsSupplyStateBlock:  BigInt!
-    "XVS Supply Distribution Index"
-    xvsSupplyStateIndex:  BigInt!
-    "XVS Reward Distribution Block"
-    xvsBorrowStateBlock:  BigInt!
-    "XVS Reward Distribution Index"
-    xvsBorrowStateIndex:  BigInt!
-    "The rate at which XVS is distributed to the corresponding supply market (per block)"
-    xvsSupplySpeed: BigInt!
-    "The rate at which XVS is distributed to the corresponding borrow market (per block)"
-    xvsBorrowSpeed: BigInt!
+  "VToken address"
+  id: Bytes!
+  "Vtoken Address"
+  address: Bytes!
+  "vToken decimal length"
+  vTokenDecimals: Int!
+  "Name of the vToken"
+  name: String!
+  "VToken symbol"
+  symbol: String!
+  "Flag indicating if the market is listed"
+  isListed: Boolean!
+  "Borrow rate per block"
+  borrowRateMantissa: BigInt!
+  "The vToken contract balance of BEP20 or BNB"
+  cashMantissa: BigInt!
+  "Collateral factor determining how much one can borrow"
+  collateralFactorMantissa: BigInt!
+  "Exchange rate of tokens / vTokens"
+  exchangeRateMantissa: BigInt!
+  "Address of the interest rate model"
+  interestRateModelAddress: Bytes!
+  "Reserves stored in the contract"
+  reservesMantissa: BigInt!
+  "Supply rate per block"
+  supplyRateMantissa: BigInt!
+  "Borrows in the market"
+  totalBorrowsMantissa: BigInt!
+  "Total vToken supplied"
+  totalSupplyVTokenMantissa: BigInt!
+  "Underlying Token"
+  underlyingToken: Token!
+  "XVS Supply Distribution Block"
+  xvsSupplyStateBlock: BigInt!
+  "XVS Supply Distribution Index"
+  xvsSupplyStateIndex: BigInt!
+  "XVS Reward Distribution Block"
+  xvsBorrowStateBlock: BigInt!
+  "XVS Reward Distribution Index"
+  xvsBorrowStateIndex: BigInt!
+  "The rate at which XVS is distributed to the corresponding supply market (per block)"
+  xvsSupplySpeed: BigInt!
+  "The rate at which XVS is distributed to the corresponding borrow market (per block)"
+  xvsBorrowSpeed: BigInt!
 
-    "Block the market is updated to"
-    accrualBlockNumber: BigInt!
-    "The history of the markets borrow index return (Think S&P 500)"
-    borrowIndex: BigInt!
-    "The factor determining interest that goes to reserves"
-    reserveFactorMantissa: BigInt!
-    "Last recorded Underlying token price in USD cents"
-    lastUnderlyingPriceCents: BigInt!
-    "Block price was last updated"
-    lastUnderlyingPriceBlockNumber: BigInt!
-    "Total XVS Distributed for this market"
-    totalXvsDistributedMantissa: BigInt!
+  "Block the market is updated to"
+  accrualBlockNumber: BigInt!
+  "The history of the markets borrow index return (Think S&P 500)"
+  borrowIndex: BigInt!
+  "The factor determining interest that goes to reserves"
+  reserveFactorMantissa: BigInt!
+  "Last recorded Underlying token price in USD cents"
+  lastUnderlyingPriceCents: BigInt!
+  "Block price was last updated"
+  lastUnderlyingPriceBlockNumber: BigInt!
+  "Total XVS Distributed for this market"
+  totalXvsDistributedMantissa: BigInt!
 
-    "Number of accounts currently supplying to this market"
-    supplierCount: BigInt!
+  "Number of accounts currently supplying to this market"
+  supplierCount: BigInt!
 
-    "Number of accounts currently borrowing from this market"
-    borrowerCount: BigInt!
+  "Number of accounts currently borrowing from this market"
+  borrowerCount: BigInt!
 
-    "Accounts who participate in this market"
-    accounts: [MarketPosition!]! @derivedFrom(field:"market")
+  "Accounts who participate in this market"
+  accounts: [MarketPosition!]! @derivedFrom(field: "market")
+}
+
+"""
+MarketRatesData records the state of a given market rates in a block number/timestamp
+"""
+type MarketRatesData @entity(timeseries: true) {
+  "Incremental ID"
+  id: Int8!
+  "Timestamp in microseconds"
+  timestamp: Timestamp!
+  "Corresponding block number"
+  blockNumber: BigInt!
+  "Corresponding market"
+  market: Market!
+  "vToken exchange rate in the given block number/timestamp"
+  exchangeRateMantissa: BigInt!
+  "Supply rate in the given block number/timestamp"
+  supplyRateMantissa: BigInt!
+  "Borrow rate in the given block number/timestamp"
+  borrowRateMantissa: BigInt!
+  "Underlying token price in cents"
+  underlyingPriceCents: BigInt!
+}
+
+"""
+MarketRatesDaily is an aggregation for the MarketRatesData time series
+Useful to calculate daily averages for the market rates
+"""
+type MarketRatesDaily @aggregation(intervals: ["day"], source: "MarketRatesData") {
+  "Incremental ID"
+  id: Int8!
+  "Timestamp in microseconds"
+  timestamp: Timestamp!
+  "Corresponding market"
+  market: Market!
+  "Count of data points the given interval"
+  count: Int8! @aggregate(fn: "count", cumulative: true)
+  "Sum of the supply rates in the given interval"
+  supplyRateMantissaSum: BigInt! @aggregate(fn: "sum", arg: "supplyRateMantissa")
+  "Sum of the borrow rates in the given interval"
+  borrowRateMantissaSum: BigInt! @aggregate(fn: "sum", arg: "borrowRateMantissa")
+  "Sum of the exchange rates in the given interval"
+  exchangeRateMantissaSum: BigInt! @aggregate(fn: "sum", arg: "exchangeRateMantissa")
 }
 
 """
@@ -107,54 +150,90 @@ Account is an BNB address, with a list of all vToken markets the account has
 participated in, along with liquidation information.
 """
 type Account @entity {
-    "Account address"
-    id: Bytes!
-    "Account address"
-    address: Bytes!
-    "Array of VTokens user is in"
-    tokens: [MarketPosition!]! @derivedFrom(field: "account")
-    "Count user has been liquidated"
-    countLiquidated: Int!
-    "Count user has liquidated others"
-    countLiquidator: Int!
-    "True if user has ever borrowed"
-    hasBorrowed: Boolean!
+  "Account address"
+  id: Bytes!
+  "Account address"
+  address: Bytes!
+  "Array of VTokens user is in"
+  tokens: [MarketPosition!]! @derivedFrom(field: "account")
+  "Count user has been liquidated"
+  countLiquidated: Int!
+  "Count user has liquidated others"
+  countLiquidator: Int!
+  "True if user has ever borrowed"
+  hasBorrowed: Boolean!
 }
 
 """
 MarketPosition is a single account within a single vToken market
 """
 type MarketPosition @entity {
-    "Concatenation of VToken address and user address"
-    id: Bytes!
-    "Relation to market"
-    market: Market!
-    "Relation to user"
-    account: Account!
-    "Block the position is updated to"
-    accrualBlockNumber: BigInt!
-    "Borrow Index this position last accrued interest"
-    borrowIndex: BigInt!
-    "True if user is entered, false if they are exited"
-    enteredMarket: Boolean!
-    "VToken balance of the user"
-    vTokenBalanceMantissa: BigInt!
-    "Total amount of underlying redeemed"
-    totalUnderlyingRedeemedMantissa: BigInt!
-    "Total amount underlying repaid"
-    totalUnderlyingRepaidMantissa: BigInt!
-    "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
-    storedBorrowBalanceMantissa: BigInt!
+  "Concatenation of VToken address and user address"
+  id: Bytes!
+  "Relation to market"
+  market: Market!
+  "Relation to user"
+  account: Account!
+  "Block the position is updated to"
+  accrualBlockNumber: BigInt!
+  "Borrow Index this position last accrued interest"
+  borrowIndex: BigInt!
+  "True if user is entered, false if they are exited"
+  enteredMarket: Boolean!
+  "VToken balance of the user"
+  vTokenBalanceMantissa: BigInt!
+  "Total amount of underlying redeemed"
+  totalUnderlyingRedeemedMantissa: BigInt!
+  "Total amount underlying repaid"
+  totalUnderlyingRepaidMantissa: BigInt!
+  "Stored borrow balance stored in contract (exclusive of interest since accrualBlockNumber)"
+  storedBorrowBalanceMantissa: BigInt!
+}
+
+"""
+MarketSupplyPositionData records the state of an account's supply position in a block number/timestamp
+"""
+type MarketSupplyPositionData @entity(timeseries: true) {
+  "Incremental ID"
+  id: Int8!
+  "Timestamp in microseconds"
+  timestamp: Timestamp!
+  "Corresponding block number"
+  blockNumber: BigInt!
+  "Supplier account"
+  account: Account!
+  "Supplied market"
+  market: Market!
+  "vToken balance at the given block number/timestamp"
+  vTokenBalanceMantissa: BigInt!
+}
+
+"""
+MarketBorrowPositionData records the state of an account's borrow position in a block number/timestamp
+"""
+type MarketBorrowPositionData @entity(timeseries: true) {
+  "Incremental ID"
+  id: Int8!
+  "Timestamp in microseconds"
+  timestamp: Timestamp!
+  "Corresponding block number"
+  blockNumber: BigInt!
+  "Borrower account"
+  account: Account!
+  "Borrowed from this market"
+  market: Market!
+  "Borrowed underlying balance at the given block number/timestamp"
+  borrowBalanceMantissa: BigInt!
 }
 
 enum EventType {
-    MINT
-    MINT_BEHALF
-    REDEEM
-    BORROW
-    TRANSFER
-    LIQUIDATE
-    REPAY
+  MINT
+  MINT_BEHALF
+  REDEEM
+  BORROW
+  TRANSFER
+  LIQUIDATE
+  REPAY
 }
 
 """
@@ -162,18 +241,18 @@ An interface for a transfer of any vToken. TransferEvent, MintEvent,
 RedeemEvent, and LiquidationEvent all use this interface
 """
 type Transaction @entity {
-    "Transaction hash concatenated with log index"
-    id: Bytes!
-    "enum of event type"
-    type: EventType!
-    "The account that sent the tokens, usually vToken"
-    from: Bytes!
-    "count of vTokens transferred"
-    amountMantissa: BigInt!
-    "Account that received tokens"
-    to: Bytes!
-    "Block number"
-    blockNumber: Int!
-    "Block time"
-    blockTime: Int!
+  "Transaction hash concatenated with log index"
+  id: Bytes!
+  "enum of event type"
+  type: EventType!
+  "The account that sent the tokens, usually vToken"
+  from: Bytes!
+  "count of vTokens transferred"
+  amountMantissa: BigInt!
+  "Account that received tokens"
+  to: Bytes!
+  "Block number"
+  blockNumber: Int!
+  "Block time"
+  blockTime: Int!
 }

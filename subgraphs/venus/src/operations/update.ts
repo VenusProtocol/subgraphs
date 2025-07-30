@@ -6,6 +6,7 @@ import { valueOrNotAvailableIntIfReverted } from '../utilities';
 import { getMarket } from './get';
 import { getOrCreateAccount, getOrCreateMarketPosition } from './getOrCreate';
 import { oneBigInt, zeroBigInt32 } from '../constants';
+import { createMarketBorrowPositionData, createMarketSupplyPositionData } from './create';
 
 export const updateMarketPositionAccrualBlockNumber = (
   accountAddress: Address,
@@ -34,6 +35,13 @@ export const updateMarketPositionSupply = (
   const _vTokenBalanceMantissa = marketPosition.vTokenBalanceMantissa;
   marketPosition.vTokenBalanceMantissa = accountSupplyBalanceMantissa;
   marketPosition.save();
+
+  createMarketSupplyPositionData(
+    marketAddress,
+    accountAddress,
+    blockNumber,
+    accountSupplyBalanceMantissa,
+  );
 
   if (
     _vTokenBalanceMantissa.equals(zeroBigInt32) &&
@@ -70,6 +78,8 @@ export const updateMarketPositionBorrow = (
     'vBEP20 try_borrowIndex()',
   );
   marketPosition.save();
+
+  createMarketBorrowPositionData(marketAddress, accountAddress, blockNumber, accountBorrows);
 
   if (_storedBorrowBalanceMantissa.equals(zeroBigInt32) && accountBorrows.notEqual(zeroBigInt32)) {
     market.borrowerCount = market.borrowerCount.plus(oneBigInt);
