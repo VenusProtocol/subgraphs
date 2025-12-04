@@ -77,7 +77,7 @@ const main = () => {
       template: 'template-arb.yaml',
     },
     unichain: {
-      network: 'unichain-mainnet',
+      network: 'unichain',
       vWeEthAddress: unichainILDeployments.addresses.VToken_vweETH_Core,
       vWeEthStartBlock: '16899141',
       template: 'template-arb.yaml',
