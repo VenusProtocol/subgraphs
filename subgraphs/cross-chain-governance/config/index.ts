@@ -171,7 +171,7 @@ const main = () => {
       accessControlManagerStartBlock: '23212000',
     },
     unichainSepolia: {
-      network: 'unichain-sepolia',
+      network: 'unichain-testnet',
       layerZeroChainId: 10333,
       omnichainGovernanceOwnerAddress: unichainSepoliaDeployments.addresses.OmnichainExecutorOwner,
       startBlockOmnichainGovernanceOwner: '12506108',
