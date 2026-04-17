@@ -218,10 +218,13 @@ dataSources:
           handler: handleSetTrustedRemoteAddress
         - event: ExecuteRemoteProposal(indexed uint16,uint256,bytes)
           handler: handleExecuteRemoteProposal
+          receipt: true
         - event: ClearPayload(indexed uint256,bytes32)
           handler: handleClearPayload
+          receipt: true
         - event: StorePayload(indexed uint256,indexed uint16,bytes,bytes,uint256,bytes)
           handler: handleStorePayload
+          receipt: true
         - event: NewAccessControlManager(indexed address,indexed address)
           handler: handleNewAccessControlManager
         - event: Paused(address)
