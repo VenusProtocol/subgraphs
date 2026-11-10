@@ -146,6 +146,8 @@ jobs:
           docker system prune -f -a --volumes
 
   release-cross-chain-governance:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint]
     if:
@@ -185,6 +187,8 @@ jobs:
           yarn workspace @venusprotocol/cross-chain-governance-subgraph run semantic-release
 
   release-external-promos:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-cross-chain-governance]
     if:
@@ -224,6 +228,8 @@ jobs:
           yarn workspace @venusprotocol/external-promos-subgraph run semantic-release
 
   release-isolated-pools:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-isolated-pools, release-external-promos]
     if:
@@ -263,6 +269,8 @@ jobs:
           yarn workspace @venusprotocol/isolated-pools-subgraph run semantic-release
 
   release-protocol-reserve:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, release-isolated-pools]
     if:
@@ -302,6 +310,8 @@ jobs:
           yarn workspace @venusprotocol/protocol-reserve-subgraph run semantic-release
 
   release-core-pool:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-core-pool, release-protocol-reserve]
     if:
@@ -341,6 +351,8 @@ jobs:
           yarn workspace @venusprotocol/core-pool-subgraph run semantic-release
 
   release-governance:
+    # VENUS_TOOLS_TOKEN is an environment secret of "release", which only the release branches may use.
+    environment: release
     runs-on: ubuntu-22.04
     needs: [unit-test, lint, integration-test-governance, release-core-pool]
     if:
