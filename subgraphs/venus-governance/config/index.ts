@@ -46,7 +46,7 @@ const main = () => {
       governorAlpha2StartBlock: '13584539',
       governorBravoDelegatorAddress:
         bscTestnetGovernanceDeployments.addresses.GovernorBravoDelegator,
-      governorBravoDelegatorStartBlock: '16002994 ',
+      governorBravoDelegatorStartBlock: '16002994',
       xvsTokenAddress: bscTestnetCoreDeployments.addresses.XVS,
       xvsTokenStartBlock: '2802593',
       xvsVaultAddress: bscTestnetCoreDeployments.addresses.XVSVaultProxy,
